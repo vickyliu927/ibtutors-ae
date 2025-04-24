@@ -24,6 +24,8 @@ const FAQ = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('Fetching FAQ data...');
+        
         // Fetch FAQ section data
         const section = await client.fetch<FAQSectionData>(`
           *[_type == "faq_section"][0] {
@@ -31,6 +33,7 @@ const FAQ = () => {
             subtitle
           }
         `);
+        console.log('FAQ section data:', section);
 
         // Fetch FAQ items
         const faqData = await client.fetch<FAQData[]>(`
@@ -41,6 +44,13 @@ const FAQ = () => {
             order
           }
         `);
+        console.log('FAQ items:', faqData);
+
+        if (!section) {
+          console.log('No FAQ section found');
+          setError('FAQ section not configured');
+          return;
+        }
 
         setSectionData(section);
         setFaqs(faqData);
@@ -54,6 +64,9 @@ const FAQ = () => {
 
     fetchData();
   }, []);
+
+  // Debug render state
+  console.log('Render state:', { loading, error, sectionData, faqs });
 
   const toggleFAQ = (id: string) => {
     setOpenId(openId === id ? null : id);
@@ -78,8 +91,24 @@ const FAQ = () => {
     );
   }
 
-  if (error || !sectionData) {
-    return null;
+  if (error) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-red-600 text-center">{error}</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!sectionData) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-gray-600 text-center">FAQ section not configured</p>
+        </div>
+      </section>
+    );
   }
 
   return (
