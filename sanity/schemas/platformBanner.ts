@@ -1,8 +1,8 @@
 import { defineField, defineType } from 'sanity'
 
 export default defineType({
-  name: 'platformBanner',
-  title: 'Platform Banner',
+  name: 'platform_banner',
+  title: 'Platform_Banner',
   type: 'document',
   fields: [
     defineField({
@@ -36,12 +36,11 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'platformImage',
       media: 'platformImage',
     },
-    prepare({ title, media }) {
+    prepare({ media }) {
       return {
-        title: 'Platform Banner',
+        title: 'Platform_Banner',
         media,
       }
     },

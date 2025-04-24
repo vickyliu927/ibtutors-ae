@@ -19,7 +19,7 @@ const TutoringPlatformBanner = () => {
   useEffect(() => {
     const fetchBannerData = async () => {
       try {
-        const data = await client.fetch<PlatformBannerData>(`*[_type == "platformBanner"][0] {
+        const data = await client.fetch<PlatformBannerData>(`*[_type == "platform_banner"][0] {
           _id,
           platformImage,
           whiteBoardImage,
