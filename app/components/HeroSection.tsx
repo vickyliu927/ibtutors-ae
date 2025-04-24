@@ -17,20 +17,58 @@ interface HeroData {
   features: string[];
 }
 
+const LoadingHero = () => (
+  <div className="bg-gradient-to-r from-pink-50 to-purple-50 py-16 animate-pulse">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div className="space-y-6">
+          <div className="h-14 bg-gray-200 rounded w-3/4"></div>
+          <div className="h-6 bg-gray-200 rounded w-2/3"></div>
+          <div className="space-y-4">
+            <div className="h-12 bg-gray-200 rounded w-40"></div>
+            <div className="h-6 bg-gray-200 rounded w-56"></div>
+          </div>
+        </div>
+        <div className="relative h-[500px] bg-gray-200 rounded"></div>
+      </div>
+    </div>
+  </div>
+);
+
 const HeroSection = () => {
   const [heroData, setHeroData] = useState<HeroData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHeroData = async () => {
-      const data = await client.fetch<HeroData>(`*[_type == "hero"][0]`);
-      setHeroData(data);
+      try {
+        const data = await client.fetch<HeroData>(`*[_type == "hero"][0]`);
+        if (!data) {
+          throw new Error('No hero content found');
+        }
+        setHeroData(data);
+      } catch (err) {
+        console.error('Error fetching hero data:', err);
+        setError('Failed to load hero section');
+      }
     };
 
     fetchHeroData();
   }, []);
 
+  if (error) {
+    return (
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-5xl font-bold">Expert UAE IB Tutors</h1>
+          <p className="mt-4 text-xl text-gray-600">Learn from qualified IB teachers with proven success rates.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!heroData) {
-    return <div>Loading...</div>;
+    return <LoadingHero />;
   }
 
   return (
@@ -54,7 +92,7 @@ const HeroSection = () => {
               {heroData.primaryButton && (
                 <Link
                   href={heroData.primaryButton.link || "#hire-tutor"}
-                  className="inline-block bg-blue-800 text-white px-8 py-3 rounded-md text-lg font-medium"
+                  className="inline-block bg-blue-800 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors"
                 >
                   {heroData.primaryButton.text}
                 </Link>
