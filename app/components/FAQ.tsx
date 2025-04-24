@@ -28,7 +28,7 @@ const FAQ = () => {
         
         // Fetch FAQ section data
         const section = await client.fetch<FAQSectionData>(`
-          *[_type == "faq_section"][0] {
+          *[_type == "FAQ_Section"][0] {
             title,
             subtitle
           }
@@ -37,7 +37,7 @@ const FAQ = () => {
 
         // Fetch FAQ items
         const faqData = await client.fetch<FAQData[]>(`
-          *[_type == "faq"] | order(order asc) {
+          *[_type == "FAQs"] | order(order asc) {
             _id,
             question,
             answer,
