@@ -5,6 +5,8 @@ import subject from '../schemas/subject'
 import platformBanner from '../schemas/platformBanner'
 import testimonialSection from '../schemas/testimonialSection'
 import testimonial from '../schemas/testimonial'
+import faqSection from '../schemas/faqSection'
+import faq from '../schemas/faq'
 
 export const schemaTypes = [
   hero,
@@ -13,6 +15,8 @@ export const schemaTypes = [
   platformBanner,
   testimonialSection,
   testimonial,
+  faqSection,
+  faq,
 ]
 
 export const schema: { types: SchemaTypeDefinition[] } = {
