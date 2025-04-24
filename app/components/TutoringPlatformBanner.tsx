@@ -8,7 +8,6 @@ interface PlatformBannerData {
   _id: string;
   platformImage: any;
   whiteBoardImage: any;
-  documentSharingImage: any;
 }
 
 const TutoringPlatformBanner = () => {
@@ -23,8 +22,7 @@ const TutoringPlatformBanner = () => {
         const data = await client.fetch<PlatformBannerData>(`*[_type == "platform_banner"][0] {
           _id,
           platformImage,
-          whiteBoardImage,
-          documentSharingImage
+          whiteBoardImage
         }`);
         console.log('Raw platform banner response:', JSON.stringify(data, null, 2));
         
@@ -44,11 +42,6 @@ const TutoringPlatformBanner = () => {
         if (data.whiteBoardImage) {
           const whiteboardUrl = urlFor(data.whiteBoardImage).url();
           console.log('Whiteboard image URL:', whiteboardUrl);
-        }
-
-        if (data.documentSharingImage) {
-          const docSharingUrl = urlFor(data.documentSharingImage).url();
-          console.log('Document sharing image URL:', docSharingUrl);
         }
         
         setBannerData(data);
@@ -90,37 +83,20 @@ const TutoringPlatformBanner = () => {
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative h-[200px] bg-gray-100 rounded-lg overflow-hidden">
-                {bannerData?.whiteBoardImage ? (
-                  <Image
-                    src={urlFor(bannerData.whiteBoardImage).url()}
-                    alt="Interactive whiteboard example"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-white/90 flex items-center justify-center">
-                    <span>Loading...</span>
-                  </div>
-                )}
-              </div>
-              <div className="relative h-[200px] bg-gray-100 rounded-lg overflow-hidden">
-                {bannerData?.documentSharingImage ? (
-                  <Image
-                    src={urlFor(bannerData.documentSharingImage).url()}
-                    alt="Document sharing example"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-white/90 flex items-center justify-center">
-                    <span>Loading...</span>
-                  </div>
-                )}
-              </div>
+            <div className="relative h-[200px] bg-gray-100 rounded-lg overflow-hidden">
+              {bannerData?.whiteBoardImage ? (
+                <Image
+                  src={urlFor(bannerData.whiteBoardImage).url()}
+                  alt="Interactive whiteboard example"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-white/90 flex items-center justify-center">
+                  <span>Loading...</span>
+                </div>
+              )}
             </div>
           </div>
 
