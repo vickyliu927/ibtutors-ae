@@ -36,8 +36,14 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'Platform Banner',
+      title: 'platformImage',
       media: 'platformImage',
+    },
+    prepare({ title, media }) {
+      return {
+        title: 'Platform Banner',
+        media,
+      }
     },
   },
 }) 
