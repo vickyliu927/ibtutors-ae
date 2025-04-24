@@ -24,7 +24,8 @@ const TutoringPlatformBanner = () => {
               {/* Platform interface mockups */}
               <div className="space-y-4">
                 <div className="bg-blue-50 rounded-lg h-32"></div>
-                <div className="bg-blue-50 rounded-lg h-32"></div>
+                <div className="bg-blue-50 rounded-lg h-24"></div>
+                <div className="bg-blue-50 rounded-lg h-24"></div>
               </div>
 
               {/* Control icons */}
