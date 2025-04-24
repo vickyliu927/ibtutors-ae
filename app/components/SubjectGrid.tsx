@@ -1,9 +1,73 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import subjectsData from '../../data/subjects.json';
+import { client } from '@/sanity/lib/client';
+
+interface SubjectData {
+  _id: string;
+  name: string;
+  link: string;
+  order: number;
+}
 
 const SubjectGrid = () => {
+  const [subjects, setSubjects] = useState<SubjectData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const data = await client.fetch<SubjectData[]>(`*[_type == "subject"] | order(order asc) {
+          _id,
+          name,
+          link,
+          order
+        }`);
+        setSubjects(data);
+      } catch (err) {
+        console.error('Error fetching subjects:', err);
+        setError('Failed to load subjects');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold mb-4">Popular IB Subjects</h2>
+          <p className="text-gray-600 mb-8">
+            Our specialist tutors cover every IB subject, ensuring comprehensive support
+            for your entire IB journey.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((placeholder) => (
+              <div
+                key={placeholder}
+                className="bg-white p-4 rounded-lg shadow-sm animate-pulse h-14"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-red-600">{error}</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,9 +78,9 @@ const SubjectGrid = () => {
         </p>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {subjectsData.subjects.map((subject) => (
+          {subjects.map((subject) => (
             <Link
-              key={subject.id}
+              key={subject._id}
               href={subject.link}
               className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow text-center text-blue-800 hover:text-blue-900"
             >
