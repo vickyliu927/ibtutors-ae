@@ -4,7 +4,7 @@ import HeroSection from './components/HeroSection';
 import TutorProfiles from './components/TutorProfiles';
 import SubjectGrid from './components/SubjectGrid';
 import TutoringPlatformBanner from './components/TutoringPlatformBanner';
-import ReviewBanner from './components/ReviewBanner';
+import TestimonialSection from './components/TestimonialSection';
 import FAQ from './components/FAQ';
 import ContactForm from './components/ContactForm';
 import Footer from './components/Footer';
@@ -17,7 +17,7 @@ export default function Home() {
       <TutorProfiles />
       <SubjectGrid />
       <TutoringPlatformBanner />
-      <ReviewBanner />
+      <TestimonialSection />
       <FAQ />
       <ContactForm />
       <Footer />
