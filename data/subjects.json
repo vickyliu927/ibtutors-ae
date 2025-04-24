@@ -1,0 +1,104 @@
+{
+  "subjects": [
+    {
+      "id": 1,
+      "name": "Maths",
+      "link": "/maths"
+    },
+    {
+      "id": 2,
+      "name": "English",
+      "link": "/english"
+    },
+    {
+      "id": 3,
+      "name": "Biology",
+      "link": "/biology"
+    },
+    {
+      "id": 4,
+      "name": "Chemistry",
+      "link": "/chemistry"
+    },
+    {
+      "id": 5,
+      "name": "Physics",
+      "link": "/physics"
+    },
+    {
+      "id": 6,
+      "name": "Psychology",
+      "link": "/psychology"
+    },
+    {
+      "id": 7,
+      "name": "Economics",
+      "link": "/economics"
+    },
+    {
+      "id": 8,
+      "name": "Business Management",
+      "link": "/business"
+    },
+    {
+      "id": 9,
+      "name": "History",
+      "link": "/history"
+    },
+    {
+      "id": 10,
+      "name": "Geography",
+      "link": "/geography"
+    },
+    {
+      "id": 11,
+      "name": "Extended Essay",
+      "link": "/extended-essay"
+    },
+    {
+      "id": 12,
+      "name": "TOK",
+      "link": "/tok"
+    },
+    {
+      "id": 13,
+      "name": "ESS",
+      "link": "/ess"
+    },
+    {
+      "id": 14,
+      "name": "Global Politics",
+      "link": "/global-politics"
+    },
+    {
+      "id": 15,
+      "name": "Computer Science",
+      "link": "/computer-science"
+    },
+    {
+      "id": 16,
+      "name": "SEHS",
+      "link": "/sehs"
+    },
+    {
+      "id": 17,
+      "name": "Philosophy",
+      "link": "/philosophy"
+    },
+    {
+      "id": 18,
+      "name": "Spanish",
+      "link": "/spanish"
+    },
+    {
+      "id": 19,
+      "name": "French",
+      "link": "/french"
+    },
+    {
+      "id": 20,
+      "name": "MYP",
+      "link": "/myp"
+    }
+  ]
+} 

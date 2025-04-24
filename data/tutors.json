@@ -1,0 +1,36 @@
+{
+  "tutors": [
+    {
+      "id": 1,
+      "name": "Abdel",
+      "title": "Professional IB Tutor",
+      "specialization": "IB Maths Tutor | Khalifa University | BSc Mathematics",
+      "description": "As a dedicated IB Maths tutor with 7 years of experience, I specialise in guiding students through both Analysis and Approaches (AA) and Applications and Interpretation (AI) at all levels. Drawing on my strong academic foundation from Khalifa University, I excel in breaking down complex concepts in algebra, calculus, and beyond. My tailored teaching approach ensures students build confidence and achieve outstanding results in IB Maths.",
+      "image": "/images/abdel.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Huda",
+      "title": "Professional IB Tutor",
+      "specialization": "IB Computer Science Tutor | BSc Computer Science",
+      "description": "Having logged over 500 hours of tutoring and 9 years of experience in teaching and the tech industry, I specialise in guiding students to success in IB Computer Science. My approach combines academic expertise with practical insights gained from working in Dubai's tech sector, helping students master key topics and excel in their exams with confidence and real-world understanding.",
+      "image": "/images/huda.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Sara",
+      "title": "Professional IB Tutor",
+      "specialization": "IB Chemistry Tutor | PhD in Biochemistry",
+      "description": "With a PhD in Biochemistry from United Arab Emirates University and 4 years of experience tutoring IB Chemistry, I specialise in helping students excel at both Standard Level and Higher Level. My tailored teaching approach ensures students grasp complex concepts and achieve excellent results.",
+      "image": "/images/sara.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Zain",
+      "title": "Professional IB Tutor",
+      "specialization": "IB Physics Tutor | MEng Mechanical Engineering",
+      "description": "My experience spans over a decade of teaching IB Physics, focusing on mechanics, thermodynamics, electromagnetism, and more. As a Mechanical Engineer with an MEng, I've guided students through both Standard and Higher Levels of the IB syllabus. By tailoring lessons to individual needs, I ensure students build confidence and achieve top results in their exams and Internal Assessments (IAs).",
+      "image": "/images/zain.jpg"
+    }
+  ]
+} 
