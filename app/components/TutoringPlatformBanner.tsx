@@ -22,12 +22,14 @@ const TutoringPlatformBanner = () => {
               </div>
               
               {/* Platform interface mockups */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
+              <div className="flex gap-4">
+                <div className="w-1/2 space-y-4">
+                  <div className="bg-blue-50 rounded-lg h-32"></div>
                   <div className="bg-blue-50 rounded-lg h-32"></div>
                 </div>
-                <div className="bg-blue-50 rounded-lg h-24"></div>
-                <div className="bg-blue-50 rounded-lg h-24"></div>
+                <div className="w-1/2">
+                  <div className="bg-blue-50 rounded-lg h-[17rem]"></div>
+                </div>
               </div>
 
               {/* Control icons */}
