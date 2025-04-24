@@ -1,15 +1,4 @@
 'use client';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { client } from '@/sanity/lib/client';
-import { urlFor } from '@/sanity/lib/image';
-
-interface PlatformBannerData {
-  _id: string;
-  platformImage: any;
-  whiteBoardImage: any;
-  documentSharingImage: any;
-}
 
 const TutoringPlatformBanner = () => {
   return (
