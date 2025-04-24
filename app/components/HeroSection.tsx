@@ -9,12 +9,18 @@ import { urlFor } from '@/sanity/lib/image';
 interface HeroData {
   title: string;
   subtitle: string;
-  mainImage: any;
+  mainImage: {
+    _type: string;
+    asset: {
+      _ref: string;
+      _type: string;
+    };
+  };
   primaryButton: {
     text: string;
     link: string;
   };
-  features: string[];
+  features?: string[];
 }
 
 const LoadingHero = () => (
@@ -38,6 +44,7 @@ const LoadingHero = () => (
 const HeroSection = () => {
   const [heroData, setHeroData] = useState<HeroData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const fetchHeroData = async () => {
@@ -133,7 +140,7 @@ const HeroSection = () => {
             )}
           </div>
           <div className="relative h-[500px]">
-            {heroData.mainImage ? (
+            {heroData.mainImage && !imageError ? (
               <Image
                 src={urlFor(heroData.mainImage).url()}
                 alt="Tutor"
@@ -141,10 +148,13 @@ const HeroSection = () => {
                 className="object-contain"
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
+                onError={() => setImageError(true)}
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                Placeholder for tutor image
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
+                <span className="text-center">
+                  {imageError ? "Failed to load image" : "Placeholder for tutor image"}
+                </span>
               </div>
             )}
           </div>
