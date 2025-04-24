@@ -49,10 +49,22 @@ const HeroSection = () => {
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
+        console.log('Fetching hero data...');
         const data = await client.fetch<HeroData>(`*[_type == "hero"][0]`);
+        console.log('Raw Sanity response:', data);
+        
         if (!data) {
+          console.log('No hero data found');
           throw new Error('No hero content found');
         }
+        
+        if (data.mainImage) {
+          const imageUrl = urlFor(data.mainImage).url();
+          console.log('Generated image URL:', imageUrl);
+        } else {
+          console.log('No main image found in hero data');
+        }
+        
         setHeroData(data);
       } catch (err) {
         console.error('Error fetching hero data:', err);
@@ -97,12 +109,12 @@ const HeroSection = () => {
             </p>
             <div className="space-y-4">
               {heroData.primaryButton && (
-                <Link
+              <Link
                   href={heroData.primaryButton.link || "#hire-tutor"}
                   className="inline-block bg-blue-800 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors"
-                >
+              >
                   {heroData.primaryButton.text}
-                </Link>
+              </Link>
               )}
               <div className="flex items-center space-x-2">
                 <div className="flex">
@@ -148,14 +160,21 @@ const HeroSection = () => {
                 className="object-contain"
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
-                onError={() => setImageError(true)}
+                onError={(e) => {
+                  console.error('Image failed to load:', e);
+                  setImageError(true);
+                }}
+                onLoadingComplete={(result) => {
+                  console.log('Image loaded successfully:', result);
+                }}
+                loading="eager"
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
                 <span className="text-center">
-                  {imageError ? "Failed to load image" : "Placeholder for tutor image"}
+                  {imageError ? "Failed to load image" : "Loading image..."}
                 </span>
-              </div>
+            </div>
             )}
           </div>
         </div>
