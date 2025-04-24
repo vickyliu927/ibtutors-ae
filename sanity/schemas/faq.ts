@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export default defineType({
   name: 'faq',
-  title: 'FAQs',
+  title: 'FAQ',
   type: 'document',
   fields: [
     defineField({
@@ -23,7 +23,7 @@ export default defineType({
       name: 'order',
       title: 'Display Order',
       type: 'number',
-      validation: (Rule: any) => Rule.required().integer().min(1),
+      validation: (Rule: any) => Rule.required().integer().positive(),
       description: 'The order in which this FAQ should appear (1 being first)',
     }),
   ],
