@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { client } from '@/sanity/lib/client';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
-import { Spinner } from './Spinner';
 
 interface FAQ {
   _id: string;
@@ -66,7 +65,7 @@ export default function FAQSection() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[200px]">
-        <Spinner />
+        <p className="text-gray-500">Loading FAQs...</p>
       </div>
     );
   }
