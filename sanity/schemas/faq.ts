@@ -1,8 +1,8 @@
 import { defineField, defineType } from 'sanity'
 
 export default defineType({
-  name: 'FAQs',
-  title: 'FAQs',
+  name: 'FAQ',
+  title: 'FAQ',
   type: 'document',
   fields: [
     defineField({
@@ -10,21 +10,21 @@ export default defineType({
       title: 'Question',
       type: 'string',
       validation: (Rule: any) => Rule.required(),
-      description: 'The FAQ question (e.g., "Are IB Tutor available during Ramadan and other UAE holidays?")',
+      description: 'The frequently asked question',
     }),
     defineField({
       name: 'answer',
       title: 'Answer',
       type: 'text',
       validation: (Rule: any) => Rule.required(),
-      description: 'The answer to the FAQ question',
+      description: 'The answer to the question',
     }),
     defineField({
-      name: 'order',
+      name: 'displayOrder',
       title: 'Display Order',
       type: 'number',
-      validation: (Rule: any) => Rule.required().integer().positive(),
-      description: 'The order in which this FAQ should appear (1 being first)',
+      validation: (Rule: any) => Rule.required().min(0),
+      description: 'The order in which this FAQ should appear (lower numbers appear first)',
     }),
   ],
   preview: {
@@ -32,7 +32,7 @@ export default defineType({
       title: 'question',
       subtitle: 'answer',
     },
-    prepare({ title, subtitle }) {
+    prepare({ title = '', subtitle = '' }: Record<string, string>) {
       return {
         title,
         subtitle: subtitle?.length > 50 ? subtitle.substring(0, 50) + '...' : subtitle,

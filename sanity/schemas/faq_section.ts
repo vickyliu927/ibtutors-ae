@@ -10,19 +10,25 @@ export default defineType({
       title: 'Section Title',
       type: 'string',
       validation: (Rule: any) => Rule.required(),
-      initialValue: 'FAQ',
+      description: 'The main title for the FAQ section (e.g., "Frequently Asked Questions")',
     }),
     defineField({
       name: 'subtitle',
       title: 'Section Subtitle',
       type: 'text',
-      description: 'Optional subtitle for the FAQ section',
+      description: 'An optional subtitle or description for the FAQ section',
     }),
   ],
   preview: {
     select: {
       title: 'title',
       subtitle: 'subtitle',
+    },
+    prepare({ title = '', subtitle = '' }: Record<string, string>) {
+      return {
+        title,
+        subtitle,
+      }
     },
   },
 }) 
