@@ -24,6 +24,15 @@ export default defineType({
         hotspot: true,
       },
     }),
+    defineField({
+      name: 'documentSharingImage',
+      title: 'Document Sharing Example Image',
+      type: 'image',
+      description: 'Example image showing document sharing feature',
+      options: {
+        hotspot: true,
+      },
+    }),
   ],
   preview: {
     select: {
