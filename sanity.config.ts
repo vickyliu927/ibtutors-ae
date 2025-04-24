@@ -27,4 +27,15 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({defaultApiVersion: apiVersion}),
   ],
+  cors: {
+    credentials: true,
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      'https://ibtutors-ae.vercel.app',
+      'https://ibtutorsae.com',
+      'https://*.vercel.app'
+    ]
+  }
 })

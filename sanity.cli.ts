@@ -11,15 +11,5 @@ export default defineCliConfig({
   api: { 
     projectId, 
     dataset 
-  },
-  cors: {
-    credentials: true,
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'https://ibtutors-ae.vercel.app',
-      'https://ibtutorsae.com',
-      'https://*.vercel.app'
-    ]
   }
 })
