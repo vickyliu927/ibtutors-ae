@@ -45,12 +45,12 @@ export default function FAQSection() {
         const query = `*[_type == "FAQ_Section"][0]{
           title,
           subtitle,
-          "faqs": *[_type == "FAQ"] | order(displayOrder asc) {
+          "faqs": faqs[]->{
             _id,
             question,
             answer,
             displayOrder
-          }
+          } | order(displayOrder asc)
         }`;
         
         const result = await client.fetch(query);
@@ -108,7 +108,7 @@ export default function FAQSection() {
       </div>
 
       <div className="space-y-4">
-        {faqSection.faqs.map((faq) => (
+        {faqSection.faqs?.map((faq) => (
           <div
             key={faq._id}
             className="border border-gray-200 rounded-lg overflow-hidden"

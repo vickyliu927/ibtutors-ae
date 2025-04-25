@@ -18,6 +18,14 @@ export default defineType({
       type: 'text',
       description: 'An optional subtitle or description for the FAQ section',
     }),
+    defineField({
+      name: 'faqs',
+      title: 'FAQs',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'FAQ' }] }],
+      validation: (Rule: any) => Rule.required(),
+      description: 'Select the FAQs to display in this section',
+    }),
   ],
   preview: {
     select: {
