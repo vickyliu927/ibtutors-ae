@@ -17,7 +17,8 @@ const Footer = () => {
         whatsapp,
         whatsappLink,
         address,
-        addressLink
+        addressLink,
+        tutorchaseLink
       }`)
       .then((data) => {
         setFooter(data);
@@ -37,7 +38,11 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">
-            {footer.title}
+            {footer.tutorchaseLink ? (
+              <a href={footer.tutorchaseLink} className="text-orange-500 hover:text-orange-600" target="_blank" rel="noopener noreferrer">{footer.title}</a>
+            ) : (
+              footer.title
+            )}
           </h2>
           <div className="flex justify-center space-x-8 mb-8">
             {footer.whatsapp && footer.whatsappLink && (

@@ -47,5 +47,11 @@ export default defineType({
       type: 'url',
       description: 'Link to map or location (e.g. Google Maps URL)',
     }),
+    defineField({
+      name: 'tutorchaseLink',
+      title: 'TutorChase Link',
+      type: 'url',
+      description: 'Optional link for the title (e.g. https://tutorchase.com)',
+    }),
   ],
 }) 
