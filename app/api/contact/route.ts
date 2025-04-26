@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { client } from '@/sanity/lib/client'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,6 +17,23 @@ export async function POST(req: NextRequest) {
       budget,
       createdAt: new Date().toISOString(),
     })
+
+    // Send email notification
+    await resend.emails.send({
+      from: 'Your Name <noreply@yourdomain.com>', // Use a verified sender or domain
+      to: 'your@email.com', // Your notification email
+      subject: 'New Contact Form Submission',
+      html: `
+        <h1>New Contact Form Submission</h1>
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Country:</strong> ${country}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Details:</strong> ${details}</p>
+        <p><strong>Budget:</strong> ${budget}</p>
+      `,
+    })
+
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('Contact form submission error:', err);
