@@ -45,7 +45,7 @@ export default function FAQSection() {
         const query = `*[_type == "faq_section"][0]{
           title,
           subtitle,
-          "faqs": faqs[]->{
+          "faqs": faqReferences[]->{
             _id,
             question,
             answer,

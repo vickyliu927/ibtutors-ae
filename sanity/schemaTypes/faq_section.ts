@@ -19,7 +19,7 @@ export default defineType({
       description: 'An optional subtitle or description for the FAQ section',
     }),
     defineField({
-      name: 'faqs',
+      name: 'faqReferences',
       title: 'FAQs',
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'FAQ' }] }],
