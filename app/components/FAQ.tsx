@@ -11,7 +11,7 @@ interface FAQData {
   _id: string;
   question: string;
   answer: string;
-  order: number;
+  displayOrder: number;
 }
 
 const FAQ = () => {
@@ -24,36 +24,30 @@ const FAQ = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('Fetching FAQ data...');
-        
         // Fetch FAQ section data
-        const section = await client.fetch<FAQSectionData>(`
-          *[_type == "FAQ_Section"][0] {
+        const section = await client.fetch<FAQSectionData>(
+          `*[_type == "faq_section"][0] {
             title,
             subtitle
-          }
-        `);
-        console.log('FAQ section data:', section);
-
-        // Fetch FAQ items
-        const faqData = await client.fetch<FAQData[]>(`
-          *[_type == "FAQs"] | order(order asc) {
-            _id,
-            question,
-            answer,
-            order
-          }
-        `);
-        console.log('FAQ items:', faqData);
-
+          }`
+        );
+        // Fetch FAQ items via references
+        const faqItems = await client.fetch<FAQData[]>(
+          `*[_type == "faq_section"][0]{
+            "faqs": faqReferences[]-> {
+              _id,
+              question,
+              answer,
+              displayOrder
+            }
+          }.faqs | order(displayOrder asc)`
+        );
         if (!section) {
-          console.log('No FAQ section found');
           setError('FAQ section not configured');
           return;
         }
-
         setSectionData(section);
-        setFaqs(faqData);
+        setFaqs(faqItems || []);
       } catch (err) {
         console.error('Error fetching FAQ data:', err);
         setError('Failed to load FAQs');
@@ -61,7 +55,6 @@ const FAQ = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
