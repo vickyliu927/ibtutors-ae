@@ -7,4 +7,5 @@ export const client = createClient({
   dataset,
   apiVersion,
   useCdn: false, // Set to false to force fetching fresh data from Sanity
+  token: process.env.SANITY_API_TOKEN,
 })
