@@ -54,6 +54,7 @@ export default function FAQSection() {
         }`;
         
         const result = await client.fetch(query);
+        console.log('Sanity fetch result:', result);
         setFAQSection(result);
       } catch (err) {
         setError('Failed to load FAQs. Please try again later.');
