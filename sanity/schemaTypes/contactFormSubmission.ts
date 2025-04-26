@@ -13,6 +13,20 @@ export default defineType({
       description: 'The name of the person submitting the form',
     }),
     defineField({
+      name: 'country',
+      title: 'Country',
+      type: 'string',
+      validation: Rule => Rule.required(),
+      description: 'The country of the person submitting the form',
+    }),
+    defineField({
+      name: 'phone',
+      title: 'Phone',
+      type: 'string',
+      validation: Rule => Rule.required(),
+      description: 'The phone number of the person submitting the form',
+    }),
+    defineField({
       name: 'email',
       title: 'Email',
       type: 'string',
@@ -20,11 +34,18 @@ export default defineType({
       description: 'The email address of the person submitting the form',
     }),
     defineField({
-      name: 'message',
-      title: 'Message',
+      name: 'details',
+      title: 'Details',
       type: 'text',
       validation: Rule => Rule.required(),
-      description: 'The message submitted by the user',
+      description: 'Details of tutoring request',
+    }),
+    defineField({
+      name: 'budget',
+      title: 'Budget',
+      type: 'string',
+      validation: Rule => Rule.required(),
+      description: 'Hourly budget (including currency)',
     }),
     defineField({
       name: 'createdAt',
