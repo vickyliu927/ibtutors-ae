@@ -6,6 +6,7 @@ import testimonialSection from './testimonialSection'
 import subject from './subject'
 import tutor from './tutor'
 import hero from './hero'
+import contactFormSubmission from './contactFormSubmission'
 
 export const schemaTypes = [
   tutor,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   faq,
   faq_section,
   hero,
+  contactFormSubmission,
 ] 
