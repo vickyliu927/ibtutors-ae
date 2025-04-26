@@ -94,8 +94,23 @@ export default function FAQSection() {
     );
   }
 
-  if (!faqSection) {
-    return null;
+  if (!faqSection || !faqSection.faqs || faqSection.faqs.length === 0) {
+    return (
+      <div className="py-16 px-4 max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{faqSection?.title || 'FAQ Section'}</h2>
+          {faqSection?.subtitle && (
+            <p className="text-gray-600 text-lg">{faqSection.subtitle}</p>
+          )}
+        </div>
+        <div className="text-center text-red-600 py-8">
+          <p>No FAQs found for this section.</p>
+          <pre className="text-xs text-left bg-gray-100 p-4 rounded overflow-x-auto mt-4">
+            {JSON.stringify(faqSection, null, 2)}
+          </pre>
+        </div>
+      </div>
+    );
   }
 
   return (
