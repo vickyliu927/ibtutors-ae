@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
 
     // Send email notification
     await resend.emails.send({
-      from: 'Your Name <noreply@yourdomain.com>', // Use a verified sender or domain
-      to: 'your@email.com', // Your notification email
+      from: 'TutorChase <noreply@tutorchase.com>',
+      to: 'rahil@tutorchase.com',
       subject: 'New Contact Form Submission',
       html: `
         <h1>New Contact Form Submission</h1>
