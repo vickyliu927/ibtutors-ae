@@ -3,12 +3,15 @@ import { client } from '@/sanity/lib/client'
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, message } = await req.json()
+    const { fullName, country, phone, email, details, budget } = await req.json()
     await client.create({
       _type: 'contactFormSubmission',
-      name,
+      name: fullName,
+      country,
+      phone,
       email,
-      message,
+      details,
+      budget,
       createdAt: new Date().toISOString(),
     })
     return NextResponse.json({ success: true })
