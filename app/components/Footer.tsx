@@ -38,10 +38,26 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">
-            {footer.tutorchaseLink ? (
-              <a href={footer.tutorchaseLink} className="text-orange-500 hover:text-orange-600" target="_blank" rel="noopener noreferrer">{footer.title}</a>
+            {footer.title && footer.tutorchaseLink ? (
+              <>
+                {footer.title.split(/TutorChase/i).map((part: string, idx: number, arr: string[]) => (
+                  <React.Fragment key={idx}>
+                    <span className="text-blue-900">{part}</span>
+                    {idx < arr.length - 1 && (
+                      <a
+                        href={footer.tutorchaseLink}
+                        className="text-orange-500 hover:text-orange-600"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        TutorChase
+                      </a>
+                    )}
+                  </React.Fragment>
+                ))}
+              </>
             ) : (
-              footer.title
+              <span className="text-blue-900">{footer.title}</span>
             )}
           </h2>
           <div className="flex justify-center space-x-8 mb-8">
