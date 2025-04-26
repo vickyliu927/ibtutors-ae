@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json({ success: true })
   } catch (err) {
+    console.error('Contact form submission error:', err);
     return NextResponse.json({ error: 'Failed to save submission' }, { status: 500 })
   }
 } 
