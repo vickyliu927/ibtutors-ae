@@ -42,7 +42,7 @@ export default function FAQSection() {
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const query = `*[_type == "FAQ_Section"][0]{
+        const query = `*[_type == "faq_section"][0]{
           title,
           subtitle,
           "faqs": faqs[]->{
@@ -94,7 +94,21 @@ export default function FAQSection() {
     );
   }
 
-  if (!faqSection || !faqSection.faqs || faqSection.faqs.length === 0) {
+  if (!faqSection) {
+    return (
+      <div className="py-16 px-4 max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">FAQ Section</h2>
+        </div>
+        <div className="text-center text-red-600 py-8">
+          <p>No FAQ section data found.</p>
+          <p>Check if your FAQ Section document is published and the type is exactly 'FAQ_Section'.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!faqSection.faqs || faqSection.faqs.length === 0) {
     return (
       <div className="py-16 px-4 max-w-4xl mx-auto">
         <div className="text-center mb-12">
