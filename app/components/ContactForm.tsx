@@ -11,10 +11,42 @@ const ContactForm = () => {
     budget: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
+    'idle'
+  );
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', formData);
+    setStatus('loading');
+    setMessage('');
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        setStatus('success');
+        setMessage('Thank you! Your request has been submitted.');
+        setFormData({
+          fullName: '',
+          country: '',
+          phone: '',
+          email: '',
+          details: '',
+          budget: '',
+        });
+      } else {
+        setStatus('error');
+        setMessage('There was a problem submitting your request. Please try again.');
+      }
+    } catch (error) {
+      setStatus('error');
+      setMessage('There was a problem submitting your request. Please try again.');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -133,9 +165,13 @@ const ContactForm = () => {
             <button
               type="submit"
               className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-gray-900 transition-colors"
+              disabled={status === 'loading'}
             >
-              SUBMIT
+              {status === 'loading' ? 'Submitting...' : 'SUBMIT'}
             </button>
+            {message && (
+              <p className={`mt-4 text-center ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>{message}</p>
+            )}
           </div>
         </form>
       </div>
