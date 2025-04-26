@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     // Send email notification
     await resend.emails.send({
-      from: 'TutorChase <noreply@tutorchase.com>',
+      from: 'vicliu927@gmail.com',
       to: 'vicliu927@gmail.com',
       subject: 'New Contact Form Submission',
       html: `
