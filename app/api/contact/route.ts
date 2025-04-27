@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { client } from '@/sanity/lib/client'
-import { Resend } from 'resend'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
+import nodemailer from 'nodemailer'
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,8 +16,16 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     })
 
-    // Send email notification
-    await resend.emails.send({
+    // Send email notification with Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
+    })
+
+    await transporter.sendMail({
       from: 'vicliu927@gmail.com',
       to: 'vicliu927@gmail.com',
       subject: 'New Contact Form Submission',
