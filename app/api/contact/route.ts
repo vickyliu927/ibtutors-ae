@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { client } from '@/sanity/lib/client';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -14,30 +15,39 @@ export async function POST(req: Request) {
   try {
     const { fullName, country, phone, email, details, budget } = await req.json();
 
+    // Store the submission in Sanity
+    const submission = await client.create({
+      _type: 'contactFormSubmission',
+      fullName,
+      country,
+      phone,
+      email,
+      details,
+      budget,
+      submittedAt: new Date().toISOString(),
+    });
+
+    // Send email notification
     const subject = 'New Contact Form Submission';
     const text = `New contact form submission:\n\nName: ${fullName}\nCountry: ${country}\nPhone: ${phone}\nEmail: ${email}\nDetails: ${details}\nBudget: ${budget}`;
 
-    try {
-      const data = await resend.emails.send({
-        from: 'Your App <onboarding@resend.dev>',
-        to: 'vicliu927@gmail.com',
-        subject,
-        text,
-      });
+    const emailData = await resend.emails.send({
+      from: 'Your App <onboarding@resend.dev>',
+      to: 'vicliu927@gmail.com',
+      subject,
+      text,
+    });
 
-      return NextResponse.json({ success: true, data });
-    } catch (error) {
-      console.error('Resend API Error:', error);
-      return NextResponse.json(
-        { error: 'Failed to send email', details: error },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json({
+      success: true,
+      sanitySubmission: submission,
+      emailData,
+    });
   } catch (error) {
-    console.error('Request parsing error:', error);
+    console.error('Error processing form submission:', error);
     return NextResponse.json(
-      { error: 'Invalid request data' },
-      { status: 400 }
+      { error: 'Failed to process form submission' },
+      { status: 500 }
     );
   }
 }
