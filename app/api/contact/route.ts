@@ -1,48 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { client } from '@/sanity/lib/client'
-import nodemailer from 'nodemailer'
+import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
 
-export async function POST(req: NextRequest) {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function POST(req: Request) {
+  const { fullName, country, phone, email, details, budget } = await req.json();
+
+  const subject = 'New Contact Form Submission';
+  const text = `New contact form submission:\n\nName: ${fullName}\nCountry: ${country}\nPhone: ${phone}\nEmail: ${email}\nDetails: ${details}\nBudget: ${budget}`;
+
   try {
-    const { fullName, country, phone, email, details, budget } = await req.json()
-    await client.create({
-      _type: 'contactFormSubmission',
-      name: fullName,
-      country,
-      phone,
-      email,
-      details,
-      budget,
-      createdAt: new Date().toISOString(),
-    })
-
-    // Send email notification with Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    })
-
-    await transporter.sendMail({
-      from: 'vicliu927@gmail.com',
+    const data = await resend.emails.send({
+      from: 'Your App <onboarding@resend.dev>',
       to: 'vicliu927@gmail.com',
-      subject: 'New Contact Form Submission',
-      html: `
-        <h1>New Contact Form Submission</h1>
-        <p><strong>Name:</strong> ${fullName}</p>
-        <p><strong>Country:</strong> ${country}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Details:</strong> ${details}</p>
-        <p><strong>Budget:</strong> ${budget}</p>
-      `,
-    })
+      subject,
+      text,
+    });
 
-    return NextResponse.json({ success: true })
-  } catch (err) {
-    console.error('Contact form submission error:', err);
-    return NextResponse.json({ error: 'Failed to save submission' }, { status: 500 })
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error });
   }
-} 
+}
