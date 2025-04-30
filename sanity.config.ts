@@ -35,7 +35,18 @@ export default defineConfig({
       'http://localhost:3002',
       'https://ibtutors-ae.vercel.app',
       'https://ibtutorsae.com',
-      'https://*.vercel.app'
+      'https://*.vercel.app',
+      'https://ibtutorsae-c4ingsmn1-vicky-lius-projects.vercel.app',
+      'https://ibtutorsae.vercel.app'
     ]
+  },
+  api: {
+    projectId,
+    dataset,
+  },
+  document: {
+    productionUrl: async (prev, context) => {
+      return prev
+    },
   }
 })
