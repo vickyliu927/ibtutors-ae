@@ -22,6 +22,11 @@ interface TutorData {
   yearsOfExperience: number;
   hireButtonLink: string;
   subjects: string[];
+  price?: {
+    amount: number;
+    currency: string;
+    displayText?: string;
+  };
 }
 
 const TutorProfiles = () => {
@@ -134,6 +139,14 @@ const TutorProfiles = () => {
                           </div>
                         ))}
                       </div>
+                      {tutor.price && (
+                        <div className="mt-4">
+                          <p className="text-sm font-semibold text-gray-600">Rate:</p>
+                          <p className="text-blue-800 font-medium">
+                            {tutor.price.displayText || `${tutor.price.currency} ${tutor.price.amount}/hour`}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 

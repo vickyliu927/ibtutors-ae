@@ -112,6 +112,40 @@ export default defineType({
       description: 'Link for the "Hire a Tutor" button',
       validation: (Rule: any) => Rule.required(),
     }),
+    defineField({
+      name: 'price',
+      title: 'Hourly Rate',
+      type: 'object',
+      description: 'Optional hourly rate information',
+      fields: [
+        {
+          name: 'amount',
+          title: 'Amount',
+          type: 'number',
+          description: 'The hourly rate amount',
+        },
+        {
+          name: 'currency',
+          title: 'Currency',
+          type: 'string',
+          description: 'The currency of the hourly rate',
+          options: {
+            list: [
+              { title: 'AED (UAE Dirham)', value: 'AED' },
+              { title: 'USD (US Dollar)', value: 'USD' },
+              { title: 'GBP (British Pound)', value: 'GBP' },
+              { title: 'EUR (Euro)', value: 'EUR' },
+            ],
+          },
+        },
+        {
+          name: 'displayText',
+          title: 'Display Text',
+          type: 'string',
+          description: 'Custom text to display for the price (e.g., "Starting from AED 200/hour")',
+        }
+      ],
+    }),
   ],
   preview: {
     select: {
