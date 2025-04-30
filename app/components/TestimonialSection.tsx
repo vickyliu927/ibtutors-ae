@@ -142,6 +142,28 @@ const TestimonialSection = () => {
               </div>
             </div>
           </div>
+        ) : testimonials.length === 2 ? (
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+              {testimonials.map((testimonial) => (
+                <div
+                  key={testimonial._id}
+                  className="bg-white p-8 rounded-lg shadow-sm w-full"
+                >
+                  <div className="flex justify-center mb-4">
+                    <StarRating rating={testimonial.rating} />
+                  </div>
+                  <blockquote className="text-center mb-6">
+                    <p className="text-gray-600 italic">"{testimonial.testimonialText}"</p>
+                  </blockquote>
+                  <div className="text-center">
+                    <p className="font-semibold">{testimonial.reviewerName}</p>
+                    <p className="text-gray-500 text-sm">{testimonial.reviewerType}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial) => (
