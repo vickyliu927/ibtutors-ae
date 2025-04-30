@@ -21,6 +21,7 @@ interface TutorData {
   };
   yearsOfExperience: number;
   hireButtonLink: string;
+  subjects: string[];
 }
 
 const TutorProfiles = () => {
@@ -31,19 +32,9 @@ const TutorProfiles = () => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        console.log('Starting to fetch tutors...');
-        const data = await client.fetch<TutorData[]>(`*[_type == "tutor"] {
-          _id,
-          name,
-          professionalTitle,
-          education,
-          experience,
-          profilePhoto,
-          specialization,
-          yearsOfExperience,
-          hireButtonLink
-        }`);
-        console.log('Raw tutor data:', JSON.stringify(data, null, 2));
+        console.log('Fetching tutors...');
+        const data = await client.fetch<TutorData[]>(`*[_type == "tutor"]`);
+        console.log('Raw tutor data:', data);
         setTutors(data);
       } catch (err) {
         console.error('Error fetching tutors:', err);
@@ -61,16 +52,16 @@ const TutorProfiles = () => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold mb-8">Our Qualified IB Teachers and Examiners</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[1, 2].map((placeholder) => (
-              <div key={placeholder} className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
-                <div className="flex flex-col md:flex-row">
-                  <div className="md:w-1/3 bg-gray-200 h-48"></div>
-                  <div className="md:w-2/3 p-6">
-                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                    <div className="h-20 bg-gray-200 rounded mb-4"></div>
-                    <div className="h-10 bg-gray-200 rounded w-1/3"></div>
+          <div className="space-y-6">
+            {[1, 2].map((index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden animate-pulse">
+                <div className="flex">
+                  <div className="w-64 h-64 bg-gray-200"></div>
+                  <div className="flex-1 p-6">
+                    <div className="h-8 bg-gray-200 w-1/3 mb-4"></div>
+                    <div className="h-4 bg-gray-200 w-2/3 mb-4"></div>
+                    <div className="h-20 bg-gray-200 w-full mb-4"></div>
+                    <div className="h-8 bg-gray-200 w-1/4"></div>
                   </div>
                 </div>
               </div>
@@ -95,48 +86,73 @@ const TutorProfiles = () => {
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold mb-8">Our Qualified IB Teachers and Examiners</h2>
-        <p className="text-gray-600 mb-12">
-          We have a team of expert tutors available at different prices to suit every student. 
-          Contact us with your requirements and budget and we'll find the perfect tutor for you!
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-6">
           {tutors.map((tutor) => (
-            <div key={tutor._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/3 relative h-48">
+            <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
+              <div className="flex">
+                {/* Left side - Profile Image */}
+                <div className="w-64 h-64 relative flex-shrink-0">
                   {tutor.profilePhoto ? (
                     <Image
                       src={urlFor(tutor.profilePhoto).url()}
-                      alt={`${tutor.name}'s profile photo`}
+                      alt={`${tutor.name}`}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 33vw"
+                      sizes="(max-width: 768px) 100vw, 256px"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                      <svg className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                     </div>
                   )}
                 </div>
-                <div className="md:w-2/3 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-semibold">{tutor.name}</h3>
-                    <span className="text-blue-800 font-medium">{tutor.professionalTitle}</span>
+
+                {/* Right side - Tutor Information */}
+                <div className="flex-1 p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">{tutor.name}</h3>
+                      <div className="flex items-center space-x-2 mb-4">
+                        <span className="flex items-center text-orange-500">
+                          <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          Personally Interviewed
+                        </span>
+                      </div>
+                      <p className="text-gray-700 font-medium mb-2">{tutor.professionalTitle}</p>
+                    </div>
+
+                    <div className="text-right">
+                      <h4 className="text-sm font-semibold text-gray-600 mb-2">Teaches:</h4>
+                      <div className="space-y-1">
+                        {tutor.subjects?.map((subject, index) => (
+                          <div key={index} className="text-blue-800 font-medium">
+                            {subject}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <div className="mb-4">
-                    <p className="text-orange-500 font-medium">{tutor.specialization.mainSubject}</p>
-                    <p className="text-gray-600">{tutor.education.university} | {tutor.education.degree}</p>
-                  </div>
+
                   <p className="text-gray-600 mb-6">{tutor.experience}</p>
-                  <Link 
-                    href={tutor.hireButtonLink || '#contact'}
-                    className="inline-block bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-900 transition-colors"
-                  >
-                    Hire a Tutor
-                  </Link>
+
+                  <div className="flex justify-between items-center">
+                    <Link
+                      href={tutor.hireButtonLink || '/contact'}
+                      className="bg-blue-800 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-all font-medium"
+                    >
+                      Hire a tutor
+                    </Link>
+                    <Link
+                      href={`/tutors/${tutor._id}`}
+                      className="text-blue-800 font-medium hover:underline"
+                    >
+                      View profile
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
