@@ -131,14 +131,21 @@ const TutorProfiles = () => {
                     </div>
 
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-semibold text-gray-600">Teaches:</h4>
-                        {tutor.subjects?.map((subject, index) => (
-                          <span key={index} className="text-blue-800 font-medium">
-                            {subject}
-                            {index < tutor.subjects.length - 1 ? ', ' : ''}
+                      <div className="flex items-start gap-2">
+                        <h4 className="text-sm font-semibold text-gray-600 mt-1">Teaches:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md">
+                            {tutor.specialization.mainSubject}
                           </span>
-                        ))}
+                          {tutor.specialization.additionalSubjects?.map((subject, index) => (
+                            <span 
+                              key={index} 
+                              className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
+                            >
+                              {subject}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                       {tutor.price && (
                         <div className="mt-4 text-right">
