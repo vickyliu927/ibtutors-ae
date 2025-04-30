@@ -125,11 +125,11 @@ const TestimonialSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center max-w-5xl mx-auto">
           {testimonials.map((testimonial) => (
             <div
               key={testimonial._id}
-              className="bg-white p-8 rounded-lg shadow-sm"
+              className="bg-white p-8 rounded-lg shadow-sm w-full max-w-md"
             >
               <div className="flex justify-center mb-4">
                 <StarRating rating={testimonial.rating} />
