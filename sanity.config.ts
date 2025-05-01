@@ -48,5 +48,8 @@ export default defineConfig({
     productionUrl: async (prev, context) => {
       return prev
     },
+  },
+  websocket: {
+    enabled: true,
   }
 })

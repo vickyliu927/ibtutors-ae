@@ -8,4 +8,11 @@ export const client = createClient({
   apiVersion,
   useCdn: false, // Set to false to force fetching fresh data from Sanity
   token: process.env.SANITY_API_TOKEN,
+  withCredentials: true,
+  stega: {
+    enabled: true,
+    studioUrl: '/studio',
+  },
+  perspective: 'published',
+  resultSourceMap: false,
 })
