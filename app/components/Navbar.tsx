@@ -12,7 +12,7 @@ const Navbar = () => {
         <div className="flex justify-between h-20">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <Image src="/images/logo.png" alt="TutorChase Logo" width={150} height={40} priority />
+              <Image src="/images/logo.png" alt="TutorChase Logo" width={300} height={80} priority />
             </Link>
           </div>
           
