@@ -1,12 +1,10 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { client } from '@/sanity/lib/client';
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 
-interface HeroData {
+export interface HeroData {
   title: string;
   subtitle: string;
   mainImage: {
@@ -41,50 +39,8 @@ const LoadingHero = () => (
   </div>
 );
 
-const HeroSection = () => {
-  const [heroData, setHeroData] = useState<HeroData | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [imageError, setImageError] = useState(false);
-
-  useEffect(() => {
-    const fetchHeroData = async () => {
-      try {
-        console.log('Fetching hero data...');
-        const data = await client.fetch<HeroData>(`*[_type == "hero"][0]`);
-        console.log('Raw Sanity response:', data);
-        
-        if (!data) {
-          console.log('No hero data found');
-          throw new Error('No hero content found');
-        }
-        
-        if (data.mainImage) {
-          const imageUrl = urlFor(data.mainImage).url();
-          console.log('Generated image URL:', imageUrl);
-        } else {
-          console.log('No main image found in hero data');
-        }
-        
-        setHeroData(data);
-      } catch (err) {
-        console.error('Error fetching hero data:', err);
-        setError('Failed to load hero section');
-      }
-    };
-
-    fetchHeroData();
-  }, []);
-
-  if (error) {
-    return (
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl font-bold">Expert UAE IB Tutors</h1>
-          <p className="mt-4 text-xl text-gray-600">Learn from qualified IB teachers with proven success rates.</p>
-        </div>
-      </div>
-    );
-  }
+const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
+  const [imageError, setImageError] = React.useState(false);
 
   if (!heroData) {
     return <LoadingHero />;
@@ -109,12 +65,12 @@ const HeroSection = () => {
             </p>
             <div className="space-y-4">
               {heroData.primaryButton && (
-              <Link
+                <Link
                   href={heroData.primaryButton.link || "#hire-tutor"}
                   className="inline-block bg-blue-800 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors"
-              >
+                >
                   {heroData.primaryButton.text}
-              </Link>
+                </Link>
               )}
               <div className="flex items-center space-x-2">
                 <div className="flex">
@@ -160,13 +116,7 @@ const HeroSection = () => {
                 className="object-contain object-bottom"
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
-                onError={(e) => {
-                  console.error('Image failed to load:', e);
-                  setImageError(true);
-                }}
-                onLoadingComplete={(result) => {
-                  console.log('Image loaded successfully:', result);
-                }}
+                onError={() => setImageError(true)}
                 loading="eager"
               />
             ) : (
@@ -174,7 +124,7 @@ const HeroSection = () => {
                 <span className="text-center">
                   {imageError ? "Failed to load image" : "Loading image..."}
                 </span>
-            </div>
+              </div>
             )}
           </div>
         </div>

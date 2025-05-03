@@ -1,11 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { client } from '@/sanity/lib/client';
+import React from 'react';
 import { urlFor } from '@/sanity/lib/image';
 import Image from 'next/image';
 import Link from 'next/link';
 
-interface TutorData {
+export interface TutorData {
   _id: string;
   name: string;
   professionalTitle: string;
@@ -29,30 +28,8 @@ interface TutorData {
   };
 }
 
-const TutorProfiles = () => {
-  const [tutors, setTutors] = useState<TutorData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchTutors = async () => {
-      try {
-        console.log('Fetching tutors...');
-        const data = await client.fetch<TutorData[]>(`*[_type == "tutor"]`);
-        console.log('Raw tutor data:', data);
-        setTutors(data);
-      } catch (err) {
-        console.error('Error fetching tutors:', err);
-        setError('Failed to load tutors');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTutors();
-  }, []);
-
-  if (loading) {
+const TutorProfiles = ({ tutors }: { tutors?: TutorData[] }) => {
+  if (!tutors) {
     return (
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,16 +49,6 @@ const TutorProfiles = () => {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-red-600">{error}</p>
         </div>
       </section>
     );

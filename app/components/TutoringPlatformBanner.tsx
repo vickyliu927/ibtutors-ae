@@ -19,18 +19,18 @@ const TutoringPlatformBanner = () => {
                   <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
                   <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                 </div>
-              </div>
-              
+                </div>
+                
               {/* Platform interface mockups */}
               <div className="flex gap-4">
                 <div className="w-1/2 space-y-4">
                   <div className="bg-blue-50 rounded-lg h-32"></div>
                   <div className="bg-blue-50 rounded-lg h-32"></div>
-                </div>
-                <div className="w-1/2">
+                  </div>
+                  <div className="w-1/2">
                   <div className="bg-blue-50 rounded-lg h-[17rem]"></div>
-                </div>
-              </div>
+                    </div>
+                  </div>
 
               {/* Control icons */}
               <div className="flex justify-center mt-4 space-x-2">
@@ -46,7 +46,7 @@ const TutoringPlatformBanner = () => {
 
           <div className="w-full lg:w-1/2 lg:pl-12">
             <p className="text-gray-700 mb-8">
-              Our online platform brings lessons to life, allowing students to draw diagrams, 
+              Our online platform brings lessons to life, allowing students to draw diagrams,
               solve equations, edit essays, and annotate work. We deliver elite tutoring worldwide, 
               matching students with the best tutors available.
             </p>

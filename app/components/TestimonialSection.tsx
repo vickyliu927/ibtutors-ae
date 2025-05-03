@@ -1,16 +1,16 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client';
 
-interface TestimonialSectionData {
+export interface TestimonialSectionData {
   rating: number;
   totalReviews: number;
   subtitle: string;
   tutorChaseLink?: string;
 }
 
-interface TestimonialData {
+export interface TestimonialData {
   _id: string;
   reviewerName: string;
   reviewerType: string;
@@ -40,51 +40,8 @@ const StarRating = ({ rating }: { rating: number }) => {
   );
 };
 
-const TestimonialSection = () => {
-  const [sectionData, setSectionData] = useState<TestimonialSectionData | null>(null);
-  const [testimonials, setTestimonials] = useState<TestimonialData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch section data
-        const section = await client.fetch<TestimonialSectionData>(`
-          *[_type == "testimonial_section"][0] {
-            rating,
-            totalReviews,
-            subtitle,
-            tutorChaseLink
-          }
-        `);
-
-        // Fetch testimonials
-        const testimonialData = await client.fetch<TestimonialData[]>(`
-          *[_type == "testimonial"] | order(order asc) {
-            _id,
-            reviewerName,
-            reviewerType,
-            testimonialText,
-            rating,
-            order
-          }
-        `);
-
-        setSectionData(section);
-        setTestimonials(testimonialData);
-      } catch (err) {
-        console.error('Error fetching testimonial data:', err);
-        setError('Failed to load testimonials');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
+const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: TestimonialSectionData, testimonials?: TestimonialData[] }) => {
+  if (!sectionData || !testimonials) {
     return (
       <div className="py-16 bg-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -95,10 +52,6 @@ const TestimonialSection = () => {
         </div>
       </div>
     );
-  }
-
-  if (error || !sectionData) {
-    return null;
   }
 
   return (
