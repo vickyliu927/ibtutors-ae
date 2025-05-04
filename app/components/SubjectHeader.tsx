@@ -36,11 +36,11 @@ export default function SubjectHeader({ data, defaultTitle = 'IB Tutors' }: Subj
 
   const renderStars = (rating: number) => {
     return (
-      <div className="flex justify-center gap-1 mb-2">
+      <div className="flex justify-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-5 h-5 ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+            className={`w-6 h-6 text-yellow-400`}
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -59,7 +59,7 @@ export default function SubjectHeader({ data, defaultTitle = 'IB Tutors' }: Subj
     return (
       <>
         {parts[0]}
-        <span className="text-blue-700">IB Maths</span>
+        <span className="text-blue-600">IB Maths</span>
         {parts[1]}
       </>
     );
@@ -76,18 +76,18 @@ export default function SubjectHeader({ data, defaultTitle = 'IB Tutors' }: Subj
       )}
       <div className="relative z-10 container mx-auto px-4">
         {data?.reviews && (
-          <div className={`mb-8 ${backgroundImageUrl ? 'text-white' : ''}`}>
+          <div className="mb-6">
             {renderStars(data.reviews.rating)}
-            <p className="text-lg">
+            <p className="text-sm text-gray-600 mt-2">
               {data.reviews.rating.toFixed(2)}/5 based on {data.reviews.count} reviews
             </p>
           </div>
         )}
-        <h1 className={`text-5xl font-bold mb-6 ${backgroundImageUrl ? 'text-white' : ''}`}>
+        <h1 className="text-5xl font-bold mb-6">
           {data?.title ? renderTitle(data.title) : defaultTitle}
         </h1>
         {data?.subtitle && (
-          <p className={`text-xl ${backgroundImageUrl ? 'text-gray-200' : 'text-gray-600'} mb-8 max-w-3xl mx-auto`}>
+          <p className="text-gray-600 text-lg mb-8 max-w-3xl mx-auto">
             {data.subtitle}
           </p>
         )}
