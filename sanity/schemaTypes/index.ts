@@ -8,7 +8,6 @@ import tutor from './tutor'
 import hero from './hero'
 import contactFormSubmission from './contactFormSubmission'
 import footerSection from './footerSection'
-import subjectPage from './subjectPage'
 
 export const schemaTypes = [
   tutor,
@@ -21,6 +20,6 @@ export const schemaTypes = [
   hero,
   contactFormSubmission,
   footerSection,
-  subjectPage,
+
   
 ] 
