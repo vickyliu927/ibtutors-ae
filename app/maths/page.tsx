@@ -34,11 +34,23 @@ async function getMathsPageContent() {
   return client.fetch<MathsPageData>(query, {}, { next: { revalidate: 0 } });
 }
 
+async function getTutorProfilesSection() {
+  // First try to get page-specific section
+  const pageQuery = `*[_type == "tutorProfilesSection" && page == "maths"][0]`;
+  const pageSection = await client.fetch(pageQuery, {}, { next: { revalidate: 0 } });
+  if (pageSection) return pageSection;
+
+  // If no page-specific section, get the default one
+  const defaultQuery = `*[_type == "tutorProfilesSection" && isDefault == true][0]`;
+  return client.fetch(defaultQuery, {}, { next: { revalidate: 0 } });
+}
+
 export default async function MathsPage() {
-  const [header, tutors, content] = await Promise.all([
+  const [header, tutors, content, tutorProfilesSection] = await Promise.all([
     getSubjectHeader(),
     getMathsTutors(),
     getMathsPageContent(),
+    getTutorProfilesSection(),
   ]);
 
   return (
@@ -59,7 +71,10 @@ export default async function MathsPage() {
           >
             {content?.tutorChaseLink?.text || "View all our IB Maths tutors on TutorChase, the world's #1 IB tutoring provider"}
           </a>
-          <TutorProfiles tutors={tutors} />
+          <TutorProfiles 
+            tutors={tutors} 
+            sectionTitle={tutorProfilesSection?.title}
+          />
         </div>
       </div>
       <ContactForm />
