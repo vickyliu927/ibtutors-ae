@@ -6,14 +6,18 @@ import { client } from '@/sanity/lib/client';
 import SubjectHeader, { SubjectHeaderData } from '../components/SubjectHeader';
 import TutorProfiles, { TutorData } from '../components/TutorProfiles';
 
+// Disable static page generation and enable revalidation
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+
 async function getSubjectHeader() {
   const query = `*[_type == "subjectHeader" && subject == "Maths"][0]`;
-  return client.fetch<SubjectHeaderData>(query);
+  return client.fetch<SubjectHeaderData>(query, {}, { next: { revalidate: 0 } });
 }
 
 async function getMathsTutors() {
   const query = `*[_type == "tutor" && (specialization.mainSubject == "IB Mathematics" || "IB Mathematics" in specialization.additionalSubjects[])] | order(yearsOfExperience desc)`;
-  return client.fetch<TutorData[]>(query);
+  return client.fetch<TutorData[]>(query, {}, { next: { revalidate: 0 } });
 }
 
 export default async function MathsPage() {
