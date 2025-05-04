@@ -26,6 +26,27 @@ export default defineType({
       rows: 2,
     }),
     defineField({
+      name: 'reviews',
+      title: 'Reviews',
+      type: 'object',
+      fields: [
+        {
+          name: 'rating',
+          title: 'Rating',
+          type: 'number',
+          description: 'Average rating out of 5',
+          validation: Rule => Rule.min(0).max(5).precision(2),
+        },
+        {
+          name: 'count',
+          title: 'Review Count',
+          type: 'number',
+          description: 'Total number of reviews',
+          validation: Rule => Rule.min(0).integer(),
+        },
+      ],
+    }),
+    defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',
