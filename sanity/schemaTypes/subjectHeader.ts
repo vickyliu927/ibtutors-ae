@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { duplicateSubject } from '../actions/duplicateSubject'
 
 export default defineType({
   name: 'subjectHeader',
@@ -81,4 +82,5 @@ export default defineType({
       subtitle: 'title',
     },
   },
+  actions: (prev, context) => [...prev, duplicateSubject],
 }) 
