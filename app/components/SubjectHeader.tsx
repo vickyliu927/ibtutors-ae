@@ -67,7 +67,7 @@ export default function SubjectHeader({ data, defaultTitle = 'IB Tutors' }: Subj
 
   return (
     <section 
-      className="py-32 text-center relative"
+      className="py-20 text-center relative"
       style={headerStyle}
     >
       {/* Add an overlay if there's a background image */}
@@ -76,18 +76,18 @@ export default function SubjectHeader({ data, defaultTitle = 'IB Tutors' }: Subj
       )}
       <div className="relative z-10 container mx-auto px-4">
         {data?.reviews && (
-          <div className="mb-6">
+          <div className="mb-4">
             {renderStars(data.reviews.rating)}
             <p className="text-sm text-gray-600 mt-2">
               {data.reviews.rating.toFixed(2)}/5 based on {data.reviews.count} reviews
             </p>
           </div>
         )}
-        <h1 className="text-5xl font-bold mb-6">
+        <h1 className="text-6xl font-bold mb-4">
           {data?.title ? renderTitle(data.title) : defaultTitle}
         </h1>
         {data?.subtitle && (
-          <p className="text-gray-600 text-lg mb-8 max-w-3xl mx-auto">
+          <p className="text-gray-600 text-lg mb-6 max-w-3xl mx-auto">
             {data.subtitle}
           </p>
         )}
