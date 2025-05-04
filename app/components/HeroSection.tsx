@@ -65,12 +65,12 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
             </p>
             <div className="space-y-4">
               {heroData.primaryButton && (
-                <Link
+              <Link
                   href={heroData.primaryButton.link || "#hire-tutor"}
                   className="inline-block bg-blue-800 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors"
-                >
+              >
                   {heroData.primaryButton.text}
-                </Link>
+              </Link>
               )}
               <div className="flex items-center space-x-2">
                 <div className="flex">
@@ -124,7 +124,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
                 <span className="text-center">
                   {imageError ? "Failed to load image" : "Loading image..."}
                 </span>
-              </div>
+            </div>
             )}
           </div>
         </div>
