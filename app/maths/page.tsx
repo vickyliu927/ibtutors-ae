@@ -4,15 +4,23 @@ import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
 import { client } from '@/sanity/lib/client';
 import SubjectHeader, { SubjectHeaderData } from '../components/SubjectHeader';
-import TutorProfiles from '../components/TutorProfiles';
+import TutorProfiles, { TutorData } from '../components/TutorProfiles';
 
 async function getSubjectHeader() {
   const query = `*[_type == "subjectHeader" && subject == "Maths"][0]`;
   return client.fetch<SubjectHeaderData>(query);
 }
 
+async function getMathsTutors() {
+  const query = `*[_type == "tutor" && (specialization.mainSubject == "IB Mathematics" || "IB Mathematics" in specialization.additionalSubjects[])] | order(yearsOfExperience desc)`;
+  return client.fetch<TutorData[]>(query);
+}
+
 export default async function MathsPage() {
-  const header = await getSubjectHeader();
+  const [header, tutors] = await Promise.all([
+    getSubjectHeader(),
+    getMathsTutors(),
+  ]);
 
   return (
     <main>
@@ -30,7 +38,7 @@ export default async function MathsPage() {
           >
             View all our IB Maths tutors on TutorChase, the world's #1 IB tutoring provider
           </a>
-          <TutorProfiles />
+          <TutorProfiles tutors={tutors} />
         </div>
       </div>
       <ContactForm />

@@ -19,6 +19,13 @@ export default defineType({
       description: 'e.g., "Professional IB Tutor", "IB Mathematics Tutor"',
     }),
     defineField({
+      name: 'personallyInterviewed',
+      title: 'Personally Interviewed',
+      type: 'boolean',
+      description: 'Show "Personally Interviewed" badge if checked',
+      initialValue: false,
+    }),
+    defineField({
       name: 'education',
       title: 'University/Education',
       type: 'object',
