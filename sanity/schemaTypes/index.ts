@@ -10,7 +10,6 @@ import contactFormSubmission from './contactFormSubmission'
 import footerSection from './footerSection'
 import subjectHeader from './subjectHeader'
 import tutorProfilesSection from './tutorProfilesSection'
-import mathsPage from './mathsPage'
 import subjectPage from './subjectPage'
 
 export const schemaTypes = [
@@ -26,6 +25,5 @@ export const schemaTypes = [
   contactFormSubmission,
   footerSection,
   subjectHeader,
-  mathsPage,
   subjectPage,
 ] 
