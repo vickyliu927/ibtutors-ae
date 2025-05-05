@@ -21,7 +21,7 @@ const Navbar = () => {
             <Link href="/tutors" className="text-gray-700 hover:text-blue-800">
               IB Tutors
             </Link>
-            <Link href="/maths" className="text-gray-700 hover:text-blue-800">
+            <Link href="/uae-maths-tutor" className="text-gray-700 hover:text-blue-800">
               IB Maths Tutors
             </Link>
             <Link href="/english" className="text-gray-700 hover:text-blue-800">
@@ -65,7 +65,7 @@ const Navbar = () => {
             <Link href="/tutors" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
               IB Tutors
             </Link>
-            <Link href="/maths" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
+            <Link href="/uae-maths-tutor" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
               IB Maths Tutors
             </Link>
             <Link href="/english" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
