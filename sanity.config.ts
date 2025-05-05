@@ -14,7 +14,7 @@ import {schemaTypes} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
 
 export default defineConfig({
-  basePath: '/studio',
+  basePath: '',  // Changed from '/studio' to '' for direct access
   projectId,
   dataset,
   // Add and edit the content schema in the './sanity/schemaTypes' folder
@@ -33,6 +33,7 @@ export default defineConfig({
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
+      'http://localhost:3333',
       'https://ibtutors-ae.vercel.app',
       'https://ibtutorsae.com',
       'https://*.vercel.app',
@@ -43,13 +44,5 @@ export default defineConfig({
   api: {
     projectId,
     dataset,
-  },
-  document: {
-    productionUrl: async (prev, context) => {
-      return prev
-    },
-  },
-  websocket: {
-    enabled: true,
   }
 })
