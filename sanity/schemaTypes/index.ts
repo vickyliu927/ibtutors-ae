@@ -9,9 +9,13 @@ import hero from './hero'
 import contactFormSubmission from './contactFormSubmission'
 import footerSection from './footerSection'
 import subjectHeader from './subjectHeader'
+import tutorProfilesSection from './tutorProfilesSection'
+import mathsPage from './mathsPage'
+import subjectPage from './subjectPage'
 
 export const schemaTypes = [
   tutor,
+  tutorProfilesSection,
   subject,
   testimonial,
   testimonialSection,
@@ -22,4 +26,6 @@ export const schemaTypes = [
   contactFormSubmission,
   footerSection,
   subjectHeader,
+  mathsPage,
+  subjectPage,
 ] 

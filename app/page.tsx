@@ -3,7 +3,7 @@ import Navbar from './components/Navbar';
 import HeroSection, { HeroData } from './components/HeroSection';
 import TutorProfiles, { TutorData } from './components/TutorProfiles';
 import SubjectGrid from './components/SubjectGrid';
-import TutoringPlatformBanner from './components/TutoringPlatformBanner';
+import TutoringPlatformBanner, { PlatformBannerData } from './components/TutoringPlatformBanner';
 import TestimonialSection, { TestimonialData, TestimonialSectionData } from './components/TestimonialSection';
 import FAQ from './components/FAQ';
 import ContactForm from './components/ContactForm';
@@ -11,32 +11,82 @@ import Footer from './components/Footer';
 import { client } from '@/sanity/lib/client';
 
 async function getHomePageData() {
-  const heroQuery = `*[_type == "hero"][0]`;
-  const tutorsQuery = `*[_type == "tutor"] | order(order asc)`;
-  const testimonialSectionQuery = `*[_type == "testimonial_section"][0]`;
-  const testimonialsQuery = `*[_type == "testimonial"] | order(order asc)`;
+  try {
+    const heroQuery = `*[_type == "hero"][0]`;
+    const tutorProfilesSectionQuery = `*[_type == "tutorProfilesSection"][0]{
+      title,
+      subtitle,
+      "tutors": tutors[]->
+    }`;
+    const platformBannerQuery = `*[_type == "platformBanner"][0]{
+      title,
+      subtitle,
+      description,
+      features[]{
+        feature,
+        description
+      },
+      "images": images[]{
+        "url": asset->url,
+        "alt": alt,
+        "caption": caption,
+        hotspot,
+        crop
+      }
+    }`;
+    const testimonialSectionQuery = `*[_type == "testimonial_section"][0]`;
+    const testimonialsQuery = `*[_type == "testimonial"] | order(order asc)`;
 
-  const [heroData, tutors, testimonialSection, testimonials] = await Promise.all([
-    client.fetch<HeroData>(heroQuery),
-    client.fetch<TutorData[]>(tutorsQuery),
-    client.fetch<TestimonialSectionData>(testimonialSectionQuery),
-    client.fetch<TestimonialData[]>(testimonialsQuery),
-  ]);
+    console.log('Fetching data from Sanity...'); // Debug log
 
-  return { heroData, tutors, testimonialSection, testimonials };
+    const [heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials] = await Promise.all([
+      client.fetch<HeroData>(heroQuery),
+      client.fetch(tutorProfilesSectionQuery),
+      client.fetch(platformBannerQuery),
+      client.fetch<TestimonialSectionData>(testimonialSectionQuery),
+      client.fetch<TestimonialData[]>(testimonialsQuery),
+    ]);
+
+    console.log('Data fetched:', { heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials }); // Debug log
+
+    return { 
+      heroData: heroData || null, 
+      tutorProfilesSection: tutorProfilesSection || null,
+      platformBanner: platformBanner || null,
+      testimonialSection: testimonialSection || null, 
+      testimonials: testimonials || [] 
+    };
+  } catch (error) {
+    console.error('Error fetching home page data:', error);
+    // Return default/empty values instead of throwing
+    return {
+      heroData: null,
+      tutorProfilesSection: null,
+      platformBanner: null,
+      testimonialSection: null,
+      testimonials: []
+    };
+  }
 }
 
 export default async function Home() {
-  const { heroData, tutors, testimonialSection, testimonials } = await getHomePageData();
+  const { heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials } = await getHomePageData();
 
   return (
-    <main>
+    <main className="min-h-screen">
       <Navbar />
-      <HeroSection heroData={heroData} />
-      <TutorProfiles tutors={tutors} />
+      {heroData ? <HeroSection heroData={heroData} /> : null}
+      {tutorProfilesSection ? (
+        <TutorProfiles 
+          tutors={tutorProfilesSection.tutors} 
+          sectionTitle={tutorProfilesSection.title}
+        />
+      ) : null}
       <SubjectGrid />
-      <TutoringPlatformBanner />
-      <TestimonialSection sectionData={testimonialSection} testimonials={testimonials} />
+      <TutoringPlatformBanner data={platformBanner} />
+      {testimonialSection && testimonials.length > 0 ? (
+        <TestimonialSection sectionData={testimonialSection} testimonials={testimonials} />
+      ) : null}
       <FAQ />
       <ContactForm />
       <Footer />

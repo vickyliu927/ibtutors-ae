@@ -1,12 +1,70 @@
 'use client';
 
-const TutoringPlatformBanner = () => {
+export interface PlatformFeature {
+  feature: string;
+  description?: string;
+}
+
+export interface PlatformImage {
+  url: string;
+  alt?: string;
+  caption?: string;
+  hotspot?: {
+    x: number;
+    y: number;
+  };
+  crop?: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
+}
+
+export interface PlatformBannerData {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  features?: PlatformFeature[];
+  images?: PlatformImage[];
+  // Legacy fields
+  platformImage?: any;
+  whiteBoardImage?: any;
+  documentSharingImage?: any;
+}
+
+interface Props {
+  data: PlatformBannerData | null;
+}
+
+const TutoringPlatformBanner = ({ data }: Props) => {
+  if (!data) return null;
+
+  // Default values if data is missing
+  const title = data.title || 'Engaging Lessons with our Online Platform';
+  const subtitle = data.subtitle || 'ONLINE TUTORING PLATFORM';
+  const description = data.description || 'Our online platform brings lessons to life, allowing students to draw diagrams, solve equations, edit essays, and annotate work. We deliver elite tutoring worldwide, matching students with the best tutors available.';
+  
+  // Convert legacy images to new format if needed
+  const images = data.images || [
+    data.platformImage,
+    data.whiteBoardImage,
+    data.documentSharingImage
+  ].filter(Boolean);
+
+  // Default features if none provided
+  const features = data.features || [
+    { feature: 'Interactive whiteboard for real-time collaboration' },
+    { feature: 'HD video and crystal-clear audio' },
+    { feature: 'Document sharing and annotation tools' }
+  ];
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-gray-600 uppercase tracking-wide mb-3">ONLINE TUTORING PLATFORM</p>
-          <h2 className="text-3xl font-bold">Engaging Lessons with our Online Platform</h2>
+          <p className="text-gray-600 uppercase tracking-wide mb-3">{subtitle}</p>
+          <h2 className="text-3xl font-bold">{title}</h2>
         </div>
 
         <div className="flex flex-wrap items-center">
@@ -19,18 +77,32 @@ const TutoringPlatformBanner = () => {
                   <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
                   <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                 </div>
-                </div>
+              </div>
                 
               {/* Platform interface mockups */}
               <div className="flex gap-4">
-                <div className="w-1/2 space-y-4">
-                  <div className="bg-blue-50 rounded-lg h-32"></div>
-                  <div className="bg-blue-50 rounded-lg h-32"></div>
-                  </div>
-                  <div className="w-1/2">
-                  <div className="bg-blue-50 rounded-lg h-[17rem]"></div>
+                {images && images.length > 0 ? (
+                  images.map((image, index) => (
+                    <div key={index} className={`${index === images.length - 1 ? 'w-1/2' : 'w-1/2 space-y-4'}`}>
+                      <img 
+                        src={image.url || image.asset._ref} 
+                        alt={image.alt || `Platform interface ${index + 1}`}
+                        className="rounded-lg object-cover w-full h-full"
+                      />
                     </div>
-                  </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="w-1/2 space-y-4">
+                      <div className="bg-blue-50 rounded-lg h-32"></div>
+                      <div className="bg-blue-50 rounded-lg h-32"></div>
+                    </div>
+                    <div className="w-1/2">
+                      <div className="bg-blue-50 rounded-lg h-[17rem]"></div>
+                    </div>
+                  </>
+                )}
+              </div>
 
               {/* Control icons */}
               <div className="flex justify-center mt-4 space-x-2">
@@ -45,31 +117,17 @@ const TutoringPlatformBanner = () => {
           </div>
 
           <div className="w-full lg:w-1/2 lg:pl-12">
-            <p className="text-gray-700 mb-8">
-              Our online platform brings lessons to life, allowing students to draw diagrams,
-              solve equations, edit essays, and annotate work. We deliver elite tutoring worldwide, 
-              matching students with the best tutors available.
-            </p>
+            <p className="text-gray-700 mb-8">{description}</p>
 
             <ul className="space-y-4">
-              <li className="flex items-center">
-                <svg className="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>Interactive whiteboard for real-time collaboration</span>
-              </li>
-              <li className="flex items-center">
-                <svg className="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>HD video and crystal-clear audio</span>
-              </li>
-              <li className="flex items-center">
-                <svg className="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>Document sharing and annotation tools</span>
-              </li>
+              {features.map((feature, index) => (
+                <li key={index} className="flex items-center">
+                  <svg className="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>{feature.feature}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

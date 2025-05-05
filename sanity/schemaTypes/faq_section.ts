@@ -22,7 +22,7 @@ export default defineType({
       name: 'faqReferences',
       title: 'FAQs',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'FAQ' }] }],
+      of: [{ type: 'reference', to: [{ type: 'faq' }] }],
       validation: (Rule: any) => Rule.required(),
       description: 'Select the FAQs to display in this section',
     }),

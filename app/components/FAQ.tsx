@@ -24,42 +24,39 @@ const FAQ = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch FAQ section data
-        const section = await client.fetch<FAQSectionData>(
-          `*[_type == "faq_section"][0] {
-            title,
-            subtitle
-          }`
-        );
-        // Fetch FAQ items via references
-        const faqItems = await client.fetch<FAQData[]>(
-          `*[_type == "faq_section"][0]{
-            "faqs": faqReferences[]-> {
-              _id,
-              question,
-              answer,
-              displayOrder
-            }
-          }.faqs | order(displayOrder asc)`
-        );
-        if (!section) {
+        // Fetch FAQ section data with FAQs in a single query
+        const result = await client.fetch(`*[_type == "faq_section"][0] {
+          title,
+          subtitle,
+          "faqs": faqReferences[]-> {
+            _id,
+            question,
+            answer,
+            displayOrder
+          }
+        }`);
+
+        console.log('FAQ Data:', result); // Debug log
+
+        if (!result) {
           setError('FAQ section not configured');
           return;
         }
-        setSectionData(section);
-        setFaqs(faqItems || []);
+
+        setSectionData({
+          title: result.title,
+          subtitle: result.subtitle
+        });
+        setFaqs(result.faqs?.sort((a: FAQData, b: FAQData) => a.displayOrder - b.displayOrder) || []);
       } catch (err) {
         console.error('Error fetching FAQ data:', err);
-        setError('Failed to load FAQs');
+        setError(err instanceof Error ? err.message : 'Failed to load FAQs');
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, []);
-
-  // Debug render state
-  console.log('Render state:', { loading, error, sectionData, faqs });
 
   const toggleFAQ = (id: string) => {
     setOpenId(openId === id ? null : id);
@@ -94,11 +91,13 @@ const FAQ = () => {
     );
   }
 
-  if (!sectionData) {
+  if (!sectionData || faqs.length === 0) {
     return (
       <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-gray-600 text-center">FAQ section not configured</p>
+          <p className="text-gray-600 text-center">
+            {!sectionData ? 'FAQ section not configured' : 'No FAQs available at the moment'}
+          </p>
         </div>
       </section>
     );

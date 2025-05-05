@@ -3,35 +3,70 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client';
 
+interface FooterData {
+  title: string;
+  phone?: string;
+  phoneLink?: string;
+  whatsapp?: string;
+  whatsappLink?: string;
+  address?: string;
+  addressLink?: string;
+  tutorchaseLink?: string;
+}
+
 const Footer = () => {
-  const [footer, setFooter] = useState<any>(null);
+  const [footer, setFooter] = useState<FooterData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    client
-      .fetch(`*[_type == "footerSection"][0]{
-        title,
-        phone,
-        phoneLink,
-        whatsapp,
-        whatsappLink,
-        address,
-        addressLink,
-        tutorchaseLink
-      }`)
-      .then((data) => {
-        setFooter(data);
+    const fetchData = async () => {
+      try {
+        const result = await client.fetch<FooterData>(`*[_type == "footerSection" && !(_id in path("drafts.**"))][0]{
+          title,
+          phone,
+          phoneLink,
+          whatsapp,
+          whatsappLink,
+          address,
+          addressLink,
+          tutorchaseLink
+        }`);
+
+        console.log('Footer Data:', result);
+
+        if (!result) {
+          setError('Footer section not found in CMS');
+          return;
+        }
+        setFooter(result);
+      } catch (err) {
+        console.error('Error fetching footer:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load footer');
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        setError('Failed to load footer');
-        setLoading(false);
-      });
+      }
+    };
+    fetchData();
   }, []);
 
-  if (loading) return <footer className="bg-gray-50 py-12 text-center">Loading footer...</footer>;
-  if (error || !footer) return <footer className="bg-gray-50 py-12 text-center text-red-500">{error || 'Footer not found'}</footer>;
+  if (loading) return (
+    <footer className="bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="animate-pulse flex justify-center items-center">
+          <div className="h-4 bg-gray-200 rounded w-48"></div>
+        </div>
+      </div>
+    </footer>
+  );
+
+  if (error || !footer) return (
+    <footer className="bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p className="text-red-500 text-center">{error || 'Footer content not available'}</p>
+      </div>
+    </footer>
+  );
 
   return (
     <footer className="bg-gray-50 py-12">
