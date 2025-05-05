@@ -10,6 +10,16 @@ import { Metadata } from 'next';
 // Disable static page generation and enable revalidation
 export const revalidate = 0;
 
+// Generate static params for common subjects at build time
+export async function generateStaticParams() {
+  const query = `*[_type == "subjectPage"].slug.current`;
+  const slugs = await client.fetch<string[]>(query);
+  
+  return slugs.map((subject) => ({
+    subject,
+  }));
+}
+
 interface SubjectPageData {
   subject: string;
   title: string;
