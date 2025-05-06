@@ -1,6 +1,7 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 
 export interface HeroData {
@@ -40,20 +41,6 @@ const LoadingHero = () => (
 
 const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   const [imageError, setImageError] = React.useState(false);
-  const [imageLoaded, setImageLoaded] = React.useState(false);
-
-  // Generate the image URL upfront
-  const imageUrl = heroData?.mainImage ? urlFor(heroData.mainImage).url() : '';
-
-  // Preload the image to check for errors
-  useEffect(() => {
-    if (imageUrl) {
-      const img = new Image();
-      img.src = imageUrl;
-      img.onload = () => setImageLoaded(true);
-      img.onerror = () => setImageError(true);
-    }
-  }, [imageUrl]);
 
   if (!heroData) {
     return <LoadingHero />;
@@ -120,23 +107,26 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               </ul>
             )}
           </div>
-          {imageUrl && imageLoaded && !imageError ? (
-            <div 
-              className="h-[600px]" 
-              style={{
-                backgroundImage: `url(${imageUrl})`,
-                backgroundSize: 'contain',
-                backgroundPosition: 'right bottom',
-                backgroundRepeat: 'no-repeat',
-              }}
-            />
-          ) : (
-            <div className="h-[600px] flex items-center justify-center bg-gray-100 text-gray-400">
-              <span className="text-center">
-                {imageError ? "Failed to load image" : "Loading image..."}
-              </span>
-            </div>
-          )}
+          <div className="relative h-[600px]">
+            {heroData.mainImage && !imageError ? (
+              <Image
+                src={urlFor(heroData.mainImage).url()}
+                alt="Tutor"
+                fill
+                className="object-contain object-bottom"
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+                onError={() => setImageError(true)}
+                loading="eager"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
+                <span className="text-center">
+                  {imageError ? "Failed to load image" : "Loading image..."}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
