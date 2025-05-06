@@ -91,12 +91,9 @@ const SubjectGrid = () => {
               href={`/${subject.slug.current}`}
               className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-center group"
             >
-              <h3 className="text-lg font-semibold text-blue-800 group-hover:text-blue-900 mb-2">
+              <h3 className="text-lg font-semibold text-blue-800 group-hover:text-blue-900">
                 {subject.subject}
               </h3>
-              <p className="text-sm text-gray-600 group-hover:text-gray-700">
-                {subject.firstSection.title}
-              </p>
             </Link>
           ))}
         </div>
