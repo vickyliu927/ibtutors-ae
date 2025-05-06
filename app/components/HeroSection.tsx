@@ -66,7 +66,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
             <div className="space-y-4">
               {heroData.primaryButton && (
               <Link
-                  href={heroData.primaryButton.link || "#hire-tutor"}
+                  href="#contact-form"
                   className="inline-block bg-blue-800 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors"
               >
                   {heroData.primaryButton.text}
