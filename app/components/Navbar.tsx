@@ -1,10 +1,26 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getSubjectPages, type SubjectPageData } from './NavSubjects';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
+  const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const subjectPages = await getSubjectPages();
+        setSubjects(subjectPages);
+      } catch (error) {
+        console.error('Error fetching subject pages:', error);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
 
   return (
     <nav className="bg-white shadow-sm">
@@ -21,17 +37,37 @@ const Navbar = () => {
             <Link href="/tutors" className="text-gray-700 hover:text-blue-800">
               IB Tutors
             </Link>
-            <Link href="/uae-maths-tutor" className="text-gray-700 hover:text-blue-800">
-              IB Maths Tutors
-            </Link>
-            <Link href="/english" className="text-gray-700 hover:text-blue-800">
-              IB English Tutors
-            </Link>
-            <div className="relative group">
-              <button className="text-gray-700 hover:text-blue-800">
-                More IB Subjects
+            
+            {/* Subjects Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setShowSubjectsDropdown(true)}
+              onMouseLeave={() => setShowSubjectsDropdown(false)}
+            >
+              <button className="text-gray-700 hover:text-blue-800 flex items-center">
+                IB Subjects
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
+              
+              {showSubjectsDropdown && (
+                <div className="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg z-50">
+                  <div className="py-2">
+                    {subjects.map((subject) => (
+                      <Link
+                        key={subject.slug.current}
+                        href={`/${subject.slug.current}`}
+                        className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-800"
+                      >
+                        {subject.title}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+
             <Link href="https://tutorchase.com" className="bg-blue-800 text-white px-4 py-2 rounded-md">
               View all Tutors on TutorChase
             </Link>
@@ -65,15 +101,21 @@ const Navbar = () => {
             <Link href="/tutors" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
               IB Tutors
             </Link>
-            <Link href="/uae-maths-tutor" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
-              IB Maths Tutors
-            </Link>
-            <Link href="/english" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
-              IB English Tutors
-            </Link>
-            <Link href="#" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
-              More IB Subjects
-            </Link>
+            
+            {/* Mobile Subjects List */}
+            <div className="px-3 py-2">
+              <div className="font-medium text-gray-700 mb-2">IB Subjects</div>
+              {subjects.map((subject) => (
+                <Link
+                  key={subject.slug.current}
+                  href={`/${subject.slug.current}`}
+                  className="block pl-3 py-2 text-gray-600 hover:text-blue-800"
+                >
+                  {subject.title}
+                </Link>
+              ))}
+            </div>
+
             <Link href="https://tutorchase.com" className="block px-3 py-2 text-blue-800">
               View all Tutors on TutorChase
             </Link>

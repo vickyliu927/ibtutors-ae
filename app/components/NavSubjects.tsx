@@ -1,0 +1,19 @@
+import { client } from '@/sanity/lib/client';
+
+interface SubjectPageData {
+  title: string;
+  slug: {
+    current: string;
+  };
+}
+
+async function getSubjectPages() {
+  const query = `*[_type == "subjectPage"] | order(title asc) {
+    title,
+    slug
+  }`;
+  
+  return client.fetch<SubjectPageData[]>(query);
+}
+
+export { getSubjectPages, type SubjectPageData }; 
