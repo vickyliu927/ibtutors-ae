@@ -34,10 +34,6 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-8">
-            <Link href="/tutors" className="text-gray-700 hover:text-blue-800">
-              IB Tutors
-            </Link>
-            
             {/* Subjects Dropdown */}
             <div 
               className="relative group"
@@ -45,7 +41,7 @@ const Navbar = () => {
               onMouseLeave={() => setShowSubjectsDropdown(false)}
             >
               <button className="text-gray-700 hover:text-blue-800 flex items-center">
-                IB Subjects
+                All Subjects
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -98,13 +94,9 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/tutors" className="block px-3 py-2 text-gray-700 hover:text-blue-800">
-              IB Tutors
-            </Link>
-            
             {/* Mobile Subjects List */}
             <div className="px-3 py-2">
-              <div className="font-medium text-gray-700 mb-2">IB Subjects</div>
+              <div className="font-medium text-gray-700 mb-2">All Subjects</div>
               {subjects.map((subject) => (
                 <Link
                   key={subject.slug.current}
