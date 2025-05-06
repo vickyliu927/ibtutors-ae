@@ -24,7 +24,7 @@ export interface HeroData {
 const LoadingHero = () => (
   <div className="bg-gradient-to-r from-pink-50 to-purple-50 py-16 animate-pulse">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center">
         <div className="space-y-6">
           <div className="h-14 bg-gray-200 rounded w-3/4"></div>
           <div className="h-6 bg-gray-200 rounded w-2/3"></div>
@@ -33,7 +33,7 @@ const LoadingHero = () => (
             <div className="h-6 bg-gray-200 rounded w-56"></div>
           </div>
         </div>
-        <div className="relative h-[500px] bg-gray-200 rounded"></div>
+        <div className="relative h-[500px] md:h-[500px] bg-gray-200 rounded"></div>
       </div>
     </div>
   </div>
@@ -49,7 +49,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   return (
     <div className="bg-gradient-to-r from-pink-50 to-purple-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           <div className="space-y-6 self-center">
             <h1 className="text-5xl font-bold">
               {heroData.title.split(' ').map((word, index, array) => (
@@ -107,7 +107,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               </ul>
             )}
           </div>
-          <div className="relative h-[600px] flex items-end">
+          <div className="relative h-[600px] md:h-[600px] flex items-end">
             {heroData.mainImage && !imageError ? (
               <Image
                 src={urlFor(heroData.mainImage).url()}
