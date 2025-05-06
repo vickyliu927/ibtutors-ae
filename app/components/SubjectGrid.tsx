@@ -3,26 +3,33 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client';
 
-interface SubjectData {
+interface SubjectPageData {
   _id: string;
-  name: string;
-  link: string;
-  order: number;
+  title: string;
+  subject: string;
+  slug: {
+    current: string;
+  };
+  firstSection: {
+    title: string;
+    description: string;
+  };
 }
 
 const SubjectGrid = () => {
-  const [subjects, setSubjects] = useState<SubjectData[]>([]);
+  const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const data = await client.fetch<SubjectData[]>(`*[_type == "subject"] | order(order asc) {
+        const data = await client.fetch<SubjectPageData[]>(`*[_type == "subjectPage"] | order(title asc) {
           _id,
-          name,
-          link,
-          order
+          title,
+          subject,
+          slug,
+          firstSection
         }`);
         setSubjects(data);
       } catch (err) {
@@ -81,10 +88,15 @@ const SubjectGrid = () => {
           {subjects.map((subject) => (
             <Link
               key={subject._id}
-              href={subject.link}
-              className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow text-center text-blue-800 hover:text-blue-900"
+              href={`/${subject.slug.current}`}
+              className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-center group"
             >
-              {subject.name}
+              <h3 className="text-lg font-semibold text-blue-800 group-hover:text-blue-900 mb-2">
+                {subject.subject}
+              </h3>
+              <p className="text-sm text-gray-600 group-hover:text-gray-700">
+                {subject.firstSection.title}
+              </p>
             </Link>
           ))}
         </div>
