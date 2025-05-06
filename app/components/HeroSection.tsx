@@ -33,7 +33,7 @@ const LoadingHero = () => (
             <div className="h-6 bg-gray-200 rounded w-56"></div>
           </div>
         </div>
-        <div className="relative h-[500px] md:h-[500px] bg-gray-200 rounded"></div>
+        <div className="relative h-[300px] md:h-[500px] bg-gray-200 rounded"></div>
       </div>
     </div>
   </div>
@@ -107,13 +107,13 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               </ul>
             )}
           </div>
-          <div className="relative h-[600px] md:h-[600px] flex items-end">
+          <div className="relative h-[400px] md:h-[600px] flex items-center md:items-end">
             {heroData.mainImage && !imageError ? (
               <Image
                 src={urlFor(heroData.mainImage).url()}
                 alt="Tutor"
                 fill
-                className="object-contain object-bottom"
+                className="object-contain object-center md:object-bottom"
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
                 onError={() => setImageError(true)}
@@ -124,7 +124,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
                 <span className="text-center">
                   {imageError ? "Failed to load image" : "Loading image..."}
                 </span>
-            </div>
+              </div>
             )}
           </div>
         </div>
