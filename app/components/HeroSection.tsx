@@ -49,7 +49,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   return (
     <div className="bg-gradient-to-r from-pink-50 to-purple-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
           <div className="space-y-6 self-center">
             <h1 className="text-5xl font-bold">
               {heroData.title.split(' ').map((word, index, array) => (
@@ -107,15 +107,15 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               </ul>
             )}
           </div>
-          <div className="relative h-[600px]">
+          <div className="relative h-[600px] w-full flex items-end justify-end p-0 m-0 overflow-hidden">
             {heroData.mainImage && !imageError ? (
-              <div className="absolute inset-0 bottom-0">
+              <div className="absolute inset-0 w-full h-full flex items-end justify-end overflow-hidden p-0">
                 <Image
                   src={urlFor(heroData.mainImage).url()}
                   alt="Tutor"
                   fill
                   className="object-contain object-bottom"
-                  style={{ objectPosition: "center bottom" }}
+                  style={{ margin: 0, padding: 0 }}
                   priority
                   sizes="(max-width: 768px) 100vw, 50vw"
                   onError={() => setImageError(true)}
