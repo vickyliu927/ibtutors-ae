@@ -1,7 +1,6 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 
 export interface HeroData {
@@ -41,6 +40,20 @@ const LoadingHero = () => (
 
 const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   const [imageError, setImageError] = React.useState(false);
+  const [imageLoaded, setImageLoaded] = React.useState(false);
+
+  // Generate the image URL upfront
+  const imageUrl = heroData?.mainImage ? urlFor(heroData.mainImage).url() : '';
+
+  // Preload the image to check for errors
+  useEffect(() => {
+    if (imageUrl) {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => setImageLoaded(true);
+      img.onerror = () => setImageError(true);
+    }
+  }, [imageUrl]);
 
   if (!heroData) {
     return <LoadingHero />;
@@ -49,7 +62,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   return (
     <div className="bg-gradient-to-r from-pink-50 to-purple-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6 self-center">
             <h1 className="text-5xl font-bold">
               {heroData.title.split(' ').map((word, index, array) => (
@@ -107,29 +120,23 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               </ul>
             )}
           </div>
-          <div className="relative h-[600px] w-full flex items-end justify-end p-0 m-0 overflow-hidden">
-            {heroData.mainImage && !imageError ? (
-              <div className="absolute inset-0 w-full h-full flex items-end justify-end overflow-hidden p-0">
-                <Image
-                  src={urlFor(heroData.mainImage).url()}
-                  alt="Tutor"
-                  fill
-                  className="object-contain object-bottom"
-                  style={{ margin: 0, padding: 0 }}
-                  priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  onError={() => setImageError(true)}
-                  loading="eager"
-                />
-              </div>
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
-                <span className="text-center">
-                  {imageError ? "Failed to load image" : "Loading image..."}
-                </span>
-              </div>
-            )}
-          </div>
+          {imageUrl && imageLoaded && !imageError ? (
+            <div 
+              className="h-[600px]" 
+              style={{
+                backgroundImage: `url(${imageUrl})`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'right bottom',
+                backgroundRepeat: 'no-repeat',
+              }}
+            />
+          ) : (
+            <div className="h-[600px] flex items-center justify-center bg-gray-100 text-gray-400">
+              <span className="text-center">
+                {imageError ? "Failed to load image" : "Loading image..."}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
