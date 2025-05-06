@@ -107,18 +107,21 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               </ul>
             )}
           </div>
-          <div className="relative h-[600px] flex items-end">
+          <div className="relative h-[600px]">
             {heroData.mainImage && !imageError ? (
-              <Image
-                src={urlFor(heroData.mainImage).url()}
-                alt="Tutor"
-                fill
-                className="object-cover object-bottom"
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                onError={() => setImageError(true)}
-                loading="eager"
-              />
+              <div className="absolute inset-0 bottom-0">
+                <Image
+                  src={urlFor(heroData.mainImage).url()}
+                  alt="Tutor"
+                  fill
+                  className="object-contain object-bottom"
+                  style={{ objectPosition: "center bottom" }}
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  onError={() => setImageError(true)}
+                  loading="eager"
+                />
+              </div>
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
                 <span className="text-center">
