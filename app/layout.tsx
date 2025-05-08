@@ -1,13 +1,18 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { getSeoData } from './lib/getSeoData';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'IB Tutors UAE - Expert IB Teachers and Examiners',
-  description: 'Learn from qualified IB teachers with proven success rates in Dubai, Abu Dhabi, and across the UAE.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoData();
+  
+  return {
+    title: seo.title,
+    description: seo.description,
+  };
+}
 
 export default function RootLayout({
   children,

@@ -57,6 +57,10 @@ export const structure = (S: StructureBuilder) =>
                         .schemaType('footerSection')
                         .title('Footer Section')
                         .id('footerSection'),
+                      S.documentListItem()
+                        .schemaType('seoSettings')
+                        .title('SEO')
+                        .id('seoSettings'),
                     ])
                 ),
               // Subject Pages Group
@@ -94,6 +98,7 @@ export const structure = (S: StructureBuilder) =>
             'footerSection',
             'subjectHeader',
             'subjectPage',
+            'seoSettings',
           ].includes(listItem.getId() || '')
       ),
     ]) 
