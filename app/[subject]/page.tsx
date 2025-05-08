@@ -142,7 +142,7 @@ export default async function SubjectPage({ params }: { params: { subject: strin
       <Navbar />
       
       {/* First Section */}
-      <section className="bg-white py-20">
+      <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-6xl font-bold mb-8">{pageData.firstSection.title}</h1>
           <p className="text-xl text-gray-600">{pageData.firstSection.description}</p>
