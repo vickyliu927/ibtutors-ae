@@ -81,11 +81,11 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
         {testimonials.length === 1 ? (
           <div className="flex justify-center">
             <div className="w-full max-w-xl">
-              <div className="bg-white p-8 rounded-lg shadow-sm">
-                <div className="flex justify-center mb-4">
+              <div className="bg-white p-8 rounded-lg shadow-sm h-[320px] flex flex-col justify-between">
+                <div className="flex justify-center">
                   <StarRating rating={testimonials[0].rating} />
                 </div>
-                <blockquote className="text-center mb-6">
+                <blockquote className="text-center my-auto py-6">
                   <p className="text-gray-600 italic">"{testimonials[0].testimonialText}"</p>
                 </blockquote>
                 <div className="text-center">
@@ -101,12 +101,12 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
               {testimonials.map((testimonial) => (
                 <div
                   key={testimonial._id}
-                  className="bg-white p-8 rounded-lg shadow-sm w-full"
+                  className="bg-white p-8 rounded-lg shadow-sm w-full h-[320px] flex flex-col justify-between"
                 >
-                  <div className="flex justify-center mb-4">
+                  <div className="flex justify-center">
                     <StarRating rating={testimonial.rating} />
                   </div>
-                  <blockquote className="text-center mb-6">
+                  <blockquote className="text-center my-auto py-6">
                     <p className="text-gray-600 italic">"{testimonial.testimonialText}"</p>
                   </blockquote>
                   <div className="text-center">
@@ -122,12 +122,12 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
             {testimonials.map((testimonial) => (
               <div
                 key={testimonial._id}
-                className="bg-white p-8 rounded-lg shadow-sm w-full max-w-md mx-auto"
+                className="bg-white p-8 rounded-lg shadow-sm w-full max-w-md mx-auto h-[320px] flex flex-col justify-between"
               >
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center">
                   <StarRating rating={testimonial.rating} />
                 </div>
-                <blockquote className="text-center mb-6">
+                <blockquote className="text-center my-auto py-6">
                   <p className="text-gray-600 italic">"{testimonial.testimonialText}"</p>
                 </blockquote>
                 <div className="text-center">
