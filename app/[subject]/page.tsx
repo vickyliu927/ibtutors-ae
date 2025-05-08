@@ -167,8 +167,8 @@ export default async function SubjectPage({ params }: { params: { subject: strin
             </div>
           </div>
           
-          <h1 className="text-5xl font-bold mb-8">{pageData.firstSection.title}</h1>
-          <p className="text-xl text-gray-600">{pageData.firstSection.description}</p>
+          <h1 className="text-5xl font-bold mb-8 text-center">{pageData.firstSection.title}</h1>
+          <p className="text-xl text-gray-600 text-center">{pageData.firstSection.description}</p>
         </div>
       </section>
 
