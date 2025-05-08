@@ -45,12 +45,15 @@ const TutoringPlatformBanner = ({ data }: Props) => {
   const subtitle = data.subtitle || 'ONLINE TUTORING PLATFORM';
   const description = data.description || 'Our online platform brings lessons to life, allowing students to draw diagrams, solve equations, edit essays, and annotate work. We deliver elite tutoring worldwide, matching students with the best tutors available.';
   
-  // Convert legacy images to new format if needed
+  // Use only the first image or legacy images
   const images = data.images || [
     data.platformImage,
     data.whiteBoardImage,
     data.documentSharingImage
   ].filter(Boolean);
+  
+  // Get just the first image or undefined
+  const mainImage = images.length > 0 ? images[0] : undefined;
 
   // Default features if none provided
   const features = data.features || [
@@ -79,28 +82,16 @@ const TutoringPlatformBanner = ({ data }: Props) => {
                 </div>
               </div>
                 
-              {/* Platform interface mockups */}
-              <div className="flex gap-4">
-                {images && images.length > 0 ? (
-                  images.map((image, index) => (
-                    <div key={index} className={`${index === images.length - 1 ? 'w-1/2' : 'w-1/2 space-y-4'}`}>
-                      <img 
-                        src={image.url || image.asset._ref} 
-                        alt={image.alt || `Platform interface ${index + 1}`}
-                        className="rounded-lg object-cover w-full h-full"
-                      />
-                    </div>
-                  ))
+              {/* Single platform image */}
+              <div className="w-full">
+                {mainImage ? (
+                  <img 
+                    src={mainImage.url || mainImage.asset?._ref} 
+                    alt={mainImage.alt || "Online tutoring platform"}
+                    className="rounded-lg object-cover w-full h-[350px]"
+                  />
                 ) : (
-                  <>
-                    <div className="w-1/2 space-y-4">
-                      <div className="bg-blue-50 rounded-lg h-32"></div>
-                      <div className="bg-blue-50 rounded-lg h-32"></div>
-                    </div>
-                    <div className="w-1/2">
-                      <div className="bg-blue-50 rounded-lg h-[17rem]"></div>
-                    </div>
-                  </>
+                  <div className="bg-blue-50 rounded-lg h-[350px] w-full"></div>
                 )}
               </div>
 
