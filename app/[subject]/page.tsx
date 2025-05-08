@@ -144,6 +144,29 @@ export default async function SubjectPage({ params }: { params: { subject: strin
       {/* First Section */}
       <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Stars and Reviews */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="flex mb-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <svg
+                  key={star}
+                  className="h-7 w-7 text-yellow-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 15.934L4.618 19.098l1.039-6.054L1.314 8.902l6.068-.881L10 2.666l2.618 5.355 6.068.881-4.343 4.142 1.039 6.054L10 15.934z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ))}
+            </div>
+            <div className="text-xl font-medium">
+              4.92/5 based on <span className="font-bold">480 reviews</span>
+            </div>
+          </div>
+          
           <h1 className="text-5xl font-bold mb-8">{pageData.firstSection.title}</h1>
           <p className="text-xl text-gray-600">{pageData.firstSection.description}</p>
         </div>
