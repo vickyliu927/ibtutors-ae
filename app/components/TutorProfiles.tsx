@@ -105,8 +105,8 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                     </div>
 
                     <div>
-                      <div className="flex items-start gap-2">
-                        <h4 className="text-sm font-semibold text-gray-600 mt-1">Teaches:</h4>
+                      <div className="flex items-start gap-1">
+                        <p className="font-medium text-gray-600 mt-1">Teaches:</p>
                         <div className="flex flex-wrap gap-2">
                           <span className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md">
                             {tutor.specialization.mainSubject}
@@ -122,9 +122,9 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                         </div>
                       </div>
                       {tutor.price && (
-                        <div className="mt-4 text-right">
-                          <div className="flex justify-end items-center gap-2">
-                            <p className="text-sm font-semibold text-gray-600 whitespace-nowrap">Rate:</p>
+                        <div className="mt-2 text-right">
+                          <div className="flex justify-end items-center gap-1">
+                            <p className="font-medium text-gray-600 whitespace-nowrap">Rate:</p>
                             <p className="text-blue-800 font-medium">
                               {tutor.price.displayText || `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
                             </p>
