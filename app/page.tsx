@@ -10,6 +10,9 @@ import ContactForm from './components/ContactForm';
 import Footer from './components/Footer';
 import { client } from '@/sanity/lib/client';
 
+// Disable static page generation and enable revalidation
+export const revalidate = 0;
+
 async function getHomePageData() {
   try {
     const heroQuery = `*[_type == "hero"][0]`;
@@ -40,11 +43,11 @@ async function getHomePageData() {
     console.log('Fetching data from Sanity...'); // Debug log
 
     const [heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials] = await Promise.all([
-      client.fetch<HeroData>(heroQuery),
-      client.fetch(tutorProfilesSectionQuery),
-      client.fetch(platformBannerQuery),
-      client.fetch<TestimonialSectionData>(testimonialSectionQuery),
-      client.fetch<TestimonialData[]>(testimonialsQuery),
+      client.fetch<HeroData>(heroQuery, {}, { next: { revalidate: 0 } }),
+      client.fetch(tutorProfilesSectionQuery, {}, { next: { revalidate: 0 } }),
+      client.fetch(platformBannerQuery, {}, { next: { revalidate: 0 } }),
+      client.fetch<TestimonialSectionData>(testimonialSectionQuery, {}, { next: { revalidate: 0 } }),
+      client.fetch<TestimonialData[]>(testimonialsQuery, {}, { next: { revalidate: 0 } }),
     ]);
 
     console.log('Data fetched:', { heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials }); // Debug log
