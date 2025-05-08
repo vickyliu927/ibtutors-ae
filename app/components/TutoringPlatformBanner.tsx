@@ -45,16 +45,6 @@ const TutoringPlatformBanner = ({ data }: Props) => {
   const subtitle = data.subtitle || 'ONLINE TUTORING PLATFORM';
   const description = data.description || 'Our online platform brings lessons to life, allowing students to draw diagrams, solve equations, edit essays, and annotate work. We deliver elite tutoring worldwide, matching students with the best tutors available.';
   
-  // Use only the first image or legacy images
-  const images = data.images || [
-    data.platformImage,
-    data.whiteBoardImage,
-    data.documentSharingImage
-  ].filter(Boolean);
-  
-  // Get just the first image or undefined
-  const mainImage = images.length > 0 ? images[0] : undefined;
-
   // Default features if none provided
   const features = data.features || [
     { feature: 'Interactive whiteboard for real-time collaboration' },
@@ -82,17 +72,13 @@ const TutoringPlatformBanner = ({ data }: Props) => {
                 </div>
               </div>
                 
-              {/* Single platform image */}
+              {/* Local platform image */}
               <div className="w-full">
-                {mainImage ? (
-                  <img 
-                    src={mainImage.url || mainImage.asset?._ref} 
-                    alt={mainImage.alt || "Online tutoring platform"}
-                    className="rounded-lg object-cover w-full h-[350px]"
-                  />
-                ) : (
-                  <div className="bg-blue-50 rounded-lg h-[350px] w-full"></div>
-                )}
+                <img 
+                  src="/images/tutoring-platform.jpg" 
+                  alt="Online tutoring platform"
+                  className="rounded-lg object-cover w-full h-[350px]"
+                />
               </div>
 
               {/* Control icons */}
