@@ -12,6 +12,7 @@ interface SubjectPageData {
   };
   firstSection: {
     title: string;
+    highlightedWords?: string[];
     description: string;
   };
 }

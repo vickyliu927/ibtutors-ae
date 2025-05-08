@@ -27,6 +27,7 @@ interface SubjectPageData {
   title: string;
   firstSection: {
     title: string;
+    highlightedWords?: string[];
     description: string;
   };
   tutorsListSectionHead?: {
@@ -167,7 +168,19 @@ export default async function SubjectPage({ params }: { params: { subject: strin
             </div>
           </div>
           
-          <h1 className="text-5xl font-bold mb-8 text-center">{pageData.firstSection.title}</h1>
+          <h1 className="text-5xl font-bold mb-8 text-center">
+            {pageData.firstSection.title.split(' ').map((word, index) => (
+              <React.Fragment key={index}>
+                <span className={
+                  pageData.firstSection.highlightedWords?.includes(word) 
+                    ? "text-blue-800" 
+                    : ""
+                }>
+                  {word}
+                </span>{" "}
+              </React.Fragment>
+            ))}
+          </h1>
           <p className="text-xl text-gray-600 text-center">{pageData.firstSection.description}</p>
         </div>
       </section>
