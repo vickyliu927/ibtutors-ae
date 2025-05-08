@@ -100,11 +100,6 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-xl font-bold">{tutor.name}</h3>
-                      {tutor.personallyInterviewed && (
-                        <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      )}
                     </div>
                     <div className="bg-pink-50 text-pink-800 px-3 py-1 text-sm font-medium rounded-full inline-block mb-2">
                       Super Tutor
@@ -128,7 +123,6 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                           <p className="font-bold text-xl">
                             {tutor.price.currency}{tutor.price.amount}
                           </p>
-                          <p className="text-sm text-gray-500">50-min lesson</p>
                         </div>
                       )}
                     </div>
@@ -191,13 +185,25 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                   </Link>
                 </div>
 
+                {/* Personally Interviewed badge - render conditionally if mobile view */}
+                {tutor.personallyInterviewed && (
+                  <div className="mt-4">
+                    <span className="flex items-center text-orange-500">
+                      <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Personally Interviewed
+                    </span>
+                  </div>
+                )}
+
                 {/* Button */}
                 <div className="mt-4">
                   <Link
                     href={tutor.hireButtonLink || '/contact'}
-                    className="w-full bg-pink-500 text-white px-4 py-3 rounded-md hover:bg-pink-600 transition-all font-medium text-center block"
+                    className="w-full bg-blue-800 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-all font-medium text-center block"
                   >
-                    Book trial lesson
+                    Hire a tutor
                   </Link>
                 </div>
               </div>
