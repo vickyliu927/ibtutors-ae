@@ -123,10 +123,12 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                       </div>
                       {tutor.price && (
                         <div className="mt-4 text-right">
-                          <p className="text-sm font-semibold text-gray-600">Rate:</p>
-                          <p className="text-blue-800 font-medium">
-                            {tutor.price.displayText || `${tutor.price.currency} ${tutor.price.amount}/hour`}
-                          </p>
+                          <div className="flex justify-end items-center gap-2">
+                            <p className="text-sm font-semibold text-gray-600 whitespace-nowrap">Rate:</p>
+                            <p className="text-blue-800 font-medium">
+                              {tutor.price.displayText || `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
+                            </p>
+                          </div>
                         </div>
                       )}
                     </div>
