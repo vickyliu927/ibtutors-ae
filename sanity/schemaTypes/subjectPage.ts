@@ -39,6 +39,13 @@ export default defineType({
           validation: Rule => Rule.required(),
         },
         {
+          name: 'highlightedWords',
+          title: 'Words to Highlight',
+          type: 'array',
+          of: [{ type: 'string' }],
+          description: 'Words in the title that should be highlighted in blue (e.g., "IB", "English")',
+        },
+        {
           name: 'description',
           title: 'Description',
           type: 'text',

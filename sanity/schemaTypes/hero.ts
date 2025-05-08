@@ -12,6 +12,13 @@ export default defineType({
       validation: (Rule: any) => Rule.required(),
     }),
     defineField({
+      name: 'highlightedWords',
+      title: 'Words to Highlight',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Words in the title that should be highlighted in blue (e.g., "IB", "English")',
+    }),
+    defineField({
       name: 'subtitle',
       title: 'Subtitle',
       type: 'text',
