@@ -82,6 +82,13 @@ export default defineType({
       description: 'Select testimonials specific to this subject',
     }),
     defineField({
+      name: 'faqSection',
+      title: 'FAQ Section',
+      type: 'reference',
+      to: [{ type: 'faq_section' }],
+      description: 'Optional: Add a FAQ section to this subject page',
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'object',

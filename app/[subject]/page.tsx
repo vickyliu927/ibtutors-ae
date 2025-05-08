@@ -5,7 +5,9 @@ import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
 import TutorProfiles from '../components/TutorProfiles';
 import TestimonialSection, { TestimonialSectionData } from '../components/TestimonialSection';
+import FAQSection from '../components/FAQSection';
 import { Metadata } from 'next';
+import { getSeoData, SeoData } from '../lib/getSeoData';
 
 // Disable static page generation and enable revalidation
 export const revalidate = 0;
@@ -34,6 +36,17 @@ interface SubjectPageData {
   };
   tutorsList: any[];
   testimonials: any[];
+  faqSection?: {
+    _id: string;
+    title: string;
+    subtitle?: string;
+    faqs: {
+      _id: string;
+      question: string;
+      answer: string;
+      displayOrder: number;
+    }[];
+  };
   seo: {
     pageTitle: string;
     description: string;
@@ -66,6 +79,17 @@ async function getSubjectPageData(subject: string) {
       rating,
       order
     },
+    "faqSection": faqSection->{
+      _id,
+      title,
+      subtitle,
+      "faqs": faqReferences[]-> {
+        _id,
+        question,
+        answer,
+        displayOrder
+      } | order(displayOrder asc)
+    },
     seo
   }`;
   
@@ -81,7 +105,8 @@ async function getSubjectPageData(subject: string) {
 
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
   const { pageData } = await getSubjectPageData(params.subject);
-
+  const subjectSeo = await getSeoData();
+  
   if (!pageData) {
     return {
       title: 'Page Not Found',
@@ -89,9 +114,10 @@ export async function generateMetadata({ params }: { params: { subject: string }
     };
   }
 
+  // Use the page-specific SEO data, falling back to the default subject SEO data
   return {
-    title: pageData.seo.pageTitle,
-    description: pageData.seo.description,
+    title: pageData.seo.pageTitle || `${pageData.title} | IB Tutors UAE`,
+    description: pageData.seo.description || subjectSeo.description,
   };
 }
 
@@ -153,6 +179,17 @@ export default async function SubjectPage({ params }: { params: { subject: strin
         <TestimonialSection 
           sectionData={testimonialSection} 
           testimonials={pageData.testimonials} 
+        />
+      )}
+
+      {/* FAQ Section - Optional */}
+      {pageData.faqSection && pageData.faqSection.faqs && pageData.faqSection.faqs.length > 0 && (
+        <FAQSection 
+          sectionData={{
+            title: pageData.faqSection.title,
+            subtitle: pageData.faqSection.subtitle
+          }}
+          faqs={pageData.faqSection.faqs}
         />
       )}
 
