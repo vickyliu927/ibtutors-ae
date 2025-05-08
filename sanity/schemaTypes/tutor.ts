@@ -153,6 +153,76 @@ export default defineType({
         }
       ],
     }),
+    defineField({
+      name: 'rating',
+      title: 'Rating',
+      type: 'number',
+      description: 'Tutor rating (e.g., 4.8)',
+      validation: (Rule: any) => Rule.min(0).max(5).precision(1),
+    }),
+    defineField({
+      name: 'reviewCount',
+      title: 'Number of Reviews',
+      type: 'number',
+      description: 'Total number of reviews received',
+      validation: (Rule: any) => Rule.min(0).precision(0),
+    }),
+    defineField({
+      name: 'activeStudents',
+      title: 'Active Students',
+      type: 'number',
+      description: 'Number of current active students',
+      validation: (Rule: any) => Rule.min(0).precision(0),
+    }),
+    defineField({
+      name: 'totalLessons',
+      title: 'Total Lessons',
+      type: 'number',
+      description: 'Total number of lessons conducted',
+      validation: (Rule: any) => Rule.min(0).precision(0),
+    }),
+    defineField({
+      name: 'languagesSpoken',
+      title: 'Languages Spoken',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'language',
+              title: 'Language',
+              type: 'string',
+            },
+            {
+              name: 'proficiency',
+              title: 'Proficiency',
+              type: 'string',
+              options: {
+                list: [
+                  'Native',
+                  'Fluent',
+                  'Advanced',
+                  'Intermediate',
+                  'Basic'
+                ]
+              }
+            }
+          ],
+          preview: {
+            select: {
+              language: 'language',
+              proficiency: 'proficiency',
+            },
+            prepare({ language, proficiency }) {
+              return {
+                title: `${language} (${proficiency})`,
+              }
+            }
+          }
+        }
+      ],
+    }),
   ],
   preview: {
     select: {

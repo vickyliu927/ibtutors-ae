@@ -124,7 +124,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
                 <span className="text-center">
                   {imageError ? "Failed to load image" : "Loading image..."}
                 </span>
-              </div>
+            </div>
             )}
           </div>
         </div>
