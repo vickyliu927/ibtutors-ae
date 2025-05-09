@@ -64,7 +64,7 @@ const Navbar = () => {
               )}
             </div>
 
-            <Link href="https://tutorchase.com" className="bg-blue-800 text-white px-4 py-2 rounded-md">
+            <Link href="https://www.tutorchase.com/tutors" className="bg-blue-800 text-white px-4 py-2 rounded-md">
               View all Tutors on TutorChase
             </Link>
           </div>
@@ -104,11 +104,11 @@ const Navbar = () => {
                   className="block pl-3 py-2 text-gray-600 hover:text-blue-800"
                 >
                   {subject.title}
-            </Link>
+                </Link>
               ))}
             </div>
 
-            <Link href="https://tutorchase.com" className="block px-3 py-2 text-blue-800">
+            <Link href="https://www.tutorchase.com/tutors" className="block px-3 py-2 text-blue-800">
               View all Tutors on TutorChase
             </Link>
           </div>
