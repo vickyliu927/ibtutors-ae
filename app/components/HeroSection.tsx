@@ -112,13 +112,13 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               </ul>
             )}
           </div>
-          <div className="relative h-[450px] md:h-[600px] -mt-3 md:mt-0">
+          <div className="relative h-[405px] md:h-[540px] -mt-3 md:mt-0">
             {heroData.mainImage && !imageError ? (
               <Image
                 src={urlFor(heroData.mainImage).url()}
                 alt="Tutor"
                 fill
-                className="object-contain object-bottom"
+                className="object-contain object-bottom scale-90"
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
                 onError={() => setImageError(true)}
