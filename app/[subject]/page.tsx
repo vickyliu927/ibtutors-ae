@@ -57,29 +57,48 @@ interface SubjectPageData {
 }
 
 async function getSubjectPageData(subject: string) {
-  const query = `*[_type == "subjectPage" && slug.current == $subject][0]{
+  const subjectPageQuery = `*[_type == "subjectPage" && slug.current == $subject][0]{
+    _id,
     subject,
     title,
     firstSection,
-    tutorsListSectionHead,
-    tutorsList[]->{
-      _id,
-      name,
-      professionalTitle,
-      personallyInterviewed,
-      education,
-      experience,
-      profilePhoto,
-      specialization,
-      yearsOfExperience,
-      hireButtonLink,
-      profilePDF {
-        asset-> {
-          url
-        }
-      },
-      price
+    tutorsListSectionHead
+  }`;
+
+  // First fetch just the subject page data
+  const subjectPage = await client.fetch(subjectPageQuery, { subject }, { next: { revalidate: 0 } });
+  
+  if (!subjectPage) {
+    return { pageData: null, testimonialSection: null };
+  }
+
+  // Then use the subject page ID to fetch tutors that reference this subject page
+  const tutorsQuery = `*[_type == "tutor" && references($subjectPageId) in displayOnSubjectPages[]] {
+    _id,
+    name,
+    professionalTitle,
+    personallyInterviewed,
+    education,
+    experience,
+    profilePhoto,
+    specialization,
+    yearsOfExperience,
+    hireButtonLink,
+    profilePDF {
+      asset-> {
+        url
+      }
     },
+    price,
+    rating,
+    reviewCount,
+    activeStudents,
+    totalLessons,
+    languagesSpoken
+  }`;
+  
+  // Get additional subject page data and testimonials
+  const additionalDataQuery = `*[_type == "subjectPage" && slug.current == $subject][0]{
     testimonials[]->{
       _id,
       reviewerName,
@@ -104,10 +123,19 @@ async function getSubjectPageData(subject: string) {
   
   const testimonialSectionQuery = `*[_type == "testimonialSection"][0]`;
 
-  const [pageData, testimonialSection] = await Promise.all([
-    client.fetch<SubjectPageData>(query, { subject }, { next: { revalidate: 0 } }),
+  // Fetch all data in parallel
+  const [tutors, additionalData, testimonialSection] = await Promise.all([
+    client.fetch(tutorsQuery, { subjectPageId: subjectPage._id }, { next: { revalidate: 0 } }),
+    client.fetch(additionalDataQuery, { subject }, { next: { revalidate: 0 } }),
     client.fetch<TestimonialSectionData>(testimonialSectionQuery, {}, { next: { revalidate: 0 } })
   ]);
+
+  // Combine the data
+  const pageData = {
+    ...subjectPage,
+    ...additionalData,
+    tutorsList: tutors
+  };
 
   return { pageData, testimonialSection };
 }
@@ -177,7 +205,7 @@ export default async function SubjectPage({ params }: { params: { subject: strin
           </div>
           
           <h1 className="text-5xl font-bold mb-8 text-center">
-            {pageData.firstSection.title.split(' ').map((word, index) => (
+            {pageData.firstSection.title.split(' ').map((word: string, index: number) => (
               <React.Fragment key={index}>
                 <span className={
                   pageData.firstSection.highlightedWords?.includes(word) 

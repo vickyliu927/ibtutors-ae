@@ -45,17 +45,17 @@ const FAQSection = ({ sectionData, faqs }: FAQSectionProps) => {
                   className={`w-6 h-6 text-gray-400 transform transition-transform duration-200 ${
                     openId === faq._id ? 'rotate-180' : ''
                   }`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M19 9l-7 7-7-7"
+    />
+  </svg>
               </button>
               <div
                 className={`transition-all duration-200 ease-in-out ${
@@ -66,8 +66,8 @@ const FAQSection = ({ sectionData, faqs }: FAQSectionProps) => {
                   <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">{faq.answer}</p>
                 </div>
               </div>
-            </div>
-          ))}
+          </div>
+        ))}
         </div>
       </div>
     </section>

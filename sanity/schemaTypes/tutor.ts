@@ -26,6 +26,20 @@ export default defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'displayOnHomepage',
+      title: 'Display on Homepage',
+      type: 'boolean',
+      description: 'Show this tutor on the homepage',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'displayOnSubjectPages',
+      title: 'Display on Subject Pages',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'subjectPage' }] }],
+      description: 'Select which subject pages this tutor should appear on',
+    }),
+    defineField({
       name: 'education',
       title: 'University/Education',
       type: 'object',

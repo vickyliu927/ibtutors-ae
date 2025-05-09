@@ -19,7 +19,29 @@ async function getHomePageData() {
     const tutorProfilesSectionQuery = `*[_type == "tutorProfilesSection"][0]{
       title,
       subtitle,
-      "tutors": tutors[]->
+      "tutors": *[_type == "tutor" && displayOnHomepage == true] {
+        _id,
+        name,
+        professionalTitle,
+        personallyInterviewed,
+        education,
+        experience,
+        profilePhoto,
+        specialization,
+        yearsOfExperience,
+        hireButtonLink,
+        profilePDF {
+          asset-> {
+            url
+          }
+        },
+        price,
+        rating,
+        reviewCount,
+        activeStudents,
+        totalLessons,
+        languagesSpoken
+      }
     }`;
     const platformBannerQuery = `*[_type == "platformBanner"][0]{
       title,
