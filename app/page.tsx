@@ -43,8 +43,9 @@ async function getHomePageData() {
       subtitle,
       tutorChaseLink,
       maxDisplayCount,
-      "selectedTestimonials": selectedTestimonials[]->{
-        _id
+      selectedTestimonials[]-> {
+        _id,
+        reviewerName
       }
     }`;
     const testimonialsQuery = `*[_type == "testimonial"] | order(order asc)`;
@@ -59,7 +60,13 @@ async function getHomePageData() {
       client.fetch<TestimonialData[]>(testimonialsQuery, {}, { next: { revalidate: 0 } }),
     ]);
 
-    console.log('Data fetched:', { heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials }); // Debug log
+    console.log('Data fetched:', { 
+      heroData, 
+      tutorProfilesSection, 
+      platformBanner, 
+      testimonialSection: JSON.stringify(testimonialSection, null, 2), 
+      testimonials: testimonials.map(t => `${t._id} - ${t.reviewerName}`) 
+    }); // More detailed debugging
 
     return { 
       heroData: heroData || null, 

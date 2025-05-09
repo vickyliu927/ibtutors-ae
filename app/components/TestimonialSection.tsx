@@ -8,7 +8,7 @@ export interface TestimonialSectionData {
   totalReviews: number;
   subtitle: string;
   tutorChaseLink?: string;
-  selectedTestimonials?: string[] | { _ref: string }[];
+  selectedTestimonials?: Array<{ _id: string, reviewerName: string }> | string[];
   maxDisplayCount?: number;
 }
 
@@ -56,15 +56,26 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
     );
   }
 
+  console.log("Testimonial Section Data:", JSON.stringify(sectionData, null, 2));
+  console.log("All testimonials:", testimonials.map(t => `${t._id} - ${t.reviewerName}`));
+
   // Filter testimonials if selectedTestimonials is provided
   let displayTestimonials = testimonials;
   if (sectionData.selectedTestimonials && sectionData.selectedTestimonials.length > 0) {
-    const selectedIds = sectionData.selectedTestimonials.map(item => 
-      typeof item === 'string' ? item : item._ref
-    );
-    displayTestimonials = testimonials.filter(testimonial => 
-      selectedIds.includes(testimonial._id)
-    );
+    console.log("Selected testimonials exist - count:", sectionData.selectedTestimonials.length);
+    
+    const selectedIds = sectionData.selectedTestimonials.map(item => {
+      if (typeof item === 'string') return item;
+      return item._id;
+    });
+    
+    console.log("Selected IDs:", selectedIds);
+    
+    displayTestimonials = testimonials.filter(testimonial => {
+      const isIncluded = selectedIds.includes(testimonial._id);
+      console.log(`Checking ${testimonial._id} (${testimonial.reviewerName}): ${isIncluded ? 'SELECTED' : 'not selected'}`);
+      return isIncluded;
+    });
   }
 
   // Sort by order field
@@ -76,9 +87,12 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
   
   displayTestimonials = displayTestimonials.slice(0, maxCount);
 
+  console.log("Final display testimonials:", displayTestimonials.map(t => t.reviewerName));
+
   // Ensure we have at least one testimonial to display
   if (displayTestimonials.length === 0 && testimonials.length > 0) {
     displayTestimonials = [testimonials[0]];
+    console.log("Fallback to first testimonial:", testimonials[0].reviewerName);
   }
 
   return (
