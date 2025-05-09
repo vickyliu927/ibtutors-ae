@@ -43,7 +43,9 @@ async function getHomePageData() {
       subtitle,
       tutorChaseLink,
       maxDisplayCount,
-      "selectedTestimonials": selectedTestimonials[]->._id
+      "selectedTestimonials": selectedTestimonials[]->{
+        _id
+      }
     }`;
     const testimonialsQuery = `*[_type == "testimonial"] | order(order asc)`;
 

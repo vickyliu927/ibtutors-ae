@@ -8,9 +8,7 @@ export interface TestimonialSectionData {
   totalReviews: number;
   subtitle: string;
   tutorChaseLink?: string;
-  selectedTestimonials?: {
-    _ref: string;
-  }[];
+  selectedTestimonials?: string[] | { _ref: string }[];
   maxDisplayCount?: number;
 }
 
@@ -61,7 +59,9 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
   // Filter testimonials if selectedTestimonials is provided
   let displayTestimonials = testimonials;
   if (sectionData.selectedTestimonials && sectionData.selectedTestimonials.length > 0) {
-    const selectedIds = sectionData.selectedTestimonials.map(item => item._ref);
+    const selectedIds = sectionData.selectedTestimonials.map(item => 
+      typeof item === 'string' ? item : item._ref
+    );
     displayTestimonials = testimonials.filter(testimonial => 
       selectedIds.includes(testimonial._id)
     );
