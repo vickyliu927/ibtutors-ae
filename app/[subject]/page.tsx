@@ -34,6 +34,8 @@ interface SubjectPageData {
     smallTextBeforeTitle?: string;
     sectionTitle?: string;
     description?: string;
+    ctaLinkText?: string;
+    ctaLink?: string;
   };
   tutorsList: any[];
   testimonials: any[];
@@ -203,6 +205,19 @@ export default async function SubjectPage({ params }: { params: { subject: strin
           {pageData.tutorsListSectionHead?.description && (
             <p className="text-gray-600 mb-8">
               {pageData.tutorsListSectionHead.description}
+            </p>
+          )}
+
+          {pageData.tutorsListSectionHead?.ctaLinkText && pageData.tutorsListSectionHead?.ctaLink && (
+            <p className="text-orange-500 hover:text-orange-600 mb-8">
+              <a 
+                href={pageData.tutorsListSectionHead.ctaLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors"
+              >
+                {pageData.tutorsListSectionHead.ctaLinkText}
+              </a>
             </p>
           )}
 

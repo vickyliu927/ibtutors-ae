@@ -73,6 +73,18 @@ export default defineType({
           title: 'Description',
           type: 'text',
         },
+        {
+          name: 'ctaLinkText',
+          title: 'Call-to-Action Link Text',
+          type: 'string',
+          description: 'Text that will be displayed as a link (e.g., "View all our IB Maths tutors on TutorChase, the world\'s #1 IB tutoring provider")',
+        },
+        {
+          name: 'ctaLink',
+          title: 'Call-to-Action Link URL',
+          type: 'url',
+          description: 'URL where the link text will direct to',
+        },
       ],
     }),
     defineField({
