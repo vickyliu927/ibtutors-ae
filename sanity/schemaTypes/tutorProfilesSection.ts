@@ -29,13 +29,6 @@ export default defineType({
       type: 'url',
       description: 'URL where the link text will direct to',
     }),
-    defineField({
-      name: 'tutors',
-      title: 'Featured Tutors',
-      type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'tutor' }] }],
-      description: 'Select the tutors to display in this section',
-    }),
   ],
   preview: {
     select: {
