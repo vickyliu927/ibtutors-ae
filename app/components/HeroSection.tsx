@@ -118,7 +118,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
                 src={urlFor(heroData.mainImage).url()}
                 alt="Tutor"
                 fill
-                className="object-contain object-bottom scale-90 translate-y-4"
+                className="object-contain object-bottom scale-90 translate-y-8"
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
                 onError={() => setImageError(true)}
