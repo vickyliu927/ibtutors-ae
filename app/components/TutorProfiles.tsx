@@ -21,6 +21,11 @@ export interface TutorData {
   };
   yearsOfExperience: number;
   hireButtonLink: string;
+  profilePDF?: {
+    asset: {
+      url: string;
+    }
+  };
   price?: {
     amount: number;
     currency: string;
@@ -192,12 +197,24 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
 
                 {/* Button */}
                 <div className="mt-4">
-                  <Link
-                    href={tutor.hireButtonLink || '/contact'}
-                    className="w-full bg-blue-800 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-all font-medium text-center block"
-                  >
-                    Hire a tutor
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      href={tutor.hireButtonLink || '/contact'}
+                      className="bg-blue-800 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-all font-medium text-center block"
+                    >
+                      Hire a tutor
+                    </Link>
+                    {tutor.profilePDF?.asset?.url && (
+                      <a
+                        href={tutor.profilePDF.asset.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gray-200 text-gray-800 px-4 py-3 rounded-md hover:bg-gray-300 transition-all font-medium text-center block"
+                      >
+                        View Profile
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -261,9 +278,9 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                         <div className="mt-2 text-right">
                           <div className="flex justify-end items-center gap-1">
                             <p className="font-medium text-gray-600 whitespace-nowrap">Rate:</p>
-                            <p className="text-blue-800 font-medium">
+                          <p className="text-blue-800 font-medium">
                               {tutor.price.displayText || `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
-                            </p>
+                          </p>
                           </div>
                         </div>
                       )}
@@ -273,12 +290,24 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
                   <p className="text-gray-600 mb-6">{tutor.experience}</p>
 
                   <div>
-                    <Link
-                      href={tutor.hireButtonLink || '/contact'}
-                      className="bg-blue-800 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-all font-medium"
-                    >
-                      Hire a tutor
-                    </Link>
+                    <div className="flex gap-3">
+                      <Link
+                        href={tutor.hireButtonLink || '/contact'}
+                        className="bg-blue-800 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-all font-medium"
+                      >
+                        Hire a tutor
+                      </Link>
+                      {tutor.profilePDF?.asset?.url && (
+                        <a
+                          href={tutor.profilePDF.asset.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-gray-200 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-300 transition-all font-medium"
+                        >
+                          View Profile
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

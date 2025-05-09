@@ -120,6 +120,12 @@ export default defineType({
       validation: (Rule: any) => Rule.required(),
     }),
     defineField({
+      name: 'profilePDF',
+      title: 'Profile PDF',
+      type: 'file',
+      description: 'PDF file that will be available through the "View Profile" button',
+    }),
+    defineField({
       name: 'price',
       title: 'Hourly Rate',
       type: 'object',

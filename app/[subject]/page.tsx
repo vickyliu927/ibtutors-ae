@@ -72,7 +72,13 @@ async function getSubjectPageData(subject: string) {
       profilePhoto,
       specialization,
       yearsOfExperience,
-      hireButtonLink
+      hireButtonLink,
+      profilePDF {
+        asset-> {
+          url
+        }
+      },
+      price
     },
     testimonials[]->{
       _id,
