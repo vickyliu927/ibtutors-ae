@@ -73,7 +73,7 @@ async function getSubjectPageData(subject: string) {
   }
 
   // Then use the subject page ID to fetch tutors that reference this subject page
-  const tutorsQuery = `*[_type == "tutor" && references($subjectPageId) in displayOnSubjectPages[]] {
+  const tutorsQuery = `*[_type == "tutor" && $subjectPageId in displayOnSubjectPages[]._ref] {
     _id,
     name,
     professionalTitle,
@@ -84,6 +84,7 @@ async function getSubjectPageData(subject: string) {
     specialization,
     yearsOfExperience,
     hireButtonLink,
+    displayOnSubjectPages,
     profilePDF {
       asset-> {
         url
@@ -96,6 +97,8 @@ async function getSubjectPageData(subject: string) {
     totalLessons,
     languagesSpoken
   }`;
+  
+  console.log('Tutors query:', tutorsQuery);
   
   // Get additional subject page data and testimonials
   const additionalDataQuery = `*[_type == "subjectPage" && slug.current == $subject][0]{
@@ -129,6 +132,11 @@ async function getSubjectPageData(subject: string) {
     client.fetch(additionalDataQuery, { subject }, { next: { revalidate: 0 } }),
     client.fetch<TestimonialSectionData>(testimonialSectionQuery, {}, { next: { revalidate: 0 } })
   ]);
+
+  // Debug logs
+  console.log('Subject ID:', subjectPage._id);
+  console.log('Tutors found:', tutors.length);
+  console.log('Tutor data:', JSON.stringify(tutors));
 
   // Combine the data
   const pageData = {
