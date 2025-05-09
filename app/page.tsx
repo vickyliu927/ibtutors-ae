@@ -37,7 +37,14 @@ async function getHomePageData() {
         crop
       }
     }`;
-    const testimonialSectionQuery = `*[_type == "testimonial_section"][0]`;
+    const testimonialSectionQuery = `*[_type == "testimonialSection"][0]{
+      rating,
+      totalReviews,
+      subtitle,
+      tutorChaseLink,
+      maxDisplayCount,
+      "selectedTestimonials": selectedTestimonials[]->._id
+    }`;
     const testimonialsQuery = `*[_type == "testimonial"] | order(order asc)`;
 
     console.log('Fetching data from Sanity...'); // Debug log

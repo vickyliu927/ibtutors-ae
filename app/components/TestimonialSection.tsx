@@ -8,6 +8,10 @@ export interface TestimonialSectionData {
   totalReviews: number;
   subtitle: string;
   tutorChaseLink?: string;
+  selectedTestimonials?: {
+    _ref: string;
+  }[];
+  maxDisplayCount?: number;
 }
 
 export interface TestimonialData {
@@ -54,6 +58,29 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
     );
   }
 
+  // Filter testimonials if selectedTestimonials is provided
+  let displayTestimonials = testimonials;
+  if (sectionData.selectedTestimonials && sectionData.selectedTestimonials.length > 0) {
+    const selectedIds = sectionData.selectedTestimonials.map(item => item._ref);
+    displayTestimonials = testimonials.filter(testimonial => 
+      selectedIds.includes(testimonial._id)
+    );
+  }
+
+  // Sort by order field
+  displayTestimonials = displayTestimonials.sort((a, b) => a.order - b.order);
+
+  // Apply max display count (default to 6 if not specified, with min of 1)
+  const maxCount = sectionData.maxDisplayCount ? 
+    Math.min(Math.max(sectionData.maxDisplayCount, 1), 6) : 6;
+  
+  displayTestimonials = displayTestimonials.slice(0, maxCount);
+
+  // Ensure we have at least one testimonial to display
+  if (displayTestimonials.length === 0 && testimonials.length > 0) {
+    displayTestimonials = [testimonials[0]];
+  }
+
   return (
     <section className="py-16 bg-pink-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,57 +105,34 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
           </p>
         </div>
 
-        {testimonials.length === 1 ? (
+        {displayTestimonials.length === 1 ? (
           <div className="flex justify-center">
             <div className="w-full max-w-xl">
               <div className="bg-white p-8 rounded-lg shadow-sm h-[320px] flex items-center justify-center">
                 <div>
-                  <div className="flex justify-center mb-4">
-                    <StarRating rating={testimonials[0].rating} />
-                  </div>
-                  <blockquote className="text-center mb-6">
-                    <p className="text-gray-600 italic">"{testimonials[0].testimonialText}"</p>
-                  </blockquote>
-                  <div className="text-center">
-                    <p className="font-semibold">{testimonials[0].reviewerName}</p>
-                    <p className="text-gray-500 text-sm">{testimonials[0].reviewerType}</p>
+                <div className="flex justify-center mb-4">
+                  <StarRating rating={displayTestimonials[0].rating} />
+                </div>
+                <blockquote className="text-center mb-6">
+                  <p className="text-gray-600 italic">"{displayTestimonials[0].testimonialText}"</p>
+                </blockquote>
+                <div className="text-center">
+                  <p className="font-semibold">{displayTestimonials[0].reviewerName}</p>
+                  <p className="text-gray-500 text-sm">{displayTestimonials[0].reviewerType}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        ) : testimonials.length === 2 ? (
+        ) : displayTestimonials.length === 2 ? (
           <div className="flex justify-center">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-              {testimonials.map((testimonial) => (
+              {displayTestimonials.map((testimonial) => (
                 <div
                   key={testimonial._id}
                   className="bg-white p-8 rounded-lg shadow-sm w-full h-[320px] flex items-center justify-center"
                 >
                   <div>
-                    <div className="flex justify-center mb-4">
-                      <StarRating rating={testimonial.rating} />
-                    </div>
-                    <blockquote className="text-center mb-6">
-                      <p className="text-gray-600 italic">"{testimonial.testimonialText}"</p>
-                    </blockquote>
-                    <div className="text-center">
-                      <p className="font-semibold">{testimonial.reviewerName}</p>
-                      <p className="text-gray-500 text-sm">{testimonial.reviewerType}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
-              <div
-                key={testimonial._id}
-                className="bg-white p-8 rounded-lg shadow-sm w-full max-w-md mx-auto h-[320px] flex items-center justify-center"
-              >
-                <div>
                   <div className="flex justify-center mb-4">
                     <StarRating rating={testimonial.rating} />
                   </div>
@@ -138,6 +142,29 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
                   <div className="text-center">
                     <p className="font-semibold">{testimonial.reviewerName}</p>
                     <p className="text-gray-500 text-sm">{testimonial.reviewerType}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayTestimonials.map((testimonial) => (
+              <div
+                key={testimonial._id}
+                className="bg-white p-8 rounded-lg shadow-sm w-full max-w-md mx-auto h-[320px] flex items-center justify-center"
+              >
+                <div>
+                <div className="flex justify-center mb-4">
+                  <StarRating rating={testimonial.rating} />
+                </div>
+                <blockquote className="text-center mb-6">
+                  <p className="text-gray-600 italic">"{testimonial.testimonialText}"</p>
+                </blockquote>
+                <div className="text-center">
+                  <p className="font-semibold">{testimonial.reviewerName}</p>
+                  <p className="text-gray-500 text-sm">{testimonial.reviewerType}</p>
                   </div>
                 </div>
               </div>

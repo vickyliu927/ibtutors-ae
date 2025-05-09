@@ -32,6 +32,21 @@ export default defineType({
       type: 'url',
       description: 'The URL that "TutorChase" text links to',
     }),
+    defineField({
+      name: 'selectedTestimonials',
+      title: 'Selected Testimonials',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'testimonial' }] }],
+      description: 'Choose specific testimonials to display on the homepage (max 6)',
+    }),
+    defineField({
+      name: 'maxDisplayCount',
+      title: 'Maximum Testimonials to Display',
+      type: 'number',
+      validation: (Rule: any) => Rule.required().integer().min(1).max(6),
+      initialValue: 3,
+      description: 'Maximum number of testimonials to display (between 1-6)',
+    }),
   ],
   preview: {
     select: {
