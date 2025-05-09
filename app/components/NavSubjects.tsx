@@ -2,6 +2,7 @@ import { client } from '@/sanity/lib/client';
 
 interface SubjectPageData {
   title: string;
+  subject: string;
   slug: {
     current: string;
   };
@@ -10,6 +11,7 @@ interface SubjectPageData {
 async function getSubjectPages() {
   const query = `*[_type == "subjectPage"] | order(title asc) {
     title,
+    subject,
     slug
   }`;
   

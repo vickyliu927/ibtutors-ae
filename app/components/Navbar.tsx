@@ -56,7 +56,7 @@ const Navbar = () => {
                         href={`/${subject.slug.current}`}
                         className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-800"
                       >
-                        {subject.title}
+                        {subject.subject}
                       </Link>
                     ))}
                   </div>
@@ -103,7 +103,7 @@ const Navbar = () => {
                   href={`/${subject.slug.current}`}
                   className="block pl-3 py-2 text-gray-600 hover:text-blue-800"
                 >
-                  {subject.title}
+                  {subject.subject}
                 </Link>
               ))}
             </div>
