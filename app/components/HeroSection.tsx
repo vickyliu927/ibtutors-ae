@@ -50,7 +50,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   return (
     <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           <div className="space-y-6 self-center pt-12 md:pt-0">
             <h1 className="text-5xl font-bold">
               {heroData.title.split(' ').map((word, index) => (
