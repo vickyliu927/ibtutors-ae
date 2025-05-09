@@ -18,6 +18,18 @@ export default defineType({
       description: 'A brief description or subtitle for the tutor profiles section',
     }),
     defineField({
+      name: 'ctaText',
+      title: 'Call-to-Action Text',
+      type: 'string',
+      description: 'Text that will be displayed as a link (e.g., "View all our Maths tutors on TutorChase, the world\'s top tutoring provider")',
+    }),
+    defineField({
+      name: 'ctaLink',
+      title: 'Call-to-Action Link URL',
+      type: 'url',
+      description: 'URL where the link text will direct to',
+    }),
+    defineField({
       name: 'tutors',
       title: 'Featured Tutors',
       type: 'array',

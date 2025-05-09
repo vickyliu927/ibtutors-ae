@@ -44,9 +44,11 @@ export interface TutorData {
 interface TutorProfilesProps {
   tutors?: TutorData[];
   sectionTitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
-const TutorProfiles = ({ tutors, sectionTitle = "" }: TutorProfilesProps) => {
+const TutorProfiles = ({ tutors, sectionTitle = "", ctaText, ctaLink }: TutorProfilesProps) => {
   if (!tutors) {
     return (
       <section className="py-16 bg-white">
@@ -80,6 +82,20 @@ const TutorProfiles = ({ tutors, sectionTitle = "" }: TutorProfilesProps) => {
         {sectionTitle && (
           <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
         )}
+        
+        {ctaText && ctaLink && (
+          <p className="text-orange-500 hover:text-orange-600 mb-8">
+            <a 
+              href={ctaLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors"
+            >
+              {ctaText}
+            </a>
+          </p>
+        )}
+        
         <div className="space-y-6">
           {tutors.map((tutor) => (
             <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">

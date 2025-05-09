@@ -19,6 +19,8 @@ async function getHomePageData() {
     const tutorProfilesSectionQuery = `*[_type == "tutorProfilesSection"][0]{
       title,
       subtitle,
+      ctaText,
+      ctaLink,
       "tutors": *[_type == "tutor" && displayOnHomepage == true] {
         _id,
         name,
@@ -121,6 +123,8 @@ export default async function Home() {
         <TutorProfiles 
           tutors={tutorProfilesSection.tutors} 
           sectionTitle={tutorProfilesSection.title}
+          ctaText={tutorProfilesSection.ctaText}
+          ctaLink={tutorProfilesSection.ctaLink}
         />
       ) : null}
       <SubjectGrid />
