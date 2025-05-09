@@ -61,60 +61,6 @@ export default defineType({
       ],
       description: 'List of platform features (e.g., "Interactive whiteboard", "HD video")',
     }),
-    defineField({
-      name: 'images',
-      title: 'Platform Images',
-      type: 'array',
-      validation: (Rule) => Rule.required().min(1),
-      of: [
-        {
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
-          fields: [
-            {
-              name: 'alt',
-              title: 'Alt Text',
-              type: 'string',
-              description: 'Alternative text for accessibility',
-            },
-            {
-              name: 'caption',
-              title: 'Caption',
-              type: 'string',
-              description: 'Optional caption for the image',
-            },
-          ],
-        },
-      ],
-      description: 'Images showcasing the platform interface and features',
-    }),
-    // Legacy fields
-    defineField({
-      name: 'platformImage',
-      title: 'Platform Image (Legacy)',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    }),
-    defineField({
-      name: 'whiteBoardImage',
-      title: 'Whiteboard Image (Legacy)',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    }),
-    defineField({
-      name: 'documentSharingImage',
-      title: 'Document Sharing Image (Legacy)',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    }),
   ],
   preview: {
     select: {

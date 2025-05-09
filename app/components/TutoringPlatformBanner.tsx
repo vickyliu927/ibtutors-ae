@@ -5,32 +5,11 @@ export interface PlatformFeature {
   description?: string;
 }
 
-export interface PlatformImage {
-  url: string;
-  alt?: string;
-  caption?: string;
-  hotspot?: {
-    x: number;
-    y: number;
-  };
-  crop?: {
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  };
-}
-
 export interface PlatformBannerData {
   title?: string;
   subtitle?: string;
   description?: string;
   features?: PlatformFeature[];
-  images?: PlatformImage[];
-  // Legacy fields
-  platformImage?: any;
-  whiteBoardImage?: any;
-  documentSharingImage?: any;
 }
 
 interface Props {

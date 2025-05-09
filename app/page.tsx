@@ -52,13 +52,6 @@ async function getHomePageData() {
       features[]{
         feature,
         description
-      },
-      "images": images[]{
-        "url": asset->url,
-        "alt": alt,
-        "caption": caption,
-        hotspot,
-        crop
       }
     }`;
     const testimonialSectionQuery = `*[_type == "testimonialSection"][0]{
