@@ -130,7 +130,7 @@ export default defineType({
       name: 'hireButtonLink',
       title: 'Hire Button Link',
       type: 'url',
-      description: 'Link for the "Hire a Tutor" button',
+      description: 'Link for the "Hire a Tutor" button. For subject pages, use /{slug}#contact-form format (e.g., "/online-dubai-english-tutor#contact-form"). For homepage, use "/#contact-form"',
       validation: (Rule: any) => Rule.required(),
     }),
     defineField({

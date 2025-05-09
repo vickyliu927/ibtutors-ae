@@ -233,7 +233,7 @@ const TutorProfiles = ({
                 <div className="mt-4">
                   <div className="grid grid-cols-2 gap-2">
                     <Link
-                      href="/#contact-form"
+                      href={tutor.hireButtonLink || "/#contact-form"}
                       className="bg-blue-800 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-all font-medium text-center block"
                     >
                       Hire a tutor
@@ -326,7 +326,7 @@ const TutorProfiles = ({
                   <div>
                     <div className="flex gap-3">
                       <Link
-                        href="/#contact-form"
+                        href={tutor.hireButtonLink || "/#contact-form"}
                         className="bg-blue-800 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-all font-medium"
                       >
                         Hire a tutor
