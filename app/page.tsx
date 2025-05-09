@@ -123,6 +123,7 @@ export default async function Home() {
         <TutorProfiles 
           tutors={tutorProfilesSection.tutors} 
           sectionTitle={tutorProfilesSection.title}
+          sectionSubtitle={tutorProfilesSection.subtitle}
           ctaText={tutorProfilesSection.ctaText}
           ctaLink={tutorProfilesSection.ctaLink}
         />

@@ -44,17 +44,27 @@ export interface TutorData {
 interface TutorProfilesProps {
   tutors?: TutorData[];
   sectionTitle?: string;
+  sectionSubtitle?: string;
   ctaText?: string;
   ctaLink?: string;
 }
 
-const TutorProfiles = ({ tutors, sectionTitle = "", ctaText, ctaLink }: TutorProfilesProps) => {
+const TutorProfiles = ({ 
+  tutors, 
+  sectionTitle = "", 
+  sectionSubtitle,
+  ctaText, 
+  ctaLink 
+}: TutorProfilesProps) => {
   if (!tutors) {
     return (
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {sectionTitle && (
             <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+          )}
+          {sectionSubtitle && (
+            <p className="text-gray-600 text-lg mb-8">{sectionSubtitle}</p>
           )}
           <div className="space-y-6">
             {[1, 2].map((index) => (
@@ -81,6 +91,10 @@ const TutorProfiles = ({ tutors, sectionTitle = "", ctaText, ctaLink }: TutorPro
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {sectionTitle && (
           <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+        )}
+        
+        {sectionSubtitle && (
+          <p className="text-gray-600 text-lg mb-6">{sectionSubtitle}</p>
         )}
         
         {ctaText && ctaLink && (
