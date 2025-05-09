@@ -46,12 +46,14 @@ interface TutorProfilesProps {
   sectionTitle?: string;
 }
 
-const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and Examiners" }: TutorProfilesProps) => {
+const TutorProfiles = ({ tutors, sectionTitle = "" }: TutorProfilesProps) => {
   if (!tutors) {
     return (
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+          {sectionTitle && (
+            <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+          )}
           <div className="space-y-6">
             {[1, 2].map((index) => (
               <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden animate-pulse">
@@ -75,7 +77,9 @@ const TutorProfiles = ({ tutors, sectionTitle = "Our Qualified IB Teachers and E
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+        {sectionTitle && (
+          <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+        )}
         <div className="space-y-6">
           {tutors.map((tutor) => (
             <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
