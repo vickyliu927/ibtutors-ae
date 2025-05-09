@@ -33,8 +33,6 @@ export const structure = (S: StructureBuilder) =>
                         .schemaType('tutorProfilesSection')
                         .title('Tutor Profiles Section')
                         .id('tutorProfilesSection'),
-                      S.documentTypeListItem('subject')
-                        .title('Subjects'),
                       S.documentListItem()
                         .schemaType('platformBanner')
                         .title('Platform Banner')
@@ -88,7 +86,6 @@ export const structure = (S: StructureBuilder) =>
             'hero',
             'tutor',
             'tutorProfilesSection',
-            'subject',
             'platformBanner',
             'testimonial',
             'testimonialSection',
