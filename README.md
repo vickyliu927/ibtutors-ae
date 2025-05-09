@@ -33,11 +33,12 @@ This is a boilerplate for creating tutor websites using Next.js and Tailwind CSS
 │   ├── globals.css   # Global styles and Tailwind imports
 │   ├── layout.tsx    # Root layout
 │   └── page.tsx      # Home page
-├── data/            # JSON data files
-│   ├── subjects.json
-│   └── tutors.json
+├── data/            # JSON data files (deprecated - using Sanity now)
 ├── public/          # Static assets
 │   └── images/
+├── sanity/          # Sanity CMS integration
+│   ├── lib/         # Sanity utility functions
+│   └── schemaTypes/ # Content schemas
 ├── next.config.js  # Next.js configuration
 ├── postcss.config.js
 ├── tailwind.config.ts
@@ -46,11 +47,10 @@ This is a boilerplate for creating tutor websites using Next.js and Tailwind CSS
 
 ## Customization
 
-1. Update `data/tutors.json` with your tutor information
-2. Update `data/subjects.json` with your subject list
-3. Add your images to `public/images/`
-4. Modify the color scheme in `tailwind.config.ts`
-5. Update content in components under `app/components/`
+1. Add your images to `public/images/`
+2. Modify the color scheme in `tailwind.config.ts`
+3. Update content through the Sanity Studio interface
+4. Modify components under `app/components/` as needed
 
 ## Dependencies
 
