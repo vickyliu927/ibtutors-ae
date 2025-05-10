@@ -40,8 +40,8 @@ const TutoringPlatformBanner = ({ data }: Props) => {
         </div>
 
         <div className="flex flex-wrap items-center">
-          <div className="w-full lg:w-1/2 mb-8 lg:mb-0">
-            <div className="relative">
+          <div className="w-full lg:w-1/2 mb-8 lg:mb-0 flex justify-center">
+            <div className="relative max-w-md mx-auto w-full">
               {/* Decorative dots */}
               <div className="absolute -top-4 -left-4">
                 <div className="flex space-x-1">
@@ -51,12 +51,12 @@ const TutoringPlatformBanner = ({ data }: Props) => {
                 </div>
               </div>
                 
-              {/* Local platform image */}
-              <div className="w-full">
+              {/* Local platform image - updated for mobile responsiveness */}
+              <div className="w-full px-4 sm:px-8 md:px-12">
                 <img 
                   src="/images/tutoring-platform.jpg" 
                   alt="Online tutoring platform"
-                  className="rounded-lg object-cover w-full h-[350px]"
+                  className="rounded-lg object-contain w-full h-[300px] sm:h-[350px]"
                 />
               </div>
 
@@ -72,13 +72,13 @@ const TutoringPlatformBanner = ({ data }: Props) => {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/2 lg:pl-12">
-            <p className="text-gray-700 mb-8">{description}</p>
+          <div className="w-full lg:w-1/2 lg:pl-12 px-4 sm:px-8 mx-auto">
+            <p className="text-gray-700 mb-8 text-center lg:text-left">{description}</p>
 
-            <ul className="space-y-4">
+            <ul className="space-y-4 max-w-md mx-auto lg:mx-0">
               {features.map((feature, index) => (
                 <li key={index} className="flex items-center">
-                  <svg className="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-blue-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                   </svg>
                   <span>{feature.feature}</span>
