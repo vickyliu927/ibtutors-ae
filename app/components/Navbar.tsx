@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSubjectPages, type SubjectPageData } from './NavSubjects';
@@ -8,6 +8,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -36,19 +37,22 @@ const Navbar = () => {
           <div className="hidden md:flex md:items-center md:space-x-8">
             {/* Subjects Dropdown */}
             <div 
-              className="relative group"
+              className="relative"
+              ref={dropdownRef}
               onMouseEnter={() => setShowSubjectsDropdown(true)}
               onMouseLeave={() => setShowSubjectsDropdown(false)}
             >
-              <button className="text-gray-700 hover:text-blue-800 flex items-center">
+              <button 
+                className="text-gray-700 hover:text-blue-800 flex items-center px-4 py-2 rounded-md hover:bg-gray-50"
+              >
                 All Subjects
-                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               
               {showSubjectsDropdown && (
-                <div className="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg z-50">
+                <div className="absolute left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                   <div className="py-2">
                     {subjects.map((subject) => (
                       <Link
