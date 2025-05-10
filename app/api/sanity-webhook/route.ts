@@ -26,7 +26,13 @@ export async function POST(request: NextRequest) {
     if (body.slug?.current) {
       revalidatePath(`/${body.slug.current}`);
     }
+    
+    // Always revalidate the homepage and sitemap
     revalidatePath('/');
+    revalidatePath('/sitemap.xml');
+    
+    // Log the revalidation
+    console.log(`Revalidated paths: /, /sitemap.xml${body.slug?.current ? `, /${body.slug.current}` : ''} at ${new Date().toISOString()}`);
 
     return NextResponse.json({ revalidated: true, now: Date.now() });
   } catch (err: any) {
