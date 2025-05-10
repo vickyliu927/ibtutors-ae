@@ -116,8 +116,8 @@ const TutorProfiles = ({
               {/* Mobile view (stacked) */}
               <div className="md:hidden">
                 <div className="flex">
-                  {/* Profile Image - No padding, full height */}
-                  <div className="w-32 h-auto relative flex-shrink-0">
+                  {/* Profile Image - Square format */}
+                  <div className="w-32 h-32 relative flex-shrink-0">
                     {tutor.profilePhoto ? (
                       <Image
                         src={urlFor(tutor.profilePhoto).url()}
@@ -139,10 +139,10 @@ const TutorProfiles = ({
                   <div className="flex-1 p-4">
                     <h3 className="text-2xl font-bold">{tutor.name}</h3>
                     
-                    {/* Professional Title with orange diamond icon */}
+                    {/* Professional Title with diamond icon */}
                     <div className="flex items-center mt-2">
                       <svg className="w-5 h-5 text-orange-500 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L1 21h22L12 2z" transform="rotate(45, 12, 12)" />
+                        <path d="M12 2L4 10L12 22L20 10L12 2Z" />
                       </svg>
                       <p className="text-black font-medium">{tutor.professionalTitle}</p>
                     </div>
