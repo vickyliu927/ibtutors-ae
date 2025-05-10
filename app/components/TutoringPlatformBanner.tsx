@@ -41,33 +41,14 @@ const TutoringPlatformBanner = ({ data }: Props) => {
 
         <div className="flex flex-wrap items-center">
           <div className="w-full lg:w-1/2 mb-8 lg:mb-0 flex justify-center">
-            <div className="relative max-w-md mx-auto w-full">
-              {/* Decorative dots */}
-              <div className="absolute -top-4 -left-4">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                  <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                </div>
-              </div>
-                
-              {/* Local platform image - updated for mobile and desktop */}
+            <div className="relative w-full">
+              {/* Platform image - enlarged for desktop */}
               <div className="w-full px-4 sm:px-8 md:px-12 lg:px-0">
                 <img 
                   src="/images/tutoring-platform.jpg" 
                   alt="Online tutoring platform"
-                  className="rounded-lg w-full h-[300px] sm:h-[350px] lg:h-[500px] object-contain"
+                  className="rounded-lg w-full h-[300px] sm:h-[350px] lg:h-[550px] object-contain"
                 />
-              </div>
-
-              {/* Control icons */}
-              <div className="flex justify-center mt-4 space-x-2">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">⌘</span>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">⌥</span>
-                </div>
               </div>
             </div>
           </div>
