@@ -114,17 +114,17 @@ const TutorProfiles = ({
           {tutors.map((tutor) => (
             <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
               {/* Mobile view (stacked) */}
-              <div className="md:hidden p-4">
-                <div className="flex items-start gap-4">
-                  {/* Profile Image */}
-                  <div className="w-24 h-24 relative flex-shrink-0 rounded-md overflow-hidden">
+              <div className="md:hidden">
+                <div className="flex">
+                  {/* Profile Image - No padding, full height */}
+                  <div className="w-32 h-auto relative flex-shrink-0">
                     {tutor.profilePhoto ? (
                       <Image
                         src={urlFor(tutor.profilePhoto).url()}
                         alt={`${tutor.name}`}
                         fill
                         className="object-cover"
-                        sizes="96px"
+                        sizes="128px"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">
@@ -135,120 +135,55 @@ const TutorProfiles = ({
                     )}
                   </div>
 
-                  {/* Tutor Basic Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-xl font-bold">{tutor.name}</h3>
+                  {/* Tutor Basic Info - Right of image */}
+                  <div className="flex-1 p-4">
+                    <h3 className="text-2xl font-bold">{tutor.name}</h3>
+                    
+                    {/* Professional Title with orange diamond icon */}
+                    <div className="flex items-center mt-2">
+                      <svg className="w-5 h-5 text-orange-500 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L1 21h22L12 2z" transform="rotate(45, 12, 12)" />
+                      </svg>
+                      <p className="text-black font-medium">{tutor.professionalTitle}</p>
                     </div>
-                    {tutor.personallyInterviewed && (
-                      <div className="flex items-center text-orange-500 mb-2">
-                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-sm font-medium">Personally Interviewed</span>
-                      </div>
-                    )}
-
-                    {/* Rating and Price side by side */}
-                    <div className="flex items-center justify-between mt-2">
-                      <div>
-                        {tutor.rating && (
-                          <div className="flex items-center">
-                            <svg className="w-5 h-5 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                            </svg>
-                            <span className="font-bold text-xl">{tutor.rating}</span>
-                            <span className="text-gray-500 text-sm ml-2">{tutor.reviewCount || 0} reviews</span>
-                          </div>
-                        )}
-                      </div>
-                      {tutor.price && (
-                        <div className="text-right">
-                          <p className="font-bold text-xl">
-                            {tutor.price.currency}{tutor.price.amount}
-                          </p>
-                        </div>
-                      )}
+                    
+                    {/* Education with graduation cap icon */}
+                    <div className="flex items-start mt-2">
+                      <svg className="w-5 h-5 text-black mr-2 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                      </svg>
+                      <p className="text-black font-medium">
+                        {tutor.specialization.mainSubject} | {tutor.education.university} | {tutor.education.degree}
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Specialization */}
-                <div className="mt-4">
-                  <div className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-gray-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                    <span className="font-medium">{tutor.specialization.mainSubject}</span>
-                  </div>
-                </div>
-
-                {/* Student count and lessons */}
-                {(tutor.activeStudents || tutor.totalLessons) && (
-                  <div className="mt-2">
-                    <div className="flex items-start gap-2">
-                      <svg className="w-5 h-5 text-gray-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                      <span className="font-medium">
-                        {tutor.activeStudents ? `${tutor.activeStudents} active students` : ''} 
-                        {tutor.activeStudents && tutor.totalLessons ? ' • ' : ''}
-                        {tutor.totalLessons ? `${tutor.totalLessons.toLocaleString()} lessons` : ''}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Languages */}
-                {tutor.languagesSpoken && tutor.languagesSpoken.length > 0 && (
-                  <div className="mt-2">
-                    <div className="flex items-start gap-2">
-                      <svg className="w-5 h-5 text-gray-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                      </svg>
-                      <span className="font-medium">
-                        Speaks {tutor.languagesSpoken.map((lang, i) => (
-                          <React.Fragment key={i}>
-                            {i > 0 && ', '}
-                            {lang.language} ({lang.proficiency})
-                          </React.Fragment>
-                        ))}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Bio */}
-                <div className="mt-4">
-                  <h4 className="font-bold text-lg">{tutor.professionalTitle}</h4>
-                  <p className="text-gray-600 mt-1">
-                    {tutor.experience?.substring(0, 100)}{tutor.experience?.length > 100 ? '...' : ''}
+                {/* Bio - Full width below image and info */}
+                <div className="p-4 pt-0">
+                  <p className="text-black">
+                    {tutor.experience}
                   </p>
-                  <Link href="#" className="text-black font-bold mt-1 inline-block underline">
-                    Read more
-                  </Link>
                 </div>
 
                 {/* Button */}
-                <div className="mt-4">
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link
-                      href={tutor.hireButtonLink || "/#contact-form"}
-                      className="bg-blue-800 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-all font-medium text-center block"
+                <div className="p-4 pt-0">
+                  <Link
+                    href={tutor.hireButtonLink || "/#contact-form"}
+                    className="bg-blue-800 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-all font-medium text-center block w-full md:w-auto md:inline-block"
+                  >
+                    Hire a Tutor
+                  </Link>
+                  {tutor.profilePDF?.asset?.url && (
+                    <a
+                      href={tutor.profilePDF.asset.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-gray-200 text-gray-800 px-4 py-3 rounded-md hover:bg-gray-300 transition-all font-medium text-center block w-full mt-2 md:mt-0 md:ml-2 md:w-auto md:inline-block"
                     >
-                      Hire a tutor
-                    </Link>
-                    {tutor.profilePDF?.asset?.url && (
-                      <a
-                        href={tutor.profilePDF.asset.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-gray-200 text-gray-800 px-4 py-3 rounded-md hover:bg-gray-300 transition-all font-medium text-center block"
-                      >
-                        View Profile
-                      </a>
-                    )}
-                  </div>
+                      View Profile
+                    </a>
+                  )}
                 </div>
               </div>
 
