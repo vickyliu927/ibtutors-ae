@@ -185,6 +185,18 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
             ))}
           </div>
         )}
+        
+        {/* Read our verified reviews button */}
+        <div className="flex justify-center mt-12">
+          <a 
+            href="https://www.reviews.co.uk/company-reviews/store/tutorchase" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="bg-blue-800 text-white font-semibold py-4 px-8 rounded-lg text-lg hover:bg-blue-700 transition-colors"
+          >
+            Read our verified reviews
+          </a>
+        </div>
       </div>
     </section>
   );
