@@ -9,6 +9,22 @@ const Navbar = () => {
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setShowSubjectsDropdown(true);
+  };
+
+  const handleMouseLeave = () => {
+    // Add a slight delay before closing the dropdown
+    timeoutRef.current = setTimeout(() => {
+      setShowSubjectsDropdown(false);
+    }, 300); // 300ms delay
+  };
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -21,6 +37,13 @@ const Navbar = () => {
     };
 
     fetchSubjects();
+
+    // Clean up timeout on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -39,11 +62,11 @@ const Navbar = () => {
             <div 
               className="relative"
               ref={dropdownRef}
-              onMouseEnter={() => setShowSubjectsDropdown(true)}
-              onMouseLeave={() => setShowSubjectsDropdown(false)}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
               <button 
-                className="text-gray-700 hover:text-blue-800 flex items-center px-4 py-2 rounded-md hover:bg-gray-50"
+                className={`text-gray-700 hover:text-blue-800 flex items-center px-4 py-2 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
               >
                 All Subjects
                 <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,8 +75,12 @@ const Navbar = () => {
               </button>
               
               {showSubjectsDropdown && (
-                <div className="absolute left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                  <div className="py-2">
+                <div 
+                  className="absolute left-0 mt-0 pt-1 w-56 z-50" 
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
                     {subjects.map((subject) => (
                       <Link
                         key={subject.slug.current}
