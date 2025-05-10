@@ -18,6 +18,14 @@ export default defineType({
       validation: Rule => Rule.required(),
     }),
     defineField({
+      name: 'displayOrder',
+      title: 'Navigation Display Order',
+      type: 'number',
+      description: 'Controls the order in which this subject appears in navigation menus (lower numbers appear first)',
+      validation: Rule => Rule.required().precision(0).positive(),
+      initialValue: 100,
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',

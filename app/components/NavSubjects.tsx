@@ -6,13 +6,15 @@ interface SubjectPageData {
   slug: {
     current: string;
   };
+  displayOrder: number;
 }
 
 async function getSubjectPages() {
-  const query = `*[_type == "subjectPage"] | order(title asc) {
+  const query = `*[_type == "subjectPage"] | order(displayOrder asc) {
     title,
     subject,
-    slug
+    slug,
+    displayOrder
   }`;
   
   return client.fetch<SubjectPageData[]>(query);
