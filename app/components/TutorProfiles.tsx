@@ -21,6 +21,7 @@ export interface TutorData {
   };
   yearsOfExperience: number;
   hireButtonLink: string;
+  displayOrder?: number;
   profilePDF?: {
     asset: {
       url: string;

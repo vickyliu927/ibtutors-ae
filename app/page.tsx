@@ -21,7 +21,7 @@ async function getHomePageData() {
       subtitle,
       ctaText,
       ctaLink,
-      "tutors": *[_type == "tutor" && displayOnHomepage == true] {
+      "tutors": *[_type == "tutor" && displayOnHomepage == true] | order(displayOrder asc) {
         _id,
         name,
         professionalTitle,
@@ -32,6 +32,7 @@ async function getHomePageData() {
         specialization,
         yearsOfExperience,
         hireButtonLink,
+        displayOrder,
         profilePDF {
           asset-> {
             url

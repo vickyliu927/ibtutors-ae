@@ -19,6 +19,14 @@ export default defineType({
       description: 'e.g., "Professional IB Tutor", "IB Mathematics Tutor"',
     }),
     defineField({
+      name: 'displayOrder',
+      title: 'Display Order',
+      type: 'number',
+      description: 'Controls the order in which tutors appear (lower numbers appear first). Set for both homepage and subject pages.',
+      validation: (Rule: any) => Rule.required().precision(0).positive(),
+      initialValue: 100,
+    }),
+    defineField({
       name: 'personallyInterviewed',
       title: 'Personally Interviewed',
       type: 'boolean',

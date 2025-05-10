@@ -73,7 +73,7 @@ async function getSubjectPageData(subject: string) {
   }
 
   // Then use the subject page ID to fetch tutors that reference this subject page
-  const tutorsQuery = `*[_type == "tutor" && $subjectPageId in displayOnSubjectPages[]._ref] {
+  const tutorsQuery = `*[_type == "tutor" && $subjectPageId in displayOnSubjectPages[]._ref] | order(displayOrder asc) {
     _id,
     name,
     professionalTitle,
@@ -85,6 +85,7 @@ async function getSubjectPageData(subject: string) {
     yearsOfExperience,
     hireButtonLink,
     displayOnSubjectPages,
+    displayOrder,
     profilePDF {
       asset-> {
         url
