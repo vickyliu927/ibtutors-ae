@@ -56,7 +56,7 @@ const TutoringPlatformBanner = ({ data }: Props) => {
                 <img 
                   src="/images/tutoring-platform.jpg" 
                   alt="Online tutoring platform"
-                  className="rounded-lg w-full h-[300px] sm:h-[350px] lg:h-[500px] object-contain lg:object-cover"
+                  className="rounded-lg w-full h-[300px] sm:h-[350px] lg:h-[500px] object-contain"
                 />
               </div>
 
