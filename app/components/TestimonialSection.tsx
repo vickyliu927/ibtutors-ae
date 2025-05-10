@@ -192,7 +192,7 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
             href="https://www.reviews.co.uk/company-reviews/store/tutorchase" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="inline-block bg-blue-800 text-white font-normal text-center text-2xl py-3 px-10 rounded-md hover:bg-blue-700 transition-all w-64 sm:w-auto"
+            className="inline-block bg-blue-800 text-white font-normal text-center text-lg py-3 px-10 rounded-md hover:bg-blue-700 transition-all w-64 sm:w-auto"
           >
             Read our verified reviews
           </a>
