@@ -21,7 +21,7 @@ export default defineType({
       name: 'displayOrder',
       title: 'Navigation Display Order',
       type: 'number',
-      description: 'Controls the order in which this subject appears in navigation menus (lower numbers appear first)',
+      description: 'Controls the order in which this subject appears in navigation menus and the homepage grid (lower numbers appear first)',
       validation: Rule => Rule.required().precision(0).positive(),
       initialValue: 100,
     }),

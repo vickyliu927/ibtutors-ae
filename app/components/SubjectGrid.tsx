@@ -11,6 +11,7 @@ interface SubjectPageData {
   slug: {
     current: string;
   };
+  displayOrder: number;
   firstSection: {
     title: string;
     highlightedWords?: string[];
@@ -29,11 +30,12 @@ const SubjectGrid = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const data = await client.fetch<SubjectPageData[]>(`*[_type == "subjectPage"] | order(title asc) {
+        const data = await client.fetch<SubjectPageData[]>(`*[_type == "subjectPage"] | order(displayOrder asc) {
           _id,
           title,
           subject,
           slug,
+          displayOrder,
           firstSection
         }`);
         setSubjects(data);
