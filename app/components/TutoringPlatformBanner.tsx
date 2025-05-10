@@ -32,15 +32,15 @@ const TutoringPlatformBanner = ({ data }: Props) => {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-8 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <p className="text-gray-600 uppercase tracking-wide mb-3">{subtitle}</p>
+        <div className="text-center mb-6">
+          <p className="text-gray-600 uppercase tracking-wide mb-2">{subtitle}</p>
           <h2 className="text-3xl font-bold">{title}</h2>
         </div>
 
         <div className="flex flex-wrap items-center">
-          <div className="w-full lg:w-1/2 mb-8 lg:mb-0 flex justify-center">
+          <div className="w-full lg:w-1/2 mb-6 lg:mb-0 flex justify-center">
             <div className="relative w-full">
               {/* Platform image - enlarged for desktop */}
               <div className="w-full px-4 sm:px-8 md:px-12 lg:px-0">
@@ -54,9 +54,9 @@ const TutoringPlatformBanner = ({ data }: Props) => {
           </div>
 
           <div className="w-full lg:w-1/2 lg:pl-12 px-4 sm:px-8 mx-auto">
-            <p className="text-gray-700 mb-8 text-center lg:text-left">{description}</p>
+            <p className="text-gray-700 mb-6 text-center lg:text-left">{description}</p>
 
-            <ul className="space-y-4 max-w-md mx-auto lg:mx-0">
+            <ul className="space-y-3 max-w-md mx-auto lg:mx-0">
               {features.map((feature, index) => (
                 <li key={index} className="flex items-center">
                   <svg className="w-5 h-5 text-blue-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
