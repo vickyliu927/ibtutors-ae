@@ -45,7 +45,9 @@ export default defineConfig({
       'https://ibtutorsae-c4ingsmn1-vicky-lius-projects.vercel.app',
       'https://ibtutorsae.vercel.app',
       'https://dubai-tutors.vercel.app',
-      'https://dubai-tutors-*.vercel.app'
+      'https://dubai-tutors-*.vercel.app',
+      'https://dubaitutors.ae',
+      'https://www.dubaitutors.ae'
     ]
   },
   api: {

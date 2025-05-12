@@ -27,7 +27,9 @@ export default defineConfig({
     allowOrigins: [
       'http://localhost:3000',
       'https://dubai-tutors.vercel.app',
-      'https://dubai-tutors-*.vercel.app'
+      'https://dubai-tutors-*.vercel.app',
+      'https://dubaitutors.ae',
+      'https://www.dubaitutors.ae'
     ],
     allowCredentials: true,
   }
