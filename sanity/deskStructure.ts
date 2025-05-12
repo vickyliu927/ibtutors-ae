@@ -71,10 +71,6 @@ export const structure = (S: StructureBuilder) =>
                     .items([
                       S.documentTypeListItem('subjectPage')
                         .title('Subject Pages'),
-                      S.documentListItem()
-                        .schemaType('subjectHeader')
-                        .title('Subject Header')
-                        .id('subjectHeader'),
                     ])
                 ),
             ])
@@ -93,7 +89,6 @@ export const structure = (S: StructureBuilder) =>
             'faq_section',
             'contactFormSubmission',
             'footerSection',
-            'subjectHeader',
             'subjectPage',
             'seoSettings',
           ].includes(listItem.getId() || '')
