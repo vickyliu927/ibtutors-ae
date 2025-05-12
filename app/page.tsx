@@ -4,11 +4,12 @@ import HeroSection, { HeroData } from './components/HeroSection';
 import TutorProfiles, { TutorData } from './components/TutorProfiles';
 import SubjectGrid from './components/SubjectGrid';
 import TutoringPlatformBanner, { PlatformBannerData } from './components/TutoringPlatformBanner';
-import TestimonialSection, { TestimonialData, TestimonialSectionData } from './components/TestimonialSection';
-import FAQ from './components/FAQ';
-import ContactForm from './components/ContactForm';
+import { TestimonialData, TestimonialSectionData } from './components/TestimonialSection';
 import Footer from './components/Footer';
 import { client } from '@/sanity/lib/client';
+
+// Import lazy-loaded components
+import { LazyContactForm, LazyFAQ, LazyTestimonialSection } from './components/LazyComponents';
 
 // Disable static page generation and enable revalidation
 export const revalidate = 0;
@@ -125,10 +126,10 @@ export default async function Home() {
       <SubjectGrid />
       <TutoringPlatformBanner data={platformBanner} />
       {testimonialSection && testimonials.length > 0 ? (
-        <TestimonialSection sectionData={testimonialSection} testimonials={testimonials} />
+        <LazyTestimonialSection sectionData={testimonialSection} testimonials={testimonials} />
       ) : null}
-      <FAQ />
-      <ContactForm />
+      <LazyFAQ />
+      <LazyContactForm />
       <Footer />
     </main>
   );

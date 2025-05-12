@@ -31,6 +31,11 @@ const nextConfig = {
     return []
   },
 
+  // Add CSS optimization to reduce render-blocking resources
+  experimental: {
+    optimizeCss: true,
+  },
+
   // Customize webpack configuration if needed
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Add custom webpack configurations here if needed
