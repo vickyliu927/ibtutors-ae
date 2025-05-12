@@ -7,7 +7,6 @@ import tutor from './tutor'
 import hero from './hero'
 import contactFormSubmission from './contactFormSubmission'
 import footerSection from './footerSection'
-import subjectHeader from './subjectHeader'
 import tutorProfilesSection from './tutorProfilesSection'
 import subjectPage from './subjectPage'
 import seoSettings from './seoSettings'
@@ -23,7 +22,6 @@ export const schemaTypes = [
   hero,
   contactFormSubmission,
   footerSection,
-  subjectHeader,
   subjectPage,
   seoSettings,
 ] 
