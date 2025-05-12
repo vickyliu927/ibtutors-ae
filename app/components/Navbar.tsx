@@ -100,11 +100,13 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile menu button - explicitly hidden on md and larger screens */}
+          <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-800"
+              aria-expanded={isOpen}
+              aria-label="Toggle menu"
             >
               <span className="sr-only">Open main menu</span>
               {!isOpen ? (
