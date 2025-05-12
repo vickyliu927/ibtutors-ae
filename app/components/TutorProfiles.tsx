@@ -168,9 +168,26 @@ const TutorProfiles = ({
                         <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
                       </svg>
                       <p className="text-black font-medium">
+                        {tutor.education && (tutor.education.university || tutor.education.degree) && (
+                          <>
+                            {tutor.education.university && tutor.education.university}
+                            {tutor.education.university && tutor.education.degree && ' | '}
+                            {tutor.education.degree && tutor.education.degree}
+                          </>
+                        )}
+                      </p>
+                    </div>
+                    
+                    {/* Teaching subjects */}
+                    <div className="flex items-start mt-2">
+                      <svg className="w-5 h-5 text-blue-800 mr-2 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 017 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
+                      </svg>
+                      <p className="text-black font-medium">
                         {tutor.specialization.mainSubject}
-                        {tutor.education && tutor.education.university && ` | ${tutor.education.university}`}
-                        {tutor.education && tutor.education.degree && ` | ${tutor.education.degree}`}
+                        {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && 
+                          ` + ${tutor.specialization.additionalSubjects.length} more`
+                        }
                       </p>
                     </div>
                   </div>
@@ -241,6 +258,18 @@ const TutorProfiles = ({
                         )}
                       </div>
                       <p className="text-gray-700 font-medium mb-2">{tutor.professionalTitle}</p>
+                      {tutor.education && (tutor.education.university || tutor.education.degree) && (
+                        <div className="flex items-center mb-2">
+                          <svg className="w-5 h-5 text-blue-800 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                          </svg>
+                          <p className="text-gray-700 font-medium">
+                            {tutor.education.university && tutor.education.university}
+                            {tutor.education.university && tutor.education.degree && ' | '}
+                            {tutor.education.degree && tutor.education.degree}
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div>
