@@ -2,9 +2,8 @@ import { type SchemaTypeDefinition } from 'sanity'
 
 import blockContent from './schemaTypes/blockContent'
 import tutor from './schemaTypes/tutor'
-import subjectHeader from './schemaTypes/subjectHeader'
 import tutorProfilesSection from './schemaTypes/tutorProfilesSection'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [blockContent, tutor, subjectHeader, tutorProfilesSection],
+  types: [blockContent, tutor, tutorProfilesSection],
 } 
