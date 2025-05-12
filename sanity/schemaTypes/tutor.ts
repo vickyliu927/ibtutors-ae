@@ -314,7 +314,7 @@ export default defineType({
       name: 'yearsOfExperience',
       title: 'Years of Experience',
       type: 'number',
-      validation: (Rule: any) => Rule.required().min(0),
+      validation: (Rule: any) => Rule.min(0),
     }),
     defineField({
       name: 'hireButtonLink',

@@ -19,7 +19,7 @@ export interface TutorData {
     mainSubject: string;
     additionalSubjects?: string[];
   };
-  yearsOfExperience: number;
+  yearsOfExperience?: number;
   hireButtonLink: string;
   displayOrder?: number;
   profilePDF?: {
