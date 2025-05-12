@@ -6,7 +6,7 @@ import { visionTool } from '@sanity/vision'
 
 export default defineConfig({
   name: 'default',
-  title: 'IB Tutors UAE',
+  title: 'Dubai Tutors',
   
   projectId: 'r689038t',
   dataset: 'production',
@@ -24,7 +24,11 @@ export default defineConfig({
   },
 
   cors: {
-    allowOrigins: ['http://localhost:3000'],
+    allowOrigins: [
+      'http://localhost:3000',
+      'https://dubai-tutors.vercel.app',
+      'https://dubai-tutors-*.vercel.app'
+    ],
     allowCredentials: true,
   }
 }) 

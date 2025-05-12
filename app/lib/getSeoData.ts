@@ -17,7 +17,7 @@ export async function getSeoData(): Promise<SeoData> {
     // If there's no SEO data, return default values
     if (!seoData) {
       return {
-        title: 'IB Tutors UAE - Expert IB Teachers and Examiners',
+        title: 'Dubai Tutors - Expert IB Teachers and Examiners',
         description: 'Learn from qualified IB teachers with proven success rates in Dubai, Abu Dhabi, and across the UAE.',
       };
     }
@@ -28,7 +28,7 @@ export async function getSeoData(): Promise<SeoData> {
     
     // Return default values in case of error
     return {
-      title: 'IB Tutors UAE - Expert IB Teachers and Examiners',
+      title: 'Dubai Tutors - Expert IB Teachers and Examiners',
       description: 'Learn from qualified IB teachers with proven success rates in Dubai, Abu Dhabi, and across the UAE.',
     };
   }
