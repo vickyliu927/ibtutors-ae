@@ -56,13 +56,11 @@ export default defineType({
           name: 'university',
           title: 'University',
           type: 'string',
-          validation: (Rule: any) => Rule.required(),
         },
         {
           name: 'degree',
           title: 'Degree',
           type: 'string',
-          validation: (Rule: any) => Rule.required(),
         }
       ],
     }),

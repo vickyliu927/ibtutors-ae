@@ -9,9 +9,9 @@ export interface TutorData {
   name: string;
   professionalTitle: string;
   personallyInterviewed?: boolean;
-  education: {
-    university: string;
-    degree: string;
+  education?: {
+    university?: string;
+    degree?: string;
   };
   experience: string;
   profilePhoto: any;
