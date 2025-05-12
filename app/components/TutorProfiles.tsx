@@ -159,7 +159,7 @@ const TutorProfiles = ({
                       <svg className="w-5 h-5 text-orange-500 mr-2" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2L4 10L12 22L20 10L12 2Z" />
                       </svg>
-                      <p className="text-black font-medium">{tutor.professionalTitle}</p>
+                      <p className="text-black font-medium">📚 {tutor.professionalTitle}</p>
                     </div>
                     
                     {/* Education with graduation cap icon */}
@@ -257,7 +257,7 @@ const TutorProfiles = ({
                         </span>
                         )}
                       </div>
-                      <p className="text-gray-700 font-medium mb-2">{tutor.professionalTitle}</p>
+                      <p className="text-gray-700 font-medium mb-2">📚 {tutor.professionalTitle}</p>
                       {tutor.education && (tutor.education.university || tutor.education.degree) && (
                         <div className="flex items-center mb-2">
                           <svg className="w-5 h-5 text-blue-800 mr-2" fill="currentColor" viewBox="0 0 24 24">
