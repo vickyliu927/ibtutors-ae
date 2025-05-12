@@ -4,12 +4,36 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getSubjectPages, type SubjectPageData } from './NavSubjects';
 
+// Create a class name with specific meaning to avoid conflicts
+const MOBILE_ONLY_CLASS = 'mobile-menu-button';
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Add global style when component mounts
+  useEffect(() => {
+    // Create a style element
+    const style = document.createElement('style');
+    // Add CSS rule that hides mobile menu button on desktop
+    style.innerHTML = `
+      @media (min-width: 768px) {
+        .${MOBILE_ONLY_CLASS} {
+          display: none !important;
+        }
+      }
+    `;
+    // Append the style to the head
+    document.head.appendChild(style);
+
+    // Cleanup function to remove the style when component unmounts
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -100,8 +124,8 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile menu button - explicitly hidden on md and larger screens */}
-          <div className="flex items-center md:hidden">
+          {/* Mobile menu button with both Tailwind classes and custom class */}
+          <div className={`flex items-center md:hidden ${MOBILE_ONLY_CLASS}`}>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-800"
