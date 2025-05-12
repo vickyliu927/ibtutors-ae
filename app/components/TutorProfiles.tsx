@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { urlFor } from '@/sanity/lib/image';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -50,6 +50,9 @@ interface TutorProfilesProps {
   ctaLink?: string;
 }
 
+// Maximum number of additional subjects to display before showing a "+X more" button
+const MAX_VISIBLE_SUBJECTS = 3;
+
 const TutorProfiles = ({ 
   tutors, 
   sectionTitle = "", 
@@ -57,6 +60,17 @@ const TutorProfiles = ({
   ctaText, 
   ctaLink 
 }: TutorProfilesProps) => {
+  // State to track which tutors have expanded subject lists
+  const [expandedSubjects, setExpandedSubjects] = useState<{[key: string]: boolean}>({});
+
+  // Toggle expanded state for a specific tutor
+  const toggleExpandSubjects = (tutorId: string) => {
+    setExpandedSubjects(prev => ({
+      ...prev,
+      [tutorId]: !prev[tutorId]
+    }));
+  };
+
   if (!tutors) {
     return (
       <section className="py-16 bg-white">
@@ -232,18 +246,46 @@ const TutorProfiles = ({
                     <div>
                       <div className="flex items-start gap-1">
                         <p className="font-medium text-gray-600 mt-1">Teaches:</p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 max-w-md">
+                          {/* Main subject always shown */}
                           <span className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md">
                             {tutor.specialization.mainSubject}
                           </span>
-                          {tutor.specialization.additionalSubjects?.map((subject, index) => (
-                            <span 
-                              key={index} 
-                              className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
+                          
+                          {/* Additional subjects with "Show more" functionality */}
+                          {tutor.specialization.additionalSubjects && 
+                            (expandedSubjects[tutor._id] 
+                              ? tutor.specialization.additionalSubjects.map((subject, index) => (
+                                  <span 
+                                    key={index} 
+                                    className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
+                                  >
+                                    {subject}
+                                  </span>
+                                ))
+                              : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
+                                  <span 
+                                    key={index} 
+                                    className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
+                                  >
+                                    {subject}
+                                  </span>
+                                ))
+                            )
+                          }
+                          
+                          {/* Show "more" button if there are more subjects than the maximum visible */}
+                          {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
+                            <button
+                              onClick={() => toggleExpandSubjects(tutor._id)}
+                              className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
                             >
-                              {subject}
-                            </span>
-                          ))}
+                              {expandedSubjects[tutor._id] 
+                                ? 'Show less' 
+                                : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
+                              }
+                            </button>
+                          )}
                         </div>
                       </div>
                       {tutor.price && (
