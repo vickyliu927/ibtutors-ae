@@ -11,6 +11,9 @@ interface SubjectPage {
 // Disable static generation and force sitemap to be dynamic
 export const revalidate = 0;
 
+// Add explicit content type to ensure proper XML rendering
+export const contentType = 'application/xml';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ibtutors-ae.vercel.app';
   

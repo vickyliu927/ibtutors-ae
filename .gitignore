@@ -46,7 +46,7 @@ next-env.d.ts
 .idea/
 .vscode/
 *.swp
-*.swo
+*.swo 
 
 # dotenv environment variables files
 .env

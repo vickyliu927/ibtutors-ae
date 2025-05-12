@@ -123,7 +123,7 @@ const ContactForm = () => {
           setErrors(serverErrors);
           setMessage('Please correct the errors in the form.');
         } else {
-          setMessage('There was a problem submitting your request. Please try again.');
+        setMessage('There was a problem submitting your request. Please try again.');
         }
       }
     } catch (error) {

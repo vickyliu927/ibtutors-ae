@@ -74,15 +74,15 @@ async function getSubjectPageData(subject: string) {
 
   // Then use the subject page ID to fetch tutors that reference this subject page
   const tutorsQuery = `*[_type == "tutor" && $subjectPageId in displayOnSubjectPages[]._ref] | order(displayOrder asc) {
-    _id,
-    name,
-    professionalTitle,
-    personallyInterviewed,
-    education,
-    experience,
-    profilePhoto,
-    specialization,
-    yearsOfExperience,
+      _id,
+      name,
+      professionalTitle,
+      personallyInterviewed,
+      education,
+      experience,
+      profilePhoto,
+      specialization,
+      yearsOfExperience,
     hireButtonLink,
     displayOnSubjectPages,
     displayOrder,
@@ -152,7 +152,7 @@ async function getSubjectPageData(subject: string) {
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
   const { pageData } = await getSubjectPageData(params.subject);
   const subjectSeo = await getSeoData();
-  
+
   if (!pageData) {
     return {
       title: 'Page Not Found',

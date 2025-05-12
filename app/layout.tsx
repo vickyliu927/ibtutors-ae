@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // Add additional metadata to optimize for performance
     viewport: 'width=device-width, initial-scale=1',
     themeColor: '#ffffff',
-  };
+};
 }
 
 export default function RootLayout({

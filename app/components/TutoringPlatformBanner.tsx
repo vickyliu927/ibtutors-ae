@@ -23,7 +23,7 @@ const TutoringPlatformBanner = ({ data }: Props) => {
   const title = data.title || 'Engaging Lessons with our Online Platform';
   const subtitle = data.subtitle || 'ONLINE TUTORING PLATFORM';
   const description = data.description || 'Our online platform brings lessons to life, allowing students to draw diagrams, solve equations, edit essays, and annotate work. We deliver elite tutoring worldwide, matching students with the best tutors available.';
-  
+
   // Default features if none provided
   const features = data.features || [
     { feature: 'Interactive whiteboard for real-time collaboration' },
@@ -44,7 +44,7 @@ const TutoringPlatformBanner = ({ data }: Props) => {
             <div className="relative w-full">
               {/* Platform image - enlarged for desktop */}
               <div className="w-full px-4 sm:px-8 md:px-12 lg:px-0">
-                <img 
+                      <img 
                   src="/images/tutoring-platform.jpg" 
                   alt="Online tutoring platform"
                   className="rounded-lg w-full h-[300px] sm:h-[350px] lg:h-[550px] object-contain"

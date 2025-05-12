@@ -76,7 +76,7 @@ const TutorProfiles = ({
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {sectionTitle && (
-            <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+          <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
           )}
           {sectionSubtitle && (
             <p className="text-gray-600 text-lg mb-8">{sectionSubtitle}</p>
@@ -105,7 +105,7 @@ const TutorProfiles = ({
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {sectionTitle && (
-          <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
+        <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
         )}
         
         {sectionSubtitle && (
@@ -130,7 +130,7 @@ const TutorProfiles = ({
             <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
               {/* Mobile view (stacked) */}
               <div className="md:hidden">
-                <div className="flex">
+              <div className="flex">
                   {/* Profile Image - Square format */}
                   <div className="w-32 h-32 relative flex-shrink-0">
                     {tutor.profilePhoto ? (
@@ -298,12 +298,12 @@ const TutorProfiles = ({
                                   </span>
                                 ))
                               : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
-                                  <span 
-                                    key={index} 
-                                    className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
-                                  >
-                                    {subject}
-                                  </span>
+                            <span 
+                              key={index} 
+                              className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
+                            >
+                              {subject}
+                            </span>
                                 ))
                             )
                           }
@@ -339,12 +339,12 @@ const TutorProfiles = ({
 
                   <div>
                     <div className="flex gap-3">
-                      <Link
+                    <Link
                         href={tutor.hireButtonLink || "/#contact-form"}
-                        className="bg-blue-800 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-all font-medium"
-                      >
-                        Hire a tutor
-                      </Link>
+                      className="bg-blue-800 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-all font-medium"
+                    >
+                      Hire a tutor
+                    </Link>
                       {tutor.profilePDF?.asset?.url && (
                         <a
                           href={tutor.profilePDF.asset.url}

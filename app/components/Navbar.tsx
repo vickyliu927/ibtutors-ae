@@ -161,7 +161,7 @@ const Navbar = () => {
                   className="block pl-3 py-2 text-gray-600 hover:text-blue-800"
                 >
                   {subject.subject}
-                </Link>
+            </Link>
               ))}
             </div>
 
