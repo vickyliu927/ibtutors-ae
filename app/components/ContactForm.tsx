@@ -1,5 +1,10 @@
 'use client';
 import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
+
+type ValidationError = {
+  [key: string]: string;
+};
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -11,23 +16,87 @@ const ContactForm = () => {
     budget: ''
   });
 
+  const [errors, setErrors] = useState<ValidationError>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
     'idle'
   );
   const [message, setMessage] = useState('');
+  
+  // Basic validation function
+  const validateForm = () => {
+    const newErrors: ValidationError = {};
+    
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    } else if (formData.fullName.length > 100) {
+      newErrors.fullName = 'Name is too long';
+    }
+    
+    if (!formData.country.trim()) {
+      newErrors.country = 'Country is required';
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/.test(formData.phone.trim())) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email.trim())) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.details.trim()) {
+      newErrors.details = 'Details are required';
+    } else if (formData.details.length < 10) {
+      newErrors.details = 'Please provide more details';
+    }
+    
+    if (!formData.budget.trim()) {
+      newErrors.budget = 'Budget is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
+    
+    // Clear previous status and errors
+    setStatus('idle');
     setMessage('');
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+    
+    setStatus('loading');
+    
     try {
+      // Sanitize all form inputs before sending to API
+      const sanitizedData = {
+        fullName: DOMPurify.sanitize(formData.fullName.trim()),
+        country: DOMPurify.sanitize(formData.country.trim()),
+        phone: DOMPurify.sanitize(formData.phone.trim()),
+        email: DOMPurify.sanitize(formData.email.trim()),
+        details: DOMPurify.sanitize(formData.details.trim()),
+        budget: DOMPurify.sanitize(formData.budget.trim())
+      };
+      
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(sanitizedData),
       });
+      
+      const data = await response.json();
+      
       if (response.ok) {
         setStatus('success');
         setMessage('Thank you! Your request has been submitted.');
@@ -39,9 +108,23 @@ const ContactForm = () => {
           details: '',
           budget: '',
         });
+        setErrors({});
       } else {
         setStatus('error');
-        setMessage('There was a problem submitting your request. Please try again.');
+        
+        // Check for validation errors from server
+        if (response.status === 400 && data.details) {
+          const serverErrors: ValidationError = {};
+          Object.entries(data.details).forEach(([field, error]: [string, any]) => {
+            if (error._errors && error._errors.length > 0) {
+              serverErrors[field] = error._errors[0];
+            }
+          });
+          setErrors(serverErrors);
+          setMessage('Please correct the errors in the form.');
+        } else {
+          setMessage('There was a problem submitting your request. Please try again.');
+        }
       }
     } catch (error) {
       setStatus('error');
@@ -55,6 +138,14 @@ const ContactForm = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   return (
@@ -81,8 +172,11 @@ const ContactForm = () => {
                 required
                 value={formData.fullName}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${errors.fullName ? 'border-red-500' : 'border-gray-300'}`}
               />
+              {errors.fullName && (
+                <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
+              )}
             </div>
 
             <div>
@@ -96,8 +190,11 @@ const ContactForm = () => {
                 required
                 value={formData.country}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${errors.country ? 'border-red-500' : 'border-gray-300'}`}
               />
+              {errors.country && (
+                <p className="mt-1 text-sm text-red-600">{errors.country}</p>
+              )}
             </div>
 
             <div>
@@ -111,8 +208,11 @@ const ContactForm = () => {
                 required
                 value={formData.phone}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
               />
+              {errors.phone && (
+                <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+              )}
             </div>
 
             <div>
@@ -126,8 +226,11 @@ const ContactForm = () => {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
               />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
           </div>
 
@@ -142,8 +245,11 @@ const ContactForm = () => {
               required
               value={formData.details}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${errors.details ? 'border-red-500' : 'border-gray-300'}`}
             />
+            {errors.details && (
+              <p className="mt-1 text-sm text-red-600">{errors.details}</p>
+            )}
           </div>
 
           <div className="mt-6">
@@ -157,8 +263,11 @@ const ContactForm = () => {
               required
               value={formData.budget}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${errors.budget ? 'border-red-500' : 'border-gray-300'}`}
             />
+            {errors.budget && (
+              <p className="mt-1 text-sm text-red-600">{errors.budget}</p>
+            )}
           </div>
 
           <div className="mt-8">
