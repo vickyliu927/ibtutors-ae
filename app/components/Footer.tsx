@@ -135,7 +135,7 @@ const Footer = () => {
             ) : (
               <p>{footer.address}</p>
             )}
-            <p className="mt-2">Copyright 2024 IB Tutors by TutorChase</p>
+            <p className="mt-2">Copyright 2025 IB Tutors by TutorChase</p>
           </div>
         </div>
       </div>
