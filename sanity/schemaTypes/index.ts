@@ -10,6 +10,7 @@ import footerSection from './footerSection'
 import tutorProfilesSection from './tutorProfilesSection'
 import subjectPage from './subjectPage'
 import seoSettings from './seoSettings'
+import navbarSettings from './navbarSettings'
 
 export const schemaTypes = [
   tutor,
@@ -24,4 +25,5 @@ export const schemaTypes = [
   footerSection,
   subjectPage,
   seoSettings,
+  navbarSettings,
 ] 

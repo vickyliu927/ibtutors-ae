@@ -3,14 +3,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSubjectPages, type SubjectPageData } from './NavSubjects';
+import { client } from '@/sanity/lib/client';
 
 // Create a class name with specific meaning to avoid conflicts
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
+
+async function getNavbarSettings() {
+  const query = `*[_type == "navbarSettings"][0]{buttonText, buttonLink}`;
+  return client.fetch(query);
+}
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
+  const [navbarSettings, setNavbarSettings] = useState<{ buttonText: string; buttonLink: string } | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -59,8 +66,17 @@ const Navbar = () => {
         console.error('Error fetching subject pages:', error);
       }
     };
+    const fetchNavbarSettings = async () => {
+      try {
+        const settings = await getNavbarSettings();
+        setNavbarSettings(settings);
+      } catch (error) {
+        console.error('Error fetching navbar settings:', error);
+      }
+    };
 
     fetchSubjects();
+    fetchNavbarSettings();
 
     // Clean up timeout on unmount
     return () => {
@@ -119,9 +135,16 @@ const Navbar = () => {
               )}
             </div>
 
-            <Link href="https://www.tutorchase.com/tutors" className="bg-blue-800 text-white px-4 py-2 rounded-md">
-              View all Tutors on TutorChase
-            </Link>
+            {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
+              <Link href={navbarSettings.buttonLink} className="bg-blue-800 text-white px-4 py-2 rounded-md">
+                {navbarSettings.buttonText}
+              </Link>
+            )}
+            {!navbarSettings && (
+              <Link href="#" className="bg-blue-800 text-white px-4 py-2 rounded-md opacity-50 cursor-not-allowed">
+                Loading...
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button with both Tailwind classes and custom class */}
@@ -161,13 +184,18 @@ const Navbar = () => {
                   className="block pl-3 py-2 text-gray-600 hover:text-blue-800"
                 >
                   {subject.subject}
-            </Link>
+                </Link>
               ))}
             </div>
 
-            <Link href="https://www.tutorchase.com/tutors" className="block px-3 py-2 text-blue-800">
-              View all Tutors on TutorChase
-            </Link>
+            {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
+              <Link href={navbarSettings.buttonLink} className="block px-3 py-2 text-blue-800">
+                {navbarSettings.buttonText}
+              </Link>
+            )}
+            {!navbarSettings && (
+              <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed">Loading...</span>
+            )}
           </div>
         </div>
       )}
