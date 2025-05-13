@@ -43,12 +43,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly' as const,
       priority: 1.0,
     },
-    {
-      url: joinUrl(baseUrl, 'contact'),
-      lastModified: new Date(currentTimestamp),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    },
   ];
 
   // Dynamic routes for subject pages
