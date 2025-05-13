@@ -11,6 +11,11 @@ interface SubjectPage {
 // Disable static generation and force sitemap to be dynamic
 export const revalidate = 0;
 
+// Helper to join base URL and path without double slashes
+function joinUrl(base: string, path: string) {
+  return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+}
+
 // Add explicit content type to ensure proper XML rendering
 export const contentType = 'application/xml';
 
@@ -33,13 +38,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static routes
   const staticRoutes = [
     {
-      url: `${baseUrl}`,
+      url: baseUrl.replace(/\/+$/, ''),
       lastModified: new Date(currentTimestamp),
       changeFrequency: 'weekly' as const,
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: joinUrl(baseUrl, 'contact'),
       lastModified: new Date(currentTimestamp),
       changeFrequency: 'monthly' as const,
       priority: 0.8,
@@ -49,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic routes for subject pages
   const dynamicRoutes = subjectPages.map((page) => {
     return {
-      url: `${baseUrl}/${page.slug.current}`,
+      url: joinUrl(baseUrl, page.slug.current),
       lastModified: new Date(page._updatedAt),
       changeFrequency: 'weekly' as const,
       priority: 0.9,
