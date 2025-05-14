@@ -132,7 +132,7 @@ const TutorProfiles = ({
               <div className="md:hidden">
               <div className="flex">
                   {/* Profile Image - Square format */}
-                  <div className="w-32 h-32 relative flex-shrink-0">
+                  <div className="relative flex-shrink-0" style={{ width: '35vw', height: '35vw', maxWidth: '35%', maxHeight: '35vw', minWidth: 0, minHeight: 0 }}>
                     {tutor.profilePhoto ? (
                       <Image
                         src={urlFor(tutor.profilePhoto).url()}
