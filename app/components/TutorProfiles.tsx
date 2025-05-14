@@ -179,9 +179,11 @@ const TutorProfiles = ({
                     
                     {/* Professional Title & Education with graduation hat icon */}
                     <div className="flex items-center mt-2">
-                      <svg className="w-5 h-5 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
-                      </svg>
+                      <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
+                        <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                        </svg>
+                      </span>
                       <p className="text-black font-medium">{tutor.professionalTitle}</p>
                     </div>
                   </div>
@@ -243,18 +245,20 @@ const TutorProfiles = ({
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-2xl font-bold">{tutor.name}</h3>
                         {tutor.personallyInterviewed?.enabled && (
-                          <span className="flex items-center text-orange-500">
-                            <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
+                        <span className="flex items-center text-orange-500">
+                          <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
                             {tutor.personallyInterviewed.badgeText}
-                          </span>
+                        </span>
                         )}
                       </div>
                       <div className="flex items-center mb-2">
-                        <svg className="w-5 h-5 text-orange-500 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2L4 10L12 22L20 10L12 2Z" />
-                        </svg>
+                        <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
+                          <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                          </svg>
+                        </span>
                         <p className="text-gray-700 font-medium">{tutor.professionalTitle}</p>
                       </div>
                     </div>
