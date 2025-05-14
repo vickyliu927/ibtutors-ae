@@ -26,7 +26,10 @@ async function getHomePageData() {
         _id,
         name,
         professionalTitle,
-        personallyInterviewed,
+        personallyInterviewed {
+          enabled,
+          badgeText
+        },
         experience,
         profilePhoto,
         specialization,

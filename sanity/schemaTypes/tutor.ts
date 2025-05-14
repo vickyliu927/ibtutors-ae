@@ -29,9 +29,27 @@ export default defineType({
     defineField({
       name: 'personallyInterviewed',
       title: 'Personally Interviewed',
-      type: 'boolean',
-      description: 'Show "Personally Interviewed" badge if checked',
-      initialValue: false,
+      type: 'object',
+      description: 'Show "Personally Interviewed" badge if enabled',
+      fields: [
+        {
+          name: 'enabled',
+          title: 'Enable Badge',
+          type: 'boolean',
+          initialValue: false,
+        },
+        {
+          name: 'badgeText',
+          title: 'Badge Text',
+          type: 'string',
+          description: 'Text to display on the badge (default: "Personally Interviewed")',
+          initialValue: 'Personally Interviewed',
+        }
+      ],
+      initialValue: {
+        enabled: false,
+        badgeText: 'Personally Interviewed'
+      }
     }),
     defineField({
       name: 'displayOnHomepage',
