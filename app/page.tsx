@@ -18,7 +18,7 @@ export const revalidate = 0;
 async function getHomePageData() {
   try {
     const heroQuery = `*[_type == "hero"][0]`;
-    const highlightsSectionQuery = `*[_type == "highlightsSection"][0]{ highlights }`;
+    const highlightsSectionQuery = `*[_id == "highlightsSection"][0]{ highlights }`;
     const tutorProfilesSectionQuery = `*[_type == "tutorProfilesSection"][0]{
       title,
       subtitle,
