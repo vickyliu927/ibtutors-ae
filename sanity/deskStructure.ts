@@ -95,6 +95,7 @@ export const structure = (S: StructureBuilder) =>
             'footerSection',
             'subjectPage',
             'seoSettings',
+            'highlightsSection',
           ].includes(listItem.getId() || '')
       ),
     ]) 
