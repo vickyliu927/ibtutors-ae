@@ -11,6 +11,7 @@ import tutorProfilesSection from './tutorProfilesSection'
 import subjectPage from './subjectPage'
 import seoSettings from './seoSettings'
 import navbarSettings from './navbarSettings'
+import highlightsSection from './highlightsSection'
 
 export const schemaTypes = [
   tutor,
@@ -18,6 +19,7 @@ export const schemaTypes = [
   testimonial,
   testimonialSection,
   platformBanner,
+  highlightsSection,
   faq,
   faq_section,
   hero,

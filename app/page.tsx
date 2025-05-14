@@ -10,6 +10,7 @@ import { client } from '@/sanity/lib/client';
 
 // Import lazy-loaded components
 import { LazyContactForm, LazyFAQ, LazyTestimonialSection } from './components/LazyComponents';
+import HighlightsSection, { HighlightItem } from './components/HighlightsSection';
 
 // Disable static page generation and enable revalidation
 export const revalidate = 0;
@@ -17,6 +18,7 @@ export const revalidate = 0;
 async function getHomePageData() {
   try {
     const heroQuery = `*[_type == "hero"][0]`;
+    const highlightsSectionQuery = `*[_type == "highlightsSection"][0]{ highlights }`;
     const tutorProfilesSectionQuery = `*[_type == "tutorProfilesSection"][0]{
       title,
       subtitle,
@@ -73,8 +75,9 @@ async function getHomePageData() {
 
     console.log('Fetching data from Sanity...'); // Debug log
 
-    const [heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials] = await Promise.all([
+    const [heroData, highlightsSection, tutorProfilesSection, platformBanner, testimonialSection, testimonials] = await Promise.all([
       client.fetch<HeroData>(heroQuery, {}, { next: { revalidate: 0 } }),
+      client.fetch<{ highlights: HighlightItem[] }>(highlightsSectionQuery, {}, { next: { revalidate: 0 } }),
       client.fetch(tutorProfilesSectionQuery, {}, { next: { revalidate: 0 } }),
       client.fetch(platformBannerQuery, {}, { next: { revalidate: 0 } }),
       client.fetch<TestimonialSectionData>(testimonialSectionQuery, {}, { next: { revalidate: 0 } }),
@@ -83,6 +86,7 @@ async function getHomePageData() {
 
     console.log('Data fetched:', { 
       heroData, 
+      highlightsSection: highlightsSection?.highlights, 
       tutorProfilesSection, 
       platformBanner, 
       testimonialSection: JSON.stringify(testimonialSection, null, 2), 
@@ -91,6 +95,7 @@ async function getHomePageData() {
 
     return { 
       heroData: heroData || null, 
+      highlightsSection: highlightsSection || null,
       tutorProfilesSection: tutorProfilesSection || null,
       platformBanner: platformBanner || null,
       testimonialSection: testimonialSection || null, 
@@ -101,6 +106,7 @@ async function getHomePageData() {
     // Return default/empty values instead of throwing
     return {
       heroData: null,
+      highlightsSection: null,
       tutorProfilesSection: null,
       platformBanner: null,
       testimonialSection: null,
@@ -110,12 +116,15 @@ async function getHomePageData() {
 }
 
 export default async function Home() {
-  const { heroData, tutorProfilesSection, platformBanner, testimonialSection, testimonials } = await getHomePageData();
+  const { heroData, highlightsSection, tutorProfilesSection, platformBanner, testimonialSection, testimonials } = await getHomePageData();
 
   return (
     <main className="min-h-screen">
       <Navbar />
       {heroData ? <HeroSection heroData={heroData} /> : null}
+      {highlightsSection?.highlights ? (
+        <HighlightsSection highlights={highlightsSection.highlights} />
+      ) : null}
       {tutorProfilesSection ? (
         <TutorProfiles 
           tutors={tutorProfilesSection.tutors} 
