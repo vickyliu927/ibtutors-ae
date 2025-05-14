@@ -27,6 +27,10 @@ export const structure = (S: StructureBuilder) =>
                         .schemaType('hero')
                         .title('Hero Section')
                         .id('hero'),
+                      S.documentListItem()
+                        .schemaType('highlightsSection')
+                        .title('Homepage Highlights Section')
+                        .id('highlightsSection'),
                       S.documentTypeListItem('tutor')
                         .title('Tutors'),
                       S.documentListItem()
