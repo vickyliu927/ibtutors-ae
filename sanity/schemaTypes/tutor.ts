@@ -13,10 +13,10 @@ export default defineType({
     }),
     defineField({
       name: 'professionalTitle',
-      title: 'Professional Title',
+      title: 'Professional Title & Education',
       type: 'string',
       validation: (Rule: any) => Rule.required(),
-      description: 'e.g., "Professional IB Tutor", "IB Mathematics Tutor"',
+      description: 'e.g., "Professional IB Tutor | University of Oxford | MSc Mathematics"',
     }),
     defineField({
       name: 'displayOrder',
@@ -46,23 +46,6 @@ export default defineType({
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'subjectPage' }] }],
       description: 'Select which subject pages this tutor should appear on',
-    }),
-    defineField({
-      name: 'education',
-      title: 'University/Education',
-      type: 'object',
-      fields: [
-        {
-          name: 'university',
-          title: 'University',
-          type: 'string',
-        },
-        {
-          name: 'degree',
-          title: 'Degree',
-          type: 'string',
-        }
-      ],
     }),
     defineField({
       name: 'experience',

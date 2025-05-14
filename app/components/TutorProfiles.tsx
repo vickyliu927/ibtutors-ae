@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { urlFor } from '@/sanity/lib/image';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,10 +9,6 @@ export interface TutorData {
   name: string;
   professionalTitle: string;
   personallyInterviewed?: boolean;
-  education?: {
-    university?: string;
-    degree?: string;
-  };
   experience: string;
   profilePhoto: any;
   specialization: {
@@ -132,7 +128,21 @@ const TutorProfiles = ({
               <div className="md:hidden">
               <div className="flex">
                   {/* Profile Image - Square format */}
-                  <div className="relative flex-shrink-0" style={{ width: '35vw', height: '35vw', maxWidth: '35%', maxHeight: '35vw', minWidth: 0, minHeight: 0 }}>
+                  <div
+                    className="relative flex-shrink-0"
+                    style={{ width: '40%' }}
+                    ref={el => {
+                      if (el) {
+                        const setSquare = () => {
+                          el.style.height = `${el.offsetWidth}px`;
+                        };
+                        setSquare();
+                        window.addEventListener('resize', setSquare);
+                        // Clean up
+                        return () => window.removeEventListener('resize', setSquare);
+                      }
+                    }}
+                  >
                     {tutor.profilePhoto ? (
                       <Image
                         src={urlFor(tutor.profilePhoto).url()}
@@ -154,48 +164,19 @@ const TutorProfiles = ({
                   <div className="flex-1 p-4">
                     <h3 className="text-2xl font-bold">{tutor.name}</h3>
                     
-                    {/* Professional Title with diamond icon */}
+                    {/* Professional Title & Education with graduation hat icon */}
                     <div className="flex items-center mt-2">
-                      <svg className="w-5 h-5 text-orange-500 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L4 10L12 22L20 10L12 2Z" />
-                      </svg>
-                      <p className="text-black font-medium">{tutor.professionalTitle}</p>
-                    </div>
-                    
-                    {/* Education with graduation cap icon */}
-                    <div className="flex items-start mt-2">
-                      <svg className="w-5 h-5 text-black mr-2 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
                       </svg>
-                      <p className="text-black font-medium">
-                        {tutor.education && (tutor.education.university || tutor.education.degree) && (
-                          <>
-                            {tutor.education.university && tutor.education.university}
-                            {tutor.education.university && tutor.education.degree && ' | '}
-                            {tutor.education.degree && tutor.education.degree}
-                          </>
-                        )}
-                      </p>
-                    </div>
-                    
-                    {/* Teaching subjects */}
-                    <div className="flex items-start mt-2">
-                      <svg className="w-5 h-5 text-blue-800 mr-2 mt-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 017 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
-                      </svg>
-                      <p className="text-black font-medium">
-                        {tutor.specialization.mainSubject}
-                        {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && 
-                          ` + ${tutor.specialization.additionalSubjects.length} more`
-                        }
-                      </p>
+                      <p className="text-black font-medium">{tutor.professionalTitle}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Bio - Full width below image and info */}
-                <div className="p-4 pt-0">
-                  <p className="text-black">
+                <div className="p-4 pt-0 mt-6">
+                  <p className="text-black text-justify">
                     {tutor.experience}
                   </p>
                 </div>
@@ -263,18 +244,6 @@ const TutorProfiles = ({
                         </svg>
                         <p className="text-gray-700 font-medium">{tutor.professionalTitle}</p>
                       </div>
-                      {tutor.education && (tutor.education.university || tutor.education.degree) && (
-                        <div className="flex items-center mb-2">
-                          <svg className="w-5 h-5 text-blue-800 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
-                          </svg>
-                          <p className="text-gray-700 font-medium">
-                            {tutor.education.university && tutor.education.university}
-                            {tutor.education.university && tutor.education.degree && ' | '}
-                            {tutor.education.degree && tutor.education.degree}
-                          </p>
-                        </div>
-                      )}
                     </div>
 
                     <div>
@@ -335,7 +304,7 @@ const TutorProfiles = ({
                     </div>
                   </div>
 
-                  <p className="text-gray-600 mb-6">{tutor.experience}</p>
+                  <p className="text-gray-600 mb-6 text-justify">{tutor.experience}</p>
 
                   <div>
                     <div className="flex gap-3">

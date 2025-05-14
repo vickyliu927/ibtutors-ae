@@ -143,7 +143,7 @@ const Navbar = () => {
             {!navbarSettings && (
               <Link href="#" className="bg-blue-800 text-white px-4 py-2 rounded-md opacity-50 cursor-not-allowed">
                 Loading...
-              </Link>
+            </Link>
             )}
           </div>
 
@@ -184,14 +184,14 @@ const Navbar = () => {
                   className="block pl-3 py-2 text-gray-600 hover:text-blue-800"
                 >
                   {subject.subject}
-                </Link>
+            </Link>
               ))}
             </div>
 
             {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
               <Link href={navbarSettings.buttonLink} className="block px-3 py-2 text-blue-800">
                 {navbarSettings.buttonText}
-              </Link>
+            </Link>
             )}
             {!navbarSettings && (
               <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed">Loading...</span>

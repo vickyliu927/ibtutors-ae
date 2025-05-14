@@ -27,7 +27,6 @@ async function getHomePageData() {
         name,
         professionalTitle,
         personallyInterviewed,
-        education,
         experience,
         profilePhoto,
         specialization,

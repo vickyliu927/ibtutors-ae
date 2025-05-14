@@ -78,25 +78,24 @@ async function getSubjectPageData(subject: string) {
       name,
       professionalTitle,
       personallyInterviewed,
-      education,
       experience,
       profilePhoto,
       specialization,
       yearsOfExperience,
-    hireButtonLink,
-    displayOnSubjectPages,
-    displayOrder,
-    profilePDF {
-      asset-> {
-        url
-      }
-    },
-    price,
-    rating,
-    reviewCount,
-    activeStudents,
-    totalLessons,
-    languagesSpoken
+      hireButtonLink,
+      displayOnSubjectPages,
+      displayOrder,
+      profilePDF {
+        asset-> {
+          url
+        }
+      },
+      price,
+      rating,
+      reviewCount,
+      activeStudents,
+      totalLessons,
+      languagesSpoken
   }`;
   
   console.log('Tutors query:', tutorsQuery);
