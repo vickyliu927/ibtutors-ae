@@ -124,15 +124,15 @@ const TutorProfiles = ({
           </p>
         )}
         
-        <div className="space-y-6">
+        <div className="space-y-4">
           {tutors.map((tutor) => (
-            <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
+            <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 flex flex-col" style={{ clipPath: 'inset(0)' }}>
               {/* Mobile view (stacked) */}
-              <div className="md:hidden">
-              <div className="flex">
+              <div className="md:hidden overflow-hidden">
+                <div className="flex">
                   {/* Profile Image - Square format */}
                   <div
-                    className="relative flex-shrink-0"
+                    className="relative flex-shrink-0 w-[130px] h-[130px] overflow-hidden z-10"
                     style={{ width: '40%' }}
                     ref={el => {
                       if (el) {
@@ -148,11 +148,12 @@ const TutorProfiles = ({
                   >
                     {tutor.profilePhoto ? (
                       <Image
-                        src={urlFor(tutor.profilePhoto).url()}
+                        src={urlFor(tutor.profilePhoto).width(260).height(260).url()}
                         alt={`${tutor.name}`}
                         fill
-                        className="object-cover"
+                        className="object-cover object-center"
                         sizes="128px"
+                        priority={true}
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">
@@ -164,7 +165,7 @@ const TutorProfiles = ({
                   </div>
 
                   {/* Tutor Basic Info - Right of image */}
-                  <div className="flex-1 p-4">
+                  <div className="flex-1 p-4 pb-2">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-2xl font-bold">{tutor.name}</h3>
                       {tutor.personallyInterviewed?.enabled && (
@@ -178,7 +179,7 @@ const TutorProfiles = ({
                     </div>
                     
                     {/* Professional Title & Education with graduation hat icon */}
-                    <div className="flex items-center mt-2">
+                    <div className="flex items-center mt-2 mb-2">
                       <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
                         <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
@@ -186,48 +187,61 @@ const TutorProfiles = ({
                       </span>
                       <p className="text-black font-medium">{tutor.professionalTitle}</p>
                     </div>
+                    
+                    {/* Rate info for mobile */}
+                    {tutor.price && (
+                      <div className="flex items-center mt-1">
+                        <p className="font-medium text-gray-600 whitespace-nowrap mr-1">Rate:</p>
+                        <p className="text-blue-800 font-medium text-sm">
+                          {tutor.price.displayText || `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Hire button for mobile */}
+                    <div className="mt-2">
+                      <Link
+                        href={tutor.hireButtonLink || "/#contact-form"}
+                        className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-all font-medium text-sm inline-block"
+                      >
+                        Hire a tutor
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
                 {/* Bio - Full width below image and info */}
-                <div className="p-4 pt-0 mt-6">
-                  <p className="text-black text-justify">
-                    {tutor.experience}
-                  </p>
+                <div className="px-4 pt-0 pb-0 mt-0">
+                  <p className="text-black text-sm mb-0 mt-0 pt-1 pb-0">{tutor.experience}</p>
                 </div>
 
-                {/* Button */}
-                <div className="p-4 pt-0">
-                  <Link
-                    href={tutor.hireButtonLink || "/#contact-form"}
-                    className="bg-blue-800 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-all font-medium text-center block w-full md:w-auto md:inline-block"
-                  >
-                    Hire a Tutor
-                  </Link>
-                  {tutor.profilePDF?.asset?.url && (
+                {/* View Profile button only */}
+                {tutor.profilePDF?.asset?.url && (
+                  <div className="p-4 pt-0">
                     <a
                       href={tutor.profilePDF.asset.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-gray-200 text-gray-800 px-4 py-3 rounded-md hover:bg-gray-300 transition-all font-medium text-center block w-full mt-2 md:mt-0 md:ml-2 md:w-auto md:inline-block"
+                      className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition-all font-medium text-center block w-full"
                     >
                       View Profile
                     </a>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Desktop view (side by side) */}
-              <div className="hidden md:flex">
-                {/* Left side - Profile Image */}
-                <div className="w-64 h-64 relative flex-shrink-0">
+              <div className="hidden md:flex items-stretch overflow-hidden">
+                {/* Left side - Profile Image - with negative bottom margin to eliminate gap */}
+                <div className="w-[225px] h-[225px] relative flex-shrink-0 overflow-hidden z-10">
                   {tutor.profilePhoto ? (
                     <Image
-                      src={urlFor(tutor.profilePhoto).url()}
+                      src={urlFor(tutor.profilePhoto).width(450).height(450).url()}
                       alt={`${tutor.name}`}
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 256px"
+                      className="object-cover object-center"
+                      sizes="(max-width: 768px) 100vw, 225px"
+                      priority={true}
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center">
@@ -238,111 +252,121 @@ const TutorProfiles = ({
                   )}
                 </div>
 
-                {/* Right side - Tutor Information */}
-                <div className="flex-1 p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
+                {/* Right side - Tutor Information - with negative top margin to close gap */}
+                <div className="flex-1 p-5 pt-0 -mt-[1px]">
+                  <div className="flex justify-between items-start mb-1">
+                    <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-2xl font-bold">{tutor.name}</h3>
-                        {tutor.personallyInterviewed?.enabled && (
-                        <span className="flex items-center text-orange-500">
-                          <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                            {tutor.personallyInterviewed.badgeText}
-                        </span>
+                        
+                        {/* Rate info moved next to name */}
+                        {tutor.price && (
+                          <div className="flex items-center">
+                            <p className="font-medium text-gray-600 whitespace-nowrap mr-1">Rate:</p>
+                            <p className="text-blue-800 font-medium">
+                              {tutor.price.displayText || `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
+                            </p>
+                          </div>
                         )}
                       </div>
-                      <div className="flex items-center mb-2">
-                        <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
-                          <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
-                          </svg>
-                        </span>
-                        <p className="text-gray-700 font-medium">{tutor.professionalTitle}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-start gap-1">
-                        <p className="font-medium text-gray-600 mt-1">Teaches:</p>
-                        <div className="flex flex-wrap gap-2 max-w-md">
-                          {/* Main subject always shown */}
-                          <span className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md">
-                            {tutor.specialization.mainSubject}
+                      
+                      {/* Professional Title row with hire button */}
+                      <div className="flex justify-between items-center mb-0 pb-0">
+                        <div className="flex items-center">
+                          <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
+                            <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                            </svg>
                           </span>
-                          
-                          {/* Additional subjects with "Show more" functionality */}
-                          {tutor.specialization.additionalSubjects && 
-                            (expandedSubjects[tutor._id] 
-                              ? tutor.specialization.additionalSubjects.map((subject, index) => (
-                                  <span 
-                                    key={index} 
-                                    className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
-                                  >
-                                    {subject}
-                                  </span>
-                                ))
-                              : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
+                          <p className="text-gray-700 font-medium">{tutor.professionalTitle}</p>
+                        </div>
+                        
+                        {/* Hire button moved to align with professional title */}
+                        <div className="flex-shrink-0">
+                          <Link
+                            href={tutor.hireButtonLink || "/#contact-form"}
+                            className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium"
+                          >
+                            Hire a tutor
+                          </Link>
+                        </div>
+                      </div>
+                      
+                      {/* Personally interviewed badge moved below, aligned right */}
+                      <div className="flex justify-between items-start mb-0 mt-0 pb-0 pt-2">
+                        {/* Teaches section moved below professional title */}
+                        <div className="flex items-start gap-1">
+                          <p className="font-medium text-gray-600 mt-0">Teaches:</p>
+                          <div className="flex flex-wrap gap-1 max-w-md">
+                            {/* Main subject always shown */}
+                            <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md">
+                              {tutor.specialization.mainSubject}
+                            </span>
+                            
+                            {/* Additional subjects with "Show more" functionality */}
+                            {tutor.specialization.additionalSubjects && 
+                              (expandedSubjects[tutor._id] 
+                                ? tutor.specialization.additionalSubjects.map((subject, index) => (
+                                    <span 
+                                      key={index} 
+                                      className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md"
+                                    >
+                                      {subject}
+                                    </span>
+                                  ))
+                                : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
                             <span 
                               key={index} 
-                              className="text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
+                              className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md"
                             >
                               {subject}
                             </span>
-                                ))
-                            )
-                          }
-                          
-                          {/* Show "more" button if there are more subjects than the maximum visible */}
-                          {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
-                            <button
-                              onClick={() => toggleExpandSubjects(tutor._id)}
-                              className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
-                            >
-                              {expandedSubjects[tutor._id] 
-                                ? 'Show less' 
-                                : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
-                              }
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      {tutor.price && (
-                        <div className="mt-2 text-right">
-                          <div className="flex justify-end items-center gap-1">
-                            <p className="font-medium text-gray-600 whitespace-nowrap">Rate:</p>
-                          <p className="text-blue-800 font-medium">
-                              {tutor.price.displayText || `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
-                          </p>
+                                  ))
+                              )
+                            }
+                            
+                            {/* Show "more" button if there are more subjects than the maximum visible */}
+                            {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
+                              <button
+                                onClick={() => toggleExpandSubjects(tutor._id)}
+                                className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
+                              >
+                                {expandedSubjects[tutor._id] 
+                                  ? 'Show less' 
+                                  : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
+                                }
+                              </button>
+                            )}
                           </div>
                         </div>
-                      )}
+                        
+                        {tutor.personallyInterviewed?.enabled && (
+                          <span className="flex items-center text-orange-500">
+                            <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            {tutor.personallyInterviewed.badgeText}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 mb-6 text-justify">{tutor.experience}</p>
+                  <p className="text-gray-600 mb-0 text-justify mt-0 pt-1 pb-0 px-0">{tutor.experience}</p>
 
+                  {/* View Profile button only */}
+                  {tutor.profilePDF?.asset?.url && (
                   <div>
-                    <div className="flex gap-3">
-                    <Link
-                        href={tutor.hireButtonLink || "/#contact-form"}
-                      className="bg-blue-800 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-all font-medium"
+                      <a
+                        href={tutor.profilePDF.asset.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gray-200 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-300 transition-all font-medium"
                     >
-                      Hire a tutor
-                    </Link>
-                      {tutor.profilePDF?.asset?.url && (
-                        <a
-                          href={tutor.profilePDF.asset.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-gray-200 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-300 transition-all font-medium"
-                        >
-                          View Profile
-                        </a>
-                      )}
-                    </div>
+                        View Profile
+                      </a>
                   </div>
+                  )}
                 </div>
               </div>
             </div>
