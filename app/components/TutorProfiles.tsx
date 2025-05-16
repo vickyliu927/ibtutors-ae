@@ -126,10 +126,10 @@ const TutorProfiles = ({
         
         <div className="space-y-4">
           {tutors.map((tutor) => (
-            <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 flex flex-col" style={{ clipPath: 'inset(0)' }}>
+            <div key={tutor._id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col" style={{ clipPath: 'inset(0)' }}>
               {/* Mobile view (stacked) */}
               <div className="md:hidden overflow-hidden">
-                <div className="flex">
+              <div className="flex">
                   {/* Profile Image - Square format */}
                   <div
                     className="relative flex-shrink-0 w-[130px] h-[130px] overflow-hidden z-10"
@@ -169,8 +169,8 @@ const TutorProfiles = ({
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-2xl font-bold">{tutor.name}</h3>
                       {tutor.personallyInterviewed?.enabled && (
-                        <span className="flex items-center text-orange-500">
-                          <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <span className="flex items-center text-orange-500 text-xs">
+                          <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
                           {tutor.personallyInterviewed.badgeText}
@@ -188,31 +188,70 @@ const TutorProfiles = ({
                       <p className="text-black font-medium">{tutor.professionalTitle}</p>
                     </div>
                     
+                    {/* Add teaches/subjects section for mobile */}
+                    <div className="flex flex-nowrap items-start gap-1 mb-1 overflow-hidden">
+                      <p className="font-medium text-gray-600 mr-1 whitespace-nowrap flex-shrink-0 mt-0.5">Teaches:</p>
+                      <div className="flex flex-wrap gap-1 overflow-hidden">
+                        <span className={`text-blue-800 font-medium bg-blue-50 px-2 py-0.5 rounded-md text-sm inline-flex ${
+                          ['IGCSE Business Studies', 'GCSE Computer Science', 'AP US History & World History', 
+                           'IB Business Management', 'A Level Further Maths', 'A Level Computer Science', 
+                           'A Level English Literature', 'A Level Business Studies', 'IGCSE Computer Science',
+                           'GCSE Business Studies', 'AP Calculus AB BC', 'AP Macroeconomics Microeconomics',
+                           'AP Computer Science', 'AP English Language', 'AP English Literature', 'AP Human Geography'
+                          ].includes(tutor.specialization.mainSubject) ? '' : 'whitespace-nowrap'
+                        }`}>
+                          {tutor.specialization.mainSubject}
+                        </span>
+                        {tutor.specialization.additionalSubjects && 
+                          tutor.specialization.additionalSubjects.slice(0, 1).map((subject, index) => (
+                            <span 
+                              key={index} 
+                              className={`text-blue-800 font-medium bg-blue-50 px-2 py-0.5 rounded-md text-sm ${
+                                ['IGCSE Business Studies', 'GCSE Computer Science', 'AP US History & World History', 
+                                 'IB Business Management', 'A Level Further Maths', 'A Level Computer Science', 
+                                 'A Level English Literature', 'A Level Business Studies', 'IGCSE Computer Science',
+                                 'GCSE Business Studies', 'AP Calculus AB BC', 'AP Macroeconomics Microeconomics',
+                                 'AP Computer Science', 'AP English Language', 'AP English Literature', 'AP Human Geography'
+                                ].includes(subject) ? '' : 'whitespace-nowrap'
+                              }`}
+                            >
+                              {subject}
+                            </span>
+                          ))
+                        }
+                        {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 1 && (
+                          <span className="text-blue-600 font-medium text-sm whitespace-nowrap">
+                            +{tutor.specialization.additionalSubjects.length} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
                     {/* Rate info for mobile */}
                     {tutor.price && (
-                      <div className="flex items-center mt-1">
+                      <div className="flex items-center mt-0">
                         <p className="font-medium text-gray-600 whitespace-nowrap mr-1">Rate:</p>
                         <p className="text-blue-800 font-medium text-sm">
                           {tutor.price.displayText || `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
                         </p>
                       </div>
                     )}
-                    
-                    {/* Hire button for mobile */}
-                    <div className="mt-2">
-                      <Link
-                        href={tutor.hireButtonLink || "/#contact-form"}
-                        className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-all font-medium text-sm inline-block"
-                      >
-                        Hire a tutor
-                      </Link>
-                    </div>
                   </div>
                 </div>
 
                 {/* Bio - Full width below image and info */}
-                <div className="px-4 pt-0 pb-0 mt-0">
-                  <p className="text-black text-sm mb-0 mt-0 pt-1 pb-0">{tutor.experience}</p>
+                <div className="px-2 pt-0 pb-0 mt-1 border-t border-gray-200">
+                  <p className="text-black text-sm mb-0 mt-0 pt-1 pb-0 text-justify">{tutor.experience}</p>
+                </div>
+                
+                {/* Hire button for mobile - moved below bio */}
+                <div className="mt-3 border-t border-gray-200">
+                  <Link
+                    href={tutor.hireButtonLink || "/#contact-form"}
+                    className="bg-blue-800 text-white py-3 transition-all font-medium text-center block w-full"
+                  >
+                    Hire a tutor
+                  </Link>
                 </div>
 
                 {/* View Profile button only */}
@@ -253,7 +292,7 @@ const TutorProfiles = ({
                 </div>
 
                 {/* Right side - Tutor Information - with negative top margin to close gap */}
-                <div className="flex-1 p-5 pt-0 -mt-[1px]">
+                <div className="flex-1 p-5 pt-0 mt-3">
                   <div className="flex justify-between items-start mb-1">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
@@ -282,7 +321,7 @@ const TutorProfiles = ({
                         </div>
                         
                         {/* Hire button moved to align with professional title */}
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 -mt-4">
                           <Link
                             href={tutor.hireButtonLink || "/#contact-form"}
                             className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium"
@@ -290,8 +329,8 @@ const TutorProfiles = ({
                             Hire a tutor
                           </Link>
                         </div>
-                      </div>
-                      
+                    </div>
+
                       {/* Personally interviewed badge moved below, aligned right */}
                       <div className="flex justify-between items-start mb-0 mt-0 pb-0 pt-2">
                         {/* Teaches section moved below professional title */}
@@ -300,8 +339,8 @@ const TutorProfiles = ({
                           <div className="flex flex-wrap gap-1 max-w-md">
                             {/* Main subject always shown */}
                             <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md">
-                              {tutor.specialization.mainSubject}
-                            </span>
+                            {tutor.specialization.mainSubject}
+                          </span>
                             
                             {/* Additional subjects with "Show more" functionality */}
                             {tutor.specialization.additionalSubjects && 
