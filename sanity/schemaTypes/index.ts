@@ -12,6 +12,7 @@ import subjectPage from './subjectPage'
 import seoSettings from './seoSettings'
 import navbarSettings from './navbarSettings'
 import highlightsSection from './highlightsSection'
+import trustedInstitutionsBanner from './trustedInstitutionsBanner'
 
 export const schemaTypes = [
   tutor,
@@ -19,6 +20,7 @@ export const schemaTypes = [
   testimonial,
   testimonialSection,
   platformBanner,
+  trustedInstitutionsBanner,
   highlightsSection,
   faq,
   faq_section,
