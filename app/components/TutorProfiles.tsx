@@ -7,7 +7,7 @@ import Link from 'next/link';
 export interface TutorData {
   _id: string;
   name: string;
-  professionalTitle: string;
+  professionalTitle?: string;
   personallyInterviewed?: {
     enabled: boolean;
     badgeText: string;
@@ -179,6 +179,7 @@ const TutorProfiles = ({
                     </div>
                     
                     {/* Professional Title & Education with graduation hat icon */}
+                    {tutor.professionalTitle && (
                     <div className="flex items-center mt-2 mb-2">
                       <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
                         <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
@@ -187,6 +188,7 @@ const TutorProfiles = ({
                       </span>
                       <p className="text-black font-medium" style={{ fontSize: '0.9rem' }}>{tutor.professionalTitle}</p>
                     </div>
+                    )}
                     
                     {/* Add teaches/subjects section for mobile */}
                     <div className="flex flex-nowrap items-start gap-1 mb-1 overflow-hidden">
@@ -413,6 +415,7 @@ const TutorProfiles = ({
                       
                       {/* Professional Title row with hire button */}
                       <div className="flex justify-between items-center mb-0 pb-0">
+                        {tutor.professionalTitle && (
                         <div className="flex items-center">
                           <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
                             <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
@@ -421,6 +424,7 @@ const TutorProfiles = ({
                           </span>
                           <p className="text-gray-700 font-medium text-sm">{tutor.professionalTitle}</p>
                         </div>
+                        )}
                         
                         {/* Hire button moved to align with professional title */}
                         <div className="flex-shrink-0 -mt-4">
