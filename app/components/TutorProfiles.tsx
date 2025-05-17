@@ -198,8 +198,8 @@ const TutorProfiles = ({
                           ['IGCSE Business Studies', 'GCSE Computer Science', 'AP US History & World History', 
                            'IB Business Management', 'A Level Further Maths', 'A Level Computer Science', 
                            'A Level English Literature', 'A Level Business Studies', 'IGCSE Computer Science',
-                           'GCSE Business Studies', 'AP Calculus AB BC', 'AP Macroeconomics Microeconomics',
-                           'AP Computer Science', 'AP English Language', 'AP English Literature', 'AP Human Geography'
+                           'GCSE Business Studies', 'AP Calculus AB BC', 'AP Macroeconomics & Microeconomics',
+                           'AP Computer Science', 'AP English Language', 'AP English Literature', 'AP Macroeconomics & Microeconomics'
                           ].includes(tutor.specialization.mainSubject) ? '' : 'whitespace-nowrap'
                         }`} style={{ fontSize: '0.9rem' }}>
                           {tutor.specialization.mainSubject}
@@ -212,8 +212,8 @@ const TutorProfiles = ({
                                 ['IGCSE Business Studies', 'GCSE Computer Science', 'AP US History & World History', 
                                  'IB Business Management', 'A Level Further Maths', 'A Level Computer Science', 
                                  'A Level English Literature', 'A Level Business Studies', 'IGCSE Computer Science',
-                                 'GCSE Business Studies', 'AP Calculus AB BC', 'AP Macroeconomics Microeconomics',
-                                 'AP Computer Science', 'AP English Language', 'AP English Literature', 'AP Human Geography'
+                                 'GCSE Business Studies', 'AP Calculus AB BC', 'AP Macroeconomics & Microeconomics',
+                                 'AP Computer Science', 'AP English Language', 'AP English Literature', 'AP Macroeconomics & Microeconomics'
                                 ].includes(subject) ? '' : 'whitespace-nowrap'
                               }`} 
                               style={{ fontSize: '0.9rem' }}
