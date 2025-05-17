@@ -25,11 +25,9 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
   carouselSpeed = 5,
 }) => {
   const [displayedLogos, setDisplayedLogos] = useState<Institution[]>([]);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const [animationPaused, setAnimationPaused] = useState(false);
-  const [transitionEnabled, setTransitionEnabled] = useState(true);
-
+  const carouselRef = useRef<HTMLDivElement>(null);
+  
   // Sort institutions by display order
   useEffect(() => {
     if (institutions.length > 0) {
@@ -38,41 +36,19 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
         const orderB = b.displayOrder || 100;
         return orderA - orderB;
       });
-      setDisplayedLogos(sorted);
+      
+      // Double the logos to create a seamless loop
+      setDisplayedLogos([...sorted, ...sorted]);
     }
   }, [institutions]);
 
-  // Improved carousel animation effect with smoother transitions
-  useEffect(() => {
-    if (!displayedLogos.length || displayedLogos.length < 2 || animationPaused) return;
-
-    const interval = setInterval(() => {
-      // Start transition
-      setIsAnimating(true);
-      
-      // After transition completes, rearrange items without animation
-      setTimeout(() => {
-        setTransitionEnabled(false);
-        setIsAnimating(false);
-        
-        // Move first item to the end
-        setDisplayedLogos(prevLogos => {
-          const newLogos = [...prevLogos];
-          const firstLogo = newLogos.shift();
-          if (firstLogo) newLogos.push(firstLogo);
-          return newLogos;
-        });
-        
-        // Re-enable transitions after rearrangement
-        setTimeout(() => {
-          setTransitionEnabled(true);
-        }, 50);
-      }, 700); // Match this with CSS transition duration
-      
-    }, carouselSpeed * 1000);
-    
-    return () => clearInterval(interval);
-  }, [displayedLogos, carouselSpeed, animationPaused]);
+  // Calculate animation duration based on speed and number of logos
+  const getAnimationDuration = () => {
+    const logoCount = institutions.length;
+    // Convert carouselSpeed from seconds per logo to total animation time
+    // Using a slower base speed for smoother continuous movement
+    return Math.max(logoCount * carouselSpeed * 2, 20);
+  };
 
   // Pause animation on hover
   const handleMouseEnter = () => setAnimationPaused(true);
@@ -89,7 +65,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
       style={{ backgroundColor }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Banner text - Now back on top */}
+        {/* Banner text */}
         <div className="text-center mb-5">
           {title && (
             <div className="text-sm md:text-base font-medium text-gray-600">
@@ -103,7 +79,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
           )}
         </div>
         
-        {/* Logo carousel */}
+        {/* Logo carousel with continuous animation */}
         <div 
           className="overflow-hidden"
           onMouseEnter={handleMouseEnter}
@@ -113,8 +89,11 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
             ref={carouselRef}
             className="flex items-center justify-center space-x-8 md:space-x-12"
             style={{
-              opacity: isAnimating ? 0.9 : 1,
-              transition: transitionEnabled ? 'transform 0.7s ease-in-out, opacity 0.7s ease-in-out' : 'none'
+              animation: animationPaused 
+                ? 'none' 
+                : `logoScroll ${getAnimationDuration()}s linear infinite`,
+              // Use transform to create smooth continuous movement
+              willChange: 'transform',
             }}
           >
             {displayedLogos.map((institution, index) => (
@@ -137,6 +116,18 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Add CSS animation keyframes */}
+      <style jsx global>{`
+        @keyframes logoScroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
     </div>
   );
 };
