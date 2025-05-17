@@ -61,12 +61,12 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
 
   return (
     <div 
-      className="py-6 md:py-8 w-full" 
+      className="py-2 md:py-3 w-full" 
       style={{ backgroundColor }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Banner text */}
-        <div className="text-center mb-5">
+        <div className="text-center mb-2">
           {title && (
             <div className="text-sm md:text-base font-medium text-gray-600">
               {title}
@@ -87,7 +87,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
         >
           <div 
             ref={carouselRef}
-            className="flex items-center justify-center space-x-8 md:space-x-12"
+            className="flex items-center justify-center space-x-8 md:space-x-12 pb-1"
             style={{
               animation: animationPaused 
                 ? 'none' 
@@ -99,7 +99,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
             {displayedLogos.map((institution, index) => (
               <div 
                 key={`${institution.name}-${index}`} 
-                className="flex-shrink-0 flex items-center justify-center h-24 md:h-28"
+                className="flex-shrink-0 flex items-center justify-center h-20 md:h-24"
               >
                 <div className="relative h-20 md:h-24 w-36 md:w-48">
                   <Image

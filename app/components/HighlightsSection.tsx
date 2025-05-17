@@ -31,13 +31,13 @@ const iconMap: Record<string, JSX.Element> = {
 
 const HighlightsSection: React.FC<HighlightsSectionProps> = ({ highlights }) => {
   return (
-    <section className="py-6 md:py-12 bg-gray-50">
+    <section className="pt-2 pb-6 md:py-8 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16 text-center">
           {highlights.map((item, idx) => (
             <div 
               key={idx} 
-              className="flex flex-col items-center max-w-sm mx-auto bg-white rounded-xl shadow-md p-4 md:p-6 my-3 md:my-6"
+              className="flex flex-col items-center max-w-sm mx-auto bg-white rounded-xl shadow-md p-4 md:p-6 my-3 md:my-4"
             >
               {iconMap[item.icon] || iconMap['globe']}
               <h3 className="text-xl font-bold mb-2 text-gray-900">{item.title}</h3>
