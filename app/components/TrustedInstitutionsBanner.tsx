@@ -24,24 +24,10 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
   backgroundColor = '#f8f9fa',
   carouselSpeed = 5,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [displayedLogos, setDisplayedLogos] = useState<Institution[]>([]);
-  const [windowWidth, setWindowWidth] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Handle window resize to determine how many logos to show
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    // Set initial width
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [animationPaused, setAnimationPaused] = useState(false);
 
   // Sort institutions by display order
   useEffect(() => {
@@ -55,46 +41,34 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
     }
   }, [institutions]);
 
-  // Determine how many logos to show based on screen width
-  const getLogosPerView = () => {
-    if (windowWidth < 640) return 2; // Mobile: 2 logos
-    if (windowWidth < 768) return 3; // Small tablets: 3 logos
-    if (windowWidth < 1024) return 4; // Tablets: 4 logos
-    return 5; // Desktop: 5 logos
-  };
-
-  // Carousel autoplay effect
+  // Carousel animation effect
   useEffect(() => {
-    if (displayedLogos.length <= getLogosPerView()) return; // Don't animate if all logos fit
+    if (!displayedLogos.length || animationPaused) return;
 
-    const timer = setTimeout(() => {
+    // Function to move the first logo to the end
+    const rotateLogos = () => {
       setIsAnimating(true);
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % displayedLogos.length);
-      
-      // Remove animation class after transition completes
-      const resetAnimation = setTimeout(() => {
+      setTimeout(() => {
+        setDisplayedLogos(prevLogos => {
+          const newLogos = [...prevLogos];
+          const firstLogo = newLogos.shift();
+          if (firstLogo) newLogos.push(firstLogo);
+          return newLogos;
+        });
         setIsAnimating(false);
-      }, 1000);
-      
-      return () => clearTimeout(resetAnimation);
-    }, carouselSpeed * 1000);
+      }, 500); // Match this with the CSS transition duration
+    };
 
-    return () => clearTimeout(timer);
-  }, [currentIndex, displayedLogos.length, carouselSpeed]);
-
-  // Get visible logos based on current index and screen size
-  const getVisibleLogos = () => {
-    const logosPerView = getLogosPerView();
-    if (displayedLogos.length <= logosPerView) return displayedLogos;
+    // Set up the interval for rotation
+    const interval = setInterval(rotateLogos, carouselSpeed * 1000);
     
-    // Create a circular array of logos to display
-    const result = [];
-    for (let i = 0; i < logosPerView; i++) {
-      const index = (currentIndex + i) % displayedLogos.length;
-      result.push(displayedLogos[index]);
-    }
-    return result;
-  };
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [displayedLogos, carouselSpeed, animationPaused]);
+
+  // Pause animation on hover
+  const handleMouseEnter = () => setAnimationPaused(true);
+  const handleMouseLeave = () => setAnimationPaused(false);
 
   // If there are no institutions, don't render anything
   if (!institutions || institutions.length === 0) {
@@ -103,45 +77,54 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
 
   return (
     <div 
-      className="py-4 md:py-6 w-full" 
+      className="py-6 md:py-8 w-full" 
       style={{ backgroundColor }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Banner text */}
-        <div className="text-center mb-4">
-          {title && (
-            <div className="text-sm md:text-base font-medium text-gray-600">
-              {title}
-            </div>
-          )}
-          {subtitle && (
-            <div className="text-base md:text-lg font-bold text-blue-800">
-              {subtitle}
-            </div>
-          )}
-        </div>
-        
-        {/* Logo carousel */}
-        <div 
-          ref={containerRef}
-          className={`flex items-center justify-center space-x-4 md:space-x-8 transition-all duration-1000 ease-in-out ${isAnimating ? 'opacity-80' : 'opacity-100'}`}
-        >
-          {getVisibleLogos().map((institution, index) => (
+        <div className="flex flex-col md:flex-row md:items-center">
+          {/* Logo carousel - Now on the left side */}
+          <div 
+            className="flex-shrink-0 md:w-3/5 overflow-hidden order-2 md:order-1"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <div 
-              key={`${institution.name}-${index}`} 
-              className="flex-shrink-0 flex items-center justify-center h-16 md:h-20"
+              ref={carouselRef}
+              className="flex items-center space-x-8 md:space-x-12 transition-transform duration-500 ease-in-out"
+              style={{ opacity: isAnimating ? 0.7 : 1 }}
             >
-              <div className="relative h-12 md:h-16 w-24 md:w-32">
-                <Image
-                  src={urlFor(institution.logo).width(200).height(100).url()}
-                  alt={institution.name}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 640px) 100px, 150px"
-                />
-              </div>
+              {displayedLogos.map((institution, index) => (
+                <div 
+                  key={`${institution.name}-${index}`} 
+                  className="flex-shrink-0 flex items-center justify-center h-20 md:h-24"
+                >
+                  <div className="relative h-16 md:h-20 w-32 md:w-40">
+                    <Image
+                      src={urlFor(institution.logo).width(200).height(100).url()}
+                      alt={institution.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 640px) 150px, 200px"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          
+          {/* Banner text - Now on the right side */}
+          <div className="md:w-2/5 mb-4 md:mb-0 text-left md:pl-8 order-1 md:order-2">
+            {title && (
+              <div className="text-sm md:text-base font-medium text-gray-600">
+                {title}
+              </div>
+            )}
+            {subtitle && (
+              <div className="text-base md:text-lg font-bold text-blue-800">
+                {subtitle}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
