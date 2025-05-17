@@ -4,13 +4,14 @@ import { MetadataRoute } from 'next'
 export const contentType = 'text/plain';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ibtutors-ae.vercel.app';
+  // Use the production URL directly instead of env variable
+  const baseUrl = 'https://www.dubaitutors.ae';
   
   return {
     rules: {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${baseUrl}/sitemap.xml`, // No double slashes, ensuring correct format
   }
 } 
