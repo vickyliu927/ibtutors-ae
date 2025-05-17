@@ -15,7 +15,6 @@ export default defineType({
       name: 'professionalTitle',
       title: 'Professional Title & Education',
       type: 'string',
-      validation: (Rule: any) => Rule.required(),
       description: 'e.g., "Professional IB Tutor | University of Oxford | MSc Mathematics"',
     }),
     defineField({
