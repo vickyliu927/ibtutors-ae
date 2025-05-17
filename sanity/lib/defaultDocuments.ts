@@ -12,7 +12,7 @@ export async function createDefaultTrustedInstitutionsBanner() {
       _type: 'trustedInstitutionsBanner',
       title: 'TUTORS FROM AND STUDENTS ACCEPTED INTO',
       subtitle: 'THE WORLD\'S TOP UNIVERSITIES',
-      backgroundColor: '#f8f9fa',
+      backgroundColor: '#ffffff',
       carouselSpeed: 5,
       enabled: true,
       institutions: [

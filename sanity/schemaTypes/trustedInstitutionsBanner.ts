@@ -62,8 +62,8 @@ export default defineType({
       name: 'backgroundColor',
       title: 'Background Color',
       type: 'string',
-      description: 'Background color of the banner (default: light gray)',
-      initialValue: '#f8f9fa',
+      description: 'Background color of the banner (default: white)',
+      initialValue: '#ffffff',
     }),
     defineField({
       name: 'carouselSpeed',
