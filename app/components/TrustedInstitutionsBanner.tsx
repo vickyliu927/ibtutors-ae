@@ -27,7 +27,8 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
   const [displayedLogos, setDisplayedLogos] = useState<Institution[]>([]);
   const [animationPaused, setAnimationPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
-  
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
+
   // Sort institutions by display order
   useEffect(() => {
     if (institutions.length > 0) {
@@ -99,9 +100,9 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
             {displayedLogos.map((institution, index) => (
               <div 
                 key={`${institution.name}-${index}`} 
-                className="flex-shrink-0 flex items-center justify-center h-20 md:h-24"
+                className="flex-shrink-0 flex flex-col items-center justify-center h-28 md:h-32"
               >
-                <div className="relative h-20 md:h-24 w-36 md:w-48">
+                <div className="relative h-20 md:h-24 w-36 md:w-48 mb-2">
                   <Image
                     src={urlFor(institution.logo).width(250).height(125).url()}
                     alt={institution.name}
@@ -110,6 +111,9 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
                     sizes="(max-width: 640px) 150px, 250px"
                     style={{ maxWidth: '100%', maxHeight: '100%' }}
                   />
+                </div>
+                <div className="text-xs md:text-sm text-center font-medium text-gray-700 max-w-[140px] md:max-w-[170px] truncate">
+                  {institution.name}
                 </div>
               </div>
             ))}
