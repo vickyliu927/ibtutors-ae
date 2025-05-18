@@ -475,7 +475,7 @@ const TutorProfiles = ({
                         )}
                         
                         {/* Hire button moved to align with professional title */}
-                        <div className="flex-shrink-0 -mt-4">
+                        <div className="flex-shrink-0 -mt-4 flex flex-col items-end">
                           <Link
                             href={tutor.hireButtonLink || "/#contact-form"}
                             className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium"
