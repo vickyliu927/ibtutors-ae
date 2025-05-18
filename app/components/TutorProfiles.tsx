@@ -366,7 +366,7 @@ const TutorProfiles = ({
                 <div className="flex-1 p-5 pt-0 mt-3">
                   <div className="flex justify-between items-start mb-1">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-1">
                         <h3 className="text-xl font-bold">{tutor.name}</h3>
                         
                         {/* Rate info moved next to name */}
@@ -426,87 +426,11 @@ const TutorProfiles = ({
                         </div>
                         ) : (
                         /* When professional title is missing, move subjects up to this row */
-                        <div className="flex items-start gap-4">
-                          <div className="flex items-start gap-1">
-                            <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
-                            <div className="flex flex-wrap gap-1 max-w-md">
-                              {/* Main subject always shown */}
-                              <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm">
-                              {tutor.specialization.mainSubject}
-                            </span>
-                              
-                              {/* Additional subjects with "Show more" functionality */}
-                              {tutor.specialization.additionalSubjects && 
-                                (expandedSubjects[tutor._id] 
-                                  ? tutor.specialization.additionalSubjects.map((subject, index) => (
-                                      <span 
-                                        key={index} 
-                                        className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                      >
-                                        {subject}
-                                      </span>
-                                    ))
-                                  : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
-                              <span 
-                                key={index} 
-                                className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                              >
-                                {subject}
-                              </span>
-                                    ))
-                                )
-                              }
-                              
-                              {/* Show "more" button if there are more subjects than the maximum visible */}
-                              {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
-                                <button
-                                  onClick={() => toggleExpandSubjects(tutor._id)}
-                                  className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
-                                >
-                                  {expandedSubjects[tutor._id] 
-                                    ? 'Show less' 
-                                    : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
-                                  }
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        )}
-                        
-                        {/* Hire button section with consistent spacing */}
-                        <div className="flex-shrink-0 flex flex-col items-end">
-                          <Link
-                            href={tutor.hireButtonLink || "/#contact-form"}
-                            className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium"
-                          >
-                            Hire a tutor
-                          </Link>
-                          
-                          {/* Fixed height container for price tag to maintain spacing */}
-                          <div className="h-8 flex items-center mt-2">
-                            {tutor.personallyInterviewed?.enabled && (
-                              <div className="flex items-center justify-end text-orange-500 text-sm">
-                                <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" />
-                                </svg>
-                                {tutor.personallyInterviewed.badgeText}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                    </div>
-
-                      {/* Personally interviewed badge and Languages (conditionally rendered) */}
-                      <div className="flex justify-between items-start mb-0 mt-0 pb-0 pt-1">
-                        {tutor.professionalTitle ? (
-                          /* When professional title exists, subjects and languages appear here */
-                          <div className="flex items-start gap-4">
                         <div className="flex items-start gap-1">
-                              <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
+                          <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
                           <div className="flex flex-wrap gap-1 max-w-md">
                             {/* Main subject always shown */}
-                                <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm">
+                            <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm">
                             {tutor.specialization.mainSubject}
                           </span>
                             
@@ -516,7 +440,7 @@ const TutorProfiles = ({
                                 ? tutor.specialization.additionalSubjects.map((subject, index) => (
                                     <span 
                                       key={index} 
-                                          className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                                      className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
                                     >
                                       {subject}
                                     </span>
@@ -524,7 +448,7 @@ const TutorProfiles = ({
                                 : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
                             <span 
                               key={index} 
-                                  className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                              className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
                             >
                               {subject}
                             </span>
@@ -546,61 +470,115 @@ const TutorProfiles = ({
                             )}
                           </div>
                         </div>
+                        )}
                         
-                            {/* Languages moved to same row as Teaches */}
-                            {tutor.languagesSpoken && tutor.languagesSpoken.length > 0 && (
-                              <div className="flex items-start gap-1">
-                                <p className="font-medium text-gray-600 mt-0 text-sm">Languages:</p>
-                                <div className="flex flex-wrap gap-1">
-                                  {tutor.languagesSpoken.map((lang, index) => (
-                                    <span 
-                                      key={index} 
-                                      className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                    >
-                                      {lang.language} ({lang.proficiency})
-                                    </span>
-                                  ))}
-                                </div>
+                        {/* Hire button and badge */}
+                        <div className="flex-shrink-0 flex flex-col items-end">
+                          <Link
+                            href={tutor.hireButtonLink || "/#contact-form"}
+                            className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium"
+                          >
+                            Hire a tutor
+                          </Link>
+                          
+                          {/* Fixed height container for price tag */}
+                          <div className="h-6 flex items-center mt-1">
+                            {tutor.personallyInterviewed?.enabled && (
+                              <div className="flex items-center justify-end text-orange-500 text-sm">
+                                <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" />
+                                </svg>
+                                {tutor.personallyInterviewed.badgeText}
                               </div>
                             )}
                           </div>
-                        ) : (
-                          /* When professional title is missing, only languages appear here */
-                          tutor.languagesSpoken && tutor.languagesSpoken.length > 0 && (
-                            <div className="flex items-start gap-1">
-                              <p className="font-medium text-gray-600 mt-0 text-sm">Languages:</p>
-                              <div className="flex flex-wrap gap-1">
-                                {tutor.languagesSpoken.map((lang, index) => (
-                                  <span 
-                                    key={index} 
-                                    className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                  >
-                                    {lang.language} ({lang.proficiency})
-                          </span>
-                                ))}
-                              </div>
-                            </div>
-                          )
-                        )}
+                        </div>
                       </div>
+
+                      {/* Subjects taught row (only when professional title exists) */}
+                      {tutor.professionalTitle && (
+                        <div className="flex mt-0 pt-0">
+                          <div className="flex items-start gap-1">
+                            <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
+                            <div className="flex flex-wrap gap-1 max-w-md">
+                              {/* Main subject always shown */}
+                              <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm">
+                                {tutor.specialization.mainSubject}
+                              </span>
+                              
+                              {/* Additional subjects with "Show more" functionality */}
+                              {tutor.specialization.additionalSubjects && 
+                                (expandedSubjects[tutor._id] 
+                                  ? tutor.specialization.additionalSubjects.map((subject, index) => (
+                                      <span 
+                                        key={index} 
+                                        className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                                      >
+                                        {subject}
+                                      </span>
+                                    ))
+                                  : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
+                                      <span 
+                                        key={index} 
+                                        className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                                      >
+                                        {subject}
+                                      </span>
+                                    ))
+                                )
+                              }
+                              
+                              {/* Show "more" button if there are more subjects than the maximum visible */}
+                              {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
+                                <button
+                                  onClick={() => toggleExpandSubjects(tutor._id)}
+                                  className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
+                                >
+                                  {expandedSubjects[tutor._id] 
+                                    ? 'Show less' 
+                                    : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
+                                  }
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Languages section */}
+                      {tutor.languagesSpoken && tutor.languagesSpoken.length > 0 && (
+                        <div className="flex items-start gap-1 mt-1">
+                          <p className="font-medium text-gray-600 mt-0 text-sm">Languages:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {tutor.languagesSpoken.map((lang, index) => (
+                              <span 
+                                key={index} 
+                                className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                              >
+                                {lang.language} ({lang.proficiency})
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <p className="text-gray-600 mb-0 text-justify mt-1 pt-0 pb-0 px-0" style={{ fontSize: '0.9rem' }}>{tutor.experience}</p>
+
+                      {/* View Profile button only */}
+                      {tutor.profilePDF?.asset?.url && (
+                      <div>
+                          <a
+                            href={tutor.profilePDF.asset.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-gray-200 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-300 transition-all font-medium"
+                        >
+                            View Profile
+                          </a>
+                      </div>
+                      )}
                     </div>
                   </div>
-
-                  <p className="text-gray-600 mb-0 text-justify mt-0 pt-0 pb-0 px-0" style={{ fontSize: '0.9rem', marginTop: '-5px' }}>{tutor.experience}</p>
-
-                  {/* View Profile button only */}
-                  {tutor.profilePDF?.asset?.url && (
-                  <div>
-                      <a
-                        href={tutor.profilePDF.asset.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-gray-200 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-300 transition-all font-medium"
-                    >
-                        View Profile
-                      </a>
-                  </div>
-                  )}
                 </div>
               </div>
             </div>
