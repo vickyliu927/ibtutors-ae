@@ -413,7 +413,7 @@ const TutorProfiles = ({
                         )}
                       </div>
                       
-                      {/* Professional Title row with hire button - MODIFIED TO ADJUST LAYOUT DYNAMICALLY */}
+                      {/* Professional Title row with hire button */}
                       <div className="flex justify-between items-center mb-0 pb-0">
                         {tutor.professionalTitle ? (
                         <div className="flex items-center">
@@ -497,7 +497,7 @@ const TutorProfiles = ({
 
                       {/* Subjects taught row (only when professional title exists) */}
                       {tutor.professionalTitle && (
-                        <div className="flex mt-0 pt-0">
+                        <div className="flex mt-1">
                           <div className="flex items-start gap-1">
                             <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
                             <div className="flex flex-wrap gap-1 max-w-md">
@@ -562,7 +562,8 @@ const TutorProfiles = ({
                         </div>
                       )}
 
-                      <p className="text-gray-600 mb-0 text-justify mt-1 pt-0 pb-0 px-0" style={{ fontSize: '0.9rem' }}>{tutor.experience}</p>
+                      {/* Bio text */}
+                      <p className="text-gray-600 mb-0 text-justify mt-2 pt-0 pb-0 px-0" style={{ fontSize: '0.9rem' }}>{tutor.experience}</p>
 
                       {/* View Profile button only */}
                       {tutor.profilePDF?.asset?.url && (
