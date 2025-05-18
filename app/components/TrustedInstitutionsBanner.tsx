@@ -61,62 +61,62 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
   }
 
   return (
-    <div 
-      className="py-2 md:py-3 w-full" 
-      style={{ backgroundColor }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Banner text */}
-        <div className="text-center mb-2">
-          {title && (
-            <div className="text-sm md:text-base font-medium text-gray-600">
-              {title}
-            </div>
-          )}
-          {subtitle && (
-            <div className="text-base md:text-lg font-bold text-blue-800">
-              {subtitle}
-            </div>
-          )}
-        </div>
-        
-        {/* Logo carousel with continuous animation */}
-        <div 
-          className="overflow-hidden"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <div 
-            ref={carouselRef}
-            className="flex items-center justify-center space-x-8 md:space-x-12 pb-1"
-            style={{
-              animation: animationPaused 
-                ? 'none' 
-                : `logoScroll ${getAnimationDuration()}s linear infinite`,
-              // Use transform to create smooth continuous movement
-              willChange: 'transform',
-            }}
-          >
-            {displayedLogos.map((institution, index) => (
-              <div 
-                key={`${institution.name}-${index}`} 
-                className="flex-shrink-0 flex flex-col items-center justify-center h-28 md:h-32"
-              >
-                <div className="relative h-20 md:h-24 w-36 md:w-48 mb-2">
-                  <Image
-                    src={urlFor(institution.logo).width(250).height(125).url()}
-                    alt={institution.name}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 640px) 150px, 250px"
-                    style={{ maxWidth: '100%', maxHeight: '100%' }}
-                  />
-                </div>
-                <div className="text-xs md:text-sm text-center font-medium text-gray-700 max-w-[140px] md:max-w-[170px] truncate">
-                  {institution.name}
-                </div>
+    <div className="w-full" style={{ backgroundColor }}>
+      {/* This entire container has the background color with padding at the top */}
+      <div className="py-4 md:py-6 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Banner text with increased top padding */}
+          <div className="text-center mb-2 pt-4 md:pt-5">
+            {title && (
+              <div className="text-sm md:text-base font-medium text-gray-600">
+                {title}
               </div>
-            ))}
+            )}
+            {subtitle && (
+              <div className="text-base md:text-lg font-bold text-blue-800">
+                {subtitle}
+              </div>
+            )}
+          </div>
+          
+          {/* Logo carousel with continuous animation */}
+          <div 
+            className="overflow-hidden"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div 
+              ref={carouselRef}
+              className="flex items-center justify-center space-x-8 md:space-x-12 pb-1"
+              style={{
+                animation: animationPaused 
+                  ? 'none' 
+                  : `logoScroll ${getAnimationDuration()}s linear infinite`,
+                // Use transform to create smooth continuous movement
+                willChange: 'transform',
+              }}
+            >
+              {displayedLogos.map((institution, index) => (
+                <div 
+                  key={`${institution.name}-${index}`} 
+                  className="flex-shrink-0 flex flex-col items-center justify-center h-24 md:h-32"
+                >
+                  <div className="relative h-16 md:h-24 w-28 md:w-48 mb-2">
+                    <Image
+                      src={urlFor(institution.logo).width(250).height(125).url()}
+                      alt={institution.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 640px) 112px, 250px"
+                      style={{ maxWidth: '100%', maxHeight: '100%' }}
+                    />
+                  </div>
+                  <div className="text-xs md:text-sm text-center font-medium text-gray-700 max-w-[112px] md:max-w-[170px] truncate">
+                    {institution.name}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -315,14 +315,14 @@ const TutorProfiles = ({
                   </div>
                 ) : (
                   /* Original full-width button layout when no stats */
-                  <div className="mt-3 border-t border-gray-200">
-                    <Link
-                      href={tutor.hireButtonLink || "/#contact-form"}
-                      className="bg-blue-800 text-white py-3 transition-all font-medium text-center block w-full"
-                    >
-                      Hire a tutor
-                    </Link>
-                  </div>
+                <div className="mt-3 border-t border-gray-200">
+                  <Link
+                    href={tutor.hireButtonLink || "/#contact-form"}
+                    className="bg-blue-800 text-white py-3 transition-all font-medium text-center block w-full"
+                  >
+                    Hire a tutor
+                  </Link>
+                </div>
                 )}
 
                 {/* View Profile button only */}
@@ -379,7 +379,7 @@ const TutorProfiles = ({
                           </div>
                         )}
                       </div>
-
+                      
                       {/* Tutor stats - Desktop */}
                       <div className="flex flex-wrap mb-1">
                         {tutor.rating && (
@@ -474,8 +474,8 @@ const TutorProfiles = ({
                         </div>
                         )}
                         
-                        {/* Hire button moved to align with professional title */}
-                        <div className="flex-shrink-0 -mt-4 flex flex-col items-end">
+                        {/* Hire button section with consistent spacing */}
+                        <div className="flex-shrink-0 flex flex-col items-end">
                           <Link
                             href={tutor.hireButtonLink || "/#contact-form"}
                             className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium"
@@ -483,68 +483,70 @@ const TutorProfiles = ({
                             Hire a tutor
                           </Link>
                           
-                          {/* Price tag badge moved directly under hire button */}
-                          {tutor.personallyInterviewed?.enabled && (
-                            <div className="flex items-center justify-end text-orange-500 text-sm mt-4">
-                              <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" />
-                              </svg>
-                              {tutor.personallyInterviewed.badgeText}
-                            </div>
-                          )}
+                          {/* Fixed height container for price tag to maintain spacing */}
+                          <div className="h-8 flex items-center mt-2">
+                            {tutor.personallyInterviewed?.enabled && (
+                              <div className="flex items-center justify-end text-orange-500 text-sm">
+                                <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" />
+                                </svg>
+                                {tutor.personallyInterviewed.badgeText}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                    </div>
 
                       {/* Personally interviewed badge and Languages (conditionally rendered) */}
                       <div className="flex justify-between items-start mb-0 mt-0 pb-0 pt-1">
                         {tutor.professionalTitle ? (
                           /* When professional title exists, subjects and languages appear here */
                           <div className="flex items-start gap-4">
-                            <div className="flex items-start gap-1">
+                        <div className="flex items-start gap-1">
                               <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
-                              <div className="flex flex-wrap gap-1 max-w-md">
-                                {/* Main subject always shown */}
+                          <div className="flex flex-wrap gap-1 max-w-md">
+                            {/* Main subject always shown */}
                                 <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm">
-                                {tutor.specialization.mainSubject}
-                              </span>
-                                
-                                {/* Additional subjects with "Show more" functionality */}
-                                {tutor.specialization.additionalSubjects && 
-                                  (expandedSubjects[tutor._id] 
-                                    ? tutor.specialization.additionalSubjects.map((subject, index) => (
-                                        <span 
-                                          key={index} 
-                                          className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                        >
-                                          {subject}
-                                        </span>
-                                      ))
-                                    : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
-                                <span 
-                                  key={index} 
-                                  className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                >
-                                  {subject}
-                                </span>
-                                    ))
-                                )
-                              }
-                                
-                                {/* Show "more" button if there are more subjects than the maximum visible */}
-                                {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
-                                  <button
-                                    onClick={() => toggleExpandSubjects(tutor._id)}
-                                    className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
-                                  >
-                                    {expandedSubjects[tutor._id] 
-                                      ? 'Show less' 
-                                      : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
-                                    }
-                                  </button>
-                                )}
-                              </div>
-                            </div>
+                            {tutor.specialization.mainSubject}
+                          </span>
                             
+                            {/* Additional subjects with "Show more" functionality */}
+                            {tutor.specialization.additionalSubjects && 
+                              (expandedSubjects[tutor._id] 
+                                ? tutor.specialization.additionalSubjects.map((subject, index) => (
+                                    <span 
+                                      key={index} 
+                                          className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                                    >
+                                      {subject}
+                                    </span>
+                                  ))
+                                : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
+                            <span 
+                              key={index} 
+                                  className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                            >
+                              {subject}
+                            </span>
+                                  ))
+                              )
+                            }
+                            
+                            {/* Show "more" button if there are more subjects than the maximum visible */}
+                            {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
+                              <button
+                                onClick={() => toggleExpandSubjects(tutor._id)}
+                                className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
+                              >
+                                {expandedSubjects[tutor._id] 
+                                  ? 'Show less' 
+                                  : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
+                                }
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        
                             {/* Languages moved to same row as Teaches */}
                             {tutor.languagesSpoken && tutor.languagesSpoken.length > 0 && (
                               <div className="flex items-start gap-1">
@@ -574,7 +576,7 @@ const TutorProfiles = ({
                                     className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
                                   >
                                     {lang.language} ({lang.proficiency})
-                                  </span>
+                          </span>
                                 ))}
                               </div>
                             </div>
@@ -585,7 +587,7 @@ const TutorProfiles = ({
                   </div>
 
                   <p className="text-gray-600 mb-0 text-justify mt-0 pt-0 pb-0 px-0" style={{ fontSize: '0.9rem', marginTop: '-5px' }}>{tutor.experience}</p>
-                  
+
                   {/* View Profile button only */}
                   {tutor.profilePDF?.asset?.url && (
                   <div>

@@ -146,18 +146,20 @@ export default async function Home() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      {heroData ? <HeroSection heroData={heroData} /> : null}
-      
-      {/* Trusted Institutions Banner */}
-      {trustedInstitutionsBanner?.enabled && trustedInstitutionsBanner.institutions?.length > 0 ? (
-        <TrustedInstitutionsBanner
-          title={trustedInstitutionsBanner.title}
-          subtitle={trustedInstitutionsBanner.subtitle}
-          institutions={trustedInstitutionsBanner.institutions}
-          backgroundColor={trustedInstitutionsBanner.backgroundColor}
-          carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
-        />
-      ) : null}
+      <div className="flex flex-col">
+        {heroData ? <HeroSection heroData={heroData} /> : null}
+        
+        {/* Trusted Institutions Banner - No spacing between this and hero */}
+        {trustedInstitutionsBanner?.enabled && trustedInstitutionsBanner.institutions?.length > 0 ? (
+          <TrustedInstitutionsBanner
+            title={trustedInstitutionsBanner.title}
+            subtitle={trustedInstitutionsBanner.subtitle}
+            institutions={trustedInstitutionsBanner.institutions}
+            backgroundColor={trustedInstitutionsBanner.backgroundColor}
+            carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
+          />
+        ) : null}
+      </div>
       
       {highlightsSection?.highlights ? (
         <HighlightsSection highlights={highlightsSection.highlights} />
