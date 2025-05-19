@@ -138,12 +138,12 @@ const Navbar = () => {
             </div>
 
             {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              <Link href={navbarSettings.buttonLink} className="bg-blue-800 text-white px-4 py-1.5 rounded-md text-sm">
+              <Link href={navbarSettings.buttonLink} className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
                 {navbarSettings.buttonText}
               </Link>
             )}
             {!navbarSettings && (
-              <Link href="#" className="bg-blue-800 text-white px-4 py-1.5 rounded-md opacity-50 cursor-not-allowed text-sm">
+              <Link href="#" className="bg-blue-800 text-white px-5 py-2 rounded-md opacity-50 cursor-not-allowed text-sm font-medium">
                 Loading...
             </Link>
             )}
@@ -191,12 +191,12 @@ const Navbar = () => {
             </div>
 
             {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              <Link href={navbarSettings.buttonLink} className="block px-3 py-1.5 text-blue-800 text-sm">
+              <Link href={navbarSettings.buttonLink} className="block px-3 py-2 text-blue-800 text-sm font-medium">
                 {navbarSettings.buttonText}
             </Link>
             )}
             {!navbarSettings && (
-              <span className="block px-3 py-1.5 text-blue-800 opacity-50 cursor-not-allowed text-sm">Loading...</span>
+              <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>
             )}
           </div>
         </div>
