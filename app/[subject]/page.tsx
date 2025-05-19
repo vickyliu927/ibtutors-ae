@@ -77,14 +77,13 @@ async function getSubjectPageData(subject: string) {
       _id,
       name,
       professionalTitle,
-      personallyInterviewed {
+      priceTag {
         enabled,
         badgeText
       },
       experience,
       profilePhoto,
       specialization,
-      yearsOfExperience,
       hireButtonLink,
       displayOnSubjectPages,
       displayOrder,

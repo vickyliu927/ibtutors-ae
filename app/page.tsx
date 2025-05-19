@@ -41,14 +41,13 @@ async function getHomePageData() {
         _id,
         name,
         professionalTitle,
-        personallyInterviewed {
+        priceTag {
           enabled,
           badgeText
         },
         experience,
         profilePhoto,
         specialization,
-        yearsOfExperience,
         hireButtonLink,
         displayOrder,
         profilePDF {

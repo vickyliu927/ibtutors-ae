@@ -26,10 +26,10 @@ export default defineType({
       initialValue: 100,
     }),
     defineField({
-      name: 'personallyInterviewed',
-      title: 'Personally Interviewed',
+      name: 'priceTag',
+      title: 'Price Tag',
       type: 'object',
-      description: 'Show "Personally Interviewed" badge if enabled',
+      description: 'Show price tag badge if enabled',
       fields: [
         {
           name: 'enabled',
@@ -41,13 +41,13 @@ export default defineType({
           name: 'badgeText',
           title: 'Badge Text',
           type: 'string',
-          description: 'Text to display on the badge (default: "Personally Interviewed")',
-          initialValue: 'Personally Interviewed',
+          description: 'Text to display on the price tag badge (e.g., "Starting from AED 200/hour")',
+          initialValue: 'Starting from AED 200/hour',
         }
       ],
       initialValue: {
         enabled: false,
-        badgeText: 'Personally Interviewed'
+        badgeText: 'Starting from AED 200/hour'
       }
     }),
     defineField({
