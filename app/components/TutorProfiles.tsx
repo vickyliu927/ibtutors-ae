@@ -413,137 +413,90 @@ const TutorProfiles = ({
                         )}
                       </div>
                       
-                      {/* Professional Title row with hire button */}
-                      <div className="flex justify-between items-center mb-0 pb-0">
-                        {tutor.professionalTitle ? (
-                        <div className="flex items-center">
-                          <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
-                            <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
-                            </svg>
-                          </span>
-                          <p className="text-gray-700 font-medium text-sm">{tutor.professionalTitle}</p>
-                        </div>
-                        ) : (
-                        /* When professional title is missing, move subjects up to this row */
-                        <div className="flex items-start gap-1">
-                          <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
-                          <div className="flex flex-wrap gap-1 max-w-md">
-                            {/* Main subject always shown */}
-                            <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm">
-                            {tutor.specialization.mainSubject}
-                          </span>
-                            
-                            {/* Additional subjects with "Show more" functionality */}
-                            {tutor.specialization.additionalSubjects && 
-                              (expandedSubjects[tutor._id] 
-                                ? tutor.specialization.additionalSubjects.map((subject, index) => (
-                                    <span 
-                                      key={index} 
-                                      className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                    >
-                                      {subject}
-                                    </span>
-                                  ))
-                                : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
-                            <span 
-                              key={index} 
-                              className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                            >
-                              {subject}
-                            </span>
-                                  ))
-                              )
-                            }
-                            
-                            {/* Show "more" button if there are more subjects than the maximum visible */}
-                            {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
-                              <button
-                                onClick={() => toggleExpandSubjects(tutor._id)}
-                                className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
-                              >
-                                {expandedSubjects[tutor._id] 
-                                  ? 'Show less' 
-                                  : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
+                      {/* Professional Title and Subject Taught - REORGANIZED LAYOUT */}
+                      <div className="flex justify-between items-start">
+                        {/* Left column: Professional Title */}
+                        <div>
+                          {tutor.professionalTitle && (
+                            <div className="flex items-center">
+                              <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
+                                <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                                </svg>
+                              </span>
+                              <p className="text-gray-700 font-medium text-sm">{tutor.professionalTitle}</p>
+                            </div>
+                          )}
+                          
+                          {/* Subjects taught */}
+                          <div className="flex mt-1">
+                            <div className="flex items-start gap-1">
+                              <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
+                              <div className="flex flex-wrap gap-1 max-w-md">
+                                {/* Main subject always shown */}
+                                <span className="text-blue-800 font-medium bg-blue-50 px-2 py-0.5 rounded-md text-sm">
+                                  {tutor.specialization.mainSubject}
+                                </span>
+                                
+                                {/* Additional subjects with "Show more" functionality */}
+                                {tutor.specialization.additionalSubjects && 
+                                  (expandedSubjects[tutor._id] 
+                                    ? tutor.specialization.additionalSubjects.map((subject, index) => (
+                                        <span 
+                                          key={index} 
+                                          className="text-blue-800 font-medium bg-blue-50 px-2 py-0.5 rounded-md text-sm"
+                                        >
+                                          {subject}
+                                        </span>
+                                      ))
+                                    : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
+                                        <span 
+                                          key={index} 
+                                          className="text-blue-800 font-medium bg-blue-50 px-2 py-0.5 rounded-md text-sm"
+                                        >
+                                          {subject}
+                                        </span>
+                                      ))
+                                  )
                                 }
-                              </button>
-                            )}
+                                
+                                {/* Show "more" button if there are more subjects than the maximum visible */}
+                                {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
+                                  <button
+                                    onClick={() => toggleExpandSubjects(tutor._id)}
+                                    className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-0.5 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
+                                  >
+                                    {expandedSubjects[tutor._id] 
+                                      ? 'Show less' 
+                                      : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
+                                    }
+                                  </button>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        )}
                         
-                        {/* Hire button and badge */}
-                        <div className="flex-shrink-0 flex flex-col items-end">
+                        {/* Right Column: Hire button and price tag */}
+                        <div className="flex-shrink-0">
                           <Link
                             href={tutor.hireButtonLink || "/#contact-form"}
-                            className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium"
+                            className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium block text-center"
                           >
                             Hire a tutor
                           </Link>
                           
-                          {/* Fixed height container for price tag */}
-                          <div className="h-6 flex items-center mt-1">
-                            {tutor.personallyInterviewed?.enabled && (
-                              <div className="flex items-center justify-end text-orange-500 text-sm">
-                                <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" />
-                                </svg>
-                                {tutor.personallyInterviewed.badgeText}
-                              </div>
-                            )}
-                          </div>
+                          {/* Price tag badge */}
+                          {tutor.personallyInterviewed?.enabled && (
+                            <div className="flex items-center justify-end text-orange-500 text-sm mt-2">
+                              <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              {tutor.personallyInterviewed.badgeText}
+                            </div>
+                          )}
                         </div>
                       </div>
-
-                      {/* Subjects taught row (only when professional title exists) */}
-                      {tutor.professionalTitle && (
-                        <div className="flex mt-1">
-                          <div className="flex items-start gap-1">
-                            <p className="font-medium text-gray-600 mt-0 text-sm">Teaches:</p>
-                            <div className="flex flex-wrap gap-1 max-w-md">
-                              {/* Main subject always shown */}
-                              <span className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm">
-                                {tutor.specialization.mainSubject}
-                              </span>
-                              
-                              {/* Additional subjects with "Show more" functionality */}
-                              {tutor.specialization.additionalSubjects && 
-                                (expandedSubjects[tutor._id] 
-                                  ? tutor.specialization.additionalSubjects.map((subject, index) => (
-                                      <span 
-                                        key={index} 
-                                        className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                      >
-                                        {subject}
-                                      </span>
-                                    ))
-                                  : tutor.specialization.additionalSubjects.slice(0, MAX_VISIBLE_SUBJECTS).map((subject, index) => (
-                                      <span 
-                                        key={index} 
-                                        className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
-                                      >
-                                        {subject}
-                                      </span>
-                                    ))
-                                )
-                              }
-                              
-                              {/* Show "more" button if there are more subjects than the maximum visible */}
-                              {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > MAX_VISIBLE_SUBJECTS && (
-                                <button
-                                  onClick={() => toggleExpandSubjects(tutor._id)}
-                                  className="text-blue-600 hover:text-blue-800 font-medium text-sm px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
-                                >
-                                  {expandedSubjects[tutor._id] 
-                                    ? 'Show less' 
-                                    : `+${tutor.specialization.additionalSubjects.length - MAX_VISIBLE_SUBJECTS} more`
-                                  }
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
 
                       {/* Languages section */}
                       {tutor.languagesSpoken && tutor.languagesSpoken.length > 0 && (
@@ -553,7 +506,7 @@ const TutorProfiles = ({
                             {tutor.languagesSpoken.map((lang, index) => (
                               <span 
                                 key={index} 
-                                className="text-blue-800 font-medium bg-blue-50 px-3 py-0.5 rounded-md text-sm"
+                                className="text-blue-800 font-medium bg-blue-50 px-2 py-0.5 rounded-md text-sm"
                               >
                                 {lang.language} ({lang.proficiency})
                               </span>
