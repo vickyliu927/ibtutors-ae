@@ -88,11 +88,13 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-17 md:h-20">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <Image src="/images/logo.png" alt="TutorChase Logo" width={300} height={80} priority />
+              <div className="relative w-[255px] h-[68px] md:w-[300px] md:h-[80px]">
+                <Image src="/images/logo.png" alt="TutorChase Logo" fill className="object-contain" priority />
+              </div>
             </Link>
           </div>
           
@@ -151,17 +153,17 @@ const Navbar = () => {
           <div className={`flex items-center md:hidden ${MOBILE_ONLY_CLASS}`}>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-800"
+              className="inline-flex items-center justify-center p-1.5 rounded-md text-gray-700 hover:text-blue-800"
               aria-expanded={isOpen}
               aria-label="Toggle menu"
             >
               <span className="sr-only">Open main menu</span>
               {!isOpen ? (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="block h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               ) : (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="block h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               )}
@@ -173,15 +175,15 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-2 pt-1 pb-2 space-y-1 sm:px-3">
             {/* Mobile Subjects List */}
-            <div className="px-3 py-2">
-              <div className="font-medium text-gray-700 mb-2">All Subjects</div>
+            <div className="px-3 py-1.5">
+              <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
               {subjects.map((subject) => (
                 <Link
                   key={subject.slug.current}
                   href={`/${subject.slug.current}`}
-                  className="block pl-3 py-2 text-gray-600 hover:text-blue-800"
+                  className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
                 >
                   {subject.subject}
             </Link>
@@ -189,12 +191,12 @@ const Navbar = () => {
             </div>
 
             {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              <Link href={navbarSettings.buttonLink} className="block px-3 py-2 text-blue-800">
+              <Link href={navbarSettings.buttonLink} className="block px-3 py-1.5 text-blue-800 text-sm">
                 {navbarSettings.buttonText}
             </Link>
             )}
             {!navbarSettings && (
-              <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed">Loading...</span>
+              <span className="block px-3 py-1.5 text-blue-800 opacity-50 cursor-not-allowed text-sm">Loading...</span>
             )}
           </div>
         </div>
