@@ -478,7 +478,7 @@ const TutorProfiles = ({
                         </div>
                         
                         {/* Right Column: Hire button and price tag */}
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 -mt-4">
                           <Link
                             href={tutor.hireButtonLink || "/#contact-form"}
                             className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium block text-center"
