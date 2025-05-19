@@ -89,17 +89,17 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-17 md:h-20">
+        <div className="flex justify-between h-17 md:h-[68px]">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <div className="relative w-[255px] h-[68px] md:w-[300px] md:h-[80px]">
+              <div className="relative w-[255px] h-[68px] md:w-[255px] md:h-[68px]">
                 <Image src="/images/logo.png" alt="TutorChase Logo" fill className="object-contain" priority />
               </div>
             </Link>
           </div>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-8">
+          <div className="hidden md:flex md:items-center md:space-x-7">
             {/* Subjects Dropdown */}
             <div 
               className="relative"
@@ -108,7 +108,7 @@ const Navbar = () => {
               onMouseLeave={handleMouseLeave}
             >
               <button 
-                className={`text-gray-700 hover:text-blue-800 flex items-center px-4 py-2 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+                className={`text-gray-700 hover:text-blue-800 flex items-center px-4 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
               >
                 All Subjects
                 <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@ const Navbar = () => {
                       <Link
                         key={subject.slug.current}
                         href={`/${subject.slug.current}`}
-                        className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-800"
+                        className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
                       >
                         {subject.subject}
                       </Link>
@@ -138,12 +138,12 @@ const Navbar = () => {
             </div>
 
             {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              <Link href={navbarSettings.buttonLink} className="bg-blue-800 text-white px-4 py-2 rounded-md">
+              <Link href={navbarSettings.buttonLink} className="bg-blue-800 text-white px-4 py-1.5 rounded-md text-sm">
                 {navbarSettings.buttonText}
               </Link>
             )}
             {!navbarSettings && (
-              <Link href="#" className="bg-blue-800 text-white px-4 py-2 rounded-md opacity-50 cursor-not-allowed">
+              <Link href="#" className="bg-blue-800 text-white px-4 py-1.5 rounded-md opacity-50 cursor-not-allowed text-sm">
                 Loading...
             </Link>
             )}
