@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { client } from '@/sanity/lib/client';
+import { cachedFetch } from '@/sanity/lib/queryCache';
 import { initSlugCache } from '../services/slugManager';
 
 interface SubjectPageData {
@@ -30,14 +30,20 @@ const SubjectGrid = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const data = await client.fetch<SubjectPageData[]>(`*[_type == "subjectPage"] | order(displayOrder asc) {
-          _id,
-          title,
-          subject,
-          slug,
-          displayOrder,
-          firstSection
-        }`);
+        // Use cachedFetch with a 15-minute TTL (longer for relatively static data)
+        const data = await cachedFetch<SubjectPageData[]>(
+          `*[_type == "subjectPage"] | order(displayOrder asc) {
+            _id,
+            title,
+            subject,
+            slug,
+            displayOrder,
+            firstSection
+          }`,
+          {},
+          {},
+          15 * 60 * 1000 // 15 minutes cache TTL
+        );
         setSubjects(data);
       } catch (err) {
         console.error('Error fetching subjects:', err);

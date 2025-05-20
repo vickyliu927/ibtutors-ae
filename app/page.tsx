@@ -18,103 +18,99 @@ export const revalidate = 0;
 
 async function getHomePageData() {
   try {
-    const heroQuery = `*[_type == "hero"][0]`;
-    const highlightsSectionQuery = `*[_id == "highlightsSection"][0]{ highlights }`;
-    const trustedInstitutionsBannerQuery = `*[_type == "trustedInstitutionsBanner"][0]{
-      title,
-      subtitle,
-      backgroundColor,
-      carouselSpeed,
-      enabled,
-      institutions[]{
-        name,
-        logo,
-        displayOrder
-      }
-    }`;
-    const tutorProfilesSectionQuery = `*[_type == "tutorProfilesSection"][0]{
-      title,
-      subtitle,
-      ctaText,
-      ctaLink,
-      "tutors": *[_type == "tutor" && displayOnHomepage == true] | order(displayOrder asc) {
-        _id,
-        name,
-        professionalTitle,
-        priceTag {
-          enabled,
-          badgeText
-        },
-        experience,
-        profilePhoto,
-        specialization,
-        hireButtonLink,
-        displayOrder,
-        profilePDF {
-          asset-> {
-            url
-          }
-        },
-        price,
+    // Consolidated GROQ query - fetch all data in a single API call
+    const query = `{
+      "heroData": *[_type == "hero"][0],
+      "highlightsSection": *[_id == "highlightsSection"][0]{ highlights },
+      "trustedInstitutionsBanner": *[_type == "trustedInstitutionsBanner"][0]{
+        title,
+        subtitle,
+        backgroundColor,
+        carouselSpeed,
+        enabled,
+        institutions[]{
+          name,
+          logo,
+          displayOrder
+        }
+      },
+      "tutorProfilesSection": *[_type == "tutorProfilesSection"][0]{
+        title,
+        subtitle,
+        ctaText,
+        ctaLink,
+        "tutors": *[_type == "tutor" && displayOnHomepage == true] | order(displayOrder asc) {
+          _id,
+          name,
+          professionalTitle,
+          priceTag {
+            enabled,
+            badgeText
+          },
+          experience,
+          profilePhoto,
+          specialization,
+          hireButtonLink,
+          displayOrder,
+          profilePDF {
+            asset-> {
+              url
+            }
+          },
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken
+        }
+      },
+      "platformBanner": *[_type == "platformBanner"][0]{
+        title,
+        subtitle,
+        description,
+        features[]{
+          feature,
+          description
+        }
+      },
+      "testimonialSection": *[_type == "testimonialSection"][0]{
         rating,
-        reviewCount,
-        activeStudents,
-        totalLessons,
-        languagesSpoken
-      }
+        totalReviews,
+        subtitle,
+        tutorChaseLink,
+        maxDisplayCount,
+        selectedTestimonials[]-> {
+          _id,
+          reviewerName
+        }
+      },
+      "testimonials": *[_type == "testimonial"] | order(order asc)
     }`;
-    const platformBannerQuery = `*[_type == "platformBanner"][0]{
-      title,
-      subtitle,
-      description,
-      features[]{
-        feature,
-        description
-      }
-    }`;
-    const testimonialSectionQuery = `*[_type == "testimonialSection"][0]{
-      rating,
-      totalReviews,
-      subtitle,
-      tutorChaseLink,
-      maxDisplayCount,
-      selectedTestimonials[]-> {
-        _id,
-        reviewerName
-      }
-    }`;
-    const testimonialsQuery = `*[_type == "testimonial"] | order(order asc)`;
 
     console.log('Fetching data from Sanity...'); // Debug log
 
-    const [heroData, highlightsSection, trustedInstitutionsBanner, tutorProfilesSection, platformBanner, testimonialSection, testimonials] = await Promise.all([
-      client.fetch<HeroData>(heroQuery, {}, { next: { revalidate: 0 } }),
-      client.fetch<{ highlights: HighlightItem[] }>(highlightsSectionQuery, {}, { next: { revalidate: 0 } }),
-      client.fetch(trustedInstitutionsBannerQuery, {}, { next: { revalidate: 0 } }),
-      client.fetch(tutorProfilesSectionQuery, {}, { next: { revalidate: 0 } }),
-      client.fetch(platformBannerQuery, {}, { next: { revalidate: 0 } }),
-      client.fetch<TestimonialSectionData>(testimonialSectionQuery, {}, { next: { revalidate: 0 } }),
-      client.fetch<TestimonialData[]>(testimonialsQuery, {}, { next: { revalidate: 0 } }),
-    ]);
+    // Fetch all data in a single request with Next.js caching
+    const data = await client.fetch(query, {}, { next: { revalidate: 300 } }); // Cache for 5 minutes
 
     console.log('Data fetched:', { 
-      heroData, 
-      highlightsSection: highlightsSection?.highlights,
-      trustedInstitutionsBanner,
-      tutorProfilesSection, 
-      platformBanner, 
-      testimonialSection: JSON.stringify(testimonialSection, null, 2), 
-      testimonials: testimonials.map(t => `${t._id} - ${t.reviewerName}`) 
+      heroData: data.heroData, 
+      highlightsSection: data.highlightsSection?.highlights,
+      trustedInstitutionsBanner: data.trustedInstitutionsBanner,
+      tutorProfilesSection: data.tutorProfilesSection, 
+      platformBanner: data.platformBanner, 
+      testimonialSection: JSON.stringify(data.testimonialSection, null, 2), 
+      testimonials: data.testimonials?.map((t: TestimonialData) => `${t._id} - ${t.reviewerName}`) 
     }); // More detailed debugging
 
     return { 
-      heroData: heroData || null, 
-      highlightsSection: highlightsSection || null,
-      trustedInstitutionsBanner: trustedInstitutionsBanner || null,
-      tutorProfilesSection: tutorProfilesSection || null,
-      platformBanner: platformBanner || null,
-      testimonialSection: testimonialSection || null, 
-      testimonials: testimonials || [] 
+      heroData: data.heroData || null, 
+      highlightsSection: data.highlightsSection || null,
+      trustedInstitutionsBanner: data.trustedInstitutionsBanner || null,
+      tutorProfilesSection: data.tutorProfilesSection || null,
+      platformBanner: data.platformBanner || null,
+      testimonialSection: data.testimonialSection || null, 
+      testimonials: data.testimonials || [] 
     };
   } catch (error) {
     console.error('Error fetching home page data:', error);

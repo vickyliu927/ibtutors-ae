@@ -7,7 +7,7 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false, // Disable CDN to ensure we're always getting fresh data
+  useCdn: true, // Enable CDN for improved performance and reduced API calls
   perspective: 'published',
   stega: {
     enabled: false
@@ -20,7 +20,7 @@ export const previewClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false,
+  useCdn: false, // Preview client should still not use CDN to ensure latest drafts
   perspective: 'previewDrafts',
   token: process.env.SANITY_API_TOKEN
 })

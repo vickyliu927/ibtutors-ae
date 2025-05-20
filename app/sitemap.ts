@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { client } from '@/sanity/lib/client';
+import { cachedFetch } from '@/sanity/lib/queryCache';
 
 interface SubjectPage {
   slug: {
@@ -8,8 +8,8 @@ interface SubjectPage {
   _updatedAt: string;
 }
 
-// Disable static generation and force sitemap to be dynamic
-export const revalidate = 0;
+// Set revalidation time to 1 hour (instead of disabling static generation)
+export const revalidate = 3600;
 
 // Helper to join base URL and path without double slashes
 function joinUrl(base: string, path: string) {
@@ -25,14 +25,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Get current timestamp for homepage, to ensure it's always fresh
   const currentTimestamp = new Date().toISOString();
   
-  // Fetch all subject pages from Sanity, with cache override to ensure fresh data
-  const subjectPages = await client.fetch<SubjectPage[]>(
+  // Fetch all subject pages from Sanity with caching (24 hour TTL for sitemap)
+  const subjectPages = await cachedFetch<SubjectPage[]>(
     `*[_type == "subjectPage"] {
       slug,
       _updatedAt
     }`,
     {},
-    { cache: 'no-store' } // Always fetch fresh data
+    { next: { revalidate: 86400 } }, // 24 hours cache
+    24 * 60 * 60 * 1000 // 24 hours TTL
   );
 
   // Static routes

@@ -1,4 +1,4 @@
-import { client } from '@/sanity/lib/client';
+import { cachedFetch } from '@/sanity/lib/queryCache';
 
 export interface SeoData {
   title: string;
@@ -12,7 +12,13 @@ export async function getSeoData(): Promise<SeoData> {
       description
     }`;
 
-    const seoData = await client.fetch(query);
+    // Using cachedFetch with a 24-hour TTL since SEO data rarely changes
+    const seoData = await cachedFetch<SeoData | null>(
+      query,
+      {},
+      { next: { revalidate: 86400 } }, // 24 hours cache
+      24 * 60 * 60 * 1000 // 24 hours TTL 
+    );
     
     // If there's no SEO data, return default values
     if (!seoData) {

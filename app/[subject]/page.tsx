@@ -57,97 +57,87 @@ interface SubjectPageData {
 }
 
 async function getSubjectPageData(subject: string) {
-  const subjectPageQuery = `*[_type == "subjectPage" && slug.current == $subject][0]{
-    _id,
-    subject,
-    title,
-    firstSection,
-    tutorsListSectionHead
-  }`;
+  try {
+    // Consolidated query to fetch all subject page data in one request
+    const query = `{
+      "subjectPage": *[_type == "subjectPage" && slug.current == $subject][0]{
+        _id,
+        subject,
+        title,
+        firstSection,
+        tutorsListSectionHead,
+        testimonials[]->{
+          _id,
+          reviewerName,
+          reviewerType,
+          testimonialText,
+          rating,
+          order
+        },
+        "faqSection": faqSection->{
+          _id,
+          title,
+          subtitle,
+          "faqs": faqReferences[]-> {
+            _id,
+            question,
+            answer,
+            displayOrder
+          } | order(displayOrder asc)
+        },
+        seo
+      },
+      "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject][0]._id)] | order(displayOrder asc) {
+        _id,
+        name,
+        professionalTitle,
+        priceTag {
+          enabled,
+          badgeText
+        },
+        experience,
+        profilePhoto,
+        specialization,
+        hireButtonLink,
+        displayOnSubjectPages,
+        displayOrder,
+        profilePDF {
+          asset-> {
+            url
+          }
+        },
+        price,
+        rating,
+        reviewCount,
+        activeStudents,
+        totalLessons,
+        languagesSpoken
+      },
+      "testimonialSection": *[_type == "testimonialSection"][0]
+    }`;
 
-  // First fetch just the subject page data
-  const subjectPage = await client.fetch(subjectPageQuery, { subject }, { next: { revalidate: 0 } });
-  
-  if (!subjectPage) {
+    // Use server-side caching with Next.js
+    const data = await client.fetch(query, { subject }, { next: { revalidate: 300 } }); // Cache for 5 minutes
+
+    if (!data.subjectPage) {
+      return { pageData: null, testimonialSection: null };
+    }
+
+    // Debug logs
+    console.log('Subject ID:', data.subjectPage._id);
+    console.log('Tutors found:', data.tutors.length);
+
+    // Combine the data
+    const pageData = {
+      ...data.subjectPage,
+      tutorsList: data.tutors
+    };
+
+    return { pageData, testimonialSection: data.testimonialSection };
+  } catch (error) {
+    console.error('Error fetching subject page data:', error);
     return { pageData: null, testimonialSection: null };
   }
-
-  // Then use the subject page ID to fetch tutors that reference this subject page
-  const tutorsQuery = `*[_type == "tutor" && $subjectPageId in displayOnSubjectPages[]._ref] | order(displayOrder asc) {
-      _id,
-      name,
-      professionalTitle,
-      priceTag {
-        enabled,
-        badgeText
-      },
-      experience,
-      profilePhoto,
-      specialization,
-      hireButtonLink,
-      displayOnSubjectPages,
-      displayOrder,
-      profilePDF {
-        asset-> {
-          url
-        }
-      },
-      price,
-      rating,
-      reviewCount,
-      activeStudents,
-      totalLessons,
-      languagesSpoken
-  }`;
-  
-  console.log('Tutors query:', tutorsQuery);
-  
-  // Get additional subject page data and testimonials
-  const additionalDataQuery = `*[_type == "subjectPage" && slug.current == $subject][0]{
-    testimonials[]->{
-      _id,
-      reviewerName,
-      reviewerType,
-      testimonialText,
-      rating,
-      order
-    },
-    "faqSection": faqSection->{
-      _id,
-      title,
-      subtitle,
-      "faqs": faqReferences[]-> {
-        _id,
-        question,
-        answer,
-        displayOrder
-      } | order(displayOrder asc)
-    },
-    seo
-  }`;
-  
-  const testimonialSectionQuery = `*[_type == "testimonialSection"][0]`;
-
-  // Fetch all data in parallel
-  const [tutors, additionalData, testimonialSection] = await Promise.all([
-    client.fetch(tutorsQuery, { subjectPageId: subjectPage._id }, { next: { revalidate: 0 } }),
-    client.fetch(additionalDataQuery, { subject }, { next: { revalidate: 0 } }),
-    client.fetch<TestimonialSectionData>(testimonialSectionQuery, {}, { next: { revalidate: 0 } })
-  ]);
-
-  // Debug logs
-  console.log('Subject ID:', subjectPage._id);
-  console.log('Tutors found:', tutors.length);
-  console.log('Tutor data:', JSON.stringify(tutors));
-
-  // Combine the data
-  const pageData = {
-    ...subjectPage,
-    ...additionalData,
-    tutorsList: tutors
-  };
-
-  return { pageData, testimonialSection };
 }
 
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
