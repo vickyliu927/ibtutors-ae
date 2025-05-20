@@ -77,7 +77,14 @@ const TutorProfiles = ({
           <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
           )}
           {sectionSubtitle && (
-            <p className="text-gray-600 text-lg mb-8">{sectionSubtitle}</p>
+            <div className="text-gray-600 text-lg mb-6">
+              {sectionSubtitle.split('\n').map((line, i) => (
+                <React.Fragment key={i}>
+                  {line}
+                  {i < sectionSubtitle.split('\n').length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </div>
           )}
           <div className="space-y-6">
             {[1, 2].map((index) => (
@@ -107,7 +114,14 @@ const TutorProfiles = ({
         )}
         
         {sectionSubtitle && (
-          <p className="text-gray-600 text-lg mb-6">{sectionSubtitle}</p>
+          <div className="text-gray-600 text-lg mb-6">
+            {sectionSubtitle.split('\n').map((line, i) => (
+              <React.Fragment key={i}>
+                {line}
+                {i < sectionSubtitle.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))}
+          </div>
         )}
         
         {ctaText && ctaLink && (
