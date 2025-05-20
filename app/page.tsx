@@ -87,7 +87,7 @@ async function getHomePageData() {
         }
       },
       "testimonials": *[_type == "testimonial"] | order(order asc),
-      "faqSection": *[_type == "faq_section" && _id == "faq_section_homepage"][0]{
+      "faqSection": *[_type == "faq_section" && _id == "faq_section"][0]{
         _id,
         title,
         subtitle,
