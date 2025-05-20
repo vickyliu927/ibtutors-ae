@@ -90,7 +90,7 @@ const Navbar = () => {
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
         <div className="flex justify-between h-17 md:h-[68px]">
-          <div className="flex items-center -ml-4 pl-0">
+          <div className="flex items-center -ml-8 pl-0">
             <Link href="/" className="flex-shrink-0 pl-0">
               <div className="relative w-[255px] h-[68px] md:w-[255px] md:h-[68px]">
                 <Image src="/images/logo.png" alt="TutorChase Logo" fill className="object-contain object-left" priority />
