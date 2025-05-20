@@ -16,17 +16,6 @@ export const LazyContactForm = dynamic(
   }
 );
 
-// FAQ section can be loaded later
-export const LazyFAQ = dynamic(
-  () => import('./FAQ'),
-  {
-    ssr: true,
-    loading: () => (
-      <div className="animate-pulse bg-gray-100 rounded-lg h-[300px] w-full"></div>
-    ),
-  }
-);
-
 // Testimonial section can be loaded after critical content
 export const LazyTestimonialSection = dynamic(
   () => import('./TestimonialSection'),
