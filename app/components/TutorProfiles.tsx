@@ -69,6 +69,44 @@ const TutorProfiles = ({
     }));
   };
 
+  // Function to process subtitle text with bold formatting
+  const processSubtitleText = (text: string) => {
+    if (!text) return [];
+    
+    // Split by newlines first
+    return text.split('\n').map((line) => {
+      // Process bold formatting within each line
+      const segments: { text: string; bold: boolean }[] = [];
+      let currentText = '';
+      let inBold = false;
+      let i = 0;
+      
+      while (i < line.length) {
+        // Check for bold marker (*)
+        if (line[i] === '*') {
+          // Add current text segment
+          if (currentText) {
+            segments.push({ text: currentText, bold: inBold });
+            currentText = '';
+          }
+          // Toggle bold state
+          inBold = !inBold;
+          i++;
+        } else {
+          currentText += line[i];
+          i++;
+        }
+      }
+      
+      // Add any remaining text
+      if (currentText) {
+        segments.push({ text: currentText, bold: inBold });
+      }
+      
+      return segments;
+    });
+  };
+
   if (!tutors) {
     return (
       <section className="py-16 bg-white">
@@ -78,11 +116,14 @@ const TutorProfiles = ({
           )}
           {sectionSubtitle && (
             <div className="text-gray-600 text-lg mb-6">
-              {sectionSubtitle.split('\n').map((line, i) => (
-                <React.Fragment key={i}>
-                  {line}
-                  {i < sectionSubtitle.split('\n').length - 1 && <br />}
-                </React.Fragment>
+              {processSubtitleText(sectionSubtitle).map((line, lineIndex) => (
+                <div key={lineIndex} className={lineIndex > 0 ? 'mt-2' : ''}>
+                  {line.map((segment, segmentIndex) => (
+                    <span key={segmentIndex} className={segment.bold ? 'font-bold' : ''}>
+                      {segment.text}
+                    </span>
+                  ))}
+                </div>
               ))}
             </div>
           )}
@@ -115,11 +156,14 @@ const TutorProfiles = ({
         
         {sectionSubtitle && (
           <div className="text-gray-600 text-lg mb-6">
-            {sectionSubtitle.split('\n').map((line, i) => (
-              <React.Fragment key={i}>
-                {line}
-                {i < sectionSubtitle.split('\n').length - 1 && <br />}
-              </React.Fragment>
+            {processSubtitleText(sectionSubtitle).map((line, lineIndex) => (
+              <div key={lineIndex} className={lineIndex > 0 ? 'mt-2' : ''}>
+                {line.map((segment, segmentIndex) => (
+                  <span key={segmentIndex} className={segment.bold ? 'font-bold' : ''}>
+                    {segment.text}
+                  </span>
+                ))}
+              </div>
             ))}
           </div>
         )}
