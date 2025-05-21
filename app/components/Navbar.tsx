@@ -3,7 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSubjectPages, type SubjectPageData } from './NavSubjects';
+import { getCurriculumPages, type CurriculumPageData } from './NavCurriculums';
 import { client } from '@/sanity/lib/client';
+import ExternalLink from './ui/ExternalLink';
 
 // Create a class name with specific meaning to avoid conflicts
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
@@ -16,10 +18,14 @@ async function getNavbarSettings() {
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
+  const [curriculums, setCurriculums] = useState<CurriculumPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
+  const [showCurriculumsDropdown, setShowCurriculumsDropdown] = useState(false);
   const [navbarSettings, setNavbarSettings] = useState<{ buttonText: string; buttonLink: string } | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const subjectsDropdownRef = useRef<HTMLDivElement>(null);
+  const curriculumsDropdownRef = useRef<HTMLDivElement>(null);
+  const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const curriculumsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Add global style when component mounts
   useEffect(() => {
@@ -42,18 +48,33 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+  const handleSubjectsMouseEnter = () => {
+    if (subjectsTimeoutRef.current) {
+      clearTimeout(subjectsTimeoutRef.current);
+      subjectsTimeoutRef.current = null;
     }
     setShowSubjectsDropdown(true);
   };
 
-  const handleMouseLeave = () => {
+  const handleSubjectsMouseLeave = () => {
     // Add a slight delay before closing the dropdown
-    timeoutRef.current = setTimeout(() => {
+    subjectsTimeoutRef.current = setTimeout(() => {
       setShowSubjectsDropdown(false);
+    }, 300); // 300ms delay
+  };
+
+  const handleCurriculumsMouseEnter = () => {
+    if (curriculumsTimeoutRef.current) {
+      clearTimeout(curriculumsTimeoutRef.current);
+      curriculumsTimeoutRef.current = null;
+    }
+    setShowCurriculumsDropdown(true);
+  };
+
+  const handleCurriculumsMouseLeave = () => {
+    // Add a slight delay before closing the dropdown
+    curriculumsTimeoutRef.current = setTimeout(() => {
+      setShowCurriculumsDropdown(false);
     }, 300); // 300ms delay
   };
 
@@ -66,6 +87,16 @@ const Navbar = () => {
         console.error('Error fetching subject pages:', error);
       }
     };
+
+    const fetchCurriculums = async () => {
+      try {
+        const curriculumPages = await getCurriculumPages();
+        setCurriculums(curriculumPages);
+      } catch (error) {
+        console.error('Error fetching curriculum pages:', error);
+      }
+    };
+
     const fetchNavbarSettings = async () => {
       try {
         const settings = await getNavbarSettings();
@@ -76,15 +107,24 @@ const Navbar = () => {
     };
 
     fetchSubjects();
+    fetchCurriculums();
     fetchNavbarSettings();
 
-    // Clean up timeout on unmount
+    // Clean up timeouts on unmount
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (subjectsTimeoutRef.current) {
+        clearTimeout(subjectsTimeoutRef.current);
+      }
+      if (curriculumsTimeoutRef.current) {
+        clearTimeout(curriculumsTimeoutRef.current);
       }
     };
   }, []);
+
+  // Check if a link is external (starts with http or https)
+  const isExternalLink = (url: string) => {
+    return url && (url.startsWith('http://') || url.startsWith('https://'));
+  };
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -100,12 +140,49 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-7">
+            {/* Levels Dropdown */}
+            <div 
+              className="relative"
+              ref={curriculumsDropdownRef}
+              onMouseEnter={handleCurriculumsMouseEnter}
+              onMouseLeave={handleCurriculumsMouseLeave}
+            >
+              <button 
+                className={`text-gray-700 hover:text-blue-800 flex items-center px-4 py-1.5 rounded-md ${showCurriculumsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+              >
+                All Levels
+                <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showCurriculumsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showCurriculumsDropdown && (
+                <div 
+                  className="absolute left-0 mt-0 pt-1 w-56 z-50" 
+                  onMouseEnter={handleCurriculumsMouseEnter}
+                  onMouseLeave={handleCurriculumsMouseLeave}
+                >
+                  <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                    {curriculums.map((curriculum) => (
+                      <Link
+                        key={curriculum.slug.current}
+                        href={`/curriculum/${curriculum.slug.current}`}
+                        className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
+                      >
+                        {curriculum.curriculum}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Subjects Dropdown */}
             <div 
               className="relative"
-              ref={dropdownRef}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+              ref={subjectsDropdownRef}
+              onMouseEnter={handleSubjectsMouseEnter}
+              onMouseLeave={handleSubjectsMouseLeave}
             >
               <button 
                 className={`text-gray-700 hover:text-blue-800 flex items-center px-4 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
@@ -119,8 +196,8 @@ const Navbar = () => {
               {showSubjectsDropdown && (
                 <div 
                   className="absolute left-0 mt-0 pt-1 w-56 z-50" 
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
+                  onMouseEnter={handleSubjectsMouseEnter}
+                  onMouseLeave={handleSubjectsMouseLeave}
                 >
                   <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
                     {subjects.map((subject) => (
@@ -138,33 +215,47 @@ const Navbar = () => {
             </div>
 
             {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              <Link href={navbarSettings.buttonLink} className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
-                {navbarSettings.buttonText}
-              </Link>
+              isExternalLink(navbarSettings.buttonLink) ? (
+                <ExternalLink 
+                  href={navbarSettings.buttonLink} 
+                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                  rel="nofollow"
+                >
+                  {navbarSettings.buttonText}
+                </ExternalLink>
+              ) : (
+                <Link 
+                  href={navbarSettings.buttonLink} 
+                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                >
+                  {navbarSettings.buttonText}
+                </Link>
+              )
             )}
             {!navbarSettings && (
               <Link href="#" className="bg-blue-800 text-white px-5 py-2 rounded-md opacity-50 cursor-not-allowed text-sm font-medium">
                 Loading...
-            </Link>
+              </Link>
             )}
           </div>
-
-          {/* Mobile menu button with both Tailwind classes and custom class */}
-          <div className={`flex items-center md:hidden ${MOBILE_ONLY_CLASS}`}>
+          
+          {/* Mobile menu button */}
+          <div className={`md:hidden flex items-center ${MOBILE_ONLY_CLASS}`}>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-1.5 rounded-md text-gray-700 hover:text-blue-800"
-              aria-expanded={isOpen}
-              aria-label="Toggle menu"
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-800 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-800"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
             >
-              <span className="sr-only">Open main menu</span>
+              <span className="sr-only">{isOpen ? 'Close main menu' : 'Open main menu'}</span>
               {!isOpen ? (
-                <svg className="block h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               ) : (
-                <svg className="block h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               )}
             </button>
@@ -172,10 +263,23 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-1 pb-2 space-y-1 sm:px-3">
+            {/* Mobile Curriculum List */}
+            <div className="px-3 py-1.5">
+              <div className="font-medium text-gray-700 mb-1.5 text-sm">All Levels</div>
+              {curriculums.map((curriculum) => (
+                <Link
+                  key={curriculum.slug.current}
+                  href={`/curriculum/${curriculum.slug.current}`}
+                  className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                >
+                  {curriculum.curriculum}
+                </Link>
+              ))}
+            </div>
+            
             {/* Mobile Subjects List */}
             <div className="px-3 py-1.5">
               <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
@@ -186,14 +290,27 @@ const Navbar = () => {
                   className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
                 >
                   {subject.subject}
-            </Link>
+                </Link>
               ))}
             </div>
 
             {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              <Link href={navbarSettings.buttonLink} className="block px-3 py-2 text-blue-800 text-sm font-medium">
-                {navbarSettings.buttonText}
-            </Link>
+              isExternalLink(navbarSettings.buttonLink) ? (
+                <ExternalLink 
+                  href={navbarSettings.buttonLink}
+                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                  rel="nofollow"
+                >
+                  {navbarSettings.buttonText}
+                </ExternalLink>
+              ) : (
+                <Link 
+                  href={navbarSettings.buttonLink} 
+                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                >
+                  {navbarSettings.buttonText}
+                </Link>
+              )
             )}
             {!navbarSettings && (
               <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>

@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client';
+import ExternalLink from './ui/ExternalLink';
 
 export interface TestimonialSectionData {
   rating: number;
@@ -109,9 +110,13 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
           <p className="mt-2 text-gray-600">
             We're part of{' '}
             {sectionData.tutorChaseLink ? (
-              <Link href={sectionData.tutorChaseLink} className="text-orange-500 hover:text-orange-600">
+              <ExternalLink 
+                href={sectionData.tutorChaseLink} 
+                className="text-orange-500 hover:text-orange-600"
+                rel="nofollow"
+              >
                 TutorChase
-              </Link>
+              </ExternalLink>
             ) : (
               'TutorChase'
             )}
@@ -188,14 +193,14 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
         
         {/* Read our verified reviews button */}
         <div className="flex justify-center mt-12">
-          <a 
+          <ExternalLink 
             href="https://www.reviews.co.uk/company-reviews/store/tutorchase" 
             target="_blank" 
-            rel="noopener noreferrer" 
+            rel="nofollow" 
             className="inline-block bg-blue-800 text-white font-normal text-center text-lg py-3 px-10 rounded-md hover:bg-blue-700 transition-all w-64 sm:w-auto"
           >
             Read our verified reviews
-          </a>
+          </ExternalLink>
         </div>
       </div>
     </section>

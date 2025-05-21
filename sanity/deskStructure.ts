@@ -1,6 +1,6 @@
 import { StructureBuilder } from 'sanity/desk'
 import { BiHome } from 'react-icons/bi'
-import { BsBook } from 'react-icons/bs'
+import { BsBook, BsGridFill } from 'react-icons/bs'
 import { RiPagesLine } from 'react-icons/ri'
 import { MdSettings, MdLink } from 'react-icons/md'
 
@@ -78,6 +78,18 @@ export const structure = (S: StructureBuilder) =>
                         .title('Subject Pages'),
                     ])
                 ),
+              // Curriculum Pages Group
+              S.listItem()
+                .title('Curriculum Pages')
+                .icon(BsGridFill)
+                .child(
+                  S.list()
+                    .title('Curriculum Pages')
+                    .items([
+                      S.documentTypeListItem('curriculumPage')
+                        .title('Curriculum Pages'),
+                    ])
+                ),
             ])
         ),
       // Add a new SEO Settings section
@@ -120,6 +132,7 @@ export const structure = (S: StructureBuilder) =>
             'contactFormSubmission',
             'footerSection',
             'subjectPage',
+            'curriculumPage',
             'seoSettings',
             'highlightsSection',
             'linkSettings',

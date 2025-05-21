@@ -9,6 +9,7 @@ import contactFormSubmission from './contactFormSubmission'
 import footerSection from './footerSection'
 import tutorProfilesSection from './tutorProfilesSection'
 import subjectPage from './subjectPage'
+import curriculumPage from './curriculumPage'
 import seoSettings from './seoSettings'
 import navbarSettings from './navbarSettings'
 import highlightsSection from './highlightsSection'
@@ -29,6 +30,7 @@ export const schemaTypes = [
   contactFormSubmission,
   footerSection,
   subjectPage,
+  curriculumPage,
   seoSettings,
   navbarSettings,
   linkSettings,

@@ -8,6 +8,13 @@ interface SubjectPage {
   _updatedAt: string;
 }
 
+interface CurriculumPage {
+  slug: {
+    current: string;
+  };
+  _updatedAt: string;
+}
+
 // Set revalidation time to 1 hour (instead of disabling static generation)
 export const revalidate = 3600;
 
@@ -25,15 +32,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Get current timestamp for homepage, to ensure it's always fresh
   const currentTimestamp = new Date().toISOString();
   
-  // Fetch all subject pages from Sanity with caching (24 hour TTL for sitemap)
+  // Get all subject pages
   const subjectPages = await cachedFetch<SubjectPage[]>(
-    `*[_type == "subjectPage"] {
-      slug,
-      _updatedAt
-    }`,
-    {},
-    { next: { revalidate: 86400 } }, // 24 hours cache
-    24 * 60 * 60 * 1000 // 24 hours TTL
+    '*[_type == "subjectPage"] { slug, _updatedAt }'
+  );
+
+  // Get all curriculum pages
+  const curriculumPages = await cachedFetch<CurriculumPage[]>(
+    '*[_type == "curriculumPage"] { slug, _updatedAt }'
   );
 
   // Static routes
@@ -46,17 +52,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic routes for subject pages
-  const dynamicRoutes = subjectPages.map((page) => {
-    return {
-      url: joinUrl(baseUrl, page.slug.current),
-      lastModified: new Date(page._updatedAt),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    };
-  });
+  // Create URLs for each subject page
+  const subjectUrls: MetadataRoute.Sitemap = subjectPages.map((page) => ({
+    url: joinUrl(baseUrl, page.slug.current),
+    lastModified: new Date(page._updatedAt),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }));
 
-  console.log(`Sitemap generated at ${currentTimestamp} with ${dynamicRoutes.length} subject pages`);
+  // Create URLs for each curriculum page
+  const curriculumUrls: MetadataRoute.Sitemap = curriculumPages.map((page) => ({
+    url: joinUrl(baseUrl, `curriculum/${page.slug.current}`),
+    lastModified: new Date(page._updatedAt),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }));
+
+  console.log(`Sitemap generated at ${currentTimestamp} with ${subjectUrls.length + curriculumUrls.length} subject and curriculum pages`);
   
-  return [...staticRoutes, ...dynamicRoutes];
+  return [...staticRoutes, ...subjectUrls, ...curriculumUrls];
 } 
