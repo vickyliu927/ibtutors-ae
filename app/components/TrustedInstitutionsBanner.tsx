@@ -90,7 +90,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
           {/* Mobile view: Static grid layout (2-2-1) */}
           <div className="md:hidden mt-4">
             {logoRows.map((row, rowIndex) => (
-              <div key={`row-${rowIndex}`} className="flex justify-center items-center gap-4 mb-6">
+              <div key={`row-${rowIndex}`} className="flex justify-center items-center gap-8 mb-6">
                 {row.map((institution, index) => (
                   <div
                     key={`static-${institution.name}-${index}`}
@@ -106,7 +106,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
                         style={{ maxWidth: '100%', maxHeight: '100%' }}
                       />
                     </div>
-                    <div className="text-xs text-center font-medium text-gray-700 max-w-[90px] truncate">
+                    <div className="text-xs text-center font-medium text-gray-700 max-w-[120px] break-words hyphens-auto">
                       {institution.name}
                     </div>
                   </div>
@@ -123,7 +123,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
           >
             <div 
               ref={carouselRef}
-              className="flex items-center justify-center space-x-12 pb-1"
+              className="flex items-center justify-center space-x-16 pb-1"
               style={{
                 animation: animationPaused 
                   ? 'none' 
@@ -147,7 +147,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
                   </div>
-                  <div className="text-sm text-center font-medium text-gray-700 max-w-[170px] truncate">
+                  <div className="text-sm text-center font-medium text-gray-700 max-w-[200px] break-words hyphens-auto">
                     {institution.name}
                   </div>
                 </div>
