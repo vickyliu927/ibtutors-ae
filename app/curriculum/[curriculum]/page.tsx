@@ -1,10 +1,11 @@
 import { client } from '@/sanity/lib/client';
 import { PortableText } from '@portabletext/react';
-import Navbar from '@/app/components/Navbar';
-import Footer from '@/app/components/Footer';
-import TestimonialCard from '@/app/components/TestimonialCard';
-import TutorCard from '@/app/components/TutorCard';
-import FaqAccordion from '@/app/components/FaqAccordion';
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
+import TestimonialSection from '../../components/TestimonialSection';
+import TutorProfiles from '../../components/TutorProfiles';
+import FaqAccordion from '../../components/FaqAccordion';
+import ContactForm from '../../components/ContactForm';
 import { Metadata } from 'next';
 
 async function getCurriculumPageData(slug: string) {
@@ -26,22 +27,29 @@ async function getCurriculumPageData(slug: string) {
         ctaLink
       },
       tutorsList[] -> {
+        _id,
         name,
         slug,
-        photo,
-        subjects,
-        qualifications,
-        biography,
-        hourlyRate,
-        degrees,
-        "specialSubjects": subjects,
-        "profileSnippet": biography
+        profilePhoto,
+        professionalTitle,
+        experience,
+        specialization,
+        hireButtonLink,
+        price,
+        rating,
+        reviewCount,
+        activeStudents,
+        totalLessons,
+        languagesSpoken,
+        profilePDF
       },
       testimonials[] -> {
+        _id,
         reviewerName,
-        location,
+        reviewerType,
+        testimonialText,
         rating,
-        reviewText
+        order
       },
       faqSection -> {
         title,
@@ -65,13 +73,7 @@ async function getCurriculumPageData(slug: string) {
       rating,
       subtitle,
       totalReviews,
-      tutorChaseLink,
-      "selectedTestimonialsData": selectedTestimonials[] -> {
-        reviewerName,
-        location,
-        rating,
-        reviewText
-      }
+      tutorChaseLink
     }
   `;
 
@@ -121,7 +123,7 @@ export default async function CurriculumPage({ params }: { params: { curriculum:
       <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Stars and Reviews */}
-          <div className="flex flex-col items-center mb-8">
+          <div className="flex flex-col items-center mb-6">
             <div className="flex mb-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg
@@ -144,7 +146,7 @@ export default async function CurriculumPage({ params }: { params: { curriculum:
           </div>
 
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-5">
               {pageData.firstSection.title.split(" ").map((word: string, index: number) => {
                 const shouldHighlight = pageData.firstSection.highlightedWords?.includes(word);
                 return (
@@ -165,66 +167,30 @@ export default async function CurriculumPage({ params }: { params: { curriculum:
       </section>
 
       {/* Tutors Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {pageData.tutorsListSectionHead && (
-            <div className="text-center mb-16">
-              {pageData.tutorsListSectionHead.smallTextBeforeTitle && (
-                <p className="text-blue-800 font-semibold">
-                  {pageData.tutorsListSectionHead.smallTextBeforeTitle}
-                </p>
-              )}
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                {pageData.tutorsListSectionHead.sectionTitle}
-              </h2>
-              {pageData.tutorsListSectionHead.description && (
-                <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-                  {pageData.tutorsListSectionHead.description}
-                </p>
-              )}
-              {pageData.tutorsListSectionHead.ctaLinkText && pageData.tutorsListSectionHead.ctaLink && (
-                <a
-                  href={pageData.tutorsListSectionHead.ctaLink}
-                  className="text-blue-800 font-medium inline-block mt-4 hover:text-blue-700"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {pageData.tutorsListSectionHead.ctaLinkText}
-                </a>
-              )}
-            </div>
-          )}
-
-          {/* Tutors Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {pageData.tutorsList &&
-              pageData.tutorsList.map((tutor: any, index: number) => (
-                <TutorCard key={index} tutor={tutor} />
-              ))}
-          </div>
-        </div>
-      </section>
+      <TutorProfiles 
+        tutors={pageData.tutorsList} 
+        sectionTitle={pageData.tutorsListSectionHead?.sectionTitle}
+        sectionSubtitle={pageData.tutorsListSectionHead?.description}
+        ctaText={pageData.tutorsListSectionHead?.ctaLinkText}
+        ctaLink={pageData.tutorsListSectionHead?.ctaLink}
+      />
 
       {/* Testimonials Section */}
-      <section className="bg-blue-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              What Our Students Say
-            </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-              Read feedback from students who have worked with our {pageData.curriculum} tutors
-            </p>
-          </div>
+      {pageData.testimonials && testimonialSection && (
+        <TestimonialSection
+          sectionData={{
+            rating: testimonialSection.rating,
+            totalReviews: testimonialSection.totalReviews,
+            subtitle: testimonialSection.subtitle,
+            tutorChaseLink: testimonialSection.tutorChaseLink,
+            maxDisplayCount: testimonialSection.maxDisplayCount
+          }} 
+          testimonials={pageData.testimonials}
+        />
+      )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {pageData.testimonials &&
-              pageData.testimonials.slice(0, 3).map((testimonial: any, index: number) => (
-                <TestimonialCard key={index} testimonial={testimonial} />
-              ))}
-          </div>
-        </div>
-      </section>
+      {/* Contact Form */}
+      <ContactForm />
 
       {/* FAQ Section */}
       {pageData.faqSection && (
