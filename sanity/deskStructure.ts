@@ -2,6 +2,7 @@ import { StructureBuilder } from 'sanity/desk'
 import { BiHome } from 'react-icons/bi'
 import { BsBook } from 'react-icons/bs'
 import { RiPagesLine } from 'react-icons/ri'
+import { MdSettings, MdLink } from 'react-icons/md'
 
 export const structure = (S: StructureBuilder) =>
   S.list()
@@ -79,6 +80,31 @@ export const structure = (S: StructureBuilder) =>
                 ),
             ])
         ),
+      // Add a new SEO Settings section
+      S.listItem()
+        .title('SEO Settings')
+        .icon(MdSettings)
+        .child(
+          S.list()
+            .title('SEO Settings')
+            .items([
+              S.listItem()
+                .title('General SEO Settings')
+                .child(
+                  S.document()
+                    .schemaType('seoSettings')
+                    .documentId('seoSettings')
+                ),
+              S.listItem()
+                .title('Link Settings (Nofollow)')
+                .icon(MdLink)
+                .child(
+                  S.documentList()
+                    .title('Link Settings')
+                    .filter('_type == "linkSettings"')
+                ),
+            ])
+        ),
       // Show remaining document types that aren't organized
       ...S.documentTypeListItems().filter(
         (listItem) =>
@@ -96,6 +122,7 @@ export const structure = (S: StructureBuilder) =>
             'subjectPage',
             'seoSettings',
             'highlightsSection',
+            'linkSettings',
           ].includes(listItem.getId() || '')
       ),
     ]) 

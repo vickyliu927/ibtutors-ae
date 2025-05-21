@@ -54,7 +54,7 @@ const TutoringPlatformBanner = ({ data }: Props) => {
           </div>
 
           <div className="w-full lg:w-1/2 lg:pl-12 px-4 sm:px-8 mx-auto">
-            <p className="text-gray-700 mb-6 text-center lg:text-left">{description}</p>
+            <p className="text-gray-700 mb-6 text-left">{description}</p>
 
             <ul className="space-y-3 max-w-md mx-auto lg:mx-0">
               {features.map((feature, index) => (

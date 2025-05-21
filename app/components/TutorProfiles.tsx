@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { urlFor } from '@/sanity/lib/image';
 import Image from 'next/image';
 import Link from 'next/link';
+import ExternalLink from './ui/ExternalLink';
 
 export interface TutorData {
   _id: string;
@@ -115,7 +116,7 @@ const TutorProfiles = ({
           <h2 className="text-3xl font-bold mb-8">{sectionTitle}</h2>
           )}
           {sectionSubtitle && (
-            <div className="text-gray-600 text-lg mb-6">
+            <div className="text-gray-600 text-lg mb-6 whitespace-pre-line">
               {processSubtitleText(sectionSubtitle).map((line, lineIndex) => (
                 <div key={lineIndex} className={lineIndex > 0 ? 'mt-2' : ''}>
                   {line.map((segment, segmentIndex) => (
@@ -155,7 +156,7 @@ const TutorProfiles = ({
         )}
         
         {sectionSubtitle && (
-          <div className="text-gray-600 text-lg mb-6">
+          <div className="text-gray-600 text-lg mb-6 whitespace-pre-line">
             {processSubtitleText(sectionSubtitle).map((line, lineIndex) => (
               <div key={lineIndex} className={lineIndex > 0 ? 'mt-2' : ''}>
                 {line.map((segment, segmentIndex) => (
@@ -170,14 +171,13 @@ const TutorProfiles = ({
         
         {ctaText && ctaLink && (
           <p className="text-orange-500 hover:text-orange-600 mb-8">
-            <a 
+            <ExternalLink 
               href={ctaLink}
               target="_blank"
-              rel="noopener noreferrer"
               className="transition-colors"
             >
               {ctaText}
-            </a>
+            </ExternalLink>
           </p>
         )}
         
@@ -385,14 +385,13 @@ const TutorProfiles = ({
                 {/* View Profile button only */}
                 {tutor.profilePDF?.asset?.url && (
                   <div className="p-4 pt-0">
-                    <a
+                    <ExternalLink
                       href={tutor.profilePDF.asset.url}
                       target="_blank"
-                      rel="noopener noreferrer"
                       className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition-all font-medium text-center block w-full"
                     >
                       View Profile
-                    </a>
+                    </ExternalLink>
                   </div>
                 )}
               </div>
@@ -578,14 +577,13 @@ const TutorProfiles = ({
                   {/* View Profile button only */}
                   {tutor.profilePDF?.asset?.url && (
                   <div>
-                      <a
+                      <ExternalLink
                         href={tutor.profilePDF.asset.url}
                         target="_blank"
-                        rel="noopener noreferrer"
                         className="bg-gray-200 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-300 transition-all font-medium"
                     >
                         View Profile
-                      </a>
+                      </ExternalLink>
                   </div>
                   )}
                     </div>

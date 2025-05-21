@@ -25,9 +25,9 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
   carouselSpeed = 5,
 }) => {
   const [displayedLogos, setDisplayedLogos] = useState<Institution[]>([]);
+  const [sortedLogos, setSortedLogos] = useState<Institution[]>([]);
   const [animationPaused, setAnimationPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [transitionEnabled, setTransitionEnabled] = useState(true);
 
   // Sort institutions by display order
   useEffect(() => {
@@ -38,7 +38,8 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
         return orderA - orderB;
       });
       
-      // Double the logos to create a seamless loop
+      setSortedLogos(sorted);
+      // Double the logos to create a seamless loop for desktop
       setDisplayedLogos([...sorted, ...sorted]);
     }
   }, [institutions]);
@@ -60,6 +61,13 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
     return null;
   }
 
+  // Chunk logos into rows (2-2-1 layout for mobile)
+  const logoRows = [
+    sortedLogos.slice(0, 2), // First row: first 2 logos
+    sortedLogos.slice(2, 4), // Second row: next 2 logos
+    sortedLogos.slice(4, 5)  // Third row: remaining logo
+  ].filter(row => row.length > 0);
+
   return (
     <div className="w-full" style={{ backgroundColor }}>
       {/* This entire container has the background color with padding at the top */}
@@ -79,15 +87,43 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
             )}
           </div>
           
-          {/* Logo carousel with continuous animation */}
+          {/* Mobile view: Static grid layout (2-2-1) */}
+          <div className="md:hidden mt-4">
+            {logoRows.map((row, rowIndex) => (
+              <div key={`row-${rowIndex}`} className="flex justify-center items-center gap-4 mb-6">
+                {row.map((institution, index) => (
+                  <div
+                    key={`static-${institution.name}-${index}`}
+                    className="flex-shrink-0 flex flex-col items-center justify-center"
+                  >
+                    <div className="relative h-14 w-28 mb-2">
+                      <Image
+                        src={urlFor(institution.logo).width(250).height(125).url()}
+                        alt={institution.name}
+                        fill
+                        className="object-contain"
+                        sizes="112px"
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
+                      />
+                    </div>
+                    <div className="text-xs text-center font-medium text-gray-700 max-w-[90px] truncate">
+                      {institution.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          
+          {/* Desktop view: Logo carousel with continuous animation */}
           <div 
-            className="overflow-hidden"
+            className="hidden md:block overflow-hidden"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <div 
               ref={carouselRef}
-              className="flex items-center justify-center space-x-4 md:space-x-12 pb-1"
+              className="flex items-center justify-center space-x-12 pb-1"
               style={{
                 animation: animationPaused 
                   ? 'none' 
@@ -99,19 +135,19 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
               {displayedLogos.map((institution, index) => (
                 <div 
                   key={`${institution.name}-${index}`} 
-                  className="flex-shrink-0 flex flex-col items-center justify-center h-20 md:h-32"
+                  className="flex-shrink-0 flex flex-col items-center justify-center h-32"
                 >
-                  <div className="relative h-12 md:h-24 w-20 md:w-48 mb-2">
+                  <div className="relative h-24 w-48 mb-2">
                     <Image
                       src={urlFor(institution.logo).width(250).height(125).url()}
                       alt={institution.name}
                       fill
                       className="object-contain"
-                      sizes="(max-width: 640px) 80px, 250px"
+                      sizes="250px"
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
                   </div>
-                  <div className="text-xs md:text-sm text-center font-medium text-gray-700 max-w-[80px] md:max-w-[170px] truncate">
+                  <div className="text-sm text-center font-medium text-gray-700 max-w-[170px] truncate">
                     {institution.name}
                   </div>
                 </div>

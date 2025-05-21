@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "init-sanity": "npx tsx sanity/lib/initSanity.ts"
+    "init-sanity": "npx tsx sanity/lib/initSanity.ts",
+    "setup-link-settings": "node --experimental-json-modules ./sanity/createLinkSettings.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.3",
