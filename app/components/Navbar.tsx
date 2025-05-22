@@ -233,94 +233,8 @@ const Navbar = () => {
                   
                   return null;
                 })
-            ) : navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
-              // Use legacy navigationOrder if navigationButtons not available
-              [...navbarSettings.navigationOrder]
-                .sort((a, b) => a.displayOrder - b.displayOrder)
-                .map((item, index) => {
-                  if (item.itemType === 'curriculum') {
-                    // Render all curriculum links
-                    return (
-                      <React.Fragment key={`nav-item-${index}`}>
-                        {curriculums.map((curriculum) => (
-                          <Link
-                            key={curriculum.slug.current}
-                            href={`/curriculum/${curriculum.slug.current}`}
-                            className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
-                          >
-                            {curriculum.curriculum}
-                          </Link>
-                        ))}
-                      </React.Fragment>
-                    );
-                  } else if (item.itemType === 'subjectDropdown') {
-                    // Render subjects dropdown
-                    return (
-                      <div 
-                        key={`nav-item-${index}`}
-                        className="relative"
-                        ref={subjectsDropdownRef}
-                        onMouseEnter={handleSubjectsMouseEnter}
-                        onMouseLeave={handleSubjectsMouseLeave}
-                      >
-                        <button 
-                          className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-                        >
-                          All Subjects
-                          <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-                        
-                        {showSubjectsDropdown && (
-                          <div 
-                            className="absolute left-0 mt-0 pt-1 w-56 z-50" 
-                            onMouseEnter={handleSubjectsMouseEnter}
-                            onMouseLeave={handleSubjectsMouseLeave}
-                          >
-                            <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
-                              {subjects.map((subject) => (
-                                <Link
-                                  key={subject.slug.current}
-                                  href={`/${subject.slug.current}`}
-                                  className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
-                                >
-                                  {subject.subject}
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  } else if (item.itemType === 'button' && navbarSettings.buttonText && navbarSettings.buttonLink) {
-                    // Render CTA button
-                    return (
-                      <React.Fragment key={`nav-item-${index}`}>
-                        {isExternalLink(navbarSettings.buttonLink) ? (
-                          <ExternalLink 
-                            href={navbarSettings.buttonLink} 
-                            className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                            rel="nofollow"
-                          >
-                            {navbarSettings.buttonText}
-                          </ExternalLink>
-                        ) : (
-                          <Link 
-                            href={navbarSettings.buttonLink} 
-                            className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                          >
-                            {navbarSettings.buttonText}
-                          </Link>
-                        )}
-                      </React.Fragment>
-                    );
-                  }
-                  
-                  return null;
-                })
             ) : (
-              // Fallback to default order if no navigationOrder settings
+              // Default rendering when no custom buttons defined
               <>
                 {/* Curriculum Pages - Direct Links */}
                 {curriculums.map((curriculum) => {
@@ -334,77 +248,70 @@ const Navbar = () => {
                     </Link>
                   );
                 })}
-
-                {/* Subjects Dropdown */}
-                <div 
-                  className="relative"
-                  ref={subjectsDropdownRef}
-                  onMouseEnter={handleSubjectsMouseEnter}
-                  onMouseLeave={handleSubjectsMouseLeave}
-                >
-                  <button 
-                    className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-                  >
-                    All Subjects
-                    <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
-                  {showSubjectsDropdown && (
-                    <div 
-                      className="absolute left-0 mt-0 pt-1 w-56 z-50" 
-                      onMouseEnter={handleSubjectsMouseEnter}
-                      onMouseLeave={handleSubjectsMouseLeave}
-                    >
-                      <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
-                        {subjects.map((subject) => (
-                          <Link
-                            key={subject.slug.current}
-                            href={`/${subject.slug.current}`}
-                            className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
-                          >
-                            {subject.subject}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-                  isExternalLink(navbarSettings.buttonLink) ? (
-                    <ExternalLink 
-                      href={navbarSettings.buttonLink} 
-                      className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                      rel="nofollow"
-                    >
-                      {navbarSettings.buttonText}
-                    </ExternalLink>
-                  ) : (
-                    <Link 
-                      href={navbarSettings.buttonLink} 
-                      className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                    >
-                      {navbarSettings.buttonText}
-                    </Link>
-                  )
-                )}
-                {!navbarSettings && (
-                  <Link href="#" className="bg-blue-800 text-white px-5 py-2 rounded-md opacity-50 cursor-not-allowed text-sm font-medium">
-                    Loading...
-                  </Link>
-                )}
               </>
             )}
 
-            {/* Always add the CTA button if it's not included in the navigation */}
-            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 && (
-              <Link 
-                href={navbarSettings.buttonLink} 
-                className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+            {/* Always include the All Subjects dropdown if not added via custom navigation */}
+            {(!navbarSettings?.navigationButtons || !navbarSettings.navigationButtons.some(btn => btn.buttonType === 'subjectDropdown')) && (
+              <div 
+                className="relative"
+                ref={subjectsDropdownRef}
+                onMouseEnter={handleSubjectsMouseEnter}
+                onMouseLeave={handleSubjectsMouseLeave}
               >
-                {navbarSettings.buttonText}
+                <button 
+                  className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+                >
+                  All Subjects
+                  <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {showSubjectsDropdown && (
+                  <div 
+                    className="absolute left-0 mt-0 pt-1 w-56 z-50" 
+                    onMouseEnter={handleSubjectsMouseEnter}
+                    onMouseLeave={handleSubjectsMouseLeave}
+                  >
+                    <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                      {subjects.map((subject) => (
+                        <Link
+                          key={subject.slug.current}
+                          href={`/${subject.slug.current}`}
+                          className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
+                        >
+                          {subject.subject}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Always add the CTA button if it's not included in the navigation */}
+            {navbarSettings?.buttonText && navbarSettings?.buttonLink && (
+              isExternalLink(navbarSettings.buttonLink) ? (
+                <ExternalLink 
+                  href={navbarSettings.buttonLink} 
+                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                  rel="nofollow"
+                >
+                  {navbarSettings.buttonText}
+                </ExternalLink>
+              ) : (
+                <Link 
+                  href={navbarSettings.buttonLink} 
+                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                >
+                  {navbarSettings.buttonText}
+                </Link>
+              )
+            )}
+            {!navbarSettings && (
+              <Link href="#" className="bg-blue-800 text-white px-5 py-2 rounded-md opacity-50 cursor-not-allowed text-sm font-medium">
+                Loading...
               </Link>
             )}
           </div>
@@ -492,71 +399,8 @@ const Navbar = () => {
                   
                   return null;
                 })
-            ) : navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
-              // Use legacy navigationOrder if navigationButtons not available
-              [...navbarSettings.navigationOrder]
-                .sort((a, b) => a.displayOrder - b.displayOrder)
-                .map((item, index) => {
-                  if (item.itemType === 'curriculum') {
-                    // Render curriculum links section
-                    return (
-                      <div key={`mobile-nav-item-${index}`} className="px-3 py-1.5">
-                        <div className="font-medium text-gray-700 mb-1.5 text-sm">Curricula</div>
-                        {curriculums.map((curriculum) => (
-                          <Link
-                            key={curriculum.slug.current}
-                            href={`/curriculum/${curriculum.slug.current}`}
-                            className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                          >
-                            {curriculum.curriculum}
-                          </Link>
-                        ))}
-                      </div>
-                    );
-                  } else if (item.itemType === 'subjectDropdown') {
-                    // Render subjects list section
-                    return (
-                      <div key={`mobile-nav-item-${index}`} className="px-3 py-1.5">
-                        <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
-                        {subjects.map((subject) => (
-                          <Link
-                            key={subject.slug.current}
-                            href={`/${subject.slug.current}`}
-                            className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                          >
-                            {subject.subject}
-                          </Link>
-                        ))}
-                      </div>
-                    );
-                  } else if (item.itemType === 'button' && navbarSettings.buttonText && navbarSettings.buttonLink) {
-                    // Render CTA button
-                    return (
-                      <div key={`mobile-nav-item-${index}`}>
-                        {isExternalLink(navbarSettings.buttonLink) ? (
-                          <ExternalLink 
-                            href={navbarSettings.buttonLink}
-                            className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                            rel="nofollow"
-                          >
-                            {navbarSettings.buttonText}
-                          </ExternalLink>
-                        ) : (
-                          <Link 
-                            href={navbarSettings.buttonLink} 
-                            className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                          >
-                            {navbarSettings.buttonText}
-                          </Link>
-                        )}
-                      </div>
-                    );
-                  }
-                  
-                  return null;
-                })
             ) : (
-              // Fallback to default order if no navigationOrder settings
+              // Default rendering when no custom buttons defined
               <>
                 {/* Mobile Curriculum Links */}
                 <div className="px-3 py-1.5">
@@ -571,53 +415,46 @@ const Navbar = () => {
                     </Link>
                   ))}
                 </div>
-                
-                {/* Mobile Subjects List */}
-                <div className="px-3 py-1.5">
-                  <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
-                  {subjects.map((subject) => (
-                    <Link
-                      key={subject.slug.current}
-                      href={`/${subject.slug.current}`}
-                      className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                    >
-                      {subject.subject}
-                    </Link>
-                  ))}
-                </div>
-
-                {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-                  isExternalLink(navbarSettings.buttonLink) ? (
-                    <ExternalLink 
-                      href={navbarSettings.buttonLink}
-                      className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                      rel="nofollow"
-                    >
-                      {navbarSettings.buttonText}
-                    </ExternalLink>
-                  ) : (
-                    <Link 
-                      href={navbarSettings.buttonLink} 
-                      className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                    >
-                      {navbarSettings.buttonText}
-                    </Link>
-                  )
-                )}
-                {!navbarSettings && (
-                  <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>
-                )}
               </>
             )}
+            
+            {/* Always include the All Subjects section if not added via custom navigation */}
+            {(!navbarSettings?.navigationButtons || !navbarSettings.navigationButtons.some(btn => btn.buttonType === 'subjectDropdown')) && (
+              <div className="px-3 py-1.5">
+                <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
+                {subjects.map((subject) => (
+                  <Link
+                    key={subject.slug.current}
+                    href={`/${subject.slug.current}`}
+                    className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                  >
+                    {subject.subject}
+                  </Link>
+                ))}
+              </div>
+            )}
 
-            {/* Always add the CTA button in the mobile menu if it's not included in the navigation */}
-            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              <Link 
-                href={navbarSettings.buttonLink} 
-                className="block px-3 py-2 text-blue-800 text-sm font-medium mt-2"
-              >
-                {navbarSettings.buttonText}
-              </Link>
+            {/* Always include the CTA button */}
+            {navbarSettings?.buttonText && navbarSettings?.buttonLink && (
+              isExternalLink(navbarSettings.buttonLink) ? (
+                <ExternalLink 
+                  href={navbarSettings.buttonLink}
+                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                  rel="nofollow"
+                >
+                  {navbarSettings.buttonText}
+                </ExternalLink>
+              ) : (
+                <Link 
+                  href={navbarSettings.buttonLink} 
+                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                >
+                  {navbarSettings.buttonText}
+                </Link>
+              )
+            )}
+            {!navbarSettings && (
+              <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>
             )}
           </div>
         </div>
