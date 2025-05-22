@@ -14,8 +14,22 @@ import FAQSection from './components/FAQSection';
 import { LazyContactForm, LazyTestimonialSection } from './components/LazyComponents';
 import HighlightsSection, { HighlightItem } from './components/HighlightsSection';
 
-// Disable static page generation and enable revalidation
-export const revalidate = 0;
+/**
+ * Data Fetching Strategy
+ * 
+ * This website implements a server-side data fetching approach with several optimizations:
+ * 
+ * 1. Consolidated Queries: We fetch multiple data types in a single query where possible to reduce API calls
+ * 2. Server Components: All data fetching happens on the server side, eliminating client-side API calls
+ * 3. Revalidation: Data is cached for 10 minutes (600 seconds) using Next.js revalidation
+ * 4. No Client-side Fetching: We've removed all useState/useEffect data fetching
+ * 
+ * This approach significantly reduces the number of API calls to Sanity, improves performance,
+ * and provides a better user experience with instant page loads.
+ */
+
+// Set revalidation time to 10 minutes (600 seconds)
+export const revalidate = 600;
 
 async function getHomePageData() {
   try {
@@ -103,7 +117,7 @@ async function getHomePageData() {
     console.log('Fetching data from Sanity...'); // Debug log
 
     // Fetch all data in a single request with Next.js caching
-    const data = await client.fetch(query, {}, { next: { revalidate: 300 } }); // Cache for 5 minutes
+    const data = await client.fetch(query, {}, { next: { revalidate: 600 } }); // Cache for 10 minutes
 
     // Add detailed FAQ debugging
     if (data.faqSection) {

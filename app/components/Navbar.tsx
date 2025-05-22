@@ -11,7 +11,7 @@ import ExternalLink from './ui/ExternalLink';
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 
 async function getNavbarSettings() {
-  const query = `*[_type == "navbarSettings"][0]{buttonText, buttonLink}`;
+  const query = `*[_type == "navbarSettings"][0]{buttonText, buttonLink, navigationOrder}`;
   return client.fetch(query);
 }
 
@@ -20,12 +20,16 @@ const Navbar = () => {
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [curriculums, setCurriculums] = useState<CurriculumPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
-  const [showCurriculumsDropdown, setShowCurriculumsDropdown] = useState(false);
-  const [navbarSettings, setNavbarSettings] = useState<{ buttonText: string; buttonLink: string } | null>(null);
+  const [navbarSettings, setNavbarSettings] = useState<{ 
+    buttonText: string; 
+    buttonLink: string;
+    navigationOrder?: Array<{
+      itemType: 'curriculum' | 'subjectDropdown' | 'button';
+      displayOrder: number;
+    }>;
+  } | null>(null);
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
-  const curriculumsDropdownRef = useRef<HTMLDivElement>(null);
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const curriculumsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Add global style when component mounts
   useEffect(() => {
@@ -63,21 +67,6 @@ const Navbar = () => {
     }, 300); // 300ms delay
   };
 
-  const handleCurriculumsMouseEnter = () => {
-    if (curriculumsTimeoutRef.current) {
-      clearTimeout(curriculumsTimeoutRef.current);
-      curriculumsTimeoutRef.current = null;
-    }
-    setShowCurriculumsDropdown(true);
-  };
-
-  const handleCurriculumsMouseLeave = () => {
-    // Add a slight delay before closing the dropdown
-    curriculumsTimeoutRef.current = setTimeout(() => {
-      setShowCurriculumsDropdown(false);
-    }, 300); // 300ms delay
-  };
-
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -91,7 +80,9 @@ const Navbar = () => {
     const fetchCurriculums = async () => {
       try {
         const curriculumPages = await getCurriculumPages();
-        setCurriculums(curriculumPages);
+        // Sort by displayOrder to maintain proper order
+        const sortedCurriculums = curriculumPages.sort((a, b) => a.displayOrder - b.displayOrder);
+        setCurriculums(sortedCurriculums);
       } catch (error) {
         console.error('Error fetching curriculum pages:', error);
       }
@@ -110,13 +101,17 @@ const Navbar = () => {
     fetchCurriculums();
     fetchNavbarSettings();
 
+    // Browser-only debugging
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        console.log('Debug curriculums state:', curriculums);
+      }, 2000);
+    }
+
     // Clean up timeouts on unmount
     return () => {
       if (subjectsTimeoutRef.current) {
         clearTimeout(subjectsTimeoutRef.current);
-      }
-      if (curriculumsTimeoutRef.current) {
-        clearTimeout(curriculumsTimeoutRef.current);
       }
     };
   }, []);
@@ -139,103 +134,171 @@ const Navbar = () => {
           </div>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-7">
-            {/* Levels Dropdown */}
-            <div 
-              className="relative"
-              ref={curriculumsDropdownRef}
-              onMouseEnter={handleCurriculumsMouseEnter}
-              onMouseLeave={handleCurriculumsMouseLeave}
-            >
-              <button 
-                className={`text-gray-700 hover:text-blue-800 flex items-center px-4 py-1.5 rounded-md ${showCurriculumsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-              >
-                All Levels
-                <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showCurriculumsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {showCurriculumsDropdown && (
-                <div 
-                  className="absolute left-0 mt-0 pt-1 w-56 z-50" 
-                  onMouseEnter={handleCurriculumsMouseEnter}
-                  onMouseLeave={handleCurriculumsMouseLeave}
-                >
-                  <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
-                    {curriculums.map((curriculum) => (
-                      <Link
-                        key={curriculum.slug.current}
-                        href={`/curriculum/${curriculum.slug.current}`}
-                        className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
+          <div className="hidden md:flex md:items-center md:space-x-3">
+            {/* Render navigation items based on order settings if available */}
+            {navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
+              // Sort by displayOrder
+              [...navbarSettings.navigationOrder]
+                .sort((a, b) => a.displayOrder - b.displayOrder)
+                .map((item, index) => {
+                  if (item.itemType === 'curriculum') {
+                    // Render all curriculum links
+                    return (
+                      <React.Fragment key={`nav-item-${index}`}>
+                        {curriculums.map((curriculum) => (
+                          <Link
+                            key={curriculum.slug.current}
+                            href={`/curriculum/${curriculum.slug.current}`}
+                            className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                          >
+                            {curriculum.curriculum}
+                          </Link>
+                        ))}
+                      </React.Fragment>
+                    );
+                  } else if (item.itemType === 'subjectDropdown') {
+                    // Render subjects dropdown
+                    return (
+                      <div 
+                        key={`nav-item-${index}`}
+                        className="relative"
+                        ref={subjectsDropdownRef}
+                        onMouseEnter={handleSubjectsMouseEnter}
+                        onMouseLeave={handleSubjectsMouseLeave}
                       >
-                        {curriculum.curriculum}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+                        <button 
+                          className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+                        >
+                          All Subjects
+                          <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        
+                        {showSubjectsDropdown && (
+                          <div 
+                            className="absolute left-0 mt-0 pt-1 w-56 z-50" 
+                            onMouseEnter={handleSubjectsMouseEnter}
+                            onMouseLeave={handleSubjectsMouseLeave}
+                          >
+                            <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                              {subjects.map((subject) => (
+                                <Link
+                                  key={subject.slug.current}
+                                  href={`/${subject.slug.current}`}
+                                  className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
+                                >
+                                  {subject.subject}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  } else if (item.itemType === 'button' && navbarSettings.buttonText && navbarSettings.buttonLink) {
+                    // Render CTA button
+                    return (
+                      <React.Fragment key={`nav-item-${index}`}>
+                        {isExternalLink(navbarSettings.buttonLink) ? (
+                          <ExternalLink 
+                            href={navbarSettings.buttonLink} 
+                            className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                            rel="nofollow"
+                          >
+                            {navbarSettings.buttonText}
+                          </ExternalLink>
+                        ) : (
+                          <Link 
+                            href={navbarSettings.buttonLink} 
+                            className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                          >
+                            {navbarSettings.buttonText}
+                          </Link>
+                        )}
+                      </React.Fragment>
+                    );
+                  }
+                  
+                  return null;
+                })
+            ) : (
+              // Fallback to default order if no navigationOrder settings
+              <>
+                {/* Curriculum Pages - Direct Links */}
+                {curriculums.map((curriculum) => {
+                  return (
+                    <Link
+                      key={curriculum.slug.current}
+                      href={`/curriculum/${curriculum.slug.current}`}
+                      className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                    >
+                      {curriculum.curriculum}
+                    </Link>
+                  );
+                })}
 
-            {/* Subjects Dropdown */}
-            <div 
-              className="relative"
-              ref={subjectsDropdownRef}
-              onMouseEnter={handleSubjectsMouseEnter}
-              onMouseLeave={handleSubjectsMouseLeave}
-            >
-              <button 
-                className={`text-gray-700 hover:text-blue-800 flex items-center px-4 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-              >
-                All Subjects
-                <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {showSubjectsDropdown && (
+                {/* Subjects Dropdown */}
                 <div 
-                  className="absolute left-0 mt-0 pt-1 w-56 z-50" 
+                  className="relative"
+                  ref={subjectsDropdownRef}
                   onMouseEnter={handleSubjectsMouseEnter}
                   onMouseLeave={handleSubjectsMouseLeave}
                 >
-                  <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
-                    {subjects.map((subject) => (
-                      <Link
-                        key={subject.slug.current}
-                        href={`/${subject.slug.current}`}
-                        className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
-                      >
-                        {subject.subject}
-                      </Link>
-                    ))}
-                  </div>
+                  <button 
+                    className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+                  >
+                    All Subjects
+                    <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  {showSubjectsDropdown && (
+                    <div 
+                      className="absolute left-0 mt-0 pt-1 w-56 z-50" 
+                      onMouseEnter={handleSubjectsMouseEnter}
+                      onMouseLeave={handleSubjectsMouseLeave}
+                    >
+                      <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                        {subjects.map((subject) => (
+                          <Link
+                            key={subject.slug.current}
+                            href={`/${subject.slug.current}`}
+                            className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
+                          >
+                            {subject.subject}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              isExternalLink(navbarSettings.buttonLink) ? (
-                <ExternalLink 
-                  href={navbarSettings.buttonLink} 
-                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                  rel="nofollow"
-                >
-                  {navbarSettings.buttonText}
-                </ExternalLink>
-              ) : (
-                <Link 
-                  href={navbarSettings.buttonLink} 
-                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                >
-                  {navbarSettings.buttonText}
-                </Link>
-              )
-            )}
-            {!navbarSettings && (
-              <Link href="#" className="bg-blue-800 text-white px-5 py-2 rounded-md opacity-50 cursor-not-allowed text-sm font-medium">
-                Loading...
-              </Link>
+                {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
+                  isExternalLink(navbarSettings.buttonLink) ? (
+                    <ExternalLink 
+                      href={navbarSettings.buttonLink} 
+                      className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                      rel="nofollow"
+                    >
+                      {navbarSettings.buttonText}
+                    </ExternalLink>
+                  ) : (
+                    <Link 
+                      href={navbarSettings.buttonLink} 
+                      className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                    >
+                      {navbarSettings.buttonText}
+                    </Link>
+                  )
+                )}
+                {!navbarSettings && (
+                  <Link href="#" className="bg-blue-800 text-white px-5 py-2 rounded-md opacity-50 cursor-not-allowed text-sm font-medium">
+                    Loading...
+                  </Link>
+                )}
+              </>
             )}
           </div>
           
@@ -266,54 +329,123 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-1 pb-2 space-y-1 sm:px-3">
-            {/* Mobile Curriculum List */}
-            <div className="px-3 py-1.5">
-              <div className="font-medium text-gray-700 mb-1.5 text-sm">All Levels</div>
-              {curriculums.map((curriculum) => (
-                <Link
-                  key={curriculum.slug.current}
-                  href={`/curriculum/${curriculum.slug.current}`}
-                  className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                >
-                  {curriculum.curriculum}
-                </Link>
-              ))}
-            </div>
-            
-            {/* Mobile Subjects List */}
-            <div className="px-3 py-1.5">
-              <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
-              {subjects.map((subject) => (
-                <Link
-                  key={subject.slug.current}
-                  href={`/${subject.slug.current}`}
-                  className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                >
-                  {subject.subject}
-                </Link>
-              ))}
-            </div>
+            {/* Mobile Navigation based on order settings if available */}
+            {navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
+              // Sort by displayOrder
+              [...navbarSettings.navigationOrder]
+                .sort((a, b) => a.displayOrder - b.displayOrder)
+                .map((item, index) => {
+                  if (item.itemType === 'curriculum') {
+                    // Render curriculum links section
+                    return (
+                      <div key={`mobile-nav-item-${index}`} className="px-3 py-1.5">
+                        <div className="font-medium text-gray-700 mb-1.5 text-sm">Curricula</div>
+                        {curriculums.map((curriculum) => (
+                          <Link
+                            key={curriculum.slug.current}
+                            href={`/curriculum/${curriculum.slug.current}`}
+                            className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                          >
+                            {curriculum.curriculum}
+                          </Link>
+                        ))}
+                      </div>
+                    );
+                  } else if (item.itemType === 'subjectDropdown') {
+                    // Render subjects list section
+                    return (
+                      <div key={`mobile-nav-item-${index}`} className="px-3 py-1.5">
+                        <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
+                        {subjects.map((subject) => (
+                          <Link
+                            key={subject.slug.current}
+                            href={`/${subject.slug.current}`}
+                            className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                          >
+                            {subject.subject}
+                          </Link>
+                        ))}
+                      </div>
+                    );
+                  } else if (item.itemType === 'button' && navbarSettings.buttonText && navbarSettings.buttonLink) {
+                    // Render CTA button
+                    return (
+                      <div key={`mobile-nav-item-${index}`}>
+                        {isExternalLink(navbarSettings.buttonLink) ? (
+                          <ExternalLink 
+                            href={navbarSettings.buttonLink}
+                            className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                            rel="nofollow"
+                          >
+                            {navbarSettings.buttonText}
+                          </ExternalLink>
+                        ) : (
+                          <Link 
+                            href={navbarSettings.buttonLink} 
+                            className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                          >
+                            {navbarSettings.buttonText}
+                          </Link>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  return null;
+                })
+            ) : (
+              // Fallback to default order if no navigationOrder settings
+              <>
+                {/* Mobile Curriculum Links */}
+                <div className="px-3 py-1.5">
+                  <div className="font-medium text-gray-700 mb-1.5 text-sm">Curricula</div>
+                  {curriculums.map((curriculum) => (
+                    <Link
+                      key={curriculum.slug.current}
+                      href={`/curriculum/${curriculum.slug.current}`}
+                      className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                    >
+                      {curriculum.curriculum}
+                    </Link>
+                  ))}
+                </div>
+                
+                {/* Mobile Subjects List */}
+                <div className="px-3 py-1.5">
+                  <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
+                  {subjects.map((subject) => (
+                    <Link
+                      key={subject.slug.current}
+                      href={`/${subject.slug.current}`}
+                      className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                    >
+                      {subject.subject}
+                    </Link>
+                  ))}
+                </div>
 
-            {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
-              isExternalLink(navbarSettings.buttonLink) ? (
-                <ExternalLink 
-                  href={navbarSettings.buttonLink}
-                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                  rel="nofollow"
-                >
-                  {navbarSettings.buttonText}
-                </ExternalLink>
-              ) : (
-                <Link 
-                  href={navbarSettings.buttonLink} 
-                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                >
-                  {navbarSettings.buttonText}
-                </Link>
-              )
-            )}
-            {!navbarSettings && (
-              <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>
+                {navbarSettings && navbarSettings.buttonText && navbarSettings.buttonLink && (
+                  isExternalLink(navbarSettings.buttonLink) ? (
+                    <ExternalLink 
+                      href={navbarSettings.buttonLink}
+                      className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                      rel="nofollow"
+                    >
+                      {navbarSettings.buttonText}
+                    </ExternalLink>
+                  ) : (
+                    <Link 
+                      href={navbarSettings.buttonLink} 
+                      className="block px-3 py-2 text-blue-800 text-sm font-medium"
+                    >
+                      {navbarSettings.buttonText}
+                    </Link>
+                  )
+                )}
+                {!navbarSettings && (
+                  <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>
+                )}
+              </>
             )}
           </div>
         </div>

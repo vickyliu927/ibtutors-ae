@@ -61,10 +61,10 @@ async function getSubjectPageData(subject: string) {
     // Consolidated query to fetch all subject page data in one request
     const query = `{
       "subjectPage": *[_type == "subjectPage" && slug.current == $subject][0]{
-        _id,
-        subject,
-        title,
-        firstSection,
+    _id,
+    subject,
+    title,
+    firstSection,
         tutorsListSectionHead,
         testimonials[]->{
           _id,
@@ -88,30 +88,30 @@ async function getSubjectPageData(subject: string) {
         seo
       },
       "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject][0]._id)] | order(displayOrder asc) {
-        _id,
-        name,
-        professionalTitle,
-        priceTag {
-          enabled,
-          badgeText
-        },
-        experience,
-        profilePhoto,
-        specialization,
-        hireButtonLink,
-        displayOnSubjectPages,
-        displayOrder,
-        profilePDF {
-          asset-> {
-            url
-          }
-        },
-        price,
-        rating,
-        reviewCount,
-        activeStudents,
-        totalLessons,
-        languagesSpoken
+      _id,
+      name,
+      professionalTitle,
+      priceTag {
+        enabled,
+        badgeText
+      },
+      experience,
+      profilePhoto,
+      specialization,
+      hireButtonLink,
+      displayOnSubjectPages,
+      displayOrder,
+      profilePDF {
+        asset-> {
+          url
+        }
+      },
+      price,
+      rating,
+      reviewCount,
+      activeStudents,
+      totalLessons,
+      languagesSpoken
       },
       "testimonialSection": *[_type == "testimonialSection"][0]
     }`;
@@ -123,15 +123,15 @@ async function getSubjectPageData(subject: string) {
       return { pageData: null, testimonialSection: null };
     }
 
-    // Debug logs
+  // Debug logs
     console.log('Subject ID:', data.subjectPage._id);
     console.log('Tutors found:', data.tutors.length);
 
-    // Combine the data
-    const pageData = {
+  // Combine the data
+  const pageData = {
       ...data.subjectPage,
       tutorsList: data.tutors
-    };
+  };
 
     return { pageData, testimonialSection: data.testimonialSection };
   } catch (error) {
