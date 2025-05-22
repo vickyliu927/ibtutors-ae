@@ -168,10 +168,13 @@ const Navbar = () => {
                       : curriculums.find(c => c.curriculum.toLowerCase() === button.displayText.toLowerCase());
                     
                     if (matchingCurriculum) {
+                      // Ensure the path is relative by properly formatting it
+                      const curriculumPath = `/${matchingCurriculum.slug.current.replace(/^\/+/, '')}`;
+                      
                       return (
                         <Link
                           key={`custom-nav-${index}`}
-                          href={`/curriculum/${matchingCurriculum.slug.current}`}
+                          href={curriculumPath}
                           className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
                         >
                           {button.displayText}
@@ -179,10 +182,15 @@ const Navbar = () => {
                       );
                     } else {
                       // If no matching curriculum found, still display the button with default link
+                      // Ensure proper path formatting here too
+                      const curriculumPath = curriculumSlug 
+                        ? `/${curriculumSlug.replace(/^\/+/, '')}` 
+                        : "#";
+                      
                       return (
                         <Link
                           key={`custom-nav-${index}`}
-                          href={curriculumSlug ? `/curriculum/${curriculumSlug}` : "#"}
+                          href={curriculumPath}
                           className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
                         >
                           {button.displayText}
@@ -238,10 +246,13 @@ const Navbar = () => {
               <>
                 {/* Curriculum Pages - Direct Links */}
                 {curriculums.map((curriculum) => {
+                  // Ensure the path is relative by properly formatting it
+                  const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
+                  
                   return (
                     <Link
                       key={curriculum.slug.current}
-                      href={`/curriculum/${curriculum.slug.current}`}
+                      href={curriculumPath}
                       className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
                     >
                       {curriculum.curriculum}
@@ -358,10 +369,13 @@ const Navbar = () => {
                       : curriculums.find(c => c.curriculum.toLowerCase() === button.displayText.toLowerCase());
                     
                     if (matchingCurriculum) {
+                      // Ensure the path is relative by properly formatting it
+                      const curriculumPath = `/${matchingCurriculum.slug.current.replace(/^\/+/, '')}`;
+                      
                       return (
                         <Link
                           key={`mobile-custom-nav-${index}`}
-                          href={`/curriculum/${matchingCurriculum.slug.current}`}
+                          href={curriculumPath}
                           className="block px-3 py-2 text-gray-600 hover:text-blue-800 text-sm"
                         >
                           {button.displayText}
@@ -369,10 +383,15 @@ const Navbar = () => {
                       );
                     } else {
                       // If no matching curriculum found, still display the button with default link
+                      // Ensure proper path formatting here too
+                      const curriculumPath = curriculumSlug 
+                        ? `/${curriculumSlug.replace(/^\/+/, '')}` 
+                        : "#";
+                      
                       return (
                         <Link
                           key={`mobile-custom-nav-${index}`}
-                          href={curriculumSlug ? `/curriculum/${curriculumSlug}` : "#"}
+                          href={curriculumPath}
                           className="block px-3 py-2 text-gray-600 hover:text-blue-800 text-sm"
                         >
                           {button.displayText}
@@ -405,15 +424,20 @@ const Navbar = () => {
                 {/* Mobile Curriculum Links */}
                 <div className="px-3 py-1.5">
                   <div className="font-medium text-gray-700 mb-1.5 text-sm">Curricula</div>
-                  {curriculums.map((curriculum) => (
-                    <Link
-                      key={curriculum.slug.current}
-                      href={`/curriculum/${curriculum.slug.current}`}
-                      className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                    >
-                      {curriculum.curriculum}
-                    </Link>
-                  ))}
+                  {curriculums.map((curriculum) => {
+                    // Ensure the path is relative by properly formatting it
+                    const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
+                    
+                    return (
+                      <Link
+                        key={curriculum.slug.current}
+                        href={curriculumPath}
+                        className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                      >
+                        {curriculum.curriculum}
+                      </Link>
+                    );
+                  })}
                 </div>
               </>
             )}

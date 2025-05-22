@@ -6,18 +6,27 @@ import Footer from '../components/Footer';
 import TutorProfiles from '../components/TutorProfiles';
 import TestimonialSection, { TestimonialSectionData } from '../components/TestimonialSection';
 import FAQSection from '../components/FAQSection';
+import FaqAccordion from '../components/FaqAccordion';
 import { Metadata } from 'next';
 import { getSeoData, SeoData } from '../lib/getSeoData';
+import { notFound } from 'next/navigation';
 
 // Disable static page generation and enable revalidation
 export const revalidate = 0;
 
 // Generate static params for common subjects at build time
 export async function generateStaticParams() {
-  const query = `*[_type == "subjectPage"].slug.current`;
-  const slugs = await client.fetch<string[]>(query);
+  // Get all subject and curriculum slugs
+  const subjectQuery = `*[_type == "subjectPage"].slug.current`;
+  const curriculumQuery = `*[_type == "curriculumPage"].slug.current`;
   
-  return slugs.map((subject) => ({
+  const subjectSlugs = await client.fetch<string[]>(subjectQuery);
+  const curriculumSlugs = await client.fetch<string[]>(curriculumQuery);
+  
+  // Combine both types of slugs
+  const allSlugs = [...subjectSlugs, ...curriculumSlugs];
+  
+  return allSlugs.map((subject) => ({
     subject,
   }));
 }
@@ -56,15 +65,118 @@ interface SubjectPageData {
   };
 }
 
+interface CurriculumPageData {
+  curriculum: string;
+  title: string;
+  firstSection: {
+    title: string;
+    highlightedWords?: string[];
+    description: string;
+  };
+  tutorsListSectionHead?: {
+    smallTextBeforeTitle?: string;
+    sectionTitle?: string;
+    description?: string;
+    ctaLinkText?: string;
+    ctaLink?: string;
+  };
+  tutorsList: any[];
+  testimonials: any[];
+  faqSection?: {
+    _id: string;
+    title: string;
+    subtitle?: string;
+    faqs: {
+      _id: string;
+      question: string;
+      answer: string;
+    }[];
+  };
+  seo: {
+    pageTitle: string;
+    description: string;
+  };
+}
+
+// Check if the slug is for a curriculum page
+async function getCurriculumPageData(subject: string) {
+  try {
+    const query = `
+      *[_type == "curriculumPage" && slug.current == $subject][0] {
+        title,
+        curriculum,
+        slug,
+        firstSection,
+        tutorsListSectionHead,
+        tutorsList[] -> {
+          _id,
+          name,
+          slug,
+          profilePhoto,
+          professionalTitle,
+          experience,
+          specialization,
+          hireButtonLink,
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken,
+          profilePDF
+        },
+        testimonials[] -> {
+          _id,
+          reviewerName,
+          reviewerType,
+          testimonialText,
+          rating,
+          order
+        },
+        faqSection -> {
+          title,
+          subtitle,
+          faqs[] -> {
+            _id,
+            question,
+            answer
+          }
+        },
+        seo
+      }
+    `;
+
+    const testimonialsQuery = `
+      *[_type == "testimonialSection"][0] {
+        maxDisplayCount,
+        rating,
+        subtitle,
+        totalReviews,
+        tutorChaseLink
+      }
+    `;
+
+    const pageData = await client.fetch(query, { subject });
+    
+    if (!pageData) return { pageData: null, testimonialSection: null, type: null };
+    
+    const testimonialSection = await client.fetch(testimonialsQuery);
+    return { pageData, testimonialSection, type: 'curriculum' };
+  } catch (error) {
+    console.error("Error fetching curriculum page:", error);
+    return { pageData: null, testimonialSection: null, type: null };
+  }
+}
+
 async function getSubjectPageData(subject: string) {
   try {
     // Consolidated query to fetch all subject page data in one request
     const query = `{
       "subjectPage": *[_type == "subjectPage" && slug.current == $subject][0]{
-    _id,
-    subject,
-    title,
-    firstSection,
+        _id,
+        subject,
+        title,
+        firstSection,
         tutorsListSectionHead,
         testimonials[]->{
           _id,
@@ -88,30 +200,30 @@ async function getSubjectPageData(subject: string) {
         seo
       },
       "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject][0]._id)] | order(displayOrder asc) {
-      _id,
-      name,
-      professionalTitle,
-      priceTag {
-        enabled,
-        badgeText
-      },
-      experience,
-      profilePhoto,
-      specialization,
-      hireButtonLink,
-      displayOnSubjectPages,
-      displayOrder,
-      profilePDF {
-        asset-> {
-          url
-        }
-      },
-      price,
-      rating,
-      reviewCount,
-      activeStudents,
-      totalLessons,
-      languagesSpoken
+        _id,
+        name,
+        professionalTitle,
+        priceTag {
+          enabled,
+          badgeText
+        },
+        experience,
+        profilePhoto,
+        specialization,
+        hireButtonLink,
+        displayOnSubjectPages,
+        displayOrder,
+        profilePDF {
+          asset-> {
+            url
+          }
+        },
+        price,
+        rating,
+        reviewCount,
+        activeStudents,
+        totalLessons,
+        languagesSpoken
       },
       "testimonialSection": *[_type == "testimonialSection"][0]
     }`;
@@ -120,34 +232,45 @@ async function getSubjectPageData(subject: string) {
     const data = await client.fetch(query, { subject }, { next: { revalidate: 300 } }); // Cache for 5 minutes
 
     if (!data.subjectPage) {
-      return { pageData: null, testimonialSection: null };
+      return { pageData: null, testimonialSection: null, type: null };
     }
 
-  // Debug logs
+    // Debug logs
     console.log('Subject ID:', data.subjectPage._id);
     console.log('Tutors found:', data.tutors.length);
 
-  // Combine the data
-  const pageData = {
+    // Combine the data
+    const pageData = {
       ...data.subjectPage,
       tutorsList: data.tutors
-  };
+    };
 
-    return { pageData, testimonialSection: data.testimonialSection };
+    return { pageData, testimonialSection: data.testimonialSection, type: 'subject' };
   } catch (error) {
     console.error('Error fetching subject page data:', error);
-    return { pageData: null, testimonialSection: null };
+    return { pageData: null, testimonialSection: null, type: null };
   }
 }
 
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
+  // First check if it's a curriculum page
+  const curriculumResult = await getCurriculumPageData(params.subject);
+  
+  if (curriculumResult.pageData) {
+    return {
+      title: curriculumResult.pageData.seo?.pageTitle || curriculumResult.pageData.title,
+      description: curriculumResult.pageData.seo?.description || `Find expert tutors for ${curriculumResult.pageData.curriculum} in Dubai.`,
+    };
+  }
+  
+  // If not, check if it's a subject page
   const { pageData } = await getSubjectPageData(params.subject);
   const subjectSeo = await getSeoData();
 
   if (!pageData) {
     return {
       title: 'Page Not Found',
-      description: 'The requested subject page could not be found.',
+      description: 'The requested page could not be found.',
     };
   }
 
@@ -158,22 +281,130 @@ export async function generateMetadata({ params }: { params: { subject: string }
   };
 }
 
-export default async function SubjectPage({ params }: { params: { subject: string } }) {
-  const { pageData, testimonialSection } = await getSubjectPageData(params.subject);
-
-  if (!pageData) {
-    // Handle 404 case
+export default async function DynamicPage({ params }: { params: { subject: string } }) {
+  // First check if it's a curriculum page
+  const curriculumResult = await getCurriculumPageData(params.subject);
+  
+  if (curriculumResult.pageData) {
+    // Render curriculum page
     return (
       <main>
         <Navbar />
-        <div className="min-h-screen flex items-center justify-center">
-          <h1 className="text-3xl font-bold">Subject page not found</h1>
-        </div>
+        
+        {/* First Section */}
+        <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Stars and Reviews */}
+            <div className="flex flex-col items-center mb-6">
+              <div className="flex mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <svg
+                    key={star}
+                    className="h-7 w-7 text-yellow-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 15.934L4.618 19.098l1.039-6.054L1.314 8.902l6.068-.881L10 2.666l2.618 5.355 6.068.881-4.343 4.142 1.039 6.054L10 15.934z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                ))}
+              </div>
+              <div className="text-xl font-medium">
+                4.92/5 based on <span className="font-bold">480 reviews</span>
+              </div>
+            </div>
+
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-5">
+                {curriculumResult.pageData.firstSection.title.split(" ").map((word: string, index: number) => {
+                  const shouldHighlight = curriculumResult.pageData.firstSection.highlightedWords?.includes(word);
+                  return (
+                    <span
+                      key={index}
+                      className={shouldHighlight ? "text-blue-800" : ""}
+                    >
+                      {word}{" "}
+                    </span>
+                  );
+                })}
+              </h1>
+              <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto">
+                {curriculumResult.pageData.firstSection.description}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Tutors Section */}
+        <TutorProfiles 
+          tutors={curriculumResult.pageData.tutorsList} 
+          sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
+          sectionSubtitle={curriculumResult.pageData.tutorsListSectionHead?.description}
+          ctaText={curriculumResult.pageData.tutorsListSectionHead?.ctaLinkText}
+          ctaLink={curriculumResult.pageData.tutorsListSectionHead?.ctaLink}
+        />
+
+        {/* Testimonials Section */}
+        {curriculumResult.pageData.testimonials && curriculumResult.testimonialSection && (
+          <TestimonialSection
+            sectionData={{
+              rating: curriculumResult.testimonialSection.rating,
+              totalReviews: curriculumResult.testimonialSection.totalReviews,
+              subtitle: curriculumResult.testimonialSection.subtitle,
+              tutorChaseLink: curriculumResult.testimonialSection.tutorChaseLink,
+              maxDisplayCount: curriculumResult.testimonialSection.maxDisplayCount
+            }} 
+            testimonials={curriculumResult.pageData.testimonials}
+          />
+        )}
+
+        {/* Contact Form */}
+        <ContactForm />
+
+        {/* FAQ Section */}
+        {curriculumResult.pageData.faqSection && (
+          <section className="py-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                  {curriculumResult.pageData.faqSection.title}
+                </h2>
+                <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+                  {curriculumResult.pageData.faqSection.subtitle}
+                </p>
+              </div>
+
+              <div className="max-w-3xl mx-auto">
+                {curriculumResult.pageData.faqSection.faqs &&
+                  curriculumResult.pageData.faqSection.faqs.map((faq: any) => (
+                    <FaqAccordion 
+                      key={faq._id} 
+                      question={faq.question} 
+                      answer={faq.answer} 
+                    />
+                  ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         <Footer />
       </main>
     );
   }
+  
+  // If not a curriculum page, check if it's a subject page
+  const { pageData, testimonialSection } = await getSubjectPageData(params.subject);
 
+  if (!pageData) {
+    // Handle 404 case
+    return notFound();
+  }
+
+  // Render subject page
   return (
     <main>
       <Navbar />

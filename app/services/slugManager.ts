@@ -245,5 +245,5 @@ export const getCurriculumPageUrl = async (curriculumNameOrId: string, hash?: st
     return hash ? `/#${hash}` : '/';
   }
 
-  return hash ? `/curriculum/${slug}#${hash}` : `/curriculum/${slug}`;
+  return hash ? `/${slug}#${hash}` : `/${slug}`;
 }; 
