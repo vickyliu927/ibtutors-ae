@@ -20,8 +20,76 @@ export default defineType({
       description: 'URL the navbar button should link to',
     }),
     defineField({
+      name: 'navigationButtons',
+      title: 'Navigation Buttons',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'buttonType',
+              title: 'Button Type',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Curriculum', value: 'curriculum' },
+                  { title: 'Subject Dropdown', value: 'subjectDropdown' },
+                ],
+                layout: 'radio',
+              },
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: 'displayText',
+              title: 'Display Text',
+              type: 'string',
+              description: 'Text to display on the button',
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: 'curriculumSlug',
+              title: 'Curriculum Slug',
+              type: 'string',
+              description: 'Slug of the curriculum (only for curriculum buttons)',
+              hidden: ({ parent }) => parent?.buttonType !== 'curriculum',
+            },
+            {
+              name: 'displayOrder',
+              title: 'Display Order',
+              type: 'number',
+              description: 'Lower numbers will appear first',
+              validation: Rule => Rule.required().min(1).precision(0),
+            },
+            {
+              name: 'isActive',
+              title: 'Is Active',
+              type: 'boolean',
+              description: 'Whether this button should be displayed',
+              initialValue: true,
+            },
+          ],
+          preview: {
+            select: {
+              title: 'displayText',
+              subtitle: 'buttonType',
+              order: 'displayOrder',
+              active: 'isActive',
+            },
+            prepare({ title, subtitle, order, active }) {
+              return {
+                title: title || 'Untitled Button',
+                subtitle: `${subtitle === 'curriculum' ? 'Curriculum' : 'Subject Dropdown'} - Order: ${order} ${!active ? '(Inactive)' : ''}`,
+              };
+            },
+          },
+        },
+      ],
+      description: 'Customize and order navigation buttons',
+    }),
+    defineField({
       name: 'navigationOrder',
-      title: 'Navigation Order',
+      title: 'Navigation Order (Legacy)',
       type: 'array',
       of: [
         {
@@ -64,7 +132,7 @@ export default defineType({
           },
         },
       ],
-      description: 'Control the order of items in the navigation bar',
+      description: 'Legacy field - Please use Navigation Buttons instead',
     }),
   ],
 }); 

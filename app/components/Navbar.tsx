@@ -11,7 +11,18 @@ import ExternalLink from './ui/ExternalLink';
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 
 async function getNavbarSettings() {
-  const query = `*[_type == "navbarSettings"][0]{buttonText, buttonLink, navigationOrder}`;
+  const query = `*[_type == "navbarSettings"][0]{
+    buttonText, 
+    buttonLink, 
+    navigationOrder, 
+    navigationButtons[]{
+      buttonType,
+      displayText,
+      curriculumSlug,
+      displayOrder,
+      isActive
+    }
+  }`;
   return client.fetch(query);
 }
 
@@ -26,6 +37,13 @@ const Navbar = () => {
     navigationOrder?: Array<{
       itemType: 'curriculum' | 'subjectDropdown' | 'button';
       displayOrder: number;
+    }>;
+    navigationButtons?: Array<{
+      buttonType: 'curriculum' | 'subjectDropdown';
+      displayText: string;
+      curriculumSlug?: string;
+      displayOrder: number;
+      isActive: boolean;
     }>;
   } | null>(null);
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
@@ -135,9 +153,88 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-3">
-            {/* Render navigation items based on order settings if available */}
-            {navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
-              // Sort by displayOrder
+            {/* Render customized navigation buttons if available */}
+            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 ? (
+              // Sort by displayOrder and filter by isActive
+              [...navbarSettings.navigationButtons]
+                .filter(button => button.isActive)
+                .sort((a, b) => a.displayOrder - b.displayOrder)
+                .map((button, index) => {
+                  if (button.buttonType === 'curriculum') {
+                    // Find matching curriculum using slug if provided, otherwise match by name
+                    const curriculumSlug = button.curriculumSlug;
+                    const matchingCurriculum = curriculumSlug 
+                      ? curriculums.find(c => c.slug.current === curriculumSlug)
+                      : curriculums.find(c => c.curriculum.toLowerCase() === button.displayText.toLowerCase());
+                    
+                    if (matchingCurriculum) {
+                      return (
+                        <Link
+                          key={`custom-nav-${index}`}
+                          href={`/curriculum/${matchingCurriculum.slug.current}`}
+                          className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                        >
+                          {button.displayText}
+                        </Link>
+                      );
+                    } else {
+                      // If no matching curriculum found, still display the button with default link
+                      return (
+                        <Link
+                          key={`custom-nav-${index}`}
+                          href={curriculumSlug ? `/curriculum/${curriculumSlug}` : "#"}
+                          className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                        >
+                          {button.displayText}
+                        </Link>
+                      );
+                    }
+                  } else if (button.buttonType === 'subjectDropdown') {
+                    // Render subjects dropdown with custom text
+                    return (
+                      <div 
+                        key={`custom-nav-${index}`}
+                        className="relative"
+                        ref={subjectsDropdownRef}
+                        onMouseEnter={handleSubjectsMouseEnter}
+                        onMouseLeave={handleSubjectsMouseLeave}
+                      >
+                        <button 
+                          className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+                        >
+                          {button.displayText}
+                          <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        
+                        {showSubjectsDropdown && (
+                          <div 
+                            className="absolute left-0 mt-0 pt-1 w-56 z-50" 
+                            onMouseEnter={handleSubjectsMouseEnter}
+                            onMouseLeave={handleSubjectsMouseLeave}
+                          >
+                            <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                              {subjects.map((subject) => (
+                                <Link
+                                  key={subject.slug.current}
+                                  href={`/${subject.slug.current}`}
+                                  className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
+                                >
+                                  {subject.subject}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  return null;
+                })
+            ) : navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
+              // Use legacy navigationOrder if navigationButtons not available
               [...navbarSettings.navigationOrder]
                 .sort((a, b) => a.displayOrder - b.displayOrder)
                 .map((item, index) => {
@@ -300,6 +397,16 @@ const Navbar = () => {
                 )}
               </>
             )}
+
+            {/* Always add the CTA button if it's not included in the navigation */}
+            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 && (
+              <Link 
+                href={navbarSettings.buttonLink} 
+                className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                {navbarSettings.buttonText}
+              </Link>
+            )}
           </div>
           
           {/* Mobile menu button */}
@@ -329,9 +436,64 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-1 pb-2 space-y-1 sm:px-3">
-            {/* Mobile Navigation based on order settings if available */}
-            {navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
-              // Sort by displayOrder
+            {/* Mobile Navigation based on custom buttons if available */}
+            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 ? (
+              // Filter active buttons and sort by displayOrder
+              [...navbarSettings.navigationButtons]
+                .filter(button => button.isActive)
+                .sort((a, b) => a.displayOrder - b.displayOrder)
+                .map((button, index) => {
+                  if (button.buttonType === 'curriculum') {
+                    // Find matching curriculum using slug if provided, otherwise match by name
+                    const curriculumSlug = button.curriculumSlug;
+                    const matchingCurriculum = curriculumSlug 
+                      ? curriculums.find(c => c.slug.current === curriculumSlug)
+                      : curriculums.find(c => c.curriculum.toLowerCase() === button.displayText.toLowerCase());
+                    
+                    if (matchingCurriculum) {
+                      return (
+                        <Link
+                          key={`mobile-custom-nav-${index}`}
+                          href={`/curriculum/${matchingCurriculum.slug.current}`}
+                          className="block px-3 py-2 text-gray-600 hover:text-blue-800 text-sm"
+                        >
+                          {button.displayText}
+                        </Link>
+                      );
+                    } else {
+                      // If no matching curriculum found, still display the button with default link
+                      return (
+                        <Link
+                          key={`mobile-custom-nav-${index}`}
+                          href={curriculumSlug ? `/curriculum/${curriculumSlug}` : "#"}
+                          className="block px-3 py-2 text-gray-600 hover:text-blue-800 text-sm"
+                        >
+                          {button.displayText}
+                        </Link>
+                      );
+                    }
+                  } else if (button.buttonType === 'subjectDropdown') {
+                    // Render subjects section with custom header
+                    return (
+                      <div key={`mobile-custom-nav-${index}`} className="px-3 py-1.5">
+                        <div className="font-medium text-gray-700 mb-1.5 text-sm">{button.displayText}</div>
+                        {subjects.map((subject) => (
+                          <Link
+                            key={subject.slug.current}
+                            href={`/${subject.slug.current}`}
+                            className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                          >
+                            {subject.subject}
+                          </Link>
+                        ))}
+                      </div>
+                    );
+                  }
+                  
+                  return null;
+                })
+            ) : navbarSettings?.navigationOrder && navbarSettings.navigationOrder.length > 0 ? (
+              // Use legacy navigationOrder if navigationButtons not available
               [...navbarSettings.navigationOrder]
                 .sort((a, b) => a.displayOrder - b.displayOrder)
                 .map((item, index) => {
@@ -446,6 +608,16 @@ const Navbar = () => {
                   <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>
                 )}
               </>
+            )}
+
+            {/* Always add the CTA button in the mobile menu if it's not included in the navigation */}
+            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 && navbarSettings.buttonText && navbarSettings.buttonLink && (
+              <Link 
+                href={navbarSettings.buttonLink} 
+                className="block px-3 py-2 text-blue-800 text-sm font-medium mt-2"
+              >
+                {navbarSettings.buttonText}
+              </Link>
             )}
           </div>
         </div>
