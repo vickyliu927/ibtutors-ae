@@ -8,14 +8,22 @@ export const structure = (S: StructureBuilder) =>
   S.list()
     .title('Content')
     .items([
-      // Pages Group
+      // Location Pages Group
       S.listItem()
-        .title('Pages')
+        .title('Location Pages')
         .icon(RiPagesLine)
         .child(
           S.list()
-            .title('Pages')
+            .title('Location Pages')
             .items([
+              // Dubai Group
+              S.listItem()
+                .title('Dubai')
+                .icon(RiPagesLine)
+                .child(
+                  S.list()
+                    .title('Dubai Pages')
+                    .items([
               // Homepage Group
               S.listItem()
                 .title('Homepage')
@@ -42,6 +50,10 @@ export const structure = (S: StructureBuilder) =>
                         .schemaType('platformBanner')
                         .title('Platform Banner')
                         .id('platformBanner'),
+                      S.documentListItem()
+                        .schemaType('trustedInstitutionsBanner')
+                        .title('Trusted Institutions Banner')
+                        .id('trustedInstitutionsBanner'),
                       S.documentTypeListItem('testimonial')
                         .title('Testimonials'),
                       S.documentListItem()
@@ -67,53 +79,43 @@ export const structure = (S: StructureBuilder) =>
                     ])
                 ),
               // Subject Pages Group
-              S.listItem()
+              S.documentTypeListItem('subjectPage')
                 .title('Subject Pages')
-                .icon(BsBook)
-                .child(
-                  S.list()
-                    .title('Subject Pages')
-                    .items([
-                      S.documentTypeListItem('subjectPage')
-                        .title('Subject Pages'),
-                    ])
-                ),
+                .icon(BsBook),
               // Curriculum Pages Group
-              S.listItem()
+              S.documentTypeListItem('curriculumPage')
                 .title('Curriculum Pages')
-                .icon(BsGridFill)
+                .icon(BsGridFill),
+              // SEO Settings
+              S.listItem()
+                .title('SEO Settings')
+                .icon(MdSettings)
                 .child(
                   S.list()
-                    .title('Curriculum Pages')
+                    .title('SEO Settings')
                     .items([
-                      S.documentTypeListItem('curriculumPage')
-                        .title('Curriculum Pages'),
+                      S.listItem()
+                        .title('General SEO Settings')
+                        .child(
+                          S.document()
+                            .schemaType('seoSettings')
+                            .documentId('seoSettings')
+                        ),
+                      S.listItem()
+                        .title('Link Settings (Nofollow)')
+                        .icon(MdLink)
+                        .child(
+                          S.documentList()
+                            .title('Link Settings')
+                            .filter('_type == "linkSettings"')
+                        ),
                     ])
                 ),
-            ])
-        ),
-      // Add a new SEO Settings section
-      S.listItem()
-        .title('SEO Settings')
-        .icon(MdSettings)
-        .child(
-          S.list()
-            .title('SEO Settings')
-            .items([
-              S.listItem()
-                .title('General SEO Settings')
-                .child(
-                  S.document()
-                    .schemaType('seoSettings')
-                    .documentId('seoSettings')
-                ),
-              S.listItem()
-                .title('Link Settings (Nofollow)')
-                .icon(MdLink)
-                .child(
-                  S.documentList()
-                    .title('Link Settings')
-                    .filter('_type == "linkSettings"')
+              // Navbar Settings
+              S.documentTypeListItem('navbarSettings')
+                .title('Navbar Settings')
+                .icon(MdSettings),
+                    ])
                 ),
             ])
         ),
@@ -136,6 +138,8 @@ export const structure = (S: StructureBuilder) =>
             'seoSettings',
             'highlightsSection',
             'linkSettings',
+            'trustedInstitutionsBanner',
+            'navbarSettings',
           ].includes(listItem.getId() || '')
       ),
     ]) 
