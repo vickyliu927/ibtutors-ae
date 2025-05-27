@@ -15,7 +15,7 @@ import {apiVersion, dataset, projectId} from './sanity/env'
 
 export default defineConfig({
   name: 'default',
-  title: 'Dubai Tutors',
+  title: 'Location Pages',
 
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '',
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || '',
