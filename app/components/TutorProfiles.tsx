@@ -365,7 +365,7 @@ const TutorProfiles = ({
                     {/* Hire button - 50% width */}
                     <Link
                       href={tutor.hireButtonLink || "/#contact-form"}
-                      className="bg-blue-800 text-white flex items-center justify-center font-medium text-center block w-1/2"
+                      className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium text-center flex items-center justify-center w-1/2"
                     >
                       Hire a tutor
                     </Link>
@@ -375,7 +375,7 @@ const TutorProfiles = ({
                 <div className="mt-3 border-t border-gray-200">
                   <Link
                     href={tutor.hireButtonLink || "/#contact-form"}
-                    className="bg-blue-800 text-white py-3 transition-all font-medium text-center block w-full"
+                    className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium text-center block w-full"
                   >
                     Hire a tutor
                   </Link>
@@ -472,7 +472,7 @@ const TutorProfiles = ({
                       {/* Professional Title and Subject Taught - REORGANIZED LAYOUT */}
                       <div className="flex justify-between items-start">
                         {/* Left column: Professional Title */}
-                        <div>
+                        <div className="flex-1">
                           {tutor.professionalTitle && (
                         <div className="flex items-center">
                           <span className="flex-shrink-0 w-5 h-5 min-w-[20px] min-h-[20px] mr-2">
@@ -533,24 +533,24 @@ const TutorProfiles = ({
                           </div>
                         </div>
                         
-                        {/* Right Column: Hire button and price tag */}
-                        <div className="flex-shrink-0 -mt-4">
+                        {/* Right Column: Hire button */}
+                        <div className="flex-shrink-0 -mt-4 flex flex-col items-end">
                           <Link
                             href={tutor.hireButtonLink || "/#contact-form"}
-                            className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all font-medium block text-center"
+                            className="bg-blue-800 text-white px-6 py-2 h-10 w-36 rounded-md hover:bg-blue-700 transition-all font-medium flex items-center justify-center text-center whitespace-nowrap"
                           >
                             Hire a tutor
                           </Link>
                           
-                          {/* Price tag badge */}
+                          {/* Price tag container directly under button */}
                           {tutor.priceTag?.enabled && (
-                            <div className="flex items-center justify-end text-orange-500 text-sm mt-2">
-                            <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <div className="flex items-center text-orange-500 text-sm mt-1">
+                              <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" />
-                            </svg>
+                              </svg>
                               {tutor.priceTag.badgeText}
                             </div>
-                        )}
+                          )}
                         </div>
                       </div>
 
@@ -567,8 +567,8 @@ const TutorProfiles = ({
                                 {lang.language} ({lang.proficiency})
                               </span>
                             ))}
-                    </div>
-                  </div>
+                          </div>
+                        </div>
                       )}
 
                       {/* Bio text */}
