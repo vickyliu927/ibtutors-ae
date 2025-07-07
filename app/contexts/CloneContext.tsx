@@ -647,7 +647,7 @@ export function CloneDebugPanel({
 
   return (
     <div className={`${positionClasses[position]} bg-gray-900 text-white text-xs`}>
-      <details defaultOpen={!collapsed}>
+      <details open={!collapsed}>
         <summary className="p-2 bg-purple-800 cursor-pointer hover:bg-purple-700 transition-colors">
           🐛 Clone Debug Panel - {context.currentClone?.cloneName || 'Default'} 
           {context.loadingState === 'loading' && ' (Loading...)'}
