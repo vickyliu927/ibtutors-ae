@@ -42,6 +42,12 @@ next-env.d.ts
 *.backup
 *.tar.gz
 
+# Data backups (can be large files)
+/data/backups/
+*.ndjson
+*.sql
+*.dump
+
 # IDE
 .idea/
 .vscode/
