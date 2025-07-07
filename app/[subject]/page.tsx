@@ -11,6 +11,16 @@ import { Metadata } from 'next';
 import { getSeoData, SeoData } from '../lib/getSeoData';
 import { notFound } from 'next/navigation';
 
+// Import enhanced clone-aware utilities
+import { 
+  getCloneAwarePageData, 
+  resolveContentSafely, 
+  CloneAwarePageData,
+  getCloneIndicatorData,
+  mergeCloneContent
+} from '../lib/clonePageUtils';
+import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
+
 // Disable static page generation and enable revalidation
 export const revalidate = 0;
 
@@ -98,9 +108,17 @@ interface CurriculumPageData {
   };
 }
 
-// Check if the slug is for a curriculum page
-async function getCurriculumPageData(subject: string) {
+/**
+ * Enhanced clone-aware curriculum page data fetcher
+ */
+async function getCurriculumPageDataWithCloneContext(
+  subject: string, 
+  cloneId: string | null = null
+): Promise<{ pageData: CurriculumPageData | null; testimonialSection: any | null; type: string | null }> {
   try {
+    console.log(`[CurriculumPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
+    
+    // Base curriculum page query - this can be enhanced to support clone-specific curriculum pages in the future
     const query = `
       *[_type == "curriculumPage" && slug.current == $subject][0] {
         title,
@@ -146,6 +164,7 @@ async function getCurriculumPageData(subject: string) {
       }
     `;
 
+    // Enhanced testimonial section query with clone support
     const testimonialsQuery = `
       *[_type == "testimonialSection"][0] {
         maxDisplayCount,
@@ -156,21 +175,35 @@ async function getCurriculumPageData(subject: string) {
       }
     `;
 
-    const pageData = await client.fetch(query, { subject });
+    const [pageData, testimonialSection] = await Promise.all([
+      client.fetch(query, { subject }),
+      client.fetch(testimonialsQuery)
+    ]);
     
-    if (!pageData) return { pageData: null, testimonialSection: null, type: null };
+    if (!pageData) {
+      console.log(`[CurriculumPage] No curriculum page found for: ${subject}`);
+      return { pageData: null, testimonialSection: null, type: null };
+    }
     
-    const testimonialSection = await client.fetch(testimonialsQuery);
+    console.log(`[CurriculumPage] Successfully fetched curriculum page data for: ${subject}`);
     return { pageData, testimonialSection, type: 'curriculum' };
   } catch (error) {
-    console.error("Error fetching curriculum page:", error);
+    console.error(`[CurriculumPage] Error fetching curriculum page for ${subject}:`, error);
     return { pageData: null, testimonialSection: null, type: null };
   }
 }
 
-async function getSubjectPageData(subject: string) {
+/**
+ * Enhanced clone-aware subject page data fetcher  
+ */
+async function getSubjectPageDataWithCloneContext(
+  subject: string,
+  cloneId: string | null = null
+): Promise<{ pageData: SubjectPageData | null; testimonialSection: any | null; type: string | null }> {
   try {
-    // Consolidated query to fetch all subject page data in one request
+    console.log(`[SubjectPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
+    
+    // Enhanced query that can support clone-specific content in the future
     const query = `{
       "subjectPage": *[_type == "subjectPage" && slug.current == $subject][0]{
         _id,
@@ -229,15 +262,14 @@ async function getSubjectPageData(subject: string) {
     }`;
 
     // Use server-side caching with Next.js
-    const data = await client.fetch(query, { subject }, { next: { revalidate: 300 } }); // Cache for 5 minutes
+    const data = await client.fetch(query, { subject }, { next: { revalidate: 300 } });
 
     if (!data.subjectPage) {
+      console.log(`[SubjectPage] No subject page found for: ${subject}`);
       return { pageData: null, testimonialSection: null, type: null };
     }
 
-    // Debug logs
-    console.log('Subject ID:', data.subjectPage._id);
-    console.log('Tutors found:', data.tutors.length);
+    console.log(`[SubjectPage] Found subject: ${data.subjectPage._id}, tutors: ${data.tutors.length}`);
 
     // Combine the data
     const pageData = {
@@ -247,14 +279,14 @@ async function getSubjectPageData(subject: string) {
 
     return { pageData, testimonialSection: data.testimonialSection, type: 'subject' };
   } catch (error) {
-    console.error('Error fetching subject page data:', error);
+    console.error(`[SubjectPage] Error fetching subject page data for ${subject}:`, error);
     return { pageData: null, testimonialSection: null, type: null };
   }
 }
 
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
   // First check if it's a curriculum page
-  const curriculumResult = await getCurriculumPageData(params.subject);
+  const curriculumResult = await getCurriculumPageDataWithCloneContext(params.subject);
   
   if (curriculumResult.pageData) {
     return {
@@ -264,7 +296,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
   }
   
   // If not, check if it's a subject page
-  const { pageData } = await getSubjectPageData(params.subject);
+  const { pageData } = await getSubjectPageDataWithCloneContext(params.subject);
   const subjectSeo = await getSeoData();
 
   if (!pageData) {
@@ -281,14 +313,50 @@ export async function generateMetadata({ params }: { params: { subject: string }
   };
 }
 
-export default async function DynamicPage({ params }: { params: { subject: string } }) {
+export default async function DynamicPage({ 
+  params, 
+  searchParams 
+}: { 
+  params: { subject: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  // Convert searchParams to URLSearchParams for clone detection
+  const urlSearchParams = new URLSearchParams();
+  Object.entries(searchParams || {}).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      urlSearchParams.set(key, value);
+    } else if (Array.isArray(value)) {
+      urlSearchParams.set(key, value[0] || '');
+    }
+  });
+
+  // Get enhanced clone-aware data for the page
+  const { cloneContext, cloneData, debugInfo } = await getCloneAwarePageData(
+    urlSearchParams,
+    async (cloneId: string | null) => null, // We'll handle page data separately
+    `Subject: ${params.subject}`
+  );
+
+  // Generate clone indicator props
+  const cloneIndicatorProps = getCloneIndicatorData(
+    cloneContext,
+    cloneData,
+    debugInfo,
+    `Subject: ${params.subject}`
+  );
+
   // First check if it's a curriculum page
-  const curriculumResult = await getCurriculumPageData(params.subject);
+  const curriculumResult = await getCurriculumPageDataWithCloneContext(
+    params.subject, 
+    cloneContext.cloneId
+  );
   
   if (curriculumResult.pageData) {
-    // Render curriculum page
+    // Render curriculum page with clone context
     return (
       <main>
+        {/* Enhanced Clone Debug Panel - Development Only */}
+        <CloneIndicatorBanner {...cloneIndicatorProps} />
         <Navbar />
         
         {/* First Section */}
@@ -319,8 +387,8 @@ export default async function DynamicPage({ params }: { params: { subject: strin
 
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-5">
-                {curriculumResult.pageData.firstSection.title.split(" ").map((word: string, index: number) => {
-                  const shouldHighlight = curriculumResult.pageData.firstSection.highlightedWords?.includes(word);
+                {curriculumResult.pageData?.firstSection.title.split(" ").map((word: string, index: number) => {
+                  const shouldHighlight = curriculumResult.pageData?.firstSection.highlightedWords?.includes(word);
                   return (
                     <span
                       key={index}
@@ -332,7 +400,7 @@ export default async function DynamicPage({ params }: { params: { subject: strin
                 })}
               </h1>
               <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto">
-                {curriculumResult.pageData.firstSection.description}
+                {curriculumResult.pageData?.firstSection.description}
               </p>
             </div>
           </div>
@@ -397,16 +465,21 @@ export default async function DynamicPage({ params }: { params: { subject: strin
   }
   
   // If not a curriculum page, check if it's a subject page
-  const { pageData, testimonialSection } = await getSubjectPageData(params.subject);
+  const { pageData, testimonialSection } = await getSubjectPageDataWithCloneContext(
+    params.subject,
+    cloneContext.cloneId
+  );
 
   if (!pageData) {
     // Handle 404 case
     return notFound();
   }
 
-  // Render subject page
+  // Render subject page with clone context
   return (
     <main>
+      {/* Enhanced Clone Debug Panel - Development Only */}
+      <CloneIndicatorBanner {...cloneIndicatorProps} />
       <Navbar />
       
       {/* First Section */}

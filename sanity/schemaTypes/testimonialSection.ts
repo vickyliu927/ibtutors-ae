@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const testimonialSectionSchema = defineType({
   name: 'testimonialSection',
   title: 'Testimonial Section',
   type: 'document',
@@ -59,4 +60,6 @@ export default defineType({
       }
     },
   },
-}) 
+})
+
+export default addCloneSupport(testimonialSectionSchema) 

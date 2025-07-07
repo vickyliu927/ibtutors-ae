@@ -1,6 +1,7 @@
 import { defineType, defineField } from 'sanity';
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const navbarSettingsSchema = defineType({
   name: 'navbarSettings',
   title: 'Navbar Settings',
   type: 'document',
@@ -135,4 +136,6 @@ export default defineType({
       description: 'Legacy field - Please use Navigation Buttons instead',
     }),
   ],
-}); 
+})
+
+export default addCloneSupport(navbarSettingsSchema) 

@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const subjectPageSchema = defineType({
   name: 'subjectPage',
   title: 'Subject Pages',
   type: 'document',
@@ -143,4 +144,6 @@ export default defineType({
       subtitle: 'title',
     },
   },
-}) 
+})
+
+export default addCloneSupport(subjectPageSchema) 

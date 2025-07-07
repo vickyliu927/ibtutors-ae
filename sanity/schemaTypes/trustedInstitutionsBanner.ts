@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const trustedInstitutionsBannerSchema = defineType({
   name: 'trustedInstitutionsBanner',
   title: 'Trusted Institutions Banner',
   type: 'document',
@@ -81,4 +82,6 @@ export default defineType({
       initialValue: true,
     }),
   ],
-}); 
+})
+
+export default addCloneSupport(trustedInstitutionsBannerSchema) 

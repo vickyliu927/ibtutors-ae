@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const faqSchema = defineType({
   name: 'faq',
   title: 'FAQ',
   type: 'document',
@@ -39,4 +40,6 @@ export default defineType({
       }
     },
   },
-}) 
+})
+
+export default addCloneSupport(faqSchema) 

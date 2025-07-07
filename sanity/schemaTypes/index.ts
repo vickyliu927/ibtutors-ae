@@ -15,8 +15,10 @@ import navbarSettings from './navbarSettings'
 import highlightsSection from './highlightsSection'
 import trustedInstitutionsBanner from './trustedInstitutionsBanner'
 import linkSettings from './linkSettings'
+import clone from './clone'
 
 export const schemaTypes = [
+  clone,
   tutor,
   tutorProfilesSection,
   testimonial,

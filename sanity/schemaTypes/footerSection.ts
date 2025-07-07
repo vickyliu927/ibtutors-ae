@@ -1,6 +1,7 @@
 import { defineType, defineField } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const footerSectionSchema = defineType({
   name: 'footerSection',
   title: 'Footer Section',
   type: 'document',
@@ -54,4 +55,6 @@ export default defineType({
       description: 'Optional link for the title (e.g. https://tutorchase.com)',
     }),
   ],
-}) 
+})
+
+export default addCloneSupport(footerSectionSchema) 

@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const heroSchema = defineType({
   name: 'hero',
   title: 'Hero',
   type: 'document',
@@ -67,3 +68,5 @@ export default defineType({
     },
   },
 })
+
+export default addCloneSupport(heroSchema)

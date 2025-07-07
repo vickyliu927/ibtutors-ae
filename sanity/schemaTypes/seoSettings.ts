@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const seoSettingsSchema = defineType({
   name: 'seoSettings',
   title: 'SEO',
   type: 'document',
@@ -25,4 +26,6 @@ export default defineType({
       title: 'title',
     }
   }
-}) 
+})
+
+export default addCloneSupport(seoSettingsSchema) 

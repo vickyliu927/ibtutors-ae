@@ -1,6 +1,7 @@
 import { defineType, defineField } from 'sanity';
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const highlightsSectionSchema = defineType({
   name: 'highlightsSection',
   title: 'Homepage Highlights Section',
   type: 'document',
@@ -38,4 +39,6 @@ export default defineType({
       description: 'Add exactly 3 highlights for the homepage.'
     })
   ]
-}); 
+})
+
+export default addCloneSupport(highlightsSectionSchema) 

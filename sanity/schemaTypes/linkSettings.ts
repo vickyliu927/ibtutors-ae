@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const linkSettingsSchema = defineType({
   name: 'linkSettings',
   title: 'SEO Link Settings',
   type: 'document',
@@ -34,4 +35,6 @@ export default defineType({
       description: 'Specific domains that should NOT have nofollow applied, even if defaultNofollow is true',
     }),
   ],
-}) 
+})
+
+export default addCloneSupport(linkSettingsSchema) 

@@ -6,7 +6,6 @@ import SubjectGrid from './components/SubjectGrid';
 import TutoringPlatformBanner, { PlatformBannerData } from './components/TutoringPlatformBanner';
 import { TestimonialData, TestimonialSectionData } from './components/TestimonialSection';
 import Footer from './components/Footer';
-import { client } from '@/sanity/lib/client';
 import TrustedInstitutionsBanner from './components/TrustedInstitutionsBanner';
 import FAQSection from './components/FAQSection';
 
@@ -14,187 +13,148 @@ import FAQSection from './components/FAQSection';
 import { LazyContactForm, LazyTestimonialSection } from './components/LazyComponents';
 import HighlightsSection, { HighlightItem } from './components/HighlightsSection';
 
+// Import enhanced clone-aware utilities
+import { 
+  getCloneAwarePageData, 
+  resolveContentSafely, 
+  CloneAwarePageData,
+  getCloneIndicatorData 
+} from './lib/clonePageUtils';
+import { getHomepageContentForCurrentDomain } from './lib/cloneContentManager';
+import { cloneQueryUtils } from './lib/cloneQueries';
+import CloneIndicatorBanner from './components/CloneIndicatorBanner';
+
 /**
- * Data Fetching Strategy
+ * Multi-Domain Data Fetching Strategy
  * 
- * This website implements a server-side data fetching approach with several optimizations:
+ * This website implements a clone-aware data fetching approach with several optimizations:
  * 
- * 1. Consolidated Queries: We fetch multiple data types in a single query where possible to reduce API calls
- * 2. Server Components: All data fetching happens on the server side, eliminating client-side API calls
- * 3. Revalidation: Data is cached for 10 minutes (600 seconds) using Next.js revalidation
- * 4. No Client-side Fetching: We've removed all useState/useEffect data fetching
+ * 1. Domain Detection: Automatically detects the current domain and maps to clone configuration
+ * 2. 3-Tier Fallback: cloneSpecific → baseline → default content hierarchy  
+ * 3. Server Components: All data fetching happens on the server side
+ * 4. Parallel Queries: All content queries run in parallel for maximum performance
+ * 5. Source Tracking: Every piece of content includes metadata about resolution source
+ * 6. Customizations: Clone-specific content can override base content fields
  * 
- * This approach significantly reduces the number of API calls to Sanity, improves performance,
- * and provides a better user experience with instant page loads.
+ * This approach enables multiple domains to share infrastructure while serving unique content.
  */
 
 // Set revalidation time to 10 minutes (600 seconds)
 export const revalidate = 600;
 
-async function getHomePageData() {
-  try {
-    // Consolidated GROQ query - fetch all data in a single API call
-    const query = `{
-      "heroData": *[_type == "hero"][0],
-      "highlightsSection": *[_id == "highlightsSection"][0]{ highlights },
-      "trustedInstitutionsBanner": *[_type == "trustedInstitutionsBanner"][0]{
-        title,
-        subtitle,
-        backgroundColor,
-        carouselSpeed,
-        enabled,
-        institutions[]{
-          name,
-          logo,
-          displayOrder
-        }
-      },
-      "tutorProfilesSection": *[_type == "tutorProfilesSection"][0]{
-        title,
-        subtitle,
-        ctaText,
-        ctaLink,
-        "tutors": *[_type == "tutor" && displayOnHomepage == true] | order(displayOrder asc) {
-          _id,
-          name,
-          professionalTitle,
-          priceTag {
-            enabled,
-            badgeText
-          },
-          experience,
-          profilePhoto,
-          specialization,
-          hireButtonLink,
-          displayOrder,
-          profilePDF {
-            asset-> {
-              url
-            }
-          },
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken
-        }
-      },
-      "platformBanner": *[_type == "platformBanner"][0]{
-        title,
-        subtitle,
-        description,
-        features[]{
-          feature,
-          description
-        }
-      },
-      "testimonialSection": *[_type == "testimonialSection"][0]{
-        rating,
-        totalReviews,
-        subtitle,
-        tutorChaseLink,
-        maxDisplayCount,
-        selectedTestimonials[]-> {
-          _id,
-          reviewerName
-        }
-      },
-      "testimonials": *[_type == "testimonial"] | order(order asc),
-      "faqSection": *[_type == "faq_section" && _id == "faq_section"][0]{
-        _id,
-        title,
-        subtitle,
-        "faqs": faqReferences[]-> {
-          _id,
-          question,
-          answer,
-          displayOrder
-        } | order(displayOrder asc)
-      }
-    }`;
-
-    console.log('Fetching data from Sanity...'); // Debug log
-
-    // Fetch all data in a single request with Next.js caching
-    const data = await client.fetch(query, {}, { next: { revalidate: 600 } }); // Cache for 10 minutes
-
-    // Add detailed FAQ debugging
-    if (data.faqSection) {
-      console.log('FAQ Section Details:', {
-        _id: data.faqSection._id,
-        title: data.faqSection.title,
-        subtitle: data.faqSection.subtitle,
-        faqCount: data.faqSection.faqs?.length || 0,
-        faqs: data.faqSection.faqs?.map((faq: any) => ({
-          _id: faq._id,
-          question: faq.question,
-          displayOrder: faq.displayOrder
-        }))
-      });
-      
-      // Check for additional FAQs in Sanity that might not be in the references
-      try {
-        const allFaqs = await client.fetch(`*[_type == "faq"] | order(displayOrder asc){
-          _id,
-          question,
-          displayOrder
-        }`);
-        
-        console.log('All available FAQs in Sanity:', allFaqs);
-        
-        // Compare to see which FAQs are missing from the section
-        const sectionFaqIds = data.faqSection.faqs?.map((f: any) => f._id) || [];
-        const missingFaqs = allFaqs.filter((f: any) => !sectionFaqIds.includes(f._id));
-        
-        if (missingFaqs.length > 0) {
-          console.log('FAQs not included in the faqSection:', missingFaqs);
-        }
-      } catch (err) {
-        console.error('Error checking for all FAQs:', err);
-      }
-    } else {
-      console.log('FAQ Section not found in Sanity data');
-    }
-
-    console.log('Data fetched:', { 
-      heroData: data.heroData, 
-      highlightsSection: data.highlightsSection?.highlights,
-      trustedInstitutionsBanner: data.trustedInstitutionsBanner,
-      tutorProfilesSection: data.tutorProfilesSection, 
-      platformBanner: data.platformBanner, 
-      testimonialSection: JSON.stringify(data.testimonialSection, null, 2), 
-      testimonials: data.testimonials?.map((t: TestimonialData) => `${t._id} - ${t.reviewerName}`),
-      faqSection: data.faqSection
-    }); // More detailed debugging
-
-    return { 
-      heroData: data.heroData || null, 
-      highlightsSection: data.highlightsSection || null,
-      trustedInstitutionsBanner: data.trustedInstitutionsBanner || null,
-      tutorProfilesSection: data.tutorProfilesSection || null,
-      platformBanner: data.platformBanner || null,
-      testimonialSection: data.testimonialSection || null, 
-      testimonials: data.testimonials || [],
-      faqSection: data.faqSection || null
-    };
-  } catch (error) {
-    console.error('Error fetching home page data:', error);
-    // Return default/empty values instead of throwing
-    return {
-      heroData: null,
-      highlightsSection: null,
-      trustedInstitutionsBanner: null,
-      tutorProfilesSection: null,
-      platformBanner: null,
-      testimonialSection: null,
-      testimonials: [],
-      faqSection: null
-    };
-  }
+// Enhanced homepage data interface
+interface HomepageData {
+  heroData: any | null;
+  highlightsSection: any | null;
+  trustedInstitutionsBanner: any | null;
+  tutorProfilesSection: any | null;
+  platformBanner: any | null;
+  testimonialSection: any | null;
+  testimonials: any[];
+  faqSection: any | null;
 }
 
-export default async function Home() {
+/**
+ * Enhanced clone-aware homepage data fetcher
+ */
+async function getHomepageDataWithCloneContext(searchParams?: URLSearchParams): Promise<CloneAwarePageData<HomepageData>> {
+  // Use the enhanced clone-aware page data fetcher
+  return await getCloneAwarePageData(
+    searchParams,
+    async (cloneId: string | null) => {
+      try {
+        console.log('Fetching homepage content with clone context...');
+        
+        // Fetch all homepage content with clone-aware fallback hierarchy
+        const content = await getHomepageContentForCurrentDomain();
+        
+        // Extract data from ContentResult objects and apply customizations
+        const heroData = content.hero.data ? 
+          cloneQueryUtils.getContentWithCustomizations(content.hero) : null;
+        
+        const highlightsSection = content.highlights.data ? 
+          cloneQueryUtils.getContentWithCustomizations(content.highlights) : null;
+        
+        const trustedInstitutionsBanner = content.trustedInstitutions.data ? 
+          cloneQueryUtils.getContentWithCustomizations(content.trustedInstitutions) : null;
+        
+        const tutorProfilesSection = content.tutorProfilesSection.data ? 
+          cloneQueryUtils.getContentWithCustomizations(content.tutorProfilesSection) : null;
+        
+        const platformBanner = content.platformBanner.data ? 
+          cloneQueryUtils.getContentWithCustomizations(content.platformBanner) : null;
+        
+        const testimonialSection = content.testimonialSection.data ? 
+          cloneQueryUtils.getContentWithCustomizations(content.testimonialSection) : null;
+        
+        const faqSection = content.faqSection.data ? 
+          cloneQueryUtils.getContentWithCustomizations(content.faqSection) : null;
+
+        // Arrays are handled differently - we get the actual array data
+        const tutors = content.tutors.data || [];
+        const testimonials = content.testimonials.data || [];
+
+        // Transform tutorProfilesSection to include tutors data (maintaining backward compatibility)
+        const tutorProfilesSectionWithTutors = tutorProfilesSection ? {
+          ...tutorProfilesSection,
+          tutors: tutors // Add the tutors array for component compatibility
+        } : null;
+
+        console.log('Clone-aware homepage data processed successfully');
+
+        return { 
+          heroData, 
+          highlightsSection,
+          trustedInstitutionsBanner,
+          tutorProfilesSection: tutorProfilesSectionWithTutors,
+          platformBanner,
+          testimonialSection, 
+          testimonials,
+          faqSection
+        };
+      } catch (error) {
+        console.error('Error fetching homepage content:', error);
+        // Return default/empty values instead of throwing
+        return {
+          heroData: null,
+          highlightsSection: null,
+          trustedInstitutionsBanner: null,
+          tutorProfilesSection: null,
+          platformBanner: null,
+          testimonialSection: null,
+          testimonials: [],
+          faqSection: null
+        };
+      }
+    },
+    'Homepage'
+  );
+}
+
+export default async function Home({ 
+  searchParams 
+}: { 
+  searchParams: { [key: string]: string | string[] | undefined } 
+}) {
+  // Convert searchParams to URLSearchParams
+  const urlSearchParams = new URLSearchParams();
+  Object.entries(searchParams || {}).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      urlSearchParams.set(key, value);
+    } else if (Array.isArray(value)) {
+      urlSearchParams.set(key, value[0] || '');
+    }
+  });
+
+  // Get enhanced clone-aware data
+  const { 
+    pageData,
+    cloneData, 
+    cloneContext,
+    debugInfo
+  } = await getHomepageDataWithCloneContext(urlSearchParams);
+
+  // Extract homepage data with fallback
   const { 
     heroData, 
     highlightsSection, 
@@ -204,10 +164,30 @@ export default async function Home() {
     testimonialSection, 
     testimonials,
     faqSection
-  } = await getHomePageData();
+  } = pageData || {
+    heroData: null,
+    highlightsSection: null,
+    trustedInstitutionsBanner: null,
+    tutorProfilesSection: null,
+    platformBanner: null,
+    testimonialSection: null,
+    testimonials: [],
+    faqSection: null
+  };
+
+  // Generate clone indicator props
+  const cloneIndicatorProps = getCloneIndicatorData(
+    cloneContext,
+    cloneData,
+    debugInfo,
+    'Homepage'
+  );
 
   return (
     <main className="min-h-screen">
+      {/* Enhanced Clone Debug Panel - Development Only */}
+      <CloneIndicatorBanner {...cloneIndicatorProps} />
+      
       <Navbar />
       <div className="flex flex-col">
         {heroData ? <HeroSection heroData={heroData} /> : null}
@@ -242,32 +222,35 @@ export default async function Home() {
         <LazyTestimonialSection sectionData={testimonialSection} testimonials={testimonials} />
       ) : null}
       
-      {/* FAQ Section - now using server-side data */}
-      {faqSection && faqSection.faqs && faqSection.faqs.length > 0 ? (
+      {/* FAQ Section - now using clone-aware server-side data */}
+      {faqSection && faqSection.faqReferences && faqSection.faqReferences.length > 0 ? (
         <FAQSection 
           sectionData={{
             title: faqSection.title,
             subtitle: faqSection.subtitle
           }}
-          faqs={faqSection.faqs}
+          faqs={faqSection.faqReferences}
         />
       ) : (
         <section className="py-16 bg-white">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-gray-600 text-center mb-4">
-              {!faqSection ? 'FAQ section not configured' : 'No FAQs available at the moment'}
+              {!faqSection ? 'FAQ section not configured for this domain' : 'No FAQs available at the moment'}
             </p>
             {/* Enhanced debug info in development */}
             {process.env.NODE_ENV === 'development' && (
               <div className="p-4 bg-gray-100 rounded">
-                <h3 className="mb-2 text-blue-800 font-medium">FAQ Debug Info:</h3>
+                <h3 className="mb-2 text-blue-800 font-medium">Clone-Aware FAQ Debug Info:</h3>
                 <pre className="text-xs overflow-auto">
                   {JSON.stringify({
                     sectionExists: !!faqSection,
                     sectionId: faqSection?._id,
-                    faqsArray: faqSection?.faqs,
-                    faqsCount: faqSection?.faqs?.length,
-                    individualFaqs: faqSection?.faqs?.map((faq: { _id: string; question: string; displayOrder: number }) => ({
+                    faqReferencesArray: faqSection?.faqReferences,
+                    faqsCount: faqSection?.faqReferences?.length,
+                    contentSource: cloneData?.faqSection?.source || 'none',
+                    currentClone: cloneContext?.clone?.cloneName || 'none',
+                    cloneId: cloneContext?.cloneId || 'none',
+                    individualFaqs: faqSection?.faqReferences?.map((faq: { _id: string; question: string; displayOrder: number }) => ({
                       id: faq._id,
                       question: faq.question,
                       displayOrder: faq.displayOrder
@@ -275,13 +258,18 @@ export default async function Home() {
                   }, null, 2)}
                 </pre>
                 <div className="mt-4">
-                  <p className="text-sm text-gray-700 mb-2 font-medium">To fix this issue:</p>
+                  <p className="text-sm text-gray-700 mb-2 font-medium">Multi-Domain FAQ Setup:</p>
                   <ol className="list-decimal pl-5 text-sm text-gray-700">
                     <li className="mb-1">Go to Sanity Studio</li>
                     <li className="mb-1">Navigate to "FAQ Section"</li>
+                    <li className="mb-1">Create clone-specific FAQ sections or use global ones</li>
+                    <li className="mb-1">Set the Clone Reference field appropriately</li>
                     <li className="mb-1">Make sure all FAQs are added to the faqReferences array</li>
                     <li className="mb-1">Publish the document</li>
                   </ol>
+                  <p className="text-sm text-blue-700 mt-2">
+                    Content Source: <strong>{cloneData?.faqSection?.source || 'None found'}</strong>
+                  </p>
                 </div>
               </div>
             )}

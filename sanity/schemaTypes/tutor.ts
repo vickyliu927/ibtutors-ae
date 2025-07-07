@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const tutorSchema = defineType({
   name: 'tutor',
   title: 'Tutors',
   type: 'document',
@@ -441,4 +442,6 @@ export default defineType({
       media: 'profilePhoto',
     },
   },
-}) 
+})
+
+export default addCloneSupport(tutorSchema) 

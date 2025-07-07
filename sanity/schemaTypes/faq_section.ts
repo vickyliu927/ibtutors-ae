@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
+import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
-export default defineType({
+const faqSectionSchema = defineType({
   name: 'faq_section',
   title: 'FAQ Section',
   type: 'document',
@@ -19,6 +20,23 @@ export default defineType({
       description: 'An optional subtitle or description for the FAQ section',
     }),
     defineField({
+      name: 'pageType',
+      title: 'Page Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Homepage', value: 'homepage' },
+          { title: 'Subject Pages', value: 'subject' },
+          { title: 'Curriculum Pages', value: 'curriculum' },
+          { title: 'General/Shared', value: 'general' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'homepage',
+      validation: (Rule: any) => Rule.required(),
+      description: 'Which type of page this FAQ section is designed for',
+    }),
+    defineField({
       name: 'faqReferences',
       title: 'FAQs',
       type: 'array',
@@ -31,12 +49,24 @@ export default defineType({
     select: {
       title: 'title',
       subtitle: 'subtitle',
+      pageType: 'pageType',
     },
-    prepare({ title = '', subtitle = '' }: Record<string, string>) {
+    prepare({ title = '', subtitle = '', pageType = '' }: Record<string, string>) {
+      const pageTypeLabels: Record<string, string> = {
+        homepage: '🏠 Homepage',
+        subject: '📚 Subject Pages',
+        curriculum: '🎓 Curriculum Pages',
+        general: '🌐 General/Shared',
+      };
+
+      const pageTypeLabel = pageTypeLabels[pageType] || '❓ Unknown';
+      
       return {
-        title,
-        subtitle,
+        title: `${title}`,
+        subtitle: `${pageTypeLabel}${subtitle ? ` • ${subtitle}` : ''}`,
       }
     },
   },
-}) 
+})
+
+export default addCloneSupport(faqSectionSchema) 
