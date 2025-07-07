@@ -93,7 +93,7 @@ export function resolveContent<T>(fallbackResult: {
     return {
       data: fallbackResult.default,
       source: 'default',
-      cloneId: null,
+      cloneId: undefined,
       isBaseline: false,
     };
   }
@@ -667,7 +667,7 @@ export const cloneQueryUtils = {
   ): T {
     if (!customizations) return content;
 
-    const result = { ...content };
+    const result = { ...content } as any;
 
     if (customizations.customTitle) {
       result.title = customizations.customTitle;
