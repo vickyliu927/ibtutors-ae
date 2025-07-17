@@ -22,20 +22,50 @@ export interface HeroData {
   features?: string[];
 }
 
+const StarIcon = () => (
+  <svg
+    width="20"
+    height="18"
+    viewBox="0 0 20 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M10 0L12.2451 6.90983H19.5106L13.6327 11.1803L15.8779 18.0902L10 13.8197L4.12215 18.0902L6.36729 11.1803L0.489435 6.90983H7.75486L10 0Z"
+      fill="#FCBD00"
+    />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M11.2025 18.9998C11.1476 18.9998 11.0932 18.9885 11.0429 18.9664C10.9926 18.9444 10.9473 18.9122 10.91 18.8719L3.02379 10.3412C2.97122 10.2843 2.93637 10.2134 2.9235 10.137C2.91064 10.0606 2.92031 9.98216 2.95135 9.9112C2.98239 9.84025 3.03344 9.77988 3.09825 9.73748C3.16307 9.69509 3.23883 9.67251 3.31628 9.6725H7.11229C7.16928 9.67251 7.22561 9.68474 7.27747 9.70837C7.32934 9.73201 7.37553 9.76648 7.41294 9.80949L10.0486 12.8417C10.3334 12.2328 10.8848 11.219 11.8524 9.98363C13.2828 8.15733 15.9436 5.47141 20.4957 3.04674C20.5837 2.99989 20.6861 2.98773 20.7826 3.01266C20.8791 3.0376 20.9628 3.09781 21.017 3.18142C21.0713 3.26503 21.0923 3.36595 21.0758 3.46426C21.0593 3.56257 21.0065 3.65112 20.9279 3.71242C20.9105 3.726 19.1554 5.10818 17.1354 7.63987C15.2764 9.96965 12.8051 13.7792 11.5891 18.6973C11.5677 18.7837 11.518 18.8604 11.4479 18.9153C11.3779 18.9702 11.2914 19 11.2024 19L11.2025 18.9998Z"
+      fill="#F57C40"
+    />
+  </svg>
+);
+
 const LoadingHero = () => (
-  <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-0 animate-pulse">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        <div className="space-y-6">
-          <div className="h-14 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-6 bg-gray-200 rounded w-2/3"></div>
-          <div className="space-y-4">
-            <div className="h-12 bg-gray-200 rounded w-40"></div>
-            <div className="h-6 bg-gray-200 rounded w-56"></div>
-          </div>
+  <div className="relative w-full h-[580px] animate-pulse" style={{
+    background: "linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)",
+  }}>
+    <div className="max-w-[1440px] mx-auto px-4 h-full">
+      <div className="absolute left-24 top-[120px] w-[560px] space-y-6">
+        <div className="h-20 bg-gray-200 rounded w-full"></div>
+        <div className="h-6 bg-gray-200 rounded w-2/3"></div>
+        <div className="space-y-4">
+          <div className="h-12 bg-gray-200 rounded w-40"></div>
+          <div className="h-6 bg-gray-200 rounded w-56"></div>
         </div>
-        <div className="relative h-[500px] bg-gray-200 rounded"></div>
       </div>
+      <div className="absolute right-[133px] top-[30px] w-[538px] h-[550px] bg-gray-200 rounded hidden lg:block"></div>
     </div>
   </div>
 );
@@ -48,89 +78,207 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-0 mb-0">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-8">
-          <div className="space-y-4 md:space-y-6 self-center pt-12 md:pt-0 pb-0">
-            <h1 className="text-5xl font-bold">
-              {heroData.title.split(' ').map((word, index) => (
-                <React.Fragment key={index}>
-                  <span className={
-                    heroData.highlightedWords?.includes(word) 
-                      ? "text-blue-800" 
-                      : ""
-                  }>
-                    {word}
-                  </span>{" "}
-                </React.Fragment>
-              ))}
+    <div
+      className="relative w-full h-[640px] overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)",
+      }}
+    >
+      {/* Background SVG */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 1440 640"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <path d="M0 0H1441V640H0V0Z" fill="url(#paint0_linear_13831_80828)" />
+        <defs>
+          <linearGradient
+            id="paint0_linear_13831_80828"
+            x1="0"
+            y1="0"
+            x2="1395.32"
+            y2="727.609"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#FFF6F3" />
+            <stop offset="0.680707" stopColor="#F2F4FA" />
+            <stop offset="1" stopColor="#F6F5FE" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      {/* Hero Content Container */}
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 h-full">
+        {/* Text Content - Moved upwards */}
+        <div className="absolute left-24 top-[120px] w-[560px] h-[418px] flex flex-col items-start gap-12">
+          {/* Heading Section */}
+          <div className="flex w-[560px] flex-col items-start gap-4">
+            {/* Title */}
+            <h1 className="self-stretch text-[60px] font-medium leading-[120%] font-gilroy">
+              <span className="text-[#171D23]">Expert IB Tutors.</span>
+              <br />
+              <span className="text-[#001A96]">Dubai & Online.</span>
             </h1>
-            <p className="text-xl text-gray-600">
-              {heroData.subtitle}
+
+            {/* Subtitle */}
+            <p className="self-stretch text-[#171D23] text-lg font-light leading-[160%] font-gilroy">
+              Learn from the world's #1 rated tutors for school exams and
+              admissions. Trusted by 10,000+ students in Dubai and globally!
             </p>
-            <div className="space-y-4">
-              {heroData.primaryButton && (
-              <Link
-                  href="#contact-form"
-                  className="inline-block bg-blue-800 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors"
-              >
-                  {heroData.primaryButton.text}
-              </Link>
-              )}
-              <div className="flex items-center space-x-2">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <svg
-                      key={star}
-                      className="h-5 w-5 text-yellow-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 15.934L4.618 19.098l1.039-6.054L1.314 8.902l6.068-.881L10 2.666l2.618 5.355 6.068.881-4.343 4.142 1.039 6.054L10 15.934z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  ))}
-                </div>
-                <span className="text-lg">
-                  4.92/5 based on <span className="font-medium">480 reviews</span>
+          </div>
+
+          {/* Button and Rating Section */}
+          <div className="flex items-center gap-6">
+            {/* Button */}
+            <Link
+              href="#contact-form"
+              className="flex h-12 px-7 justify-center items-center rounded-[28px] bg-[#001A96] text-white text-center text-base font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
+            >
+              {heroData.primaryButton?.text || 'Hire a tutor'}
+            </Link>
+
+            {/* Rating */}
+            <div className="flex flex-col items-start gap-1">
+              {/* Stars */}
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, index) => (
+                  <StarIcon key={index} />
+                ))}
+              </div>
+
+              {/* Rating Text */}
+              <div className="flex items-center gap-2">
+                <span className="text-[#0D2854] text-base font-light font-gilroy">
+                  4.92/5 based on
+                </span>
+                <span className="text-[#171D23] text-base font-bold font-gilroy underline">
+                  480 reviews
                 </span>
               </div>
             </div>
-            {heroData.features && heroData.features.length > 0 && (
-              <ul className="space-y-2">
-                {heroData.features.map((feature, index) => (
-                  <li key={index} className="flex items-center text-gray-700">
-                    <svg className="h-5 w-5 text-blue-800 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                      <path d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
-          <div className="relative h-[450px] md:h-[540px] mt-0 flex items-end">
-            {heroData.mainImage && !imageError ? (
-              <Image
-                src={urlFor(heroData.mainImage).url()}
-                alt="Tutor"
-                fill
-                className="object-contain object-bottom"
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                onError={() => setImageError(true)}
-                loading="eager"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
-                <span className="text-center">
-                  {imageError ? "Failed to load image" : "Loading image..."}
-                </span>
+
+          {/* Features List */}
+          <div className="flex w-[352px] flex-col items-start gap-2">
+            {/* Feature 1 */}
+            <div className="flex items-center gap-1">
+              <CheckIcon />
+              <span className="text-[#171D23] text-base font-light leading-[140%] font-gilroy">
+                Experienced Teachers & Examiners
+              </span>
             </div>
-            )}
+
+            {/* Feature 2 */}
+            <div className="flex items-center gap-1">
+              <CheckIcon />
+              <span className="text-[#171D23] text-base font-light leading-[140%] font-gilroy">
+                Proven Success Rates
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Image - Moved downwards */}
+        <div className="absolute right-[133px] top-[90px] w-[538px] h-[550px] hidden lg:block">
+          {heroData.mainImage && !imageError ? (
+            <Image
+              src="https://api.builder.io/api/v1/image/assets/TEMP/610dab25f15046c66f43aba90b0b0cda1f56850c?width=1076"
+              alt="Expert tutor helping student"
+              width={538}
+              height={550}
+              className="w-full h-full object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+              onError={() => setImageError(true)}
+              loading="eager"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
+              <span className="text-center">
+                {imageError ? "Failed to load image" : "Loading image..."}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Hero Image */}
+        <div className="absolute right-4 top-[320px] w-full max-w-[300px] h-[250px] lg:hidden">
+          {heroData.mainImage && !imageError ? (
+            <Image
+              src="https://api.builder.io/api/v1/image/assets/TEMP/610dab25f15046c66f43aba90b0b0cda1f56850c?width=1076"
+              alt="Expert tutor helping student"
+              width={300}
+              height={250}
+              className="w-full h-full object-cover rounded-lg"
+              priority
+              sizes="(max-width: 768px) 100vw, 300px"
+              onError={() => setImageError(true)}
+              loading="eager"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg">
+              <span className="text-center text-sm">
+                {imageError ? "Failed to load image" : "Loading image..."}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Text Content Adjustment */}
+      <div className="lg:hidden">
+        <div className="absolute left-4 top-[40px] w-[calc(100%-2rem)] max-w-[400px] flex flex-col items-start gap-6">
+          {/* Mobile Title */}
+          <h1 className="text-[36px] font-medium leading-[120%] font-gilroy">
+            <span className="text-[#171D23]">Expert IB Tutors.</span>
+            <br />
+            <span className="text-[#001A96]">Dubai & Online.</span>
+          </h1>
+
+          {/* Mobile Subtitle */}
+          <p className="text-[#171D23] text-base font-light leading-[160%] font-gilroy">
+            Learn from the world's #1 rated tutors for school exams and
+            admissions. Trusted by 10,000+ students in Dubai and globally!
+          </p>
+
+          {/* Mobile Button and Rating */}
+          <div className="flex flex-col gap-4">
+            <Link
+              href="#contact-form"
+              className="flex h-12 px-6 justify-center items-center rounded-[28px] bg-[#001A96] text-white text-center text-base font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy w-fit"
+            >
+              {heroData.primaryButton?.text || 'Hire a tutor'}
+            </Link>
+
+            <div className="flex items-center gap-4">
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, index) => (
+                  <StarIcon key={index} />
+                ))}
+              </div>
+              <span className="text-[#0D2854] text-sm font-light font-gilroy">
+                4.92/5 (<span className="font-bold underline">480 reviews</span>)
+              </span>
+            </div>
+          </div>
+
+          {/* Mobile Features */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <CheckIcon />
+              <span className="text-[#171D23] text-sm font-light leading-[140%] font-gilroy">
+                Experienced Teachers & Examiners
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckIcon />
+              <span className="text-[#171D23] text-sm font-light leading-[140%] font-gilroy">
+                Proven Success Rates
+              </span>
+            </div>
           </div>
         </div>
       </div>

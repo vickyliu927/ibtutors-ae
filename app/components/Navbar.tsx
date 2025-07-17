@@ -31,6 +31,7 @@ const Navbar = () => {
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [curriculums, setCurriculums] = useState<CurriculumPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
+  const [showLevelsDropdown, setShowLevelsDropdown] = useState(false);
   const [navbarSettings, setNavbarSettings] = useState<{ 
     buttonText: string; 
     buttonLink: string;
@@ -47,13 +48,13 @@ const Navbar = () => {
     }>;
   } | null>(null);
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
+  const levelsDropdownRef = useRef<HTMLDivElement>(null);
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const levelsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Add global style when component mounts
   useEffect(() => {
-    // Create a style element
     const style = document.createElement('style');
-    // Add CSS rule that hides mobile menu button on desktop
     style.innerHTML = `
       @media (min-width: 768px) {
         .${MOBILE_ONLY_CLASS} {
@@ -61,10 +62,7 @@ const Navbar = () => {
         }
       }
     `;
-    // Append the style to the head
     document.head.appendChild(style);
-
-    // Cleanup function to remove the style when component unmounts
     return () => {
       document.head.removeChild(style);
     };
@@ -79,10 +77,23 @@ const Navbar = () => {
   };
 
   const handleSubjectsMouseLeave = () => {
-    // Add a slight delay before closing the dropdown
     subjectsTimeoutRef.current = setTimeout(() => {
       setShowSubjectsDropdown(false);
-    }, 300); // 300ms delay
+    }, 300);
+  };
+
+  const handleLevelsMouseEnter = () => {
+    if (levelsTimeoutRef.current) {
+      clearTimeout(levelsTimeoutRef.current);
+      levelsTimeoutRef.current = null;
+    }
+    setShowLevelsDropdown(true);
+  };
+
+  const handleLevelsMouseLeave = () => {
+    levelsTimeoutRef.current = setTimeout(() => {
+      setShowLevelsDropdown(false);
+    }, 300);
   };
 
   useEffect(() => {
@@ -98,7 +109,6 @@ const Navbar = () => {
     const fetchCurriculums = async () => {
       try {
         const curriculumPages = await getCurriculumPages();
-        // Sort by displayOrder to maintain proper order
         const sortedCurriculums = curriculumPages.sort((a, b) => a.displayOrder - b.displayOrder);
         setCurriculums(sortedCurriculums);
       } catch (error) {
@@ -119,370 +129,207 @@ const Navbar = () => {
     fetchCurriculums();
     fetchNavbarSettings();
 
-    // Browser-only debugging
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        console.log('Debug curriculums state:', curriculums);
-      }, 2000);
-    }
-
-    // Clean up timeouts on unmount
     return () => {
       if (subjectsTimeoutRef.current) {
         clearTimeout(subjectsTimeoutRef.current);
       }
+      if (levelsTimeoutRef.current) {
+        clearTimeout(levelsTimeoutRef.current);
+      }
     };
   }, []);
 
-  // Check if a link is external (starts with http or https)
   const isExternalLink = (url: string) => {
     return url && (url.startsWith('http://') || url.startsWith('https://'));
   };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-17 md:h-[68px]">
-          <div className="flex items-center -ml-8 pl-0">
-            <Link href="/" className="flex-shrink-0 pl-0">
-              <div className="relative w-[255px] h-[68px] md:w-[255px] md:h-[68px]">
-                <Image src="/images/logo.png" alt="TutorChase Logo" fill className="object-contain object-left" priority />
-              </div>
-            </Link>
+    <nav className="absolute top-0 left-0 right-0 z-30 w-full bg-transparent">
+      <div className="flex w-full max-w-[1440px] mx-auto px-[16px] py-[24px] justify-between items-center">
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          <div className="relative w-[188px] h-[41px]">
+            <Image
+              src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
+              alt="TutorChase Logo"
+              width={149}
+              height={18}
+              className="absolute left-[39px] top-[3px]"
+            />
+            <Image
+              src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
+              alt="Logo Icon"
+              width={32}
+              height={41}
+              className="absolute left-0 top-0"
+            />
+            <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
+              <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
+                Dubai Tutors
+              </span>
+            </div>
           </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-3">
-            {/* Render customized navigation buttons if available */}
-            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 ? (
-              // Sort by displayOrder and filter by isActive
-              [...navbarSettings.navigationButtons]
-                .filter(button => button.isActive)
-                .sort((a, b) => a.displayOrder - b.displayOrder)
-                .map((button, index) => {
-                  if (button.buttonType === 'curriculum') {
-                    // Find matching curriculum using slug if provided, otherwise match by name
-                    const curriculumSlug = button.curriculumSlug;
-                    const matchingCurriculum = curriculumSlug 
-                      ? curriculums.find(c => c.slug.current === curriculumSlug)
-                      : curriculums.find(c => c.curriculum.toLowerCase() === button.displayText.toLowerCase());
-                    
-                    if (matchingCurriculum) {
-                      // Ensure the path is relative by properly formatting it
-                      const curriculumPath = `/${matchingCurriculum.slug.current.replace(/^\/+/, '')}`;
-                      
-                      return (
-                        <Link
-                          key={`custom-nav-${index}`}
-                          href={curriculumPath}
-                          className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
-                        >
-                          {button.displayText}
-                        </Link>
-                      );
-                    } else {
-                      // If no matching curriculum found, still display the button with default link
-                      // Ensure proper path formatting here too
-                      const curriculumPath = curriculumSlug 
-                        ? `/${curriculumSlug.replace(/^\/+/, '')}` 
-                        : "#";
-                      
-                      return (
-                        <Link
-                          key={`custom-nav-${index}`}
-                          href={curriculumPath}
-                          className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
-                        >
-                          {button.displayText}
-                        </Link>
-                      );
-                    }
-                  } else if (button.buttonType === 'subjectDropdown') {
-                    // Render subjects dropdown with custom text
-                    return (
-                      <div 
-                        key={`custom-nav-${index}`}
-                        className="relative"
-                        ref={subjectsDropdownRef}
-                        onMouseEnter={handleSubjectsMouseEnter}
-                        onMouseLeave={handleSubjectsMouseLeave}
-                      >
-                        <button 
-                          className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-                        >
-                          {button.displayText}
-                          <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-                        
-                        {showSubjectsDropdown && (
-                          <div 
-                            className="absolute left-0 mt-0 pt-1 w-56 z-50" 
-                            onMouseEnter={handleSubjectsMouseEnter}
-                            onMouseLeave={handleSubjectsMouseLeave}
-                          >
-                            <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
-                              {subjects.map((subject) => (
-                                <Link
-                                  key={subject.slug.current}
-                                  href={`/${subject.slug.current}`}
-                                  className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
-                                >
-                                  {subject.subject}
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-                  
-                  return null;
-                })
-            ) : (
-              // Default rendering when no custom buttons defined
-              <>
-                {/* Curriculum Pages - Direct Links */}
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-[44px]">
+          {/* All Levels Dropdown */}
+          <div
+            className="relative"
+            ref={levelsDropdownRef}
+            onMouseEnter={handleLevelsMouseEnter}
+            onMouseLeave={handleLevelsMouseLeave}
+          >
+            <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
+              All Levels
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9.5 4.5L6 8L2.5 4.5"
+                  stroke="#171D23"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            {showLevelsDropdown && (
+              <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
                 {curriculums.map((curriculum) => {
-                  // Ensure the path is relative by properly formatting it
                   const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
-                  
                   return (
                     <Link
                       key={curriculum.slug.current}
                       href={curriculumPath}
-                      className="text-gray-700 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       {curriculum.curriculum}
                     </Link>
                   );
                 })}
-              </>
-            )}
-
-            {/* Always include the All Subjects dropdown if not added via custom navigation */}
-            {(!navbarSettings?.navigationButtons || !navbarSettings.navigationButtons.some(btn => btn.buttonType === 'subjectDropdown')) && (
-              <div 
-                className="relative"
-                ref={subjectsDropdownRef}
-                onMouseEnter={handleSubjectsMouseEnter}
-                onMouseLeave={handleSubjectsMouseLeave}
-              >
-                <button 
-                  className={`text-gray-700 hover:text-blue-800 flex items-center px-3 py-1.5 rounded-md ${showSubjectsDropdown ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-                >
-                  All Subjects
-                  <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${showSubjectsDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                
-                {showSubjectsDropdown && (
-                  <div 
-                    className="absolute left-0 mt-0 pt-1 w-56 z-50" 
-                    onMouseEnter={handleSubjectsMouseEnter}
-                    onMouseLeave={handleSubjectsMouseLeave}
-                  >
-                    <div className="py-2 bg-white border border-gray-200 rounded-md shadow-lg">
-                      {subjects.map((subject) => (
-                        <Link
-                          key={subject.slug.current}
-                          href={`/${subject.slug.current}`}
-                          className="block px-4 py-1.5 text-gray-700 hover:bg-blue-50 hover:text-blue-800 text-sm"
-                        >
-                          {subject.subject}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             )}
-
-            {/* Always add the CTA button if it's not included in the navigation */}
-            {navbarSettings?.buttonText && navbarSettings?.buttonLink && (
-              isExternalLink(navbarSettings.buttonLink) ? (
-                <ExternalLink 
-                  href={navbarSettings.buttonLink} 
-                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                  rel="nofollow"
-                >
-                  {navbarSettings.buttonText}
-                </ExternalLink>
-              ) : (
-                <Link 
-                  href={navbarSettings.buttonLink} 
-                  className="bg-blue-800 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                >
-                  {navbarSettings.buttonText}
-                </Link>
-              )
-            )}
-            {!navbarSettings && (
-              <Link href="#" className="bg-blue-800 text-white px-5 py-2 rounded-md opacity-50 cursor-not-allowed text-sm font-medium">
-                Loading...
-              </Link>
-            )}
           </div>
-          
-          {/* Mobile menu button */}
-          <div className={`md:hidden flex items-center ${MOBILE_ONLY_CLASS}`}>
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-800 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-800"
-              aria-controls="mobile-menu"
-              aria-expanded="false"
-            >
-              <span className="sr-only">{isOpen ? 'Close main menu' : 'Open main menu'}</span>
-              {!isOpen ? (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              ) : (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              )}
+
+          {/* All Subjects Dropdown */}
+          <div
+            className="relative"
+            ref={subjectsDropdownRef}
+            onMouseEnter={handleSubjectsMouseEnter}
+            onMouseLeave={handleSubjectsMouseLeave}
+          >
+            <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
+              All Subjects
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9.5 4.5L6 8L2.5 4.5"
+                  stroke="#171D23"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
-          </div>
-        </div>
-      </div>
 
-      {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-1 pb-2 space-y-1 sm:px-3">
-            {/* Mobile Navigation based on custom buttons if available */}
-            {navbarSettings?.navigationButtons && navbarSettings.navigationButtons.length > 0 ? (
-              // Filter active buttons and sort by displayOrder
-              [...navbarSettings.navigationButtons]
-                .filter(button => button.isActive)
-                .sort((a, b) => a.displayOrder - b.displayOrder)
-                .map((button, index) => {
-                  if (button.buttonType === 'curriculum') {
-                    // Find matching curriculum using slug if provided, otherwise match by name
-                    const curriculumSlug = button.curriculumSlug;
-                    const matchingCurriculum = curriculumSlug 
-                      ? curriculums.find(c => c.slug.current === curriculumSlug)
-                      : curriculums.find(c => c.curriculum.toLowerCase() === button.displayText.toLowerCase());
-                    
-                    if (matchingCurriculum) {
-                      // Ensure the path is relative by properly formatting it
-                      const curriculumPath = `/${matchingCurriculum.slug.current.replace(/^\/+/, '')}`;
-                      
-                      return (
-                        <Link
-                          key={`mobile-custom-nav-${index}`}
-                          href={curriculumPath}
-                          className="block px-3 py-2 text-gray-600 hover:text-blue-800 text-sm"
-                        >
-                          {button.displayText}
-                        </Link>
-                      );
-                    } else {
-                      // If no matching curriculum found, still display the button with default link
-                      // Ensure proper path formatting here too
-                      const curriculumPath = curriculumSlug 
-                        ? `/${curriculumSlug.replace(/^\/+/, '')}` 
-                        : "#";
-                      
-                      return (
-                        <Link
-                          key={`mobile-custom-nav-${index}`}
-                          href={curriculumPath}
-                          className="block px-3 py-2 text-gray-600 hover:text-blue-800 text-sm"
-                        >
-                          {button.displayText}
-                        </Link>
-                      );
-                    }
-                  } else if (button.buttonType === 'subjectDropdown') {
-                    // Render subjects section with custom header
-                    return (
-                      <div key={`mobile-custom-nav-${index}`} className="px-3 py-1.5">
-                        <div className="font-medium text-gray-700 mb-1.5 text-sm">{button.displayText}</div>
-                        {subjects.map((subject) => (
-                          <Link
-                            key={subject.slug.current}
-                            href={`/${subject.slug.current}`}
-                            className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                          >
-                            {subject.subject}
-                          </Link>
-                        ))}
-                      </div>
-                    );
-                  }
-                  
-                  return null;
-                })
-            ) : (
-              // Default rendering when no custom buttons defined
-              <>
-                {/* Mobile Curriculum Links */}
-                <div className="px-3 py-1.5">
-                  <div className="font-medium text-gray-700 mb-1.5 text-sm">Curricula</div>
-                  {curriculums.map((curriculum) => {
-                    // Ensure the path is relative by properly formatting it
-                    const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
-                    
-                    return (
-                      <Link
-                        key={curriculum.slug.current}
-                        href={curriculumPath}
-                        className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
-                      >
-                        {curriculum.curriculum}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-            
-            {/* Always include the All Subjects section if not added via custom navigation */}
-            {(!navbarSettings?.navigationButtons || !navbarSettings.navigationButtons.some(btn => btn.buttonType === 'subjectDropdown')) && (
-              <div className="px-3 py-1.5">
-                <div className="font-medium text-gray-700 mb-1.5 text-sm">All Subjects</div>
+            {showSubjectsDropdown && (
+              <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
                 {subjects.map((subject) => (
                   <Link
                     key={subject.slug.current}
                     href={`/${subject.slug.current}`}
-                    className="block pl-3 py-1.5 text-gray-600 hover:text-blue-800 text-sm"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     {subject.subject}
                   </Link>
                 ))}
               </div>
             )}
-
-            {/* Always include the CTA button */}
-            {navbarSettings?.buttonText && navbarSettings?.buttonLink && (
-              isExternalLink(navbarSettings.buttonLink) ? (
-                <ExternalLink 
-                  href={navbarSettings.buttonLink}
-                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                  rel="nofollow"
-                >
-                  {navbarSettings.buttonText}
-                </ExternalLink>
-              ) : (
-                <Link 
-                  href={navbarSettings.buttonLink} 
-                  className="block px-3 py-2 text-blue-800 text-sm font-medium"
-                >
-                  {navbarSettings.buttonText}
-                </Link>
-              )
-            )}
-            {!navbarSettings && (
-              <span className="block px-3 py-2 text-blue-800 opacity-50 cursor-not-allowed text-sm font-medium">Loading...</span>
-            )}
           </div>
         </div>
-      )}
+
+        {/* CTA Button */}
+        <Link
+          href="#contact-form"
+          className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
+        >
+          {navbarSettings?.buttonText || 'Hire a tutor'}
+        </Link>
+
+        {/* Mobile Menu Button */}
+        <button
+          className={`md:hidden p-2 ${MOBILE_ONLY_CLASS}`}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 12H21M3 6H21M3 18H21"
+              stroke="#171D23"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg md:hidden z-30">
+            <div className="px-4 py-4 space-y-4">
+              <div>
+                <div className="font-semibold text-gray-800 mb-2">Levels</div>
+                {curriculums.map((curriculum) => {
+                  const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
+                  return (
+                    <Link 
+                      key={curriculum.slug.current}
+                      href={curriculumPath} 
+                      className="block py-2 text-gray-600"
+                    >
+                      {curriculum.curriculum}
+                    </Link>
+                  );
+                })}
+              </div>
+              <div>
+                <div className="font-semibold text-gray-800 mb-2">Subjects</div>
+                {subjects.slice(0, 6).map((subject) => (
+                  <Link
+                    key={subject.slug.current}
+                    href={`/${subject.slug.current}`}
+                    className="block py-2 text-gray-600"
+                  >
+                    {subject.subject}
+                  </Link>
+                ))}
+              </div>
+              <Link
+                href="#contact-form"
+                className="block w-full py-3 px-6 bg-[#001A96] text-white text-center rounded-[28px] font-semibold"
+              >
+                {navbarSettings?.buttonText || 'Hire a tutor'}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };
