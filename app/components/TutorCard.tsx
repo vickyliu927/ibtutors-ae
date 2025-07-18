@@ -50,7 +50,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
     <div
       className="flex items-center border border-[#E6E7ED] bg-white relative"
       style={{
-        width: "1120px",
+        width: "1300px",
         height: "280px",
         borderRadius: "20px",
       }}
@@ -97,11 +97,11 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
             <div className="flex items-center gap-8">
               {/* Name */}
               <div
-                className="text-[#171D23] font-gilroy font-bold leading-[120%]"
+                className="text-[#171D23] font-gilroy font-semibold leading-[120%]"
                 style={{
                   width: "160px",
                   fontSize: "24px",
-                  fontWeight: 700,
+                  fontWeight: 600,
                 }}
               >
                 {tutor.name}
@@ -208,19 +208,19 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         </div>
 
         {/* Bottom section - Tags and Button */}
-        <div className="flex justify-center items-end gap-4 self-stretch">
+        <div className="flex justify-between items-end gap-4 self-stretch">
           {/* Tags section */}
           <div
             className="flex items-start content-start gap-2 flex-1 self-stretch flex-wrap"
-            style={{ padding: "8px 0px 0px 32px" }}
+            style={{ padding: "8px 0px 24px 32px" }}
           >
             <div
-              className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-bold leading-[140%]"
+              className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]"
               style={{
                 width: "57px",
                 height: "28px",
                 fontSize: "14px",
-                fontWeight: 700,
+                fontWeight: 600,
               }}
             >
               Teaches:
@@ -233,11 +233,11 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
               }}
             >
               <div
-                className="text-center font-gilroy font-bold leading-[140%]"
+                className="text-center font-gilroy font-semibold leading-[140%]"
                 style={{
                   color: "#001A96",
                   fontSize: "14px",
-                  fontWeight: 700,
+                  fontWeight: 600,
                 }}
               >
                 {tutor.specialization.mainSubject}
@@ -248,12 +248,13 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
           {/* Hire Button */}
           <Link
             href={tutor.hireButtonLink || "/#contact-form"}
-            className="flex justify-center items-center bg-[#171D23] text-white text-center font-gilroy font-bold leading-[140%] transition-all hover:bg-gray-800"
+            className="flex justify-center items-center bg-[#001A96] text-white text-center font-gilroy font-bold leading-[140%] transition-all hover:bg-blue-800"
             style={{
               padding: "16px 36px",
-              borderRadius: "16px 0px 0px 0px",
+              borderRadius: "16px 0px 20px 0px",
               fontSize: "16px",
               fontWeight: 700,
+              marginBottom: "0px",
             }}
           >
             Hire a Tutor
