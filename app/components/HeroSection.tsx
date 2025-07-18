@@ -20,7 +20,7 @@ export interface HeroData {
     link: string;
   };
   features?: string[];
-  rating: {
+  rating?: {
     score: string;
     basedOnText: string;
     reviewCount: string;
@@ -79,6 +79,8 @@ const LoadingHero = () => (
 
 const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
   const [imageError, setImageError] = React.useState(false);
+
+
 
   if (!heroData) {
     return <LoadingHero />;
@@ -158,10 +160,10 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               {/* Rating Text */}
               <div className="flex items-center gap-2">
                 <span className="text-[#0D2854] text-base font-light font-gilroy">
-                  {heroData.rating?.score} {heroData.rating?.basedOnText}
+                  {heroData.rating?.score || '4.92/5'} {heroData.rating?.basedOnText || 'based on'}
                 </span>
                 <span className="text-[#171D23] text-base font-bold font-gilroy underline">
-                  {heroData.rating?.reviewCount}
+                  {heroData.rating?.reviewCount || '480 reviews'}
                 </span>
               </div>
             </div>
@@ -260,7 +262,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
                 ))}
               </div>
               <span className="text-[#0D2854] text-sm font-light font-gilroy">
-                {heroData.rating?.score} (<span className="font-bold underline">{heroData.rating?.reviewCount}</span>)
+                {heroData.rating?.score || '4.92/5'} (<span className="font-bold underline">{heroData.rating?.reviewCount || '480 reviews'}</span>)
               </span>
             </div>
           </div>

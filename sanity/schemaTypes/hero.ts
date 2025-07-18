@@ -88,7 +88,6 @@ const heroSchema = defineType({
           validation: (Rule: any) => Rule.required(),
         },
       ],
-      validation: (Rule: any) => Rule.required(),
     }),
   ],
   preview: {

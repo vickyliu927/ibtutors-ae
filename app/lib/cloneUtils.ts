@@ -224,8 +224,8 @@ export interface RawFallbackData<T> {
  */
 export interface HeroContent {
   _id: string;
-  title: string;
-  highlightedWords?: string[];
+  titleFirstRow: string;
+  titleSecondRow: string;
   subtitle: string;
   mainImage: any;
   primaryButton: {
@@ -233,6 +233,11 @@ export interface HeroContent {
     link: string;
   };
   features?: string[];
+  rating?: {
+    score: string;
+    basedOnText: string;
+    reviewCount: string;
+  };
   cloneSpecificData?: any;
 }
 
@@ -495,12 +500,13 @@ async function safeQuery<T>(query: string, params: Record<string, any> = {}): Pr
 export async function getHeroForClone(cloneId: string): Promise<FallbackResult<HeroContent>> {
   const fields = `
     _id,
-    title,
-    highlightedWords,
+    titleFirstRow,
+    titleSecondRow,
     subtitle,
     mainImage,
     primaryButton,
     features,
+    rating,
     cloneSpecificData
   `;
   

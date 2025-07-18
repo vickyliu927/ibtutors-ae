@@ -113,12 +113,13 @@ export const heroQueries = {
     cloneId,
     `
     _id,
-    title,
-    highlightedWords,
+    titleFirstRow,
+    titleSecondRow,
     subtitle,
     mainImage,
     primaryButton,
     features,
+    rating,
     isActive,
     cloneReference,
     cloneSpecificData

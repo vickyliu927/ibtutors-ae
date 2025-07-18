@@ -167,19 +167,19 @@ const Navbar = () => {
               <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
                 Dubai Tutors
               </span>
-            </div>
+              </div>
           </div>
         </Link>
-
-        {/* Desktop Navigation */}
+          
+          {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-[44px]">
           {/* All Levels Dropdown */}
           <div
-            className="relative"
+                        className="relative"
             ref={levelsDropdownRef}
             onMouseEnter={handleLevelsMouseEnter}
             onMouseLeave={handleLevelsMouseLeave}
-          >
+                      >
             <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
               All Levels
               <svg
@@ -196,9 +196,9 @@ const Navbar = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-              </svg>
-            </button>
-
+                          </svg>
+                        </button>
+                        
             {showLevelsDropdown && (
               <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
                 {curriculums.map((curriculum) => {
@@ -218,14 +218,14 @@ const Navbar = () => {
           </div>
 
           {/* All Subjects Dropdown */}
-          <div
-            className="relative"
-            ref={subjectsDropdownRef}
-            onMouseEnter={handleSubjectsMouseEnter}
-            onMouseLeave={handleSubjectsMouseLeave}
-          >
+              <div 
+                className="relative"
+                ref={subjectsDropdownRef}
+                onMouseEnter={handleSubjectsMouseEnter}
+                onMouseLeave={handleSubjectsMouseLeave}
+              >
             <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
-              All Subjects
+                  All Subjects
               <svg
                 width="12"
                 height="12"
@@ -240,32 +240,32 @@ const Navbar = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-              </svg>
-            </button>
-
-            {showSubjectsDropdown && (
+                  </svg>
+                </button>
+                
+                {showSubjectsDropdown && (
               <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
-                {subjects.map((subject) => (
-                  <Link
-                    key={subject.slug.current}
-                    href={`/${subject.slug.current}`}
+                      {subjects.map((subject) => (
+                        <Link
+                          key={subject.slug.current}
+                          href={`/${subject.slug.current}`}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    {subject.subject}
-                  </Link>
-                ))}
-              </div>
+                        >
+                          {subject.subject}
+                        </Link>
+                      ))}
+                    </div>
             )}
           </div>
         </div>
 
         {/* CTA Button */}
-        <Link
+                        <Link
           href="#contact-form"
           className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-        >
+                        >
           {navbarSettings?.buttonText || 'Hire a tutor'}
-        </Link>
+                        </Link>
 
         {/* Mobile Menu Button */}
         <button
@@ -278,7 +278,7 @@ const Navbar = () => {
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-          >
+                        >
             <path
               d="M3 12H21M3 6H21M3 18H21"
               stroke="#171D23"
@@ -295,19 +295,19 @@ const Navbar = () => {
             <div className="px-4 py-4 space-y-4">
               <div>
                 <div className="font-semibold text-gray-800 mb-2">Levels</div>
-                {curriculums.map((curriculum) => {
-                  const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
-                  return (
-                    <Link 
-                      key={curriculum.slug.current}
-                      href={curriculumPath} 
+                  {curriculums.map((curriculum) => {
+                    const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
+                    return (
+                      <Link
+                        key={curriculum.slug.current}
+                        href={curriculumPath}
                       className="block py-2 text-gray-600"
-                    >
-                      {curriculum.curriculum}
-                    </Link>
-                  );
-                })}
-              </div>
+                      >
+                        {curriculum.curriculum}
+                      </Link>
+                    );
+                  })}
+                </div>
               <div>
                 <div className="font-semibold text-gray-800 mb-2">Subjects</div>
                 {subjects.slice(0, 6).map((subject) => (
@@ -320,16 +320,16 @@ const Navbar = () => {
                   </Link>
                 ))}
               </div>
-              <Link
+                <Link 
                 href="#contact-form"
                 className="block w-full py-3 px-6 bg-[#001A96] text-white text-center rounded-[28px] font-semibold"
-              >
+                >
                 {navbarSettings?.buttonText || 'Hire a tutor'}
-              </Link>
+                </Link>
             </div>
           </div>
         )}
-      </div>
+        </div>
     </nav>
   );
 };
