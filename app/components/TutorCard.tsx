@@ -151,10 +151,10 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                   />
                 </svg>
                 <div
-                  className="text-[#171D23] font-gilroy font-medium leading-[140%]"
+                  className="text-[#171D23] font-gilroy font-light leading-[140%]"
                   style={{
                     fontSize: "16px",
-                    fontWeight: 500,
+                    fontWeight: 300,
                   }}
                 >
                   {studentCount}+ students
