@@ -9,12 +9,8 @@ import ExternalLink from './ui/ExternalLink';
 
 // Navbar data interface
 interface NavbarData {
-  logo: {
-    logoText: any;
-    logoIcon: any;
-    brandText: string;
-    logoLink: string;
-  };
+  logo: any;
+  logoLink: string;
   navigation: {
     levelsText: string;
     subjectsText: string;
@@ -127,17 +123,17 @@ const Navbar = ({ navbarData }: NavbarProps) => {
     <nav className="absolute top-0 left-0 right-0 z-30 w-full bg-transparent">
       <div className="flex w-full max-w-[1440px] mx-auto px-[16px] py-[24px] justify-between items-center">
         {/* Logo */}
-        <Link href={navbarData?.logo?.logoLink || "/"} className="flex items-center">
-          <div className="relative w-[188px] h-[41px]">
-            {navbarData?.logo?.logoText ? (
-              <Image
-                src={urlFor(navbarData.logo.logoText).width(297).url()}
-                alt="Company Logo"
-                width={149}
-                height={18}
-                className="absolute left-[39px] top-[3px]"
-              />
-            ) : (
+        <Link href={navbarData?.logoLink || "/"} className="flex items-center">
+          {navbarData?.logo ? (
+            <Image
+              src={urlFor(navbarData.logo).height(41).url()}
+              alt="Company Logo"
+              width={188}
+              height={41}
+              className="object-contain"
+            />
+          ) : (
+            <div className="relative w-[188px] h-[41px]">
               <Image
                 src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
                 alt="TutorChase Logo"
@@ -145,16 +141,6 @@ const Navbar = ({ navbarData }: NavbarProps) => {
                 height={18}
                 className="absolute left-[39px] top-[3px]"
               />
-            )}
-            {navbarData?.logo?.logoIcon ? (
-              <Image
-                src={urlFor(navbarData.logo.logoIcon).width(64).url()}
-                alt="Logo Icon"
-                width={32}
-                height={41}
-                className="absolute left-0 top-0"
-              />
-            ) : (
               <Image
                 src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
                 alt="Logo Icon"
@@ -162,13 +148,13 @@ const Navbar = ({ navbarData }: NavbarProps) => {
                 height={41}
                 className="absolute left-0 top-0"
               />
-            )}
-            <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
-              <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
-                {navbarData?.logo?.brandText || 'Dubai Tutors'}
-              </span>
+              <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
+                <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
+                  Dubai Tutors
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </Link>
           
           {/* Desktop Navigation */}

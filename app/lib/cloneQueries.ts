@@ -435,6 +435,7 @@ export const navbarQueries = {
     `
     _id,
     logo,
+    logoLink,
     navigation,
     buttonText,
     buttonLink,

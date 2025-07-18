@@ -8,39 +8,17 @@ const navbarSettingsSchema = defineType({
   fields: [
     defineField({
       name: 'logo',
-      title: 'Logo Section',
-      type: 'object',
-      fields: [
-        {
-          name: 'logoText',
-          title: 'Logo Text Image',
-          type: 'image',
-          description: 'Main logo text image',
-          validation: Rule => Rule.required(),
-        },
-        {
-          name: 'logoIcon',
-          title: 'Logo Icon Image',
-          type: 'image',
-          description: 'Logo icon image',
-          validation: Rule => Rule.required(),
-        },
-        {
-          name: 'brandText',
-          title: 'Brand Text',
-          type: 'string',
-          description: 'Text below the logo (e.g., "Dubai Tutors")',
-          validation: Rule => Rule.required(),
-        },
-        {
-          name: 'logoLink',
-          title: 'Logo Link',
-          type: 'string',
-          description: 'URL when logo is clicked',
-          initialValue: '/',
-          validation: Rule => Rule.required(),
-        },
-      ],
+      title: 'Logo',
+      type: 'image',
+      description: 'Company logo image',
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'logoLink',
+      title: 'Logo Link',
+      type: 'string',
+      description: 'URL when logo is clicked',
+      initialValue: '/',
       validation: Rule => Rule.required(),
     }),
     defineField({
@@ -84,14 +62,15 @@ const navbarSettingsSchema = defineType({
   ],
   preview: {
     select: {
-      title: 'logo.brandText',
-      subtitle: 'buttonText',
+      title: 'buttonText',
+      media: 'logo',
     },
     prepare(selection: any) {
-      const { title, subtitle } = selection;
+      const { title } = selection;
       return {
-        title: title || 'Navbar Settings',
-        subtitle: `CTA: ${subtitle || 'Not set'}`,
+        title: 'Navbar Settings',
+        subtitle: `CTA: ${title || 'Not set'}`,
+        media: selection.media,
       };
     },
   },

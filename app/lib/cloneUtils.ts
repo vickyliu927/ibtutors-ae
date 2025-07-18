@@ -263,12 +263,8 @@ export interface FooterContent {
 
 export interface NavbarContent {
   _id: string;
-  logo: {
-    logoText: any;
-    logoIcon: any;
-    brandText: string;
-    logoLink: string;
-  };
+  logo: any;
+  logoLink: string;
   navigation: {
     levelsText: string;
     subjectsText: string;
@@ -595,6 +591,7 @@ export async function getNavbarForClone(cloneId: string): Promise<FallbackResult
   const fields = `
     _id,
     logo,
+    logoLink,
     navigation,
     buttonText,
     buttonLink,
