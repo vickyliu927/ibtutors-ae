@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 
 export interface HeroData {
-  title: string;
-  highlightedWords?: string[];
+  titleFirstRow: string;
+  titleSecondRow: string;
   subtitle: string;
   mainImage: {
     _type: string;
@@ -20,6 +20,11 @@ export interface HeroData {
     link: string;
   };
   features?: string[];
+  rating: {
+    score: string;
+    basedOnText: string;
+    reviewCount: string;
+  };
 }
 
 const StarIcon = () => (
@@ -51,6 +56,8 @@ const CheckIcon = () => (
     />
   </svg>
 );
+
+
 
 const LoadingHero = () => (
   <div className="relative w-full h-[580px] animate-pulse" style={{
@@ -118,15 +125,14 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
           <div className="flex w-[560px] flex-col items-start gap-4">
             {/* Title */}
             <h1 className="self-stretch text-[60px] font-medium leading-[120%] font-gilroy">
-              <span className="text-[#171D23]">Expert IB Tutors.</span>
+              <span className="text-[#171D23]">{heroData.titleFirstRow}</span>
               <br />
-              <span className="text-[#001A96]">Dubai & Online.</span>
+              <span className="text-[#001A96]">{heroData.titleSecondRow}</span>
             </h1>
 
             {/* Subtitle */}
             <p className="self-stretch text-[#171D23] text-lg font-light leading-[160%] font-gilroy">
-              Learn from the world's #1 rated tutors for school exams and
-              admissions. Trusted by 10,000+ students in Dubai and globally!
+              {heroData.subtitle}
             </p>
           </div>
 
@@ -134,7 +140,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
           <div className="flex items-center gap-6">
             {/* Button */}
             <Link
-              href="#contact-form"
+              href={heroData.primaryButton?.link || "#contact-form"}
               className="flex h-12 px-7 justify-center items-center rounded-[28px] bg-[#001A96] text-white text-center text-base font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
             >
               {heroData.primaryButton?.text || 'Hire a tutor'}
@@ -152,10 +158,10 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               {/* Rating Text */}
               <div className="flex items-center gap-2">
                 <span className="text-[#0D2854] text-base font-light font-gilroy">
-                  4.92/5 based on
+                  {heroData.rating?.score} {heroData.rating?.basedOnText}
                 </span>
                 <span className="text-[#171D23] text-base font-bold font-gilroy underline">
-                  480 reviews
+                  {heroData.rating?.reviewCount}
                 </span>
               </div>
             </div>
@@ -163,21 +169,14 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
 
           {/* Features List */}
           <div className="flex w-[352px] flex-col items-start gap-2">
-            {/* Feature 1 */}
-            <div className="flex items-center gap-1">
-              <CheckIcon />
-              <span className="text-[#171D23] text-base font-light leading-[140%] font-gilroy">
-                Experienced Teachers & Examiners
-              </span>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="flex items-center gap-1">
-              <CheckIcon />
-              <span className="text-[#171D23] text-base font-light leading-[140%] font-gilroy">
-                Proven Success Rates
-              </span>
-            </div>
+            {heroData.features?.map((feature, index) => (
+              <div key={index} className="flex items-center gap-1">
+                <CheckIcon />
+                <span className="text-[#171D23] text-base font-light leading-[140%] font-gilroy">
+                  {feature}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -185,7 +184,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
         <div className="absolute right-[133px] top-[90px] w-[538px] h-[550px] hidden lg:block">
           {heroData.mainImage && !imageError ? (
             <Image
-              src="https://api.builder.io/api/v1/image/assets/TEMP/610dab25f15046c66f43aba90b0b0cda1f56850c?width=1076"
+              src={urlFor(heroData.mainImage).width(1076).height(1100).quality(95).url()}
               alt="Expert tutor helping student"
               width={538}
               height={550}
@@ -194,6 +193,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               sizes="(max-width: 768px) 100vw, 50vw"
               onError={() => setImageError(true)}
               loading="eager"
+              quality={95}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
@@ -208,7 +208,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
         <div className="absolute right-4 top-[320px] w-full max-w-[300px] h-[250px] lg:hidden">
           {heroData.mainImage && !imageError ? (
             <Image
-              src="https://api.builder.io/api/v1/image/assets/TEMP/610dab25f15046c66f43aba90b0b0cda1f56850c?width=1076"
+              src={urlFor(heroData.mainImage).width(600).height(500).quality(95).url()}
               alt="Expert tutor helping student"
               width={300}
               height={250}
@@ -217,6 +217,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               sizes="(max-width: 768px) 100vw, 300px"
               onError={() => setImageError(true)}
               loading="eager"
+              quality={95}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg">
@@ -233,21 +234,20 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
         <div className="absolute left-4 top-[40px] w-[calc(100%-2rem)] max-w-[400px] flex flex-col items-start gap-6">
           {/* Mobile Title */}
           <h1 className="text-[36px] font-medium leading-[120%] font-gilroy">
-            <span className="text-[#171D23]">Expert IB Tutors.</span>
+            <span className="text-[#171D23]">{heroData.titleFirstRow}</span>
             <br />
-            <span className="text-[#001A96]">Dubai & Online.</span>
+            <span className="text-[#001A96]">{heroData.titleSecondRow}</span>
           </h1>
 
           {/* Mobile Subtitle */}
           <p className="text-[#171D23] text-base font-light leading-[160%] font-gilroy">
-            Learn from the world's #1 rated tutors for school exams and
-            admissions. Trusted by 10,000+ students in Dubai and globally!
+            {heroData.subtitle}
           </p>
 
           {/* Mobile Button and Rating */}
           <div className="flex flex-col gap-4">
             <Link
-              href="#contact-form"
+              href={heroData.primaryButton?.link || "#contact-form"}
               className="flex h-12 px-6 justify-center items-center rounded-[28px] bg-[#001A96] text-white text-center text-base font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy w-fit"
             >
               {heroData.primaryButton?.text || 'Hire a tutor'}
@@ -260,25 +260,21 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
                 ))}
               </div>
               <span className="text-[#0D2854] text-sm font-light font-gilroy">
-                4.92/5 (<span className="font-bold underline">480 reviews</span>)
+                {heroData.rating?.score} (<span className="font-bold underline">{heroData.rating?.reviewCount}</span>)
               </span>
             </div>
           </div>
 
           {/* Mobile Features */}
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <CheckIcon />
-              <span className="text-[#171D23] text-sm font-light leading-[140%] font-gilroy">
-                Experienced Teachers & Examiners
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckIcon />
-              <span className="text-[#171D23] text-sm font-light leading-[140%] font-gilroy">
-                Proven Success Rates
-              </span>
-            </div>
+            {heroData.features?.map((feature, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <CheckIcon />
+                <span className="text-[#171D23] text-sm font-light leading-[140%] font-gilroy">
+                  {feature}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
