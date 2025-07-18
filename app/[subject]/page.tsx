@@ -413,6 +413,7 @@ export default async function DynamicPage({
           sectionSubtitle={curriculumResult.pageData.tutorsListSectionHead?.description}
           ctaText={curriculumResult.pageData.tutorsListSectionHead?.ctaLinkText}
           ctaLink={curriculumResult.pageData.tutorsListSectionHead?.ctaLink}
+          useNewCardDesign={true}
         />
 
         {/* Testimonials Section */}
@@ -559,7 +560,7 @@ export default async function DynamicPage({
             </p>
           )}
 
-          <TutorProfiles tutors={pageData.tutorsList} />
+          <TutorProfiles tutors={pageData.tutorsList} useNewCardDesign={true} />
         </div>
       </section>
 

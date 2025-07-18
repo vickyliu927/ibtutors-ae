@@ -246,6 +246,7 @@ export default async function Home({
           sectionSubtitle={tutorProfilesSection.subtitle}
           ctaText={tutorProfilesSection.ctaText}
           ctaLink={tutorProfilesSection.ctaLink}
+          useNewCardDesign={true}
         />
       ) : null}
       <SubjectGrid />
