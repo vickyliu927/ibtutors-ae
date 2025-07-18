@@ -62,7 +62,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         style={{
           width: "280px",
           height: "280px",
-          borderRadius: "3px 0px 0px 3px",
+          borderRadius: "20px 0px 0px 20px",
         }}
       >
         {tutor.profilePhoto ? (
@@ -123,6 +123,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                     fill="#171D23"
                     style={{
                       fontSize: "16px",
+                      fontWeight: 300,
                       fontFamily:
                         "Gilroy, -apple-system, Roboto, Helvetica, sans-serif",
                     }}
@@ -150,10 +151,10 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                   />
                 </svg>
                 <div
-                  className="text-[#171D23] font-gilroy leading-[140%]"
+                  className="text-[#171D23] font-gilroy font-light leading-[140%]"
                   style={{
                     fontSize: "16px",
-                    fontWeight: 400,
+                    fontWeight: 300,
                   }}
                 >
                   {studentCount}+ students
