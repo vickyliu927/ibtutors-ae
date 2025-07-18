@@ -98,11 +98,11 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
             <div className="flex items-center gap-8">
               {/* Name */}
               <div
-                className="text-[#171D23] font-gilroy font-semibold leading-[120%]"
+                className="text-[#171D23] font-gilroy font-medium leading-[120%]"
                 style={{
                   width: "160px",
                   fontSize: "24px",
-                  fontWeight: 600,
+                  fontWeight: 500,
                 }}
               >
                 {tutor.name}
