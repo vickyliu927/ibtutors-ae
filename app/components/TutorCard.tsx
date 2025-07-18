@@ -48,9 +48,10 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
 
   return (
     <div
-      className="flex items-center border border-[#E6E7ED] bg-white relative"
+      className="flex items-center border border-[#E6E7ED] bg-white relative w-full"
       style={{
-        width: "1300px",
+        maxWidth: "1300px",
+        width: "100%",
         height: "280px",
         borderRadius: "20px",
       }}

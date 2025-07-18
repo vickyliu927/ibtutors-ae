@@ -116,9 +116,9 @@ const TutorProfiles = ({
   if (!tutors) {
     return (
       <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto" style={{ width: "1300px", maxWidth: "calc(100vw - 2rem)" }}>
           {/* Header section matching Figma design */}
-          <div className="flex flex-col items-start gap-6 mb-8">
+          <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
             <div className="flex flex-col items-start gap-3">
               <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
                 Trusted by 15,000+ students across Dubai and globally.
@@ -139,7 +139,7 @@ const TutorProfiles = ({
               </span>
             </div>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-6 px-4 sm:px-6 lg:px-0">
             {[1, 2].map((index) => (
               <div
                 key={index}
@@ -164,9 +164,9 @@ const TutorProfiles = ({
 
   return (
     <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto" style={{ width: "1300px", maxWidth: "calc(100vw - 2rem)" }}>
         {/* Header section matching Figma design */}
-        <div className="flex flex-col items-start gap-6 mb-8">
+        <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
           <div className="flex flex-col items-start gap-3">
             <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
               Trusted by 15,000+ students across Dubai and globally.
@@ -191,8 +191,8 @@ const TutorProfiles = ({
         <div
           className={
             useNewCardDesign
-              ? "space-y-6 flex flex-col items-center"
-              : "space-y-4"
+              ? "space-y-6 flex flex-col items-start px-4 sm:px-6 lg:px-0"
+              : "space-y-4 px-4 sm:px-6 lg:px-0"
           }
         >
           {tutors.map((tutor) => {
