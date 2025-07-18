@@ -17,13 +17,7 @@ const config: Config = {
           "Helvetica",
           "sans-serif",
         ],
-        inter: [
-          "Inter",
-          "-apple-system",
-          "Roboto",
-          "Helvetica",
-          "sans-serif",
-        ],
+        inter: ["Inter", "-apple-system", "Roboto", "Helvetica", "sans-serif"],
       },
       colors: {
         blue: {
@@ -34,6 +28,11 @@ const config: Config = {
           500: "#f97316",
           600: "#ea580c",
         },
+        // Custom colors from Figma design
+        primary: "#001A96",
+        greyBlueLight: "#F9F9FD",
+        greyBorder: "#E6E7ED",
+        textDark: "#171D23",
       },
     },
   },
