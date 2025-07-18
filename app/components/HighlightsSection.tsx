@@ -15,7 +15,7 @@ interface HighlightsSectionProps {
 // Clean icon components using Lucide React
 const StarIcon = ({ isFeatured }: { isFeatured: boolean }) => (
   <Star
-    size={32}
+    size={28}
     fill="#F57C40"
     color="#F57C40"
   />
@@ -23,7 +23,7 @@ const StarIcon = ({ isFeatured }: { isFeatured: boolean }) => (
 
 const LanguageIcon = ({ isFeatured }: { isFeatured: boolean }) => (
   <Languages
-    size={32}
+    size={28}
     color="#001A96"
     strokeWidth={2}
   />
@@ -31,7 +31,7 @@ const LanguageIcon = ({ isFeatured }: { isFeatured: boolean }) => (
 
 const EducationIcon = ({ isFeatured }: { isFeatured: boolean }) => (
   <GraduationCap
-    size={32}
+    size={28}
     color="#F57C40"
     strokeWidth={2}
   />
@@ -48,17 +48,17 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
 }) => {
   return (
     <section className="py-16 bg-white relative">
-      {/* Desktop layout - exact match to Figma design */}
+      {/* Desktop layout - proportionally reduced size */}
       <div className="hidden lg:block">
-        <div className="flex items-center gap-8 w-[1544px] h-[400px] mx-auto">
+        <div className="flex items-center gap-6 w-[1350px] h-[350px] mx-auto">
           {highlights.map((item, index) => {
             const IconComponent = iconMap[item.iconType] || iconMap.star;
 
             return (
               <div
                 key={index}
-                className={`flex p-10 flex-col items-start gap-8 flex-shrink-0 rounded-[24px] h-[400px] ${
-                  index === 0 ? "w-[600px]" : "w-[440px]"
+                className={`flex p-8 flex-col items-start gap-6 flex-shrink-0 rounded-[20px] h-[350px] ${
+                  index === 0 ? "w-[520px]" : "w-[380px]"
                 } ${
                   index === 0
                     ? "bg-[#001A96] text-white"
@@ -69,19 +69,19 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
               >
                 <div className="flex justify-between items-start w-full">
                   <h3
-                    className={`font-gilroy text-3xl font-medium leading-[120%] w-72 ${
+                    className={`font-gilroy text-2xl font-medium leading-[120%] w-64 ${
                       index === 0 ? "text-white" : "text-[#171D23]"
                     }`}
                   >
                     {item.title}
                   </h3>
-                  <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center">
+                  <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center">
                     <IconComponent isFeatured={index === 0} />
                   </div>
                 </div>
 
                 <p
-                  className={`font-gilroy text-xl font-light leading-[160%] w-full ${
+                  className={`font-gilroy text-lg font-light leading-[160%] w-full ${
                     index === 0 ? "text-white" : "text-[#171D23]"
                   }`}
                 >
@@ -96,14 +96,14 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
       {/* Mobile responsive layout */}
       <div className="block lg:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-4">
             {highlights.map((item, index) => {
               const IconComponent = iconMap[item.iconType] || iconMap.star;
 
               return (
                 <div
                   key={index}
-                  className={`p-8 flex flex-col items-start gap-6 rounded-[24px] ${
+                  className={`p-6 flex flex-col items-start gap-4 rounded-[20px] ${
                     index === 0
                       ? "bg-[#001A96] text-white"
                       : index === 1
@@ -113,19 +113,19 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
                 >
                   <div className="flex justify-between items-start w-full">
                     <h3
-                      className={`font-gilroy text-2xl font-medium leading-[120%] flex-1 pr-4 ${
+                      className={`font-gilroy text-xl font-medium leading-[120%] flex-1 pr-4 ${
                         index === 0 ? "text-white" : "text-[#171D23]"
                       }`}
                     >
                       {item.title}
                     </h3>
-                    <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center">
+                    <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center">
                       <IconComponent isFeatured={index === 0} />
                     </div>
                   </div>
 
                   <p
-                    className={`font-gilroy text-lg font-light leading-[160%] w-full ${
+                    className={`font-gilroy text-base font-light leading-[160%] w-full ${
                       index === 0 ? "text-white" : "text-[#171D23]"
                     }`}
                   >
