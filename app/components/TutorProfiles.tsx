@@ -123,7 +123,7 @@ const TutorProfiles = ({
               <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
                 Trusted by 15,000+ students across Dubai and globally.
               </div>
-              <h2 className="text-[36px] font-semibold leading-[140%] text-[#171D23] font-gilroy">
+              <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
                 Our Qualified Dubai Teachers and Examiners
               </h2>
             </div>
@@ -133,7 +133,7 @@ const TutorProfiles = ({
                 AED 140-390/hour.
               </span>
               <br />
-              <span className="font-bold">
+              <span className="font-semibold">
                 Contact us with your requirements and budget and we'll find the
                 perfect tutor for you!
               </span>
@@ -171,7 +171,7 @@ const TutorProfiles = ({
             <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
               Trusted by 15,000+ students across Dubai and globally.
             </div>
-            <h2 className="text-[36px] font-semibold leading-[140%] text-[#171D23] font-gilroy">
+            <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
               Our Qualified Dubai Teachers and Examiners
             </h2>
           </div>
@@ -181,7 +181,7 @@ const TutorProfiles = ({
               140-390/hour.
             </span>
             <br />
-            <span className="font-bold">
+            <span className="font-semibold">
               Contact us with your requirements and budget and we'll find the
               perfect tutor for you!
             </span>
