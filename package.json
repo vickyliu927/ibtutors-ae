@@ -21,6 +21,7 @@
     "critters": "^0.0.23",
     "dompurify": "^3.2.5",
     "framer-motion": "^12.9.1",
+    "lucide-react": "^0.525.0",
     "next": "latest",
     "next-sanity": "^9.10.2",
     "nodemailer": "^6.10.1",
