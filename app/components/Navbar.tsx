@@ -4,49 +4,39 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getSubjectPages, type SubjectPageData } from './NavSubjects';
 import { getCurriculumPages, type CurriculumPageData } from './NavCurriculums';
-import { client } from '@/sanity/lib/client';
+import { urlFor } from '@/sanity/lib/image';
 import ExternalLink from './ui/ExternalLink';
+
+// Navbar data interface
+interface NavbarData {
+  logo: {
+    logoText: any;
+    logoIcon: any;
+    brandText: string;
+    logoLink: string;
+  };
+  navigation: {
+    levelsText: string;
+    subjectsText: string;
+  };
+  buttonText: string;
+  buttonLink: string;
+}
+
+interface NavbarProps {
+  navbarData?: NavbarData | null;
+}
 
 // Create a class name with specific meaning to avoid conflicts
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 
-async function getNavbarSettings() {
-  const query = `*[_type == "navbarSettings"][0]{
-    buttonText, 
-    buttonLink, 
-    navigationOrder, 
-    navigationButtons[]{
-      buttonType,
-      displayText,
-      curriculumSlug,
-      displayOrder,
-      isActive
-    }
-  }`;
-  return client.fetch(query);
-}
-
-const Navbar = () => {
+const Navbar = ({ navbarData }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [curriculums, setCurriculums] = useState<CurriculumPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const [showLevelsDropdown, setShowLevelsDropdown] = useState(false);
-  const [navbarSettings, setNavbarSettings] = useState<{ 
-    buttonText: string; 
-    buttonLink: string;
-    navigationOrder?: Array<{
-      itemType: 'curriculum' | 'subjectDropdown' | 'button';
-      displayOrder: number;
-    }>;
-    navigationButtons?: Array<{
-      buttonType: 'curriculum' | 'subjectDropdown';
-      displayText: string;
-      curriculumSlug?: string;
-      displayOrder: number;
-      isActive: boolean;
-    }>;
-  } | null>(null);
+
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
   const levelsDropdownRef = useRef<HTMLDivElement>(null);
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -116,18 +106,8 @@ const Navbar = () => {
       }
     };
 
-    const fetchNavbarSettings = async () => {
-      try {
-        const settings = await getNavbarSettings();
-        setNavbarSettings(settings);
-      } catch (error) {
-        console.error('Error fetching navbar settings:', error);
-      }
-    };
-
     fetchSubjects();
     fetchCurriculums();
-    fetchNavbarSettings();
 
     return () => {
       if (subjectsTimeoutRef.current) {
@@ -147,27 +127,47 @@ const Navbar = () => {
     <nav className="absolute top-0 left-0 right-0 z-30 w-full bg-transparent">
       <div className="flex w-full max-w-[1440px] mx-auto px-[16px] py-[24px] justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link href={navbarData?.logo?.logoLink || "/"} className="flex items-center">
           <div className="relative w-[188px] h-[41px]">
-            <Image
-              src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
-              alt="TutorChase Logo"
-              width={149}
-              height={18}
-              className="absolute left-[39px] top-[3px]"
-            />
-            <Image
-              src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
-              alt="Logo Icon"
-              width={32}
-              height={41}
-              className="absolute left-0 top-0"
-            />
+            {navbarData?.logo?.logoText ? (
+              <Image
+                src={urlFor(navbarData.logo.logoText).width(297).url()}
+                alt="Company Logo"
+                width={149}
+                height={18}
+                className="absolute left-[39px] top-[3px]"
+              />
+            ) : (
+              <Image
+                src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
+                alt="TutorChase Logo"
+                width={149}
+                height={18}
+                className="absolute left-[39px] top-[3px]"
+              />
+            )}
+            {navbarData?.logo?.logoIcon ? (
+              <Image
+                src={urlFor(navbarData.logo.logoIcon).width(64).url()}
+                alt="Logo Icon"
+                width={32}
+                height={41}
+                className="absolute left-0 top-0"
+              />
+            ) : (
+              <Image
+                src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
+                alt="Logo Icon"
+                width={32}
+                height={41}
+                className="absolute left-0 top-0"
+              />
+            )}
             <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
               <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
-                Dubai Tutors
+                {navbarData?.logo?.brandText || 'Dubai Tutors'}
               </span>
-              </div>
+            </div>
           </div>
         </Link>
           
@@ -181,7 +181,7 @@ const Navbar = () => {
             onMouseLeave={handleLevelsMouseLeave}
                       >
             <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
-              All Levels
+              {navbarData?.navigation?.levelsText || 'All Levels'}
               <svg
                 width="12"
                 height="12"
@@ -225,7 +225,7 @@ const Navbar = () => {
                 onMouseLeave={handleSubjectsMouseLeave}
               >
             <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
-                  All Subjects
+                  {navbarData?.navigation?.subjectsText || 'All Subjects'}
               <svg
                 width="12"
                 height="12"
@@ -260,12 +260,12 @@ const Navbar = () => {
         </div>
 
         {/* CTA Button */}
-                        <Link
-          href="#contact-form"
+        <Link
+          href={navbarData?.buttonLink || "#contact-form"}
           className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-                        >
-          {navbarSettings?.buttonText || 'Hire a tutor'}
-                        </Link>
+        >
+          {navbarData?.buttonText || 'Hire a tutor'}
+        </Link>
 
         {/* Mobile Menu Button */}
         <button
@@ -321,10 +321,10 @@ const Navbar = () => {
                 ))}
               </div>
                 <Link 
-                href="#contact-form"
+                href={navbarData?.buttonLink || "#contact-form"}
                 className="block w-full py-3 px-6 bg-[#001A96] text-white text-center rounded-[28px] font-semibold"
                 >
-                {navbarSettings?.buttonText || 'Hire a tutor'}
+                {navbarData?.buttonText || 'Hire a tutor'}
                 </Link>
             </div>
           </div>

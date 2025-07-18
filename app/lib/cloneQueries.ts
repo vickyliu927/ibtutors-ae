@@ -434,10 +434,10 @@ export const navbarQueries = {
     cloneId,
     `
     _id,
+    logo,
+    navigation,
     buttonText,
     buttonLink,
-    navigationButtons,
-    navigationOrder,
     isActive,
     cloneReference,
     cloneSpecificData

@@ -7,135 +7,94 @@ const navbarSettingsSchema = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'logo',
+      title: 'Logo Section',
+      type: 'object',
+      fields: [
+        {
+          name: 'logoText',
+          title: 'Logo Text Image',
+          type: 'image',
+          description: 'Main logo text image',
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'logoIcon',
+          title: 'Logo Icon Image',
+          type: 'image',
+          description: 'Logo icon image',
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'brandText',
+          title: 'Brand Text',
+          type: 'string',
+          description: 'Text below the logo (e.g., "Dubai Tutors")',
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'logoLink',
+          title: 'Logo Link',
+          type: 'string',
+          description: 'URL when logo is clicked',
+          initialValue: '/',
+          validation: Rule => Rule.required(),
+        },
+      ],
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'navigation',
+      title: 'Navigation Labels',
+      type: 'object',
+      fields: [
+        {
+          name: 'levelsText',
+          title: 'Levels Dropdown Text',
+          type: 'string',
+          description: 'Text for the levels dropdown (e.g., "All Levels")',
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'subjectsText',
+          title: 'Subjects Dropdown Text',
+          type: 'string',
+          description: 'Text for the subjects dropdown (e.g., "All Subjects")',
+          validation: Rule => Rule.required(),
+        },
+      ],
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
       name: 'buttonText',
-      title: 'Button Text',
+      title: 'CTA Button Text',
       type: 'string',
       validation: Rule => Rule.required(),
-      description: 'Text to display on the main navbar button',
+      description: 'Text to display on the main CTA button',
     }),
     defineField({
       name: 'buttonLink',
-      title: 'Button Link',
-      type: 'url',
+      title: 'CTA Button Link',
+      type: 'string',
       validation: Rule => Rule.required(),
-      description: 'URL the navbar button should link to',
+      description: 'URL the CTA button should link to',
+      initialValue: '#contact-form',
     }),
-    defineField({
-      name: 'navigationButtons',
-      title: 'Navigation Buttons',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            {
-              name: 'buttonType',
-              title: 'Button Type',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Curriculum', value: 'curriculum' },
-                  { title: 'Subject Dropdown', value: 'subjectDropdown' },
-                ],
-                layout: 'radio',
-              },
-              validation: Rule => Rule.required(),
-            },
-            {
-              name: 'displayText',
-              title: 'Display Text',
-              type: 'string',
-              description: 'Text to display on the button',
-              validation: Rule => Rule.required(),
-            },
-            {
-              name: 'curriculumSlug',
-              title: 'Curriculum Slug',
-              type: 'string',
-              description: 'Slug of the curriculum (only for curriculum buttons)',
-              hidden: ({ parent }) => parent?.buttonType !== 'curriculum',
-            },
-            {
-              name: 'displayOrder',
-              title: 'Display Order',
-              type: 'number',
-              description: 'Lower numbers will appear first',
-              validation: Rule => Rule.required().min(1).precision(0),
-            },
-            {
-              name: 'isActive',
-              title: 'Is Active',
-              type: 'boolean',
-              description: 'Whether this button should be displayed',
-              initialValue: true,
-            },
-          ],
-          preview: {
-            select: {
-              title: 'displayText',
-              subtitle: 'buttonType',
-              order: 'displayOrder',
-              active: 'isActive',
-            },
-            prepare({ title, subtitle, order, active }) {
-              return {
-                title: title || 'Untitled Button',
-                subtitle: `${subtitle === 'curriculum' ? 'Curriculum' : 'Subject Dropdown'} - Order: ${order} ${!active ? '(Inactive)' : ''}`,
-              };
-            },
-          },
-        },
-      ],
-      description: 'Customize and order navigation buttons',
-    }),
-    defineField({
-      name: 'navigationOrder',
-      title: 'Navigation Order (Legacy)',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            {
-              name: 'itemType',
-              title: 'Item Type',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Curriculum', value: 'curriculum' },
-                  { title: 'Subject Dropdown', value: 'subjectDropdown' },
-                  { title: 'Button', value: 'button' },
-                ],
-                layout: 'radio',
-              },
-              validation: Rule => Rule.required(),
-            },
-            {
-              name: 'displayOrder',
-              title: 'Display Order',
-              type: 'number',
-              description: 'Lower numbers will appear first',
-              validation: Rule => Rule.required().min(1).precision(0),
-            },
-          ],
-          preview: {
-            select: {
-              title: 'itemType',
-              subtitle: 'displayOrder',
-            },
-            prepare({ title, subtitle }) {
-              return {
-                title: title === 'curriculum' ? 'Curriculum Pages' :
-                       title === 'subjectDropdown' ? 'Subject Dropdown' : 'CTA Button',
-                subtitle: `Display Order: ${subtitle}`,
-              };
-            },
-          },
-        },
-      ],
-      description: 'Legacy field - Please use Navigation Buttons instead',
-    }),
+
   ],
+  preview: {
+    select: {
+      title: 'logo.brandText',
+      subtitle: 'buttonText',
+    },
+    prepare(selection: any) {
+      const { title, subtitle } = selection;
+      return {
+        title: title || 'Navbar Settings',
+        subtitle: `CTA: ${subtitle || 'Not set'}`,
+      };
+    },
+  },
 })
 
 export default addCloneSupport(navbarSettingsSchema) 
