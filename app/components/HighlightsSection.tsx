@@ -1,65 +1,106 @@
 import React from 'react';
 
 export interface HighlightItem {
-  icon: string;
   title: string;
   description: string;
+  iconType: 'star' | 'language' | 'education';
+  isFeatured: boolean;
 }
 
 interface HighlightsSectionProps {
   highlights: HighlightItem[];
 }
 
-const iconMap: Record<string, JSX.Element> = {
-  globe: (
-    <svg className="w-8 h-8 text-blue-800 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <circle cx="12" cy="12" r="10" strokeWidth="2" stroke="currentColor" fill="none" />
-      <path d="M2 12h20M12 2c2.5 2.5 2.5 17.5 0 20M12 2c-2.5 2.5-2.5 17.5 0 20" strokeWidth="2" stroke="currentColor" fill="none" />
+// Icon components matching the screenshot design
+const StarIcon = ({ isFeatured }: { isFeatured: boolean }) => (
+  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-6 ${isFeatured ? 'bg-orange-500' : 'bg-blue-100'}`}>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 2L14.09 8.26L20 9.27L15.5 13.14L16.18 19.02L12 16.77L7.82 19.02L8.5 13.14L4 9.27L9.91 8.26L12 2Z"
+        fill={isFeatured ? "#FFFFFF" : "#1D4ED8"}
+      />
     </svg>
-  ),
-  monitor: (
-    <svg className="w-8 h-8 text-blue-800 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <rect x="2" y="3" width="20" height="14" rx="2" strokeWidth="2" />
-      <line x1="8" y1="21" x2="16" y2="21" strokeWidth="2" />
-      <line x1="12" y1="17" x2="12" y2="21" strokeWidth="2" />
+  </div>
+);
+
+const LanguageIcon = ({ isFeatured }: { isFeatured: boolean }) => (
+  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-6 ${isFeatured ? 'bg-orange-500' : 'bg-blue-100'}`}>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M3 5H15M9 3V21M10.5 21H7.5M14 13L16.5 18L19 13M14.5 16.5H18.5"
+        stroke={isFeatured ? "#FFFFFF" : "#1D4ED8"}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
-  ),
-  graduationHat: (
-    <svg className="w-8 h-8 text-blue-800 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path d="M12 2L2 7l10 5 10-5-10-5z" strokeWidth="2" />
-      <path d="M2 7v9" strokeWidth="2" />
-      <path d="M16 11.64v4.36c0 1-4 3-4 3s-4-2-4-3v-4.36" strokeWidth="2" />
+  </div>
+);
+
+const EducationIcon = ({ isFeatured }: { isFeatured: boolean }) => (
+  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-6 ${isFeatured ? 'bg-orange-500' : 'bg-blue-100'}`}>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20"
+        stroke={isFeatured ? "#FFFFFF" : "#1D4ED8"}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z"
+        stroke={isFeatured ? "#FFFFFF" : "#1D4ED8"}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
-  ),
-  check: (
-    <svg className="w-8 h-8 text-blue-800 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    </svg>
-  ),
+  </div>
+);
+
+const iconMap = {
+  star: StarIcon,
+  language: LanguageIcon,
+  education: EducationIcon,
 };
 
 const HighlightsSection: React.FC<HighlightsSectionProps> = ({ highlights }) => {
-  // Map old icon names to new ones for backward compatibility
-  const getIconKey = (iconName: string) => {
-    if (iconName === 'book') return 'monitor';
-    if (iconName === 'globe') return 'graduationHat';
-    return iconName;
-  };
-
   return (
-    <section className="pt-2 pb-6 md:py-8 bg-gray-50">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16 text-center">
-          {highlights.map((item, idx) => (
-            <div 
-              key={idx} 
-              className="flex flex-col items-center max-w-sm mx-auto bg-white rounded-xl shadow-md p-4 md:p-6 my-3 md:my-4"
-            >
-              {iconMap[getIconKey(item.icon)] || iconMap['check']}
-              <h3 className="text-xl font-bold mb-2 text-gray-900">{item.title}</h3>
-              <p className="text-gray-600 text-sm md:text-base leading-relaxed">{item.description}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {highlights.map((item, index) => {
+            const IconComponent = iconMap[item.iconType] || iconMap.star;
+            
+            return (
+              <div
+                key={index}
+                className={`rounded-3xl p-8 h-full flex flex-col ${
+                  item.isFeatured
+                    ? 'bg-blue-800 text-white'
+                    : 'bg-gray-50 text-gray-900'
+                }`}
+              >
+                <div className="flex-shrink-0">
+                  <IconComponent isFeatured={item.isFeatured} />
+                </div>
+                
+                <div className="flex-grow">
+                  <h3 className={`text-2xl font-bold mb-4 leading-tight ${
+                    item.isFeatured ? 'text-white' : 'text-gray-900'
+                  }`}>
+                    {item.title}
+                  </h3>
+                  
+                  <p className={`text-base leading-relaxed ${
+                    item.isFeatured ? 'text-blue-100' : 'text-gray-600'
+                  }`}>
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

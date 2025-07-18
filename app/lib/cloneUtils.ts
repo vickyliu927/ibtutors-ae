@@ -320,9 +320,10 @@ export interface PlatformBannerContent {
 export interface HighlightsContent {
   _id: string;
   highlights: Array<{
-    icon: string;
     title: string;
     description: string;
+    iconType: 'star' | 'language' | 'education';
+    isFeatured: boolean;
   }>;
   cloneSpecificData?: any;
 }
