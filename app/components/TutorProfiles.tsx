@@ -138,7 +138,7 @@ const TutorProfiles = ({
                 {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
               </span>
               <br />
-              <span className="font-normal">
+              <span className="font-medium">
                 {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
               </span>
             </div>
@@ -184,7 +184,7 @@ const TutorProfiles = ({
               {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
             </span>
             <br />
-            <span className="font-normal">
+            <span className="font-medium">
               {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
             </span>
           </div>
