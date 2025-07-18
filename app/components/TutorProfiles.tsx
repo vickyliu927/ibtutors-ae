@@ -46,6 +46,9 @@ interface TutorProfilesProps {
   tutors?: TutorData[];
   sectionTitle?: string;
   sectionSubtitle?: string;
+  trustedByText?: string;
+  description?: string;
+  contactText?: string;
   ctaText?: string;
   ctaLink?: string;
   useNewCardDesign?: boolean;
@@ -58,6 +61,9 @@ const TutorProfiles = ({
   tutors,
   sectionTitle = "",
   sectionSubtitle,
+  trustedByText = "",
+  description = "",
+  contactText = "",
   ctaText,
   ctaLink,
   useNewCardDesign = false,
@@ -121,21 +127,19 @@ const TutorProfiles = ({
           <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
             <div className="flex flex-col items-start gap-3">
               <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
-                Trusted by 15,000+ students across Dubai and globally.
+                {trustedByText || "Trusted by 15,000+ students across Dubai and globally."}
               </div>
               <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
-                Our Qualified Dubai Teachers and Examiners
+                {sectionTitle || "Our Qualified Dubai Teachers and Examiners"}
               </h2>
             </div>
             <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px]">
               <span className="font-light">
-                We have a team of expert online tutors at prices ranging from
-                AED 140-390/hour.
+                {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
               </span>
               <br />
               <span className="font-semibold">
-                Contact us with your requirements and budget and we'll find the
-                perfect tutor for you!
+                {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
               </span>
             </div>
           </div>
@@ -169,21 +173,19 @@ const TutorProfiles = ({
         <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
           <div className="flex flex-col items-start gap-3">
             <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
-              Trusted by 15,000+ students across Dubai and globally.
+              {trustedByText || "Trusted by 15,000+ students across Dubai and globally."}
             </div>
             <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
-              Our Qualified Dubai Teachers and Examiners
+              {sectionTitle || "Our Qualified Dubai Teachers and Examiners"}
             </h2>
           </div>
           <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px]">
             <span className="font-light">
-              We have a team of expert online tutors at prices ranging from AED
-              140-390/hour.
+              {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
             </span>
             <br />
             <span className="font-semibold">
-              Contact us with your requirements and budget and we'll find the
-              perfect tutor for you!
+              {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
             </span>
           </div>
         </div>

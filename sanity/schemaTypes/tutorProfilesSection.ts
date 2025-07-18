@@ -7,16 +7,38 @@ const tutorProfilesSectionSchema = defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'title',
-      title: 'Section Title',
+      name: 'trustedByText',
+      title: 'Trusted By Text',
       type: 'string',
+      description: 'Orange text shown above the main title (e.g., "Trusted by 15,000+ students across Dubai and globally.")',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'title',
+      title: 'Main Section Title',
+      type: 'string',
+      description: 'Main title of the section (e.g., "Our Qualified Dubai Teachers and Examiners")',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      description: 'Description text (e.g., "We have a team of expert online tutors at prices ranging from AED 140-390/hour.")',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'contactText',
+      title: 'Contact Text',
+      type: 'text',
+      description: 'Bold contact text (e.g., "Contact us with your requirements and budget and we\'ll find the perfect tutor for you!")',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'subtitle',
-      title: 'Section Subtitle',
+      title: 'Section Subtitle (Legacy)',
       type: 'text',
-      description: 'A brief description or subtitle for the tutor profiles section',
+      description: 'Legacy field for subtitle - consider using description and contactText instead',
     }),
     defineField({
       name: 'ctaText',

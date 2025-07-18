@@ -244,6 +244,9 @@ export default async function Home({
           tutors={tutorProfilesSection.tutors}
           sectionTitle={tutorProfilesSection.title}
           sectionSubtitle={tutorProfilesSection.subtitle}
+          trustedByText={tutorProfilesSection.trustedByText}
+          description={tutorProfilesSection.description}
+          contactText={tutorProfilesSection.contactText}
           ctaText={tutorProfilesSection.ctaText}
           ctaLink={tutorProfilesSection.ctaLink}
           useNewCardDesign={true}
