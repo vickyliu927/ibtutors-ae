@@ -198,10 +198,10 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
 
           {/* Description */}
           <div
-            className="self-stretch text-[#171D23] font-gilroy leading-[140%]"
+            className="self-stretch text-[#171D23] font-gilroy font-light leading-[140%]"
             style={{
               fontSize: "16px",
-              fontWeight: 400,
+              fontWeight: 300,
             }}
           >
             {tutor.experience}
