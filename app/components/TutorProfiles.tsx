@@ -139,7 +139,7 @@ const TutorProfiles = ({
               </span>
             </div>
           </div>
-          <div className="space-y-6 px-4 sm:px-6 lg:px-0">
+          <div className="space-y-12 px-4 sm:px-6 lg:px-0">
             {[1, 2].map((index) => (
               <div
                 key={index}
@@ -191,7 +191,7 @@ const TutorProfiles = ({
         <div
           className={
             useNewCardDesign
-              ? "space-y-6 flex flex-col items-start px-4 sm:px-6 lg:px-0"
+              ? "space-y-12 flex flex-col items-start px-4 sm:px-6 lg:px-0"
               : "space-y-4 px-4 sm:px-6 lg:px-0"
           }
         >
