@@ -250,12 +250,12 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
           {/* Hire Button */}
           <Link
             href={tutor.hireButtonLink || "/#contact-form"}
-            className="flex justify-center items-center bg-[#001A96] text-white text-center font-gilroy font-bold leading-[140%] transition-all hover:bg-blue-800"
+            className="flex justify-center items-center bg-[#001A96] text-white text-center font-gilroy font-normal leading-[140%] transition-all hover:bg-blue-800"
             style={{
               padding: "16px 36px",
               borderRadius: "16px 0px 20px 0px",
               fontSize: "16px",
-              fontWeight: 700,
+              fontWeight: 400,
               marginBottom: "0px",
             }}
           >
