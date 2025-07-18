@@ -235,11 +235,11 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
               }}
             >
               <div
-                className="text-center font-gilroy font-semibold leading-[140%]"
+                className="text-center font-gilroy font-medium leading-[140%]"
                 style={{
                   color: "#001A96",
                   fontSize: "14px",
-                  fontWeight: 600,
+                  fontWeight: 500,
                 }}
               >
                 {tutor.specialization.mainSubject}
