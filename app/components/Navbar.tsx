@@ -126,11 +126,12 @@ const Navbar = ({ navbarData }: NavbarProps) => {
         <Link href={navbarData?.logoLink || "/"} className="flex items-center">
           {navbarData?.logo ? (
             <Image
-              src={urlFor(navbarData.logo).height(41).url()}
+              src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
               alt="Company Logo"
               width={188}
               height={41}
               className="object-contain"
+              sizes="188px"
             />
           ) : (
             <div className="relative w-[188px] h-[41px]">
