@@ -120,12 +120,12 @@ const TutorProfiles = ({
               <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
                 Trusted by 15,000+ students across Dubai and globally.
               </div>
-              <h2 className="text-[36px] font-bold leading-[140%] text-[#171D23] font-gilroy">
+              <h2 className="text-[36px] font-semibold leading-[140%] text-[#171D23] font-gilroy">
                 Our Qualified Dubai Teachers and Examiners
               </h2>
             </div>
             <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px]">
-              <span className="font-normal">
+              <span className="font-light">
                 We have a team of expert online tutors at prices ranging from
                 AED 140-390/hour.
               </span>
@@ -168,12 +168,12 @@ const TutorProfiles = ({
             <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
               Trusted by 15,000+ students across Dubai and globally.
             </div>
-            <h2 className="text-[36px] font-bold leading-[140%] text-[#171D23] font-gilroy">
+            <h2 className="text-[36px] font-semibold leading-[140%] text-[#171D23] font-gilroy">
               Our Qualified Dubai Teachers and Examiners
             </h2>
           </div>
           <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px]">
-            <span className="font-normal">
+            <span className="font-light">
               We have a team of expert online tutors at prices ranging from AED
               140-390/hour.
             </span>
