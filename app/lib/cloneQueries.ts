@@ -563,6 +563,34 @@ export const tutorProfilesSectionQueries = {
 };
 
 /**
+ * SUBJECT GRID SECTION QUERIES
+ */
+export const subjectGridSectionQueries = {
+  buildQuery: (cloneId: string) => buildFallbackQuery(
+    'subjectGridSection',
+    cloneId,
+    `
+    _id,
+    title,
+    description,
+    splitDescription,
+    subjects,
+    backgroundColor,
+    enabled,
+    isActive,
+    cloneReference,
+    cloneSpecificData
+    `
+  ),
+
+  async fetch(cloneId: string): Promise<ContentResult<any>> {
+    const query = subjectGridSectionQueries.buildQuery(cloneId);
+    const result = await client.fetch(query);
+    return resolveContent(result);
+  }
+};
+
+/**
  * TRUSTED INSTITUTIONS BANNER QUERIES
  */
 export const trustedInstitutionsQueries = {
@@ -598,6 +626,7 @@ export const homepageQueries = {
   async fetchAll(cloneId: string): Promise<{
     hero: ContentResult<any>;
     highlights: ContentResult<any>;
+    subjectGridSection: ContentResult<any>;
     trustedInstitutions: ContentResult<any>;
     tutorProfilesSection: ContentResult<any>;
     tutors: ContentResult<any[]>;
@@ -613,6 +642,7 @@ export const homepageQueries = {
     const [
       hero,
       highlights,
+      subjectGridSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,
@@ -626,6 +656,7 @@ export const homepageQueries = {
     ] = await Promise.all([
       heroQueries.fetch(cloneId),
       highlightsQueries.fetch(cloneId),
+      subjectGridSectionQueries.fetch(cloneId),
       trustedInstitutionsQueries.fetch(cloneId),
       tutorProfilesSectionQueries.fetch(cloneId),
       tutorQueries.fetchHomepageTutors(cloneId),
@@ -641,6 +672,7 @@ export const homepageQueries = {
     return {
       hero,
       highlights,
+      subjectGridSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,

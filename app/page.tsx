@@ -56,6 +56,7 @@ export const revalidate = 600;
 interface HomepageData {
   heroData: any | null;
   highlightsSection: any | null;
+  subjectGridSection: any | null;
   trustedInstitutionsBanner: any | null;
   tutorProfilesSection: any | null;
   platformBanner: any | null;
@@ -88,6 +89,10 @@ async function getHomepageDataWithCloneContext(
 
         const highlightsSection = content.highlights.data
           ? cloneQueryUtils.getContentWithCustomizations(content.highlights)
+          : null;
+
+        const subjectGridSection = content.subjectGridSection.data
+          ? cloneQueryUtils.getContentWithCustomizations(content.subjectGridSection)
           : null;
 
         const trustedInstitutionsBanner = content.trustedInstitutions.data
@@ -138,6 +143,7 @@ async function getHomepageDataWithCloneContext(
         return {
           heroData,
           highlightsSection,
+          subjectGridSection,
           trustedInstitutionsBanner,
           tutorProfilesSection: tutorProfilesSectionWithTutors,
           platformBanner,
@@ -152,6 +158,7 @@ async function getHomepageDataWithCloneContext(
         return {
           heroData: null,
           highlightsSection: null,
+          subjectGridSection: null,
           trustedInstitutionsBanner: null,
           tutorProfilesSection: null,
           platformBanner: null,
@@ -189,6 +196,7 @@ export default async function Home({
   const {
     heroData,
     highlightsSection,
+    subjectGridSection,
     trustedInstitutionsBanner,
     tutorProfilesSection,
     platformBanner,
@@ -199,6 +207,7 @@ export default async function Home({
   } = pageData || {
     heroData: null,
     highlightsSection: null,
+    subjectGridSection: null,
     trustedInstitutionsBanner: null,
     tutorProfilesSection: null,
     platformBanner: null,
@@ -251,7 +260,9 @@ export default async function Home({
         />
       ) : null}
       
-      <SubjectGrid />
+      {subjectGridSection?.enabled !== false ? (
+        <SubjectGrid sectionData={subjectGridSection} />
+      ) : null}
       <TutoringPlatformBanner data={platformBanner} />
       {testimonialSection && testimonials.length > 0 ? (
         <LazyTestimonialSection

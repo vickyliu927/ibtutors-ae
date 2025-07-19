@@ -39,6 +39,9 @@ export const structure = (S: StructureBuilder) =>
                 .title('Highlights Sections'),
               S.documentTypeListItem('tutorProfilesSection')
                 .title('Tutor Profile Sections'),
+              S.documentTypeListItem('subjectGridSection')
+                .title('Subject Grid Sections')
+                .icon(BsGridFill),
               S.documentTypeListItem('platformBanner')
                 .title('Platform Banners'),
               S.documentTypeListItem('trustedInstitutionsBanner')

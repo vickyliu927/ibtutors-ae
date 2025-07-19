@@ -14,6 +14,7 @@ import seoSettings from './seoSettings'
 import navbarSettings from './navbarSettings'
 import highlightsSection from './highlightsSection'
 import trustedInstitutionsBanner from './trustedInstitutionsBanner'
+import subjectGridSection from './subjectGridSection'
 import linkSettings from './linkSettings'
 import clone from './clone'
 
@@ -25,6 +26,7 @@ export const schemaTypes = [
   testimonialSection,
   platformBanner,
   trustedInstitutionsBanner,
+  subjectGridSection,
   highlightsSection,
   faq,
   faq_section,
