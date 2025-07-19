@@ -222,20 +222,6 @@ export default async function Home({
       <Navbar navbarData={navbar} />
       {heroData && <HeroSection heroData={heroData} />}
 
-      <div className="flex flex-col">
-        {/* Trusted Institutions Banner - No spacing between this and hero */}
-        {trustedInstitutionsBanner?.enabled &&
-        trustedInstitutionsBanner.institutions?.length > 0 ? (
-          <TrustedInstitutionsBanner
-            title={trustedInstitutionsBanner.title}
-            subtitle={trustedInstitutionsBanner.subtitle}
-            institutions={trustedInstitutionsBanner.institutions}
-            backgroundColor={trustedInstitutionsBanner.backgroundColor}
-            carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
-          />
-        ) : null}
-      </div>
-
       {highlightsSection?.highlights ? (
         <HighlightsSection highlights={highlightsSection.highlights} />
       ) : null}
@@ -252,6 +238,19 @@ export default async function Home({
           useNewCardDesign={true}
         />
       ) : null}
+
+      {/* Trusted Institutions Banner - Now positioned after TutorProfiles */}
+      {trustedInstitutionsBanner?.enabled &&
+      trustedInstitutionsBanner.institutions?.length > 0 ? (
+        <TrustedInstitutionsBanner
+          title={trustedInstitutionsBanner.title}
+          subtitle={trustedInstitutionsBanner.subtitle}
+          institutions={trustedInstitutionsBanner.institutions}
+          backgroundColor={trustedInstitutionsBanner.backgroundColor}
+          carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
+        />
+      ) : null}
+      
       <SubjectGrid />
       <TutoringPlatformBanner data={platformBanner} />
       {testimonialSection && testimonials.length > 0 ? (
