@@ -1,4 +1,8 @@
 const { createClient } = require('@sanity/client');
+const path = require('path');
+
+// Load environment variables from parent directory
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
