@@ -90,7 +90,7 @@ const subjectGridSectionSchema = defineType({
       title: 'Background Color',
       type: 'string',
       description: 'Background color of the section container',
-      initialValue: '#F4F6F9',
+      initialValue: '#f2f4fa',
     }),
     defineField({
       name: 'enabled',

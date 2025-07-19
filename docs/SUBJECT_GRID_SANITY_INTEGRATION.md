@@ -14,7 +14,7 @@ The SubjectGrid section has been fully integrated with Sanity CMS, making all ha
 - ✅ **Enable/Disable**: Toggle for entire section
 
 ### **Visual Elements (Kept as Code)**
-- ✅ **Background SVG**: Decorative geometric patterns
+- ✅ **Clean Background**: Solid color background without decorative SVG
 - ✅ **Layout Structure**: Grid system and responsive design
 - ✅ **Hover Effects**: Interactive transitions and styling
 - ✅ **Typography**: Font weights and spacing
@@ -84,7 +84,7 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
   const sectionTitle = sectionData?.title || "Popular IB Subjects";
   const sectionDescription = sectionData?.description || "Default description...";
   const splitDescription = sectionData?.splitDescription || false;
-  const backgroundColor = sectionData?.backgroundColor || "#F4F6F9";
+  const backgroundColor = sectionData?.backgroundColor || "#f2f4fa";
   
   // Smart subject handling
   const sanitySubjects = sectionData?.subjects?.filter(s => s.enabled !== false) || [];
@@ -198,6 +198,13 @@ node createSubjectGridSection.js
 - **Order Validation**: Display order must be positive number
 - **URL Validation**: Slugs follow proper format
 
+## Recent Updates
+
+### **Background Design Improvements**
+- **Removed SVG Background**: Eliminated decorative grey lines that were overflowing the container bounds
+- **Updated Background Color**: Changed default from `#F4F6F9` to `#f2f4fa` for better visual appeal
+- **Cleaner Design**: Simplified background approach for better containment and performance
+
 ## Future Enhancements
 
 ### **Possible Additions**
@@ -206,5 +213,6 @@ node createSubjectGridSection.js
 - **Custom Colors**: Per-subject color theming
 - **Analytics**: Track subject click-through rates
 - **A/B Testing**: Different layouts for different user segments
+- **Decorative Elements**: Add properly contained background patterns if desired
 
-The SubjectGrid section is now fully content-managed while maintaining all existing functionality and visual design! 
+The SubjectGrid section is now fully content-managed with a clean, contained design while maintaining all existing functionality! 

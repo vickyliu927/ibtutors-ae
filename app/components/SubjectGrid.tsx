@@ -13,7 +13,7 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
   const sectionTitle = sectionData?.title || "Popular IB Subjects";
   const sectionDescription = sectionData?.description || "Our team of specialist tutors are here to help you excel all areas. Take a closer look at our expert tutors for each A-Level subject.";
   const splitDescription = sectionData?.splitDescription || false;
-  const backgroundColor = sectionData?.backgroundColor || "#F4F6F9";
+  const backgroundColor = sectionData?.backgroundColor || "#f2f4fa";
 
   // Use Sanity subjects when available, otherwise fall back to static list
   const sanitySubjects = sectionData?.subjects?.filter((s: any) => s.enabled !== false) || [];
@@ -67,38 +67,6 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
       <div className="relative max-w-[1320px] mx-auto min-h-[301px]">
         {/* Background with dynamic color and border radius */}
         <div className="absolute inset-0 rounded-[20px]" style={{ backgroundColor }}>
-          {/* Background illustration SVG - hidden on mobile for performance */}
-          <div className="hidden lg:block">
-            <svg
-              className="absolute left-6 top-[-372px]"
-              style={{ width: "1224px", height: "896px" }}
-              viewBox="0 0 1097 301"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M1186 -84.1055L688 459.191" stroke="#E6E7ED" />
-              <path
-                opacity="0.5"
-                d="M1224.55 -262.417L678.045 297.977C667.117 309.183 661 324.216 661 339.868V523.749"
-                stroke="#E6E7ED"
-              />
-              <path
-                opacity="0.5"
-                d="M564.549 -372.417L18.0446 187.977C7.1165 199.183 1 214.216 1 229.868V413.749"
-                stroke="#E6E7ED"
-              />
-              <rect
-                x="0.451098"
-                y="0.572833"
-                width="7"
-                height="7"
-                rx="3.5"
-                transform="matrix(0.988774 0.149421 -0.0865768 0.996245 976.309 136.192)"
-                fill="#E6E7ED"
-                stroke="#E6E7ED"
-              />
-            </svg>
-          </div>
 
           {/* Content container with responsive padding */}
           <div className="relative z-10 px-6 py-8 sm:px-12 lg:px-[60px] lg:py-[42px]">

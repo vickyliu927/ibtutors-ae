@@ -51,7 +51,7 @@ async function createSubjectGridSection() {
       description: 'Our team of specialist tutors are here to help you excel all areas. Take a closer look at our expert tutors for each A-Level subject.',
       splitDescription: false,
       subjects: defaultSubjects,
-      backgroundColor: '#F4F6F9',
+      backgroundColor: '#f2f4fa',
       enabled: true,
       isActive: true,
     };
