@@ -4,17 +4,20 @@
 
 The TrustedInstitutionsBanner component has been completely redesigned with a modern, clean layout to match current design standards and improve user experience.
 
-## Latest Updates (v3)
+## Latest Updates (v4)
 
 ### **Positioning Changes**
 - **Moved After TutorProfiles**: Section now appears after TutorProfiles instead of after Hero
 - **Better Flow**: Improves page narrative and user experience
 
-### **Visual Improvements (v3)**
+### **Visual Improvements (v4)**
+- **Increased Spacing**: Enhanced gaps between logos (`gap-24` on desktop) for better visual separation
+- **Larger Logos**: Increased logo sizes (96px → 112px → 128px) for better visibility
+- **Typography Match**: School names now use exact same font as tutor bios (Gilroy, 300 weight, 16px)
 - **Perfect Centering**: Fixed uneven spacing on sides with proper flex centering
 - **Color Logos**: Removed grayscale filter - logos now appear in full color
 - **White Background**: Ensured consistent white background (removed backgroundColor prop override)
-- **Optimized Layout**: 5-column grid with `max-w-5xl` container for better proportion
+- **Optimized Layout**: 5-column grid with `max-w-6xl` container for better proportion
 - **Font Weight Reduced**: Title font weight reduced to 500 for lighter appearance
 - **Fixed Image Handling**: Properly uses Sanity `urlFor()` function for logo images
 
@@ -54,10 +57,11 @@ The TrustedInstitutionsBanner component has been completely redesigned with a mo
 - **Better Performance**: Removed unnecessary state management and effects
 
 ### **4. Responsive Design**
-- **Mobile**: 2 columns with compact logos (80px)
-- **Tablet**: 3 columns with medium-sized logos (96px)
-- **Desktop**: 5 columns with larger logos (112px) and balanced spacing
+- **Mobile**: 2 columns with logos (96px) and generous spacing (gap-12)
+- **Tablet**: 3 columns with medium-sized logos (112px) and gap-16
+- **Desktop**: 5 columns with larger logos (128px) and wide spacing (gap-24)
 - **Centered Layout**: Flex wrapper ensures perfect centering on all screen sizes
+- **Typography Consistency**: School names match tutor bio font across all breakpoints
 
 ## Technical Details
 
@@ -77,10 +81,13 @@ The TrustedInstitutionsBanner component has been completely redesigned with a mo
 
 ### **Added Features**
 - CSS Grid responsive layout with 5 columns on desktop
+- Increased logo sizes (96px → 112px → 128px across breakpoints)
+- Enhanced spacing between logos (gap-12 → gap-16 → gap-24)
+- Typography consistency with tutor bios (Gilroy font, 300 weight, 16px)
 - Hover scale transition effects (105%)
 - Full-color logo display (no grayscale filter)
 - Simplified image sizing with responsive `sizes` attribute
-- Centered layout with `max-w-5xl` container
+- Centered layout with `max-w-6xl` container
 - Perfect flex centering for even side spacing
 
 ## Component Structure
@@ -93,10 +100,10 @@ The TrustedInstitutionsBanner component has been completely redesigned with a mo
       <h2 style={{ fontWeight: 500 }}>{title}</h2>
     </div>
     
-    {/* Logo Grid - Centered with even spacing */}
+    {/* Logo Grid - Centered with increased spacing */}
     <div className="flex justify-center">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-12 lg:gap-16 max-w-5xl">
-        {/* Institution logos in full color with proper Sanity handling */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-24 max-w-6xl">
+        {/* Larger logos in full color with typography matching tutor bios */}
       </div>
     </div>
   </div>
@@ -116,6 +123,8 @@ The TrustedInstitutionsBanner component has been completely redesigned with a mo
 - ✅ **Enhanced Spacing**: Better visual separation matching 15" screen designs
 - ✅ **Perfect Centering**: Even spacing on both sides with optimized layout
 - ✅ **Color Display**: Full-color logos for better brand representation
+- ✅ **Larger Logos**: Increased visibility with better proportions
+- ✅ **Typography Consistency**: School names match tutor bio styling exactly
 
 ## Sanity CMS Integration
 
