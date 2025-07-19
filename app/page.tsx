@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./components/Navbar";
 import HeroSection, { HeroData } from "./components/HeroSection";
+import AdvertBlock from "./components/AdvertBlock";
 import TutorProfiles, { TutorData } from "./components/TutorProfiles";
 import SubjectGrid from "./components/SubjectGrid";
 import InteractiveTutoringPlatform from "./components/InteractiveTutoringPlatform";
@@ -233,6 +234,9 @@ export default async function Home({
       {/* Separate Header and Hero Components */}
       <Navbar navbarData={navbar} />
       {heroData && <HeroSection heroData={heroData} />}
+
+      {/* Advert Block - Positioned at the top after Hero */}
+      <AdvertBlock />
 
       {highlightsSection?.highlights ? (
         <HighlightsSection highlights={highlightsSection.highlights} />
