@@ -37,20 +37,20 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
   });
 
   return (
-    <section className="py-16 bg-white" style={{ backgroundColor }}>
-      <div className="mx-auto" style={{ width: "1300px", maxWidth: "calc(100vw - 2rem)" }}>
-        <div className="px-4 sm:px-6 lg:px-0">
-          {/* Header Text */}
-          <div className="text-center mb-16">
-            {title && (
-              <h2 className="text-2xl md:text-3xl font-medium leading-[130%] text-[#171D23] font-gilroy" style={{ fontWeight: 500 }}>
-                {title}
-              </h2>
-            )}
-          </div>
-          
-          {/* Logo Grid - 6 columns for larger spacing on 15" screens */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-12 md:gap-16 lg:gap-20 items-center justify-items-center">
+    <section className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Text */}
+        <div className="text-center mb-16">
+          {title && (
+            <h2 className="text-2xl md:text-3xl font-medium leading-[130%] text-[#171D23] font-gilroy" style={{ fontWeight: 500 }}>
+              {title}
+            </h2>
+          )}
+        </div>
+        
+        {/* Logo Grid - Centered with even spacing */}
+        <div className="flex justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-12 lg:gap-16 items-center justify-items-center max-w-5xl">
             {sortedLogos.map((institution, index) => (
               <div
                 key={`${institution.name}-${index}`}
@@ -61,7 +61,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
                     src={urlFor(institution.logo).width(150).height(150).url()}
                     alt={institution.name}
                     fill
-                    className="object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                    className="object-contain transition-transform duration-300"
                     sizes="(max-width: 768px) 80px, (max-width: 1024px) 96px, 112px"
                   />
                 </div>
