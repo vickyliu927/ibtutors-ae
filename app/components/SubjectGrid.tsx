@@ -27,11 +27,8 @@ const SubjectGrid = async () => {
     "EPQ",
   ];
 
-  // Check if "Chemistry" should be highlighted (4th item in the design)
+  // All subjects have consistent styling with hover effects
   const getSubjectStyle = (subject: string, index: number) => {
-    if (subject === "Chemistry") {
-      return "flex items-center px-3 py-2 rounded bg-primary text-white hover:bg-blue-700 transition-colors duration-200";
-    }
     return "flex items-center px-3 py-2 rounded bg-white text-primary hover:bg-primary hover:text-white transition-colors duration-200";
   };
 
@@ -91,24 +88,22 @@ const SubjectGrid = async () => {
               <h2 className="font-gilroy text-xl sm:text-2xl font-medium leading-[120%] text-textDark mb-3" style={{ fontWeight: 500 }}>
                 Popular IB Subjects
               </h2>
-              <p className="font-gilroy text-sm sm:text-base font-light leading-[140%] text-textDark max-w-[500px]" style={{ fontWeight: 300 }}>
-                Our team of specialist tutors are here to help you excel all
-                areas. Take a closer look at our expert tutors for each A-Level
-                subject.
+              <p className="font-gilroy text-sm sm:text-base font-light leading-[140%] text-textDark max-w-[680px]" style={{ fontWeight: 300 }}>
+                Our team of specialist tutors are here to help you excel all areas. Take a closer look at our expert tutors for each A-Level subject.
               </p>
             </div>
 
             {/* Subjects container */}
             <div className="relative">
-              {/* Subjects grid with responsive behavior - wider for larger container */}
-              <div className="flex flex-wrap items-start gap-3 sm:gap-4 max-w-full lg:max-w-[1200px]">
+              {/* Subjects grid with more even distribution */}
+              <div className="flex flex-wrap items-start justify-start gap-x-4 gap-y-3 max-w-full lg:max-w-[1200px]">
                 {displaySubjects.map((subject, index) => (
                   <Link
                     key={subject}
                     href={getSubjectHref(subject)}
                     className={getSubjectStyle(subject, index)}
                   >
-                    <span className="font-gilroy text-sm font-medium leading-[140%] whitespace-nowrap">
+                    <span className="font-gilroy text-sm font-light leading-[140%] whitespace-nowrap" style={{ fontWeight: 300 }}>
                       {subject}
                     </span>
                   </Link>
