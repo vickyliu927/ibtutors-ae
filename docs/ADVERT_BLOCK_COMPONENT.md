@@ -7,11 +7,12 @@ The `AdvertBlock` component is a promotional banner that highlights key achievem
 ## Component Features
 
 ### **✅ Design Elements**
-- **Blue Background**: `#4053B0` (CMS blue) with rounded corners
+- **Blue Background**: `#001A96` (matching primary highlight block) with rounded corners
 - **Geometric Patterns**: Custom SVG background with subtle white lines and dots
-- **Book Icon**: Positioned in top-left corner with circular border
+- **Book Icon**: Positioned in top-left corner with circular border (proportionally sized)
 - **Typography**: Font weight 300 for elegant, light appearance
 - **Underlined Text**: "IB Resources Platform" has clean underline styling
+- **15" Screen Optimized**: Proportions adjusted for optimal viewing on 15" screens
 
 ### **✅ Content Structure**
 - **Main Title**: "Voted #1 for IB"
@@ -55,7 +56,7 @@ interface AdvertBlockProps {
   subtitle?: string;                 // Secondary headline  
   description?: string;              // Main description text
   highlightText?: string;            // Text to underline (platform name)
-  backgroundColor?: string;          // Background color (default: #4053B0)
+  backgroundColor?: string;          // Background color (default: #001A96)
   className?: string;               // Additional CSS classes
 }
 ```
@@ -80,9 +81,9 @@ interface AdvertBlockProps {
 
 ## Positioning
 
-- **Homepage Location**: Positioned after HeroSection, before HighlightsSection
-- **Layout**: Full-width responsive container with max-width constraints
-- **Spacing**: Consistent padding that adapts to screen sizes
+- **Homepage Location**: Positioned after SubjectGrid section, before InteractiveTutoringPlatform
+- **Layout**: Full-width responsive container with max-width constraints (1200px for 15" screen optimization)
+- **Spacing**: Consistent padding that adapts to screen sizes with reduced proportions
 
 ## Technical Details
 

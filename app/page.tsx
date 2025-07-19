@@ -235,9 +235,6 @@ export default async function Home({
       <Navbar navbarData={navbar} />
       {heroData && <HeroSection heroData={heroData} />}
 
-      {/* Advert Block - Positioned at the top after Hero */}
-      <AdvertBlock />
-
       {highlightsSection?.highlights ? (
         <HighlightsSection highlights={highlightsSection.highlights} />
       ) : null}
@@ -270,6 +267,10 @@ export default async function Home({
       {subjectGridSection?.enabled !== false ? (
         <SubjectGrid sectionData={subjectGridSection} />
       ) : null}
+
+      {/* Advert Block - Positioned after SubjectGrid section */}
+      <AdvertBlock backgroundColor="#001A96" />
+
       <InteractiveTutoringPlatform />
       <TutoringPlatformBanner data={platformBanner} />
       {testimonialSection && testimonials.length > 0 ? (
