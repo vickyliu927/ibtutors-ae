@@ -122,7 +122,7 @@ const TutorProfiles = ({
   if (!tutors) {
     return (
       <section className="py-16 bg-white">
-        <div className="mx-auto" style={{ width: "1300px", maxWidth: "calc(100vw - 2rem)" }}>
+        <div className="mx-auto" style={{ width: "1320px", maxWidth: "calc(100vw - 2rem)" }}>
           {/* Header section matching Figma design */}
           <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
             <div className="flex flex-col items-start gap-3">
@@ -168,7 +168,7 @@ const TutorProfiles = ({
 
   return (
     <section className="py-16 bg-white">
-      <div className="mx-auto" style={{ width: "1300px", maxWidth: "calc(100vw - 2rem)" }}>
+      <div className="mx-auto" style={{ width: "1320px", maxWidth: "calc(100vw - 2rem)" }}>
         {/* Header section matching Figma design */}
         <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
           <div className="flex flex-col items-start gap-3">

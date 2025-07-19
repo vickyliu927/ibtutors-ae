@@ -50,7 +50,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
     <div
       className="flex items-center border border-[#E6E7ED] bg-white relative w-full"
       style={{
-        maxWidth: "1300px",
+        maxWidth: "1320px",
         width: "100%",
         height: "280px",
         borderRadius: "20px",

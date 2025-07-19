@@ -44,8 +44,8 @@ const SubjectGrid = async () => {
 
   return (
     <section className="relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8">
-      {/* Container with wider design dimensions and styling */}
-      <div className="relative max-w-[1400px] mx-auto min-h-[301px]">
+      {/* Container with optimized design dimensions and styling */}
+      <div className="relative max-w-[1320px] mx-auto min-h-[301px]">
         {/* Background with exact color and border radius */}
         <div className="absolute inset-0 bg-greyBlueLight rounded-[20px]">
           {/* Background illustration SVG - hidden on mobile for performance */}
