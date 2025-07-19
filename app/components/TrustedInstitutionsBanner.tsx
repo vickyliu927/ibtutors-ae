@@ -48,30 +48,36 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
           )}
         </div>
         
-        {/* Logo Grid - Centered with even spacing */}
-        <div className="flex justify-center">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-12 lg:gap-16 items-center justify-items-center max-w-5xl">
-            {sortedLogos.map((institution, index) => (
-              <div
-                key={`${institution.name}-${index}`}
-                className="flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200"
-              >
-                <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 mb-3">
-                  <Image
-                    src={urlFor(institution.logo).width(150).height(150).url()}
-                    alt={institution.name}
-                    fill
-                    className="object-contain transition-transform duration-300"
-                    sizes="(max-width: 768px) 80px, (max-width: 1024px) 96px, 112px"
-                  />
+                  {/* Logo Grid - Centered with increased spacing */}
+          <div className="flex justify-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-24 items-center justify-items-center max-w-6xl">
+              {sortedLogos.map((institution, index) => (
+                <div
+                  key={`${institution.name}-${index}`}
+                  className="flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200"
+                >
+                  <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 mb-4">
+                    <Image
+                      src={urlFor(institution.logo).width(180).height(180).url()}
+                      alt={institution.name}
+                      fill
+                      className="object-contain transition-transform duration-300"
+                      sizes="(max-width: 768px) 96px, (max-width: 1024px) 112px, 128px"
+                    />
+                  </div>
+                  <div 
+                    className="text-[#171D23] font-gilroy font-light leading-[140%] max-w-[120px] md:max-w-[140px] text-center"
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 300,
+                    }}
+                  >
+                    {institution.name}
+                  </div>
                 </div>
-                <div className="text-xs md:text-sm text-gray-700 font-medium max-w-[100px] md:max-w-[120px] leading-tight">
-                  {institution.name}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
       </div>
     </section>
   );
