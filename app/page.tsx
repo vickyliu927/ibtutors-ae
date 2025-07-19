@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import HeroSection, { HeroData } from "./components/HeroSection";
 import TutorProfiles, { TutorData } from "./components/TutorProfiles";
 import SubjectGrid from "./components/SubjectGrid";
+import InteractiveTutoringPlatform from "./components/InteractiveTutoringPlatform";
 import TutoringPlatformBanner, {
   PlatformBannerData,
 } from "./components/TutoringPlatformBanner";
@@ -92,7 +93,9 @@ async function getHomepageDataWithCloneContext(
           : null;
 
         const subjectGridSection = content.subjectGridSection.data
-          ? cloneQueryUtils.getContentWithCustomizations(content.subjectGridSection)
+          ? cloneQueryUtils.getContentWithCustomizations(
+              content.subjectGridSection,
+            )
           : null;
 
         const trustedInstitutionsBanner = content.trustedInstitutions.data
@@ -259,10 +262,11 @@ export default async function Home({
           carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
         />
       ) : null}
-      
+
       {subjectGridSection?.enabled !== false ? (
         <SubjectGrid sectionData={subjectGridSection} />
       ) : null}
+      <InteractiveTutoringPlatform />
       <TutoringPlatformBanner data={platformBanner} />
       {testimonialSection && testimonials.length > 0 ? (
         <LazyTestimonialSection
