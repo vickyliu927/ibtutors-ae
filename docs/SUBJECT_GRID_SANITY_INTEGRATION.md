@@ -200,6 +200,15 @@ node createSubjectGridSection.js
 
 ## Recent Updates
 
+### **Size Enhancement (5% Increase)**
+- **Container Dimensions**: max-width `1320px` → `1386px`, min-height `301px` → `316px`
+- **Border Radius**: `20px` → `21px` for proportional scaling
+- **Padding Values**: All padding increased by 5% (e.g., `60px` → `63px`, `42px` → `44px`)
+- **Text Sizes**: Title `20px` → `21px`, description `14px` → `15px`, all text scaled proportionally  
+- **Spacing**: Margins and gaps increased by 5% (e.g., gaps `16px` → `17px`, `12px` → `13px`)
+- **Subject Buttons**: Button padding `12px` → `13px` horizontal, `8px` → `9px` vertical
+- **Content Widths**: Description max-widths scaled `500px` → `525px`, `680px` → `714px`
+
 ### **Background Design Improvements**
 - **Removed SVG Background**: Eliminated decorative grey lines that were overflowing the container bounds
 - **Updated Background Color**: Changed default from `#F4F6F9` to `#f2f4fa` for better visual appeal
@@ -215,4 +224,4 @@ node createSubjectGridSection.js
 - **A/B Testing**: Different layouts for different user segments
 - **Decorative Elements**: Add properly contained background patterns if desired
 
-The SubjectGrid section is now fully content-managed with a clean, contained design while maintaining all existing functionality! 
+The SubjectGrid section is now fully content-managed with a clean, contained design while maintaining all existing functionality! Recent size enhancements have increased all elements by 5% for improved visual presence and better proportional balance. 

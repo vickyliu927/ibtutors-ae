@@ -81,7 +81,7 @@ interface AdvertBlockProps {
 
 ## Positioning
 
-- **Homepage Location**: Positioned after SubjectGrid section, before InteractiveTutoringPlatform
+- **Homepage Location**: Positioned after SubjectGrid section, before TutoringPlatformBanner
 - **Layout**: Full-width responsive container with max-width constraints (1200px for 15" screen optimization)
 - **Spacing**: Increased height with generous padding for enhanced visual presence
 
