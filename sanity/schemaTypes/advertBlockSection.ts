@@ -158,7 +158,6 @@ export default defineType({
       return {
         title: `${statusText} ${title}${cloneText}`,
         subtitle: `${subtitle} | Order: ${displayOrder}`,
-        media: '📢',
       };
     },
   },

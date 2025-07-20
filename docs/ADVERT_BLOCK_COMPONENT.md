@@ -83,7 +83,7 @@ interface AdvertBlockProps {
 
 - **Homepage Location**: Positioned after SubjectGrid section, before InteractiveTutoringPlatform
 - **Layout**: Full-width responsive container with max-width constraints (1200px for 15" screen optimization)
-- **Spacing**: Consistent padding that adapts to screen sizes with reduced proportions
+- **Spacing**: Increased height with generous padding for enhanced visual presence
 
 ## Technical Details
 
@@ -117,11 +117,23 @@ interface AdvertBlockProps {
 - Animation effects could be added
 - A/B testing variants could be implemented
 
+## Recent Updates
+
+### **Height Enhancement**
+- **Increased Vertical Spacing**: Enhanced proportions to match reference screenshot
+  - Section padding: `py-8` → `py-12` (48px top/bottom)
+  - Container padding: Mobile `py-12`, Small `py-14`, Desktop `py-[80px]` 
+  - Text spacing: Increased margin between subtitle and description from `mb-6` to `mb-8`
+  - SVG Background: Adjusted viewBox from 200 to 280 height with proportional path scaling
+- **Visual Impact**: Taller, more prominent block with improved content breathing room
+- **Maintained Width**: Container width remains at 1200px for consistent layout alignment
+
 ## Build Status
 
 - **✅ Successful Build**: Component builds without errors
 - **✅ Type Safety**: Full TypeScript interface support
 - **✅ Performance**: Optimized SVG and CSS implementation
 - **✅ Responsive**: Works perfectly across all device sizes
+- **✅ Height Optimized**: Proportions match reference design with generous spacing
 
 The AdvertBlock component provides a professional, eye-catching promotional banner that effectively communicates key value propositions while maintaining design consistency with the overall website aesthetic. 

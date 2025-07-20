@@ -27,38 +27,38 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
   const pricingText = sectionData?.pricingText || "- normally £29/month!";
   const backgroundColor = sectionData?.backgroundColor || "#001A96";
   return (
-    <section className={`relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8 ${className}`}>
+    <section className={`relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 ${className}`}>
       {/* Container with optimized design dimensions for 15" screen */}
       <div className="relative max-w-[1200px] mx-auto">
         {/* Background with dynamic color and border radius */}
         <div 
-          className="relative rounded-[20px] px-6 py-8 sm:px-10 lg:px-[40px] lg:py-[40px]" 
+          className="relative rounded-[20px] px-6 py-12 sm:px-10 sm:py-14 lg:px-[40px] lg:py-[80px]" 
           style={{ backgroundColor }}
         >
           {/* Cool Background Lines SVG */}
           <div className="absolute inset-0 overflow-hidden rounded-[20px]">
             <svg
               className="absolute inset-0 w-full h-full"
-              viewBox="0 0 1200 200"
+              viewBox="0 0 1200 280"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               preserveAspectRatio="xMidYMid slice"
             >
               {/* Diagonal lines from corners */}
               <path
-                d="M0 0L360 200"
+                d="M0 0L360 280"
                 stroke="rgba(255,255,255,0.1)"
                 strokeWidth="1"
               />
               <path
-                d="M1200 0L840 200"
+                d="M1200 0L840 280"
                 stroke="rgba(255,255,255,0.1)"
                 strokeWidth="1"
               />
               
               {/* Curved connecting lines */}
               <path
-                d="M0 200C180 150 360 100 600 100C840 100 1020 150 1200 200"
+                d="M0 280C180 210 360 140 600 140C840 140 1020 210 1200 280"
                 stroke="rgba(255,255,255,0.08)"
                 strokeWidth="2"
                 fill="none"
@@ -66,29 +66,29 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
               
               {/* Additional geometric elements */}
               <path
-                d="M90 0C135 65 225 135 360 200"
+                d="M90 0C135 90 225 190 360 280"
                 stroke="rgba(255,255,255,0.06)"
                 strokeWidth="1"
               />
               <path
-                d="M1110 0C1065 65 975 135 840 200"
+                d="M1110 0C1065 90 975 190 840 280"
                 stroke="rgba(255,255,255,0.06)"
                 strokeWidth="1"
               />
               
               {/* Subtle connecting curves */}
               <path
-                d="M0 100Q300 50 600 100T1200 100"
+                d="M0 140Q300 70 600 140T1200 140"
                 stroke="rgba(255,255,255,0.05)"
                 strokeWidth="1"
                 fill="none"
               />
               
               {/* Small decorative dots */}
-              <circle cx="180" cy="50" r="2" fill="rgba(255,255,255,0.1)" />
-              <circle cx="450" cy="150" r="1.5" fill="rgba(255,255,255,0.08)" />
-              <circle cx="720" cy="35" r="1" fill="rgba(255,255,255,0.06)" />
-              <circle cx="1000" cy="165" r="2" fill="rgba(255,255,255,0.1)" />
+              <circle cx="180" cy="70" r="2" fill="rgba(255,255,255,0.1)" />
+              <circle cx="450" cy="210" r="1.5" fill="rgba(255,255,255,0.08)" />
+              <circle cx="720" cy="50" r="1" fill="rgba(255,255,255,0.06)" />
+              <circle cx="1000" cy="230" r="2" fill="rgba(255,255,255,0.1)" />
             </svg>
           </div>
 
@@ -130,7 +130,7 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
             </h2>
             
             {/* Subtitle */}
-            <h3 className="font-gilroy text-2xl sm:text-3xl lg:text-4xl leading-tight mb-6" style={{ fontWeight: 300 }}>
+            <h3 className="font-gilroy text-2xl sm:text-3xl lg:text-4xl leading-tight mb-8" style={{ fontWeight: 300 }}>
               {subtitle}
             </h3>
 

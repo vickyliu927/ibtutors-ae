@@ -138,6 +138,10 @@ S.documentTypeListItem('advertBlockSection')
 by 10,000+ students | Order: 5
 ```
 
+### **Schema Fix Applied**
+- **Removed Emoji Icon**: Fixed InvalidCharacterError by removing emoji from schema preview
+- **Clean Preview**: Document preview now shows status, title, clone info, and order without icon
+
 ## Data Fetching & Performance
 
 ### **Homepage Integration**
