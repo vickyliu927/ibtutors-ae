@@ -42,7 +42,7 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
 
   // All subjects have consistent styling with hover effects
   const getSubjectStyle = (subject: any) => {
-    return "flex items-center px-3 py-2 rounded bg-white text-primary hover:bg-primary hover:text-white transition-colors duration-200";
+    return "flex items-center px-[13px] py-[9px] rounded bg-white text-primary hover:bg-primary hover:text-white transition-colors duration-200";
   };
 
   const getSubjectHref = (subject: any) => {
@@ -64,19 +64,19 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
   return (
     <section className="relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8">
       {/* Container with optimized design dimensions and styling */}
-      <div className="relative max-w-[1320px] mx-auto min-h-[301px]">
+      <div className="relative max-w-[1386px] mx-auto min-h-[316px]">
         {/* Background with dynamic color and border radius */}
-        <div className="absolute inset-0 rounded-[20px]" style={{ backgroundColor }}>
+        <div className="absolute inset-0 rounded-[21px]" style={{ backgroundColor }}>
 
           {/* Content container with responsive padding */}
-          <div className="relative z-10 px-6 py-8 sm:px-12 lg:px-[60px] lg:py-[42px]">
+          <div className="relative z-10 px-[25px] py-[34px] sm:px-[50px] lg:px-[63px] lg:py-[44px]">
             {/* Header section */}
-            <div className="mb-8 lg:mb-[44px]">
-              <h2 className="font-gilroy text-xl sm:text-2xl font-medium leading-[120%] text-textDark mb-3" style={{ fontWeight: 500 }}>
+            <div className="mb-[34px] lg:mb-[46px]">
+              <h2 className="font-gilroy text-[21px] sm:text-[25px] font-medium leading-[120%] text-textDark mb-[13px]" style={{ fontWeight: 500 }}>
                 {sectionTitle}
               </h2>
               <p 
-                className={`font-gilroy text-sm sm:text-base font-light leading-[140%] text-textDark ${splitDescription ? 'max-w-[500px]' : 'max-w-[680px]'}`} 
+                className={`font-gilroy text-[15px] sm:text-[17px] font-light leading-[140%] text-textDark ${splitDescription ? 'max-w-[525px]' : 'max-w-[714px]'}`} 
                 style={{ fontWeight: 300 }}
               >
                 {sectionDescription}
@@ -86,7 +86,7 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
             {/* Subjects container */}
             <div className="relative">
               {/* Subjects grid with more even distribution */}
-              <div className="flex flex-wrap items-start justify-start gap-x-4 gap-y-3 max-w-full lg:max-w-[1200px]">
+              <div className="flex flex-wrap items-start justify-start gap-x-[17px] gap-y-[13px] max-w-full lg:max-w-[1260px]">
                 {displaySubjects.map((subject: any, index: number) => {
                   const subjectName = typeof subject === 'string' ? subject : subject.name;
                   const subjectKey = typeof subject === 'string' ? subject : `${subject.name}-${index}`;
@@ -97,7 +97,7 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
                       href={getSubjectHref(subject)}
                       className={getSubjectStyle(subject)}
                     >
-                      <span className="font-gilroy text-sm font-light leading-[140%] whitespace-nowrap" style={{ fontWeight: 300 }}>
+                      <span className="font-gilroy text-[15px] font-light leading-[140%] whitespace-nowrap" style={{ fontWeight: 300 }}>
                         {subjectName}
                       </span>
                     </Link>
