@@ -59,6 +59,7 @@ interface HomepageData {
   heroData: any | null;
   highlightsSection: any | null;
   subjectGridSection: any | null;
+  advertBlockSection: any | null;
   trustedInstitutionsBanner: any | null;
   tutorProfilesSection: any | null;
   platformBanner: any | null;
@@ -96,6 +97,12 @@ async function getHomepageDataWithCloneContext(
         const subjectGridSection = content.subjectGridSection.data
           ? cloneQueryUtils.getContentWithCustomizations(
               content.subjectGridSection,
+            )
+          : null;
+
+        const advertBlockSection = content.advertBlockSection.data
+          ? cloneQueryUtils.getContentWithCustomizations(
+              content.advertBlockSection,
             )
           : null;
 
@@ -148,6 +155,7 @@ async function getHomepageDataWithCloneContext(
           heroData,
           highlightsSection,
           subjectGridSection,
+          advertBlockSection,
           trustedInstitutionsBanner,
           tutorProfilesSection: tutorProfilesSectionWithTutors,
           platformBanner,
@@ -163,6 +171,7 @@ async function getHomepageDataWithCloneContext(
           heroData: null,
           highlightsSection: null,
           subjectGridSection: null,
+          advertBlockSection: null,
           trustedInstitutionsBanner: null,
           tutorProfilesSection: null,
           platformBanner: null,
@@ -201,6 +210,7 @@ export default async function Home({
     heroData,
     highlightsSection,
     subjectGridSection,
+    advertBlockSection,
     trustedInstitutionsBanner,
     tutorProfilesSection,
     platformBanner,
@@ -212,6 +222,7 @@ export default async function Home({
     heroData: null,
     highlightsSection: null,
     subjectGridSection: null,
+    advertBlockSection: null,
     trustedInstitutionsBanner: null,
     tutorProfilesSection: null,
     platformBanner: null,
@@ -269,7 +280,9 @@ export default async function Home({
       ) : null}
 
       {/* Advert Block - Positioned after SubjectGrid section */}
-      <AdvertBlock backgroundColor="#001A96" />
+      {advertBlockSection?.enabled !== false ? (
+        <AdvertBlock sectionData={advertBlockSection} />
+      ) : null}
 
       <InteractiveTutoringPlatform />
       <TutoringPlatformBanner data={platformBanner} />

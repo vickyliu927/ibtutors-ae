@@ -591,6 +591,37 @@ export const subjectGridSectionQueries = {
 };
 
 /**
+ * ADVERT BLOCK SECTION QUERIES
+ */
+export const advertBlockSectionQueries = {
+  buildQuery: (cloneId: string) => buildFallbackQuery(
+    'advertBlockSection',
+    cloneId,
+    `
+    _id,
+    title,
+    subtitle,
+    description,
+    highlightText,
+    pricingText,
+    backgroundColor,
+    enabled,
+    displayOrder,
+    isActive,
+    cloneReference,
+    customizations,
+    cloneSpecificData
+    `
+  ),
+
+  async fetch(cloneId: string): Promise<ContentResult<any>> {
+    const query = advertBlockSectionQueries.buildQuery(cloneId);
+    const result = await client.fetch(query);
+    return resolveContent(result);
+  }
+};
+
+/**
  * TRUSTED INSTITUTIONS BANNER QUERIES
  */
 export const trustedInstitutionsQueries = {
@@ -627,6 +658,7 @@ export const homepageQueries = {
     hero: ContentResult<any>;
     highlights: ContentResult<any>;
     subjectGridSection: ContentResult<any>;
+    advertBlockSection: ContentResult<any>;
     trustedInstitutions: ContentResult<any>;
     tutorProfilesSection: ContentResult<any>;
     tutors: ContentResult<any[]>;
@@ -643,6 +675,7 @@ export const homepageQueries = {
       hero,
       highlights,
       subjectGridSection,
+      advertBlockSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,
@@ -657,6 +690,7 @@ export const homepageQueries = {
       heroQueries.fetch(cloneId),
       highlightsQueries.fetch(cloneId),
       subjectGridSectionQueries.fetch(cloneId),
+      advertBlockSectionQueries.fetch(cloneId),
       trustedInstitutionsQueries.fetch(cloneId),
       tutorProfilesSectionQueries.fetch(cloneId),
       tutorQueries.fetchHomepageTutors(cloneId),
@@ -673,6 +707,7 @@ export const homepageQueries = {
       hero,
       highlights,
       subjectGridSection,
+      advertBlockSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,

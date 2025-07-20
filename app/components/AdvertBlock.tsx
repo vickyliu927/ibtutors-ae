@@ -3,22 +3,29 @@
 import React from 'react';
 
 interface AdvertBlockProps {
-  title?: string;
-  subtitle?: string;
-  description?: string;
-  highlightText?: string;
-  backgroundColor?: string;
+  sectionData?: {
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    highlightText?: string;
+    pricingText?: string;
+    backgroundColor?: string;
+    enabled?: boolean;
+  } | null;
   className?: string;
 }
 
 const AdvertBlock: React.FC<AdvertBlockProps> = ({
-  title = "Voted #1 for IB",
-  subtitle = "by 10,000+ students",
-  description = "We're trusted by hundreds of IB schools globally. All tutoring includes FREE access to our",
-  highlightText = "IB Resources Platform",
-  backgroundColor = "#001A96",
+  sectionData,
   className = ""
 }) => {
+  // Extract data from sectionData with fallbacks
+  const title = sectionData?.title || "Voted #1 for IB";
+  const subtitle = sectionData?.subtitle || "by 10,000+ students";
+  const description = sectionData?.description || "We're trusted by hundreds of IB schools globally. All tutoring includes FREE access to our";
+  const highlightText = sectionData?.highlightText || "IB Resources Platform";
+  const pricingText = sectionData?.pricingText || "- normally £29/month!";
+  const backgroundColor = sectionData?.backgroundColor || "#001A96";
   return (
     <section className={`relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8 ${className}`}>
       {/* Container with optimized design dimensions for 15" screen */}
@@ -118,7 +125,7 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
           {/* Content container - centered */}
           <div className="relative z-10 text-center text-white">
             {/* Main Title */}
-            <h2 className="font-gilroy text-2xl sm:text-3xl lg:text-4xl leading-tight mb-2" style={{ fontWeight: 300 }}>
+            <h2 className="font-gilroy text-2xl sm:text-3xl lg:text-4xl leading-tight mb-2 font-semibold">
               {title}
             </h2>
             
@@ -131,10 +138,10 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
             <div className="max-w-3xl mx-auto">
               <p className="font-gilroy text-base sm:text-lg lg:text-xl leading-relaxed" style={{ fontWeight: 300 }}>
                 {description}{' '}
-                <span className="underline decoration-white decoration-2 underline-offset-4">
-                  {highlightText}
-                </span>
-                {' '}- normally £29/month!
+                                 <span className="underline decoration-white decoration-2 underline-offset-4">
+                   {highlightText}
+                 </span>
+                 {' '}{pricingText}
               </p>
             </div>
           </div>

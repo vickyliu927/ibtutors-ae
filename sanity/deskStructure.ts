@@ -42,6 +42,8 @@ export const structure = (S: StructureBuilder) =>
               S.documentTypeListItem('subjectGridSection')
                 .title('Subject Grid Sections')
                 .icon(BsGridFill),
+              S.documentTypeListItem('advertBlockSection')
+                .title('Advert Block Sections'),
               S.documentTypeListItem('platformBanner')
                 .title('Platform Banners'),
               S.documentTypeListItem('trustedInstitutionsBanner')
