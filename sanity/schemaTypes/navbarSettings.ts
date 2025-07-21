@@ -24,22 +24,22 @@ const navbarSettingsSchema = defineType({
     defineField({
       name: 'navigation',
       title: 'Navigation Labels',
-      type: 'object',
-      fields: [
-        {
+          type: 'object',
+          fields: [
+            {
           name: 'levelsText',
           title: 'Levels Dropdown Text',
-          type: 'string',
+              type: 'string',
           description: 'Text for the levels dropdown (e.g., "All Levels")',
-          validation: Rule => Rule.required(),
-        },
-        {
+              validation: Rule => Rule.required(),
+            },
+            {
           name: 'subjectsText',
           title: 'Subjects Dropdown Text',
-          type: 'string',
+              type: 'string',
           description: 'Text for the subjects dropdown (e.g., "All Subjects")',
-          validation: Rule => Rule.required(),
-        },
+              validation: Rule => Rule.required(),
+            },
       ],
       validation: Rule => Rule.required(),
     }),
@@ -53,27 +53,27 @@ const navbarSettingsSchema = defineType({
     defineField({
       name: 'buttonLink',
       title: 'CTA Button Link',
-      type: 'string',
-      validation: Rule => Rule.required(),
+              type: 'string',
+              validation: Rule => Rule.required(),
       description: 'URL the CTA button should link to',
       initialValue: '#contact-form',
     }),
 
-  ],
-  preview: {
-    select: {
+          ],
+          preview: {
+            select: {
       title: 'buttonText',
       media: 'logo',
-    },
+            },
     prepare(selection: any) {
       const { title } = selection;
-      return {
+              return {
         title: 'Navbar Settings',
         subtitle: `CTA: ${title || 'Not set'}`,
         media: selection.media,
-      };
-    },
-  },
+              };
+            },
+          },
 })
 
 export default addCloneSupport(navbarSettingsSchema) 

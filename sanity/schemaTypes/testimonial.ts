@@ -23,9 +23,22 @@ const testimonialSchema = defineType({
     defineField({
       name: 'testimonialText',
       title: 'Testimonial Text',
-      type: 'text',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [{ title: 'Normal', value: 'normal' }],
+          lists: [],
+          marks: {
+            decorators: [
+              { title: 'Bold', value: 'strong' },
+              { title: 'Italic', value: 'em' },
+            ],
+          },
+        }
+      ],
       validation: (Rule: any) => Rule.required(),
-      description: 'The actual review text',
+      description: 'The actual review text - you can bold important words',
     }),
     defineField({
       name: 'rating',

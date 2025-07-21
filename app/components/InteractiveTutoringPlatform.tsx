@@ -248,22 +248,17 @@ const InteractiveTutoringPlatform = () => {
 
             {/* Right Side - Text Content */}
             <div className="lg:pl-8">
-              <div className="max-w-[512px]">
-                <div className="mb-6">
-                  <p
-                    className="font-gilroy text-lg font-normal leading-[150%] uppercase mb-3"
-                    style={{ color: "#F57C40" }}
-                  >
+              <div className="flex flex-col items-start gap-6 max-w-[512px]">
+                <div className="flex flex-col items-start gap-4">
+                  <div className="font-gilroy text-lg font-normal leading-[150%] uppercase tracking-wider" style={{ color: "#F57C40" }}>
                     Interactive Tutoring Platform
-                  </p>
-                  <h2 className="font-gilroy text-5xl font-bold leading-[120%] text-textDark">
+                  </div>
+                  <h2 className="font-gilroy text-4xl md:text-5xl font-semibold leading-[120%]" style={{ color: "#171D23" }}>
                     Engaging Lessons with our Platform
                   </h2>
                 </div>
-                <p className="font-gilroy text-lg font-normal leading-[160%] text-textDark">
-                  Lessons are brought to life and students can interact with
-                  tutors by drawing diagrams, solving equations, editing essays,
-                  and annotating work.
+                <p className="font-gilroy text-lg font-normal leading-[160%] max-w-[480px]" style={{ color: "#171D23" }}>
+                  Lessons are brought to life and students can interact with tutors by drawing diagrams, solving equations, editing essays, and annotating work.
                 </p>
               </div>
             </div>

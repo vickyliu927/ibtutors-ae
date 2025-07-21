@@ -38,22 +38,22 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
 
   return (
     <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Text */}
         <div className="text-center mb-16">
-          {title && (
+            {title && (
             <h2 className="text-2xl md:text-3xl font-medium leading-[130%] text-[#171D23] font-gilroy" style={{ fontWeight: 500 }}>
-              {title}
+                {title}
             </h2>
-          )}
-        </div>
-        
+            )}
+          </div>
+          
                   {/* Logo Grid - Centered with increased spacing */}
           <div className="flex justify-center">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-24 items-center justify-items-center max-w-6xl">
               {sortedLogos.map((institution, index) => (
-                <div
-                  key={`${institution.name}-${index}`}
+                <div 
+                  key={`${institution.name}-${index}`} 
                   className="flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200"
                 >
                   <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 mb-4">
@@ -78,9 +78,9 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
               ))}
             </div>
           </div>
-      </div>
+        </div>
     </section>
   );
 };
 
-export default TrustedInstitutionsBanner;
+export default TrustedInstitutionsBanner; 

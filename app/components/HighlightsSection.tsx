@@ -101,7 +101,7 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
               const IconComponent = iconMap[item.iconType] || iconMap.star;
 
               return (
-                <div
+            <div 
                   key={index}
                   className={`p-6 flex flex-col items-start gap-5 rounded-[20px] ${
                     index === 0
@@ -134,11 +134,11 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
                 </div>
               );
             })}
-          </div>
+            </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default HighlightsSection;
+export default HighlightsSection; 

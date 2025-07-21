@@ -38,7 +38,7 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
         { name: "Law", slug: "law" },
         { name: "Accounting", slug: "accounting" },
         { name: "EPQ", slug: "epq" },
-      ];
+  ];
 
   // All subjects have consistent styling with hover effects
   const getSubjectStyle = (subject: any) => {
@@ -92,15 +92,15 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
                   const subjectKey = typeof subject === 'string' ? subject : `${subject.name}-${index}`;
                   
                   return (
-                    <Link
+                  <Link
                       key={subjectKey}
-                      href={getSubjectHref(subject)}
+                    href={getSubjectHref(subject)}
                       className={getSubjectStyle(subject)}
-                    >
+                  >
                       <span className="font-gilroy text-[15px] font-light leading-[140%] whitespace-nowrap" style={{ fontWeight: 300 }}>
                         {subjectName}
-                      </span>
-                    </Link>
+                    </span>
+                  </Link>
                   );
                 })}
               </div>

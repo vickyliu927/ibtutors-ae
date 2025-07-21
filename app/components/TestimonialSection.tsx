@@ -1,15 +1,14 @@
 'use client';
 import React from 'react';
-import Link from 'next/link';
-import { client } from '@/sanity/lib/client';
 import ExternalLink from './ui/ExternalLink';
+import { PortableText } from '@portabletext/react';
 
 export interface TestimonialSectionData {
   rating: number;
   totalReviews: number;
   subtitle: string;
   tutorChaseLink?: string;
-  selectedTestimonials?: Array<{ _id: string, reviewerName: string }> | string[];
+  selectedTestimonials?: Array<{ _ref: string, _type: string, _key?: string }> | string[];
   maxDisplayCount?: number;
 }
 
@@ -17,27 +16,22 @@ export interface TestimonialData {
   _id: string;
   reviewerName: string;
   reviewerType: string;
-  testimonialText: string;
+  testimonialText: any[];
   rating: number;
   order: number;
 }
 
+const StarIcon = () => (
+  <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12.8047 0L15.4989 8.2918H24.2174L17.1639 13.4164L19.8581 21.7082L12.8047 16.5836L5.75126 21.7082L8.44543 13.4164L1.39201 8.2918H10.1105L12.8047 0Z" fill="#FCBD00"/>
+  </svg>
+);
+
 const StarRating = ({ rating }: { rating: number }) => {
   return (
-    <div className="flex">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <svg
-          key={star}
-          className="h-5 w-5 text-yellow-400"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M10 15.934L4.618 19.098l1.039-6.054L1.314 8.902l6.068-.881L10 2.666l2.618 5.355 6.068.881-4.343 4.142 1.039 6.054L10 15.934z"
-            clipRule="evenodd"
-          />
-        </svg>
+    <div className="flex gap-1">
+      {Array.from({ length: 5 }, (_, i) => (
+        <StarIcon key={i} />
       ))}
     </div>
   );
@@ -46,8 +40,8 @@ const StarRating = ({ rating }: { rating: number }) => {
 const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: TestimonialSectionData, testimonials?: TestimonialData[] }) => {
   if (!sectionData || !testimonials) {
     return (
-      <div className="py-16 bg-pink-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div style={{ background: 'linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)' }} className="py-20">
+        <div className="max-w-[1440px] mx-auto px-24 text-center">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4"></div>
             <div className="h-4 bg-gray-200 rounded w-96 mx-auto"></div>
@@ -57,154 +51,177 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
     );
   }
 
-  console.log("Testimonial Section Data:", JSON.stringify(sectionData, null, 2));
-  console.log("All testimonials:", testimonials.map(t => `${t._id} - ${t.reviewerName}`));
-
   // Filter testimonials if selectedTestimonials is provided
   let displayTestimonials = testimonials;
   if (sectionData.selectedTestimonials && sectionData.selectedTestimonials.length > 0) {
-    console.log("Selected testimonials exist - count:", sectionData.selectedTestimonials.length);
-    
     const selectedIds = sectionData.selectedTestimonials.map(item => {
       if (typeof item === 'string') return item;
-      return item._id;
+      return item._ref;
     });
     
-    console.log("Selected IDs:", selectedIds);
-    
     displayTestimonials = testimonials.filter(testimonial => {
-      const isIncluded = selectedIds.includes(testimonial._id);
-      console.log(`Checking ${testimonial._id} (${testimonial.reviewerName}): ${isIncluded ? 'SELECTED' : 'not selected'}`);
-      return isIncluded;
+      return selectedIds.includes(testimonial._id);
     });
   }
 
   // Sort by order field
   displayTestimonials = displayTestimonials.sort((a, b) => a.order - b.order);
 
-  // Apply max display count (default to 6 if not specified, with min of 1)
-  const maxCount = sectionData.maxDisplayCount ? 
-    Math.min(Math.max(sectionData.maxDisplayCount, 1), 6) : 6;
-  
+  // Apply max display count - limit to 3 for this design
+  const maxCount = 3;
   displayTestimonials = displayTestimonials.slice(0, maxCount);
-
-  console.log("Final display testimonials:", displayTestimonials.map(t => t.reviewerName));
 
   // Ensure we have at least one testimonial to display
   if (displayTestimonials.length === 0 && testimonials.length > 0) {
-    displayTestimonials = [testimonials[0]];
-    console.log("Fallback to first testimonial:", testimonials[0].reviewerName);
+    displayTestimonials = testimonials.slice(0, 3);
+  }
+
+  // Default testimonials that match the Figma design
+  const defaultTestimonials = [
+    {
+      _id: '1',
+      reviewerName: 'Fayaz Khan',
+      reviewerType: 'A-Level Student',
+      testimonialText: [
+        {
+          _type: 'block',
+          children: [
+            {
+              _type: 'span',
+              text: 'Fantastic support for A-Level Maths, Physics, and Biology! Worked with three different tutors who were each equally great and achieved the grades I needed for uni because of them, thanks so much!'
+            }
+          ]
+        }
+      ],
+      rating: 5,
+      order: 1
+    },
+    {
+      _id: '2',
+      reviewerName: 'Olivia',
+      reviewerType: 'A-Level Economics Student',
+      testimonialText: [
+        {
+          _type: 'block',
+          children: [
+            {
+              _type: 'span',
+              text: 'My tutor was knowledgeable, patient, and helped me understand challenging concepts in a way that made sense. He also provided helpful study materials and resources. I would highly recommend TutorChase to anyone looking for help with their A-Levels.'
+            }
+          ]
+        }
+      ],
+      rating: 5,
+      order: 2
+    },
+    {
+      _id: '3',
+      reviewerName: 'Ben',
+      reviewerType: 'A-Level History Student',
+      testimonialText: [
+        {
+          _type: 'block',
+          children: [
+            {
+              _type: 'span',
+              text: 'As someone who struggled with understanding the A-Level History content, I\'m so grateful to have found TutorChase to help me prepare for my exams. My tutor was able to break down complex topics into manageable chunks and provided me with useful study tips and techniques.'
+            }
+          ]
+        }
+      ],
+      rating: 5,
+      order: 3
+    }
+  ];
+
+  // Use default testimonials if no testimonials are available
+  if (displayTestimonials.length === 0) {
+    displayTestimonials = defaultTestimonials;
   }
 
   return (
-    <section className="py-16 bg-pink-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+    <section className="relative py-16">
+      {/* Full-width gradient background */}
+      <div 
+        className="absolute inset-0 w-full"
+        style={{ 
+          background: 'linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)'
+        }}
+      />
+      
+      {/* Content container */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header section */}
+        <div className="flex flex-col items-center gap-6 mb-16">
+          {/* Stars */}
           <div className="flex justify-center mb-2">
             <StarRating rating={5} />
           </div>
-          <h2 className="text-3xl font-bold">
-            Rated {sectionData.rating}/5 based on{' '}
-            <span className="underline decoration-2">{sectionData.totalReviews} reviews</span>
-          </h2>
-          <p className="mt-2 text-gray-600">
-            We're part of{' '}
-            {sectionData.tutorChaseLink ? (
-              <ExternalLink 
-                href={sectionData.tutorChaseLink} 
-                className="text-orange-500 hover:text-orange-600"
-                rel="nofollow"
-              >
-                TutorChase
-              </ExternalLink>
-            ) : (
-              'TutorChase'
-            )}
-            , {sectionData.subtitle}
-          </p>
+          
+          {/* Title */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="text-center">
+              <span className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-textDark">
+                Rated {sectionData.rating}/5 based on{' '}
+              </span>
+              <span className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-primary">
+                {sectionData.totalReviews} reviews
+              </span>
+            </div>
+            <div className="text-center">
+              <span className="font-gilroy text-lg leading-[150%] text-[#F57C40] uppercase" style={{ fontWeight: 200 }}>
+                Trusted globally by students and parents
+              </span>
+            </div>
+          </div>
         </div>
 
-        {displayTestimonials.length === 1 ? (
-          <div className="flex justify-center">
-            <div className="w-full max-w-xl">
-              <div className="bg-white p-8 rounded-lg shadow-sm h-[320px] flex items-center justify-center">
-                <div>
-                <div className="flex justify-center mb-4">
-                  <StarRating rating={displayTestimonials[0].rating} />
-                </div>
-                <blockquote className="text-center mb-6">
-                  <p className="text-gray-600 italic">"{displayTestimonials[0].testimonialText}"</p>
-                </blockquote>
-                <div className="text-center">
-                  <p className="font-semibold">{displayTestimonials[0].reviewerName}</p>
-                  <p className="text-gray-500 text-sm">{displayTestimonials[0].reviewerType}</p>
-                  </div>
+        {/* Testimonial cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9 max-w-[1400px] mx-auto">
+          {displayTestimonials.slice(0, 3).map((testimonial, index) => (
+            <div
+              key={testimonial._id}
+              className="flex flex-col justify-center items-center gap-9 p-11 rounded-2xl bg-white shadow-[0px_16px_40px_0px_rgba(0,14,81,0.05)] h-[352px] w-full"
+            >
+              {/* Testimonial Text */}
+               <div className="text-center font-gilroy text-lg leading-[150%] text-textDark flex-1 flex items-center" style={{ fontWeight: 200 }}>
+                 <div className="testimonial-content">
+                   "<PortableText 
+                     value={testimonial.testimonialText}
+                     components={{
+                         marks: {
+                           strong: ({children}: any) => <strong className="font-medium">{children}</strong>,
+                           em: ({children}: any) => <em className="italic">{children}</em>,
+                         },
+                         block: {
+                           normal: ({children}: any) => <span>{children}</span>,
+                         },
+                       }}
+                   />"
+                 </div>
+               </div>
+
+              {/* Author Info */}
+              <div className="flex flex-col items-center gap-3">
+                <StarRating rating={testimonial.rating} />
+                <div className="flex items-center gap-4">
+                  <span className="font-gilroy text-lg text-textDark font-medium">
+                    {testimonial.reviewerName}
+                  </span>
+                  <span className="font-gilroy text-lg text-textDark opacity-80">|</span>
+                  <span className="font-gilroy text-lg text-[#8B8E91]">
+                    {testimonial.reviewerType}
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
-        ) : displayTestimonials.length === 2 ? (
-          <div className="flex justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-              {displayTestimonials.map((testimonial) => (
-                <div
-                  key={testimonial._id}
-                  className="bg-white p-8 rounded-lg shadow-sm w-full h-[320px] flex items-center justify-center"
-                >
-                  <div>
-                  <div className="flex justify-center mb-4">
-                    <StarRating rating={testimonial.rating} />
-                  </div>
-                  <blockquote className="text-center mb-6">
-                    <p className="text-gray-600 italic">"{testimonial.testimonialText}"</p>
-                  </blockquote>
-                  <div className="text-center">
-                    <p className="font-semibold">{testimonial.reviewerName}</p>
-                    <p className="text-gray-500 text-sm">{testimonial.reviewerType}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {displayTestimonials.map((testimonial) => (
-              <div
-                key={testimonial._id}
-                className="bg-white p-8 rounded-lg shadow-sm w-full max-w-md mx-auto h-[320px] flex items-center justify-center"
-              >
-                <div>
-                <div className="flex justify-center mb-4">
-                  <StarRating rating={testimonial.rating} />
-                </div>
-                <blockquote className="text-center mb-6">
-                  <p className="text-gray-600 italic">"{testimonial.testimonialText}"</p>
-                </blockquote>
-                <div className="text-center">
-                  <p className="font-semibold">{testimonial.reviewerName}</p>
-                  <p className="text-gray-500 text-sm">{testimonial.reviewerType}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        
-        {/* Read our verified reviews button */}
-        <div className="flex justify-center mt-12">
-          <ExternalLink 
-            href="https://www.reviews.co.uk/company-reviews/store/tutorchase" 
-            target="_blank" 
-            rel="nofollow" 
-            className="inline-block bg-blue-800 text-white font-normal text-center text-lg py-3 px-10 rounded-md hover:bg-blue-700 transition-all w-64 sm:w-auto"
-          >
-            Read our verified reviews
-          </ExternalLink>
+          ))}
         </div>
+
+
       </div>
     </section>
   );
 };
 
-export default TestimonialSection; 
+export default TestimonialSection;

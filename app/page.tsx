@@ -4,7 +4,6 @@ import HeroSection, { HeroData } from "./components/HeroSection";
 import AdvertBlock from "./components/AdvertBlock";
 import TutorProfiles, { TutorData } from "./components/TutorProfiles";
 import SubjectGrid from "./components/SubjectGrid";
-import InteractiveTutoringPlatform from "./components/InteractiveTutoringPlatform";
 import TutoringPlatformBanner, {
   PlatformBannerData,
 } from "./components/TutoringPlatformBanner";

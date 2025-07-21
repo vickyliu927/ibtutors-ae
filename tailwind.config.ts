@@ -31,6 +31,7 @@ const config: Config = {
         // Custom colors from Figma design
         primary: "#001A96",
         greyBlueLight: "#F9F9FD",
+        faqBackground: "#FBFCFD",
         greyBorder: "#E6E7ED",
         textDark: "#171D23",
       },
