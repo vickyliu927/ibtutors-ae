@@ -75,7 +75,7 @@ Budget: ${encodeHTML(budget)}`;
 
     const emailData = await resend.emails.send({
       from: 'Your App <onboarding@resend.dev>',
-      to: 'vicliu927@gmail.com',
+      to: 'rahil@tutorchase.com',
       subject,
       text,
     });
