@@ -1,8 +1,10 @@
 import React from "react";
 import Navbar from "./components/Navbar";
 import HeroSection, { HeroData } from "./components/HeroSection";
+import AdvertBlock from "./components/AdvertBlock";
 import TutorProfiles, { TutorData } from "./components/TutorProfiles";
 import SubjectGrid from "./components/SubjectGrid";
+import InteractiveTutoringPlatform from "./components/InteractiveTutoringPlatform";
 import TutoringPlatformBanner, {
   PlatformBannerData,
 } from "./components/TutoringPlatformBanner";
@@ -57,6 +59,7 @@ interface HomepageData {
   heroData: any | null;
   highlightsSection: any | null;
   subjectGridSection: any | null;
+  advertBlockSection: any | null;
   trustedInstitutionsBanner: any | null;
   tutorProfilesSection: any | null;
   platformBanner: any | null;
@@ -97,7 +100,11 @@ async function getHomepageDataWithCloneContext(
             )
           : null;
 
-
+        const advertBlockSection = content.advertBlockSection.data
+          ? cloneQueryUtils.getContentWithCustomizations(
+              content.advertBlockSection,
+            )
+          : null;
 
         const trustedInstitutionsBanner = content.trustedInstitutions.data
           ? cloneQueryUtils.getContentWithCustomizations(
@@ -148,6 +155,7 @@ async function getHomepageDataWithCloneContext(
           heroData,
           highlightsSection,
           subjectGridSection,
+          advertBlockSection,
           trustedInstitutionsBanner,
           tutorProfilesSection: tutorProfilesSectionWithTutors,
           platformBanner,
@@ -163,6 +171,7 @@ async function getHomepageDataWithCloneContext(
           heroData: null,
           highlightsSection: null,
           subjectGridSection: null,
+          advertBlockSection: null,
           trustedInstitutionsBanner: null,
           tutorProfilesSection: null,
           platformBanner: null,
@@ -201,6 +210,7 @@ export default async function Home({
     heroData,
     highlightsSection,
     subjectGridSection,
+    advertBlockSection,
     trustedInstitutionsBanner,
     tutorProfilesSection,
     platformBanner,
@@ -212,6 +222,7 @@ export default async function Home({
     heroData: null,
     highlightsSection: null,
     subjectGridSection: null,
+    advertBlockSection: null,
     trustedInstitutionsBanner: null,
     tutorProfilesSection: null,
     platformBanner: null,
@@ -268,7 +279,10 @@ export default async function Home({
         <SubjectGrid sectionData={subjectGridSection} />
       ) : null}
 
-
+      {/* Advert Block - Positioned after SubjectGrid section */}
+      {advertBlockSection?.enabled !== false ? (
+        <AdvertBlock sectionData={advertBlockSection} />
+      ) : null}
       <TutoringPlatformBanner data={platformBanner} />
       {testimonialSection && testimonials.length > 0 ? (
         <LazyTestimonialSection
