@@ -658,7 +658,6 @@ export const homepageQueries = {
     hero: ContentResult<any>;
     highlights: ContentResult<any>;
     subjectGridSection: ContentResult<any>;
-    advertBlockSection: ContentResult<any>;
     trustedInstitutions: ContentResult<any>;
     tutorProfilesSection: ContentResult<any>;
     tutors: ContentResult<any[]>;
@@ -675,7 +674,6 @@ export const homepageQueries = {
       hero,
       highlights,
       subjectGridSection,
-      advertBlockSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,
@@ -690,7 +688,6 @@ export const homepageQueries = {
       heroQueries.fetch(cloneId),
       highlightsQueries.fetch(cloneId),
       subjectGridSectionQueries.fetch(cloneId),
-      advertBlockSectionQueries.fetch(cloneId),
       trustedInstitutionsQueries.fetch(cloneId),
       tutorProfilesSectionQueries.fetch(cloneId),
       tutorQueries.fetchHomepageTutors(cloneId),
@@ -707,7 +704,6 @@ export const homepageQueries = {
       hero,
       highlights,
       subjectGridSection,
-      advertBlockSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,
