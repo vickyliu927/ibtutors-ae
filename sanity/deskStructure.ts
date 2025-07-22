@@ -73,6 +73,9 @@ export const structure = (S: StructureBuilder) =>
           S.list()
             .title('Subject Page Sections')
             .items([
+              S.documentTypeListItem('subjectHeroSection')
+                .title('Subject Hero Sections')
+                .icon(BiHome),
               S.documentTypeListItem('subjectPage')
                 .title('Subject Page Settings')
                 .icon(BsBook),

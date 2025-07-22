@@ -37,14 +37,14 @@ const Footer = async () => {
               <span className="text-textDark">
                 Alternatively contact us via Email or Phone, or visit{' '}
               </span>
-              <a
+                        <a
                 href={footer.tutorchaseLink || "https://www.tutorchase.com"}
-                target="_blank"
+                          target="_blank"
                 rel={getServerRelAttributes(footer.tutorchaseLink || "https://www.tutorchase.com")}
                 className="text-primary"
-              >
-                TutorChase
-              </a>
+                        >
+                          TutorChase
+                        </a>
             </h2>
 
             {/* WhatsApp button */}

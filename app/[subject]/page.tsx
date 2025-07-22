@@ -7,6 +7,7 @@ import TutorProfiles from '../components/TutorProfiles';
 import TestimonialSection, { TestimonialSectionData } from '../components/TestimonialSection';
 import FAQSection from '../components/FAQSection';
 import FaqAccordion from '../components/FaqAccordion';
+import SubjectHeroSection from '../components/SubjectHeroSection';
 import { Metadata } from 'next';
 import { getSeoData, SeoData } from '../lib/getSeoData';
 import { notFound } from 'next/navigation';
@@ -357,62 +358,13 @@ export default async function DynamicPage({
       <main>
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
-        <Navbar />
         
-        {/* First Section */}
-        <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Stars and Reviews */}
-            <div className="flex flex-col items-center mb-6">
-              <div className="flex mb-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <svg
-                    key={star}
-                    className="h-7 w-7 text-yellow-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 15.934L4.618 19.098l1.039-6.054L1.314 8.902l6.068-.881L10 2.666l2.618 5.355 6.068.881-4.343 4.142 1.039 6.054L10 15.934z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ))}
-              </div>
-              <div className="text-xl font-medium">
-                4.92/5 based on <span className="font-bold">480 reviews</span>
-              </div>
-            </div>
-
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-5">
-                {curriculumResult.pageData?.firstSection.title.split(" ").map((word: string, index: number) => {
-                  const shouldHighlight = curriculumResult.pageData?.firstSection.highlightedWords?.includes(word);
-                  return (
-                    <span
-                      key={index}
-                      className={shouldHighlight ? "text-blue-800" : ""}
-                    >
-                      {word}{" "}
-                    </span>
-                  );
-                })}
-              </h1>
-              <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto">
-                {curriculumResult.pageData?.firstSection.description}
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* New Hero Section */}
+        <SubjectHeroSection />
 
         {/* Tutors Section */}
         <TutorProfiles 
           tutors={curriculumResult.pageData.tutorsList} 
-          sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
-          sectionSubtitle={curriculumResult.pageData.tutorsListSectionHead?.description}
-          ctaText={curriculumResult.pageData.tutorsListSectionHead?.ctaLinkText}
-          ctaLink={curriculumResult.pageData.tutorsListSectionHead?.ctaLink}
           useNewCardDesign={true}
         />
 
@@ -481,88 +433,12 @@ export default async function DynamicPage({
     <main>
       {/* Enhanced Clone Debug Panel - Development Only */}
       <CloneIndicatorBanner {...cloneIndicatorProps} />
-      <Navbar />
       
-      {/* First Section */}
-      <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Stars and Reviews */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="flex mb-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <svg
-                  key={star}
-                  className="h-7 w-7 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 15.934L4.618 19.098l1.039-6.054L1.314 8.902l6.068-.881L10 2.666l2.618 5.355 6.068.881-4.343 4.142 1.039 6.054L10 15.934z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ))}
-            </div>
-            <div className="text-xl font-medium">
-              4.92/5 based on <span className="font-bold">480 reviews</span>
-            </div>
-          </div>
-          
-          <h1 className="text-5xl font-bold mb-8 text-center">
-            {pageData.firstSection.title.split(' ').map((word: string, index: number) => (
-              <React.Fragment key={index}>
-                <span className={
-                  pageData.firstSection.highlightedWords?.includes(word) 
-                    ? "text-blue-800" 
-                    : ""
-                }>
-                  {word}
-                </span>{" "}
-              </React.Fragment>
-            ))}
-          </h1>
-          <p className="text-xl text-gray-600 text-center">{pageData.firstSection.description}</p>
-        </div>
-      </section>
+      {/* New Hero Section */}
+      <SubjectHeroSection />
 
       {/* Tutors Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {pageData.tutorsListSectionHead?.smallTextBeforeTitle && (
-            <p className="text-sm text-gray-500 mb-2">
-              {pageData.tutorsListSectionHead.smallTextBeforeTitle}
-            </p>
-          )}
-          
-          {pageData.tutorsListSectionHead?.sectionTitle && (
-            <h2 className="text-3xl font-bold mb-4">
-              {pageData.tutorsListSectionHead.sectionTitle}
-            </h2>
-          )}
-          
-          {pageData.tutorsListSectionHead?.description && (
-            <p className="text-gray-600 mb-8">
-              {pageData.tutorsListSectionHead.description}
-            </p>
-          )}
-
-          {pageData.tutorsListSectionHead?.ctaLinkText && pageData.tutorsListSectionHead?.ctaLink && (
-            <p className="text-orange-500 hover:text-orange-600 mb-8">
-              <a 
-                href={pageData.tutorsListSectionHead.ctaLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors"
-              >
-                {pageData.tutorsListSectionHead.ctaLinkText}
-              </a>
-            </p>
-          )}
-
-          <TutorProfiles tutors={pageData.tutorsList} useNewCardDesign={true} />
-        </div>
-      </section>
+      <TutorProfiles tutors={pageData.tutorsList} useNewCardDesign={true} />
 
       {/* Testimonials Section */}
       {pageData.testimonials && pageData.testimonials.length > 0 && testimonialSection && (

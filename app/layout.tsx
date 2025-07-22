@@ -2,17 +2,16 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { getSeoData } from './lib/getSeoData';
-import { CriticalCssInjector } from './Document';
 
 // Load Inter font with display: swap for better performance
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap', // Use 'swap' to prevent layout shifts
 });
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoData();
-  
+
   return {
     title: seo.title,
     description: seo.description,
@@ -39,10 +38,8 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <CriticalCssInjector>
-          {children}
-        </CriticalCssInjector>
+        {children}
       </body>
     </html>
   );
-} 
+}

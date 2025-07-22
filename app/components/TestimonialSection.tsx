@@ -156,11 +156,11 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
           {/* Stars */}
           <div className="flex justify-center mb-2">
             <StarRating rating={5} />
-          </div>
-          
+        </div>
+
           {/* Title */}
           <div className="flex flex-col items-center gap-3">
-            <div className="text-center">
+                <div className="text-center">
               <span className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-textDark">
                 Rated {sectionData.rating}/5 based on{' '}
               </span>
@@ -168,7 +168,7 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
                 {sectionData.totalReviews} reviews
               </span>
             </div>
-            <div className="text-center">
+                  <div className="text-center">
               <span className="font-gilroy text-lg leading-[150%] text-[#F57C40] uppercase" style={{ fontWeight: 200 }}>
                 Trusted globally by students and parents
               </span>
@@ -176,15 +176,15 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
           </div>
         </div>
 
-        {/* Testimonial cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9 max-w-[1400px] mx-auto">
+        {/* Testimonial cards - UPDATED LAYOUT */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9 max-w-none mx-auto px-4 justify-items-center">
           {displayTestimonials.slice(0, 3).map((testimonial, index) => (
-            <div
-              key={testimonial._id}
-              className="flex flex-col justify-center items-center gap-9 p-11 rounded-2xl bg-white shadow-[0px_16px_40px_0px_rgba(0,14,81,0.05)] h-[352px] w-full"
+              <div
+                key={testimonial._id}
+              className="flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-2xl bg-white shadow-[0px_16px_40px_0px_rgba(0,14,81,0.05)] h-[352px] w-full max-w-[450px]"
             >
               {/* Testimonial Text */}
-               <div className="text-center font-gilroy text-lg leading-[150%] text-textDark flex-1 flex items-center" style={{ fontWeight: 200 }}>
+               <div className="text-center font-gilroy text-lg leading-[150%] text-textDark flex-1 flex items-center justify-center px-2" style={{ fontWeight: 200 }}>
                  <div className="testimonial-content">
                    "<PortableText 
                      value={testimonial.testimonialText}
@@ -198,24 +198,24 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
                          },
                        }}
                    />"
-                 </div>
+                </div>
                </div>
 
               {/* Author Info */}
               <div className="flex flex-col items-center gap-3">
                 <StarRating rating={testimonial.rating} />
-                <div className="flex items-center gap-4">
-                  <span className="font-gilroy text-lg text-textDark font-medium">
+                <div className="flex items-center gap-3" style={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>
+                  <span className="font-gilroy text-base text-textDark font-medium">
                     {testimonial.reviewerName}
                   </span>
-                  <span className="font-gilroy text-lg text-textDark opacity-80">|</span>
-                  <span className="font-gilroy text-lg text-[#8B8E91]">
+                  <span className="font-gilroy text-base text-textDark opacity-80 flex-shrink-0">|</span>
+                  <span className="font-gilroy text-base text-[#8B8E91]">
                     {testimonial.reviewerType}
                   </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
 
 
@@ -224,4 +224,4 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
   );
 };
 
-export default TestimonialSection;
+export default TestimonialSection; 

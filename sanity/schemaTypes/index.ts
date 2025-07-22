@@ -18,6 +18,7 @@ import subjectGridSection from './subjectGridSection'
 import advertBlockSection from './advertBlockSection'
 import linkSettings from './linkSettings'
 import clone from './clone'
+import subjectHeroSection from './subjectHeroSection'
 
 export const schemaTypes = [
   clone,
@@ -40,4 +41,5 @@ export const schemaTypes = [
   seoSettings,
   navbarSettings,
   linkSettings,
+  subjectHeroSection,
 ] 

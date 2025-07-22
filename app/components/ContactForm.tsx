@@ -151,172 +151,172 @@ const ContactForm = () => {
   return (
     <section className="py-16 flex justify-center items-center min-h-screen bg-gray-50">
       <div className="relative rounded-[20px] bg-primary overflow-hidden max-w-[1056px] w-full mx-4">
-        {/* Background Decorative Elements */}
-        <div className="absolute inset-0">
-          {/* Background SVG Lines */}
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0">
+        {/* Background SVG Lines */}
           <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 1056 927" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1079.2 -79.7461L22.7704 793.785C8.98548 805.183 1.00488 822.137 1.00488 840.025V1140.85" stroke="white" strokeWidth="1" opacity="0.3"/>
             <path d="M961.324 0.662109L1.12402 795.404" stroke="white" strokeWidth="1" opacity="0.3"/>
             <path d="M941.087 0.404297L0.938477 758.001" stroke="white" strokeWidth="1" opacity="0.3"/>
             <path d="M366.085 -95.9531L24.2694 163.946C9.3468 175.292 0.584961 192.961 0.584961 211.708V561.133" stroke="white" strokeWidth="1" opacity="0.3"/>
-          </svg>
-        </div>
+        </svg>
+      </div>
 
         {/* Content */}
         <div className="relative z-10 p-8 lg:p-16">
-          {/* Header Text */}
+      {/* Header Text */}
           <div className="text-center mb-12">
             <h2 className="font-gilroy text-4xl lg:text-5xl font-medium leading-[120%] text-white mb-4">
-              Hire a tutor
-            </h2>
+          Hire a tutor
+        </h2>
             <p className="font-gilroy text-base leading-[160%] text-white max-w-4xl mx-auto" style={{ fontWeight: 200 }}>
-              Please fill out the form and an academic consultant from{' '}
-              <span className="underline">TutorChase</span> will find a tutor for you
-            </p>
-          </div>
+          Please fill out the form and an academic consultant from{' '}
+          <span className="underline">TutorChase</span> will find a tutor for you
+        </p>
+      </div>
 
-          {/* Form Container */}
+      {/* Form Container */}
           <div className="bg-white rounded-[20px] p-8 max-w-[773px] mx-auto">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* First Row - Full Name and Country */}
               <div className="flex gap-4">
                 <div className="flex-1 space-y-2">
                   <label htmlFor="fullName" className="block font-gilroy text-base font-normal text-textDark">
-                    Full name *
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    required
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder="Enter your name here"
+                Full name *
+              </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  required
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  placeholder="Enter your name here"
                     className="w-full h-12 px-4 py-2 border border-gray-300 rounded-xl font-gilroy text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                  {errors.fullName && (
+                />
+              {errors.fullName && (
                     <p className="text-sm text-red-600">{errors.fullName}</p>
-                  )}
-                </div>
-                
+              )}
+            </div>
+            
                 <div className="flex-1 space-y-2">
                   <label htmlFor="country" className="block font-gilroy text-base font-normal text-textDark">
-                    Country *
-                  </label>
-                  <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    required
-                    value={formData.country}
-                    onChange={handleChange}
-                    placeholder="Enter your country here"
+                Country *
+              </label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  required
+                  value={formData.country}
+                  onChange={handleChange}
+                  placeholder="Enter your country here"
                     className="w-full h-12 px-4 py-2 border border-gray-300 rounded-xl font-gilroy text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                  {errors.country && (
+                />
+              {errors.country && (
                     <p className="text-sm text-red-600">{errors.country}</p>
-                  )}
-                </div>
-              </div>
+              )}
+            </div>
+          </div>
 
-              {/* Second Row - Phone and Email */}
+          {/* Second Row - Phone and Email */}
               <div className="flex gap-4">
                 <div className="flex-1 space-y-2">
                   <label htmlFor="phone" className="block font-gilroy text-base font-normal text-textDark">
-                    Your phone (with country code) *
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    required
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Enter your phone here"
+                Your phone (with country code) *
+              </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Enter your phone here"
                     className="w-full h-12 px-4 py-2 border border-gray-300 rounded-xl font-gilroy text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                  {errors.phone && (
+                />
+              {errors.phone && (
                     <p className="text-sm text-red-600">{errors.phone}</p>
-                  )}
-                </div>
-                
+              )}
+            </div>
+            
                 <div className="flex-1 space-y-2">
                   <label htmlFor="email" className="block font-gilroy text-base font-normal text-textDark">
-                    Your email *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Enter your email here"
+                Your email *
+              </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email here"
                     className="w-full h-12 px-4 py-2 border border-gray-300 rounded-xl font-gilroy text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                  {errors.email && (
+                />
+              {errors.email && (
                     <p className="text-sm text-red-600">{errors.email}</p>
-                  )}
-                </div>
-              </div>
+              )}
+            </div>
+          </div>
 
-              {/* Details Textarea */}
+          {/* Details Textarea */}
               <div className="space-y-2">
                 <label htmlFor="details" className="block font-gilroy text-base font-normal text-textDark">
-                  Details of tutoring request (e.g. exams, subjects, how long for etc.) *
-                </label>
-                <textarea
-                  id="details"
-                  name="details"
-                  required
+              Details of tutoring request (e.g. exams, subjects, how long for etc.) *
+            </label>
+              <textarea
+                id="details"
+                name="details"
+                required
                   rows={6}
-                  value={formData.details}
-                  onChange={handleChange}
-                  placeholder="Enter details"
+                value={formData.details}
+                onChange={handleChange}
+                placeholder="Enter details"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl font-gilroy text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                />
-                {errors.details && (
+              />
+            {errors.details && (
                   <p className="text-sm text-red-600">{errors.details}</p>
-                )}
-              </div>
+            )}
+          </div>
 
-              {/* Budget */}
+          {/* Budget */}
               <div className="space-y-2">
                 <label htmlFor="budget" className="block font-gilroy text-base font-normal text-textDark">
-                  Hourly budget (including currency) *
-                </label>
-                <input
-                  type="text"
-                  id="budget"
-                  name="budget"
-                  required
-                  value={formData.budget}
-                  onChange={handleChange}
-                  placeholder="Enter your budget here"
+              Hourly budget (including currency) *
+            </label>
+              <input
+                type="text"
+                id="budget"
+                name="budget"
+                required
+                value={formData.budget}
+                onChange={handleChange}
+                placeholder="Enter your budget here"
                   className="w-full h-12 px-4 py-2 border border-gray-300 rounded-xl font-gilroy text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                {errors.budget && (
+              />
+            {errors.budget && (
                   <p className="text-sm text-red-600">{errors.budget}</p>
-                )}
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="w-full h-12 bg-primary text-white font-gilroy text-base font-semibold rounded-[28px] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {status === 'loading' ? 'Submitting...' : 'Submit'}
-              </button>
-              
-              {message && (
-                <p className={`text-center text-sm ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
-                  {message}
-                </p>
-              )}
-            </form>
+            )}
           </div>
-        </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={status === 'loading'}
+                className="w-full h-12 bg-primary text-white font-gilroy text-base font-semibold rounded-[28px] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+              {status === 'loading' ? 'Submitting...' : 'Submit'}
+          </button>
+          
+          {message && (
+                <p className={`text-center text-sm ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+              {message}
+            </p>
+          )}
+        </form>
+      </div>
+    </div>
       </div>
     </section>
   );
