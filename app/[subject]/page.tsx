@@ -360,7 +360,7 @@ export default async function DynamicPage({
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
         {/* New Hero Section */}
-        <SubjectHeroSection />
+        <SubjectHeroSection subjectSlug={params.subject} />
 
         {/* Tutors Section */}
         <TutorProfiles 
@@ -435,7 +435,7 @@ export default async function DynamicPage({
       <CloneIndicatorBanner {...cloneIndicatorProps} />
       
       {/* New Hero Section */}
-      <SubjectHeroSection />
+      <SubjectHeroSection subjectSlug={params.subject} />
 
       {/* Tutors Section */}
       <TutorProfiles tutors={pageData.tutorsList} useNewCardDesign={true} />

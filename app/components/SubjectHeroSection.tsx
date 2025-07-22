@@ -7,9 +7,10 @@ import { getSubjectHeroData, type SubjectHeroData } from '../lib/getSubjectHeroD
 
 interface SubjectHeroSectionProps {
   className?: string;
+  subjectSlug?: string;
 }
 
-const SubjectHeroSection = ({ className = '' }: SubjectHeroSectionProps) => {
+const SubjectHeroSection = ({ className = '', subjectSlug }: SubjectHeroSectionProps) => {
   const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
   const [curriculums, setCurriculums] = useState<CurriculumPageData[]>([]);
   const [heroData, setHeroData] = useState<SubjectHeroData | null>(null);
@@ -74,7 +75,7 @@ const SubjectHeroSection = ({ className = '' }: SubjectHeroSectionProps) => {
 
     const fetchHeroData = async () => {
       try {
-        const data = await getSubjectHeroData();
+        const data = await getSubjectHeroData(subjectSlug);
         setHeroData(data);
       } catch (error) {
         console.error('Error fetching subject hero data:', error);
@@ -93,7 +94,7 @@ const SubjectHeroSection = ({ className = '' }: SubjectHeroSectionProps) => {
         clearTimeout(levelsTimeoutRef.current);
       }
     };
-  }, []);
+  }, [subjectSlug]); // Re-fetch when subjectSlug changes
 
   return (
     <div
@@ -295,12 +296,12 @@ const SubjectHeroSection = ({ className = '' }: SubjectHeroSectionProps) => {
       </div>
 
       {/* Decorative Cards - Only visible on large screens */}
-      <div className="hidden xl:block absolute left-[57px] top-[115px] w-[1308px] h-[208px]">
-        {/* Right Card - Increased width */}
+      <div className="hidden xl:block absolute left-[57px] top-[115px] w-[1380px] h-[208px]">
+        {/* Right Card - Moved further right */}
         <img
           src="https://api.builder.io/api/v1/image/assets/TEMP/4398d714395ea97a84425a4f237fef6197e4064e?width=198"
           alt="Decorative card"
-          className="absolute left-[1209px] top-0 w-[180px] h-[184px]"
+          className="absolute left-[1280px] top-0 w-[180px] h-[184px]"
         />
 
         {/* Left Card - Increased width */}

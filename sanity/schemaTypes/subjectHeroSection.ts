@@ -7,6 +7,24 @@ const subjectHeroSectionSchema = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'subjectPage',
+      title: 'Subject Page',
+      type: 'reference',
+      to: [{ type: 'subjectPage' }],
+      description: 'Select which subject page this hero section is for. Leave empty for global/default hero content.',
+      validation: Rule => Rule.custom((subjectPage, context) => {
+        // Allow empty for global/default hero sections
+        return true;
+      }),
+    }),
+    defineField({
+      name: 'isDefault',
+      title: 'Use as Default/Fallback',
+      type: 'boolean',
+      description: 'If enabled, this hero section will be used as fallback when no subject-specific hero is found',
+      initialValue: false,
+    }),
+    defineField({
       name: 'rating',
       title: 'Rating Section',
       type: 'object',
@@ -65,14 +83,27 @@ const subjectHeroSectionSchema = defineType({
   ],
   preview: {
     select: {
-      title: 'title.firstPart',
-      subtitle: 'title.secondPart',
+      titleFirstPart: 'title.firstPart',
+      titleSecondPart: 'title.secondPart',
+      subjectPage: 'subjectPage.subject',
+      isDefault: 'isDefault',
     },
     prepare(selection) {
-      const { title, subtitle } = selection;
+      const { titleFirstPart, titleSecondPart, subjectPage, isDefault } = selection;
+      const titleText = `${titleFirstPart || ''}${titleSecondPart || ''}`;
+      
+      let subtitleText = 'Subject Hero Section';
+      if (isDefault) {
+        subtitleText = '🌐 Default/Fallback Hero';
+      } else if (subjectPage) {
+        subtitleText = `📚 ${subjectPage}`;
+      } else {
+        subtitleText = '❓ Unassigned Hero';
+      }
+      
       return {
-        title: `${title || ''}${subtitle || ''}`,
-        subtitle: 'Subject Hero Section',
+        title: titleText || 'Subject Hero Section',
+        subtitle: subtitleText,
       };
     },
   },
