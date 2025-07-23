@@ -158,14 +158,25 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
             <StarRating rating={5} />
         </div>
 
-          {/* Title - Split into two lines */}
+          {/* Title - Two lines on mobile, one line on desktop */}
           <div className="flex flex-col items-center gap-3">
             <div className="text-center">
-              <div className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-textDark">
-                Rated {sectionData.rating}/5
+              {/* Mobile: Stacked layout */}
+              <div className="flex flex-col lg:hidden">
+                <div className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-textDark">
+                  Rated {sectionData.rating}/5
+                </div>
+                <div className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-primary">
+                  based on {sectionData.totalReviews} reviews
+                </div>
               </div>
-              <div className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-primary">
-                based on {sectionData.totalReviews} reviews
+              
+              {/* Desktop: Single line layout */}
+              <div className="hidden lg:block">
+                <div className="font-gilroy font-medium text-4xl leading-[140%] text-center">
+                  <span className="text-textDark">Rated {sectionData.rating}/5</span>
+                  <span className="text-primary"> based on {sectionData.totalReviews} reviews</span>
+                </div>
               </div>
             </div>
             <div className="text-center">

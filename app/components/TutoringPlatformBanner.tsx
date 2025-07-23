@@ -1,15 +1,9 @@
 'use client';
 
-export interface PlatformFeature {
-  feature: string;
-  description?: string;
-}
-
 export interface PlatformBannerData {
   title?: string;
   subtitle?: string;
   description?: string;
-  features?: PlatformFeature[];
 }
 
 interface Props {
@@ -23,13 +17,6 @@ const TutoringPlatformBanner = ({ data }: Props) => {
   const title = data.title || 'Engaging Lessons with our Online Platform';
   const subtitle = data.subtitle || 'ONLINE TUTORING PLATFORM';
   const description = data.description || 'Our online platform brings lessons to life, allowing students to draw diagrams, solve equations, edit essays, and annotate work. We deliver elite tutoring worldwide, matching students with the best tutors available.';
-
-  // Default features if none provided
-  const features = data.features || [
-    { feature: 'Interactive whiteboard for real-time collaboration' },
-    { feature: 'HD video and crystal-clear audio' },
-    { feature: 'Document sharing and annotation tools' }
-  ];
 
   return (
     <section className="py-8 bg-white">
