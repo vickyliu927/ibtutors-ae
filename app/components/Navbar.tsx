@@ -156,7 +156,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
               </div>
             </div>
           )}
-        </Link>
+            </Link>
           
           {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-[44px]">
@@ -247,12 +247,12 @@ const Navbar = ({ navbarData }: NavbarProps) => {
         </div>
 
         {/* CTA Button */}
-        <Link
+                        <Link
           href={navbarData?.buttonLink || "#contact-form"}
           className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-        >
+                        >
           {navbarData?.buttonText || 'Hire a tutor'}
-        </Link>
+                        </Link>
 
         {/* Mobile Menu Button */}
         <button

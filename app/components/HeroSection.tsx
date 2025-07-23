@@ -66,12 +66,12 @@ const LoadingHero = () => (
     <div className="max-w-[1440px] mx-auto px-4 h-full">
       <div className="absolute left-24 top-[120px] w-[560px] space-y-6">
         <div className="h-20 bg-gray-200 rounded w-full"></div>
-        <div className="h-6 bg-gray-200 rounded w-2/3"></div>
-        <div className="space-y-4">
-          <div className="h-12 bg-gray-200 rounded w-40"></div>
-          <div className="h-6 bg-gray-200 rounded w-56"></div>
+          <div className="h-6 bg-gray-200 rounded w-2/3"></div>
+          <div className="space-y-4">
+            <div className="h-12 bg-gray-200 rounded w-40"></div>
+            <div className="h-6 bg-gray-200 rounded w-56"></div>
+          </div>
         </div>
-      </div>
       <div className="absolute right-[133px] top-[30px] w-[538px] h-[550px] bg-gray-200 rounded hidden lg:block"></div>
     </div>
   </div>
@@ -88,7 +88,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
 
   return (
     <div
-      className="relative w-full h-[640px] overflow-hidden"
+      className="relative w-full min-h-[640px] lg:h-[640px] overflow-hidden"
       style={{
         background:
           "linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)",
@@ -119,8 +119,8 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
         </defs>
       </svg>
 
-      {/* Hero Content Container */}
-      <div className="relative z-10 max-w-[1440px] mx-auto px-4 h-full">
+      {/* Hero Content Container - Desktop Only */}
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 h-full hidden lg:block">
         {/* Text Content - Moved upwards */}
         <div className="absolute left-24 top-[120px] w-[560px] h-[418px] flex flex-col items-start gap-12">
           {/* Heading Section */}
@@ -141,12 +141,12 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
           {/* Button and Rating Section */}
           <div className="flex items-center gap-6">
             {/* Button */}
-            <Link
+              <Link
               href={heroData.primaryButton?.link || "#contact-form"}
               className="flex h-12 px-7 justify-center items-center rounded-[28px] bg-[#001A96] text-white text-center text-base font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-            >
+              >
               {heroData.primaryButton?.text || 'Hire a tutor'}
-            </Link>
+              </Link>
 
             {/* Rating */}
             <div className="flex flex-col items-start gap-1">
@@ -154,8 +154,8 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               <div className="flex gap-1">
                 {[...Array(5)].map((_, index) => (
                   <StarIcon key={index} />
-                ))}
-              </div>
+                  ))}
+                </div>
 
               {/* Rating Text */}
               <div className="flex items-center gap-2">
@@ -175,108 +175,88 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
               <div key={index} className="flex items-center gap-1">
                 <CheckIcon />
                 <span className="text-[#171D23] text-base font-light leading-[140%] font-gilroy">
-                  {feature}
+                    {feature}
                 </span>
               </div>
-            ))}
+                ))}
           </div>
         </div>
 
-        {/* Hero Image - Moved downwards */}
-        <div className="absolute right-[133px] top-[90px] w-[538px] h-[550px] hidden lg:block">
-          {heroData.mainImage && !imageError ? (
-            <Image
-              src={urlFor(heroData.mainImage).width(1076).height(1100).quality(95).url()}
-              alt="Expert tutor helping student"
-              width={538}
-              height={550}
-              className="w-full h-full object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, 50vw"
-              onError={() => setImageError(true)}
-              loading="eager"
-              quality={95}
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
-              <span className="text-center">
-                {imageError ? "Failed to load image" : "Loading image..."}
-              </span>
-            </div>
-          )}
-        </div>
 
-        {/* Mobile Hero Image */}
-        <div className="absolute right-4 top-[320px] w-full max-w-[300px] h-[250px] lg:hidden">
-          {heroData.mainImage && !imageError ? (
-            <Image
-              src={urlFor(heroData.mainImage).width(600).height(500).quality(95).url()}
-              alt="Expert tutor helping student"
-              width={300}
-              height={250}
-              className="w-full h-full object-cover rounded-lg"
-              priority
-              sizes="(max-width: 768px) 100vw, 300px"
-              onError={() => setImageError(true)}
-              loading="eager"
-              quality={95}
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg">
-              <span className="text-center text-sm">
-                {imageError ? "Failed to load image" : "Loading image..."}
-              </span>
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Mobile Text Content Adjustment */}
-      <div className="lg:hidden">
-        <div className="absolute left-4 top-[40px] w-[calc(100%-2rem)] max-w-[400px] flex flex-col items-start gap-6">
-          {/* Mobile Title */}
-          <h1 className="text-[36px] font-medium leading-[120%] font-gilroy">
-            <span className="text-[#171D23]">{heroData.titleFirstRow}</span>
+      {/* Desktop Hero Image - Outside container for proper positioning */}
+      <div className="absolute right-[133px] top-[90px] w-[538px] h-[550px] hidden lg:block z-10">
+            {heroData.mainImage && !imageError ? (
+              <Image
+            src={urlFor(heroData.mainImage).width(1076).height(1100).quality(95).url()}
+            alt="Expert tutor helping student"
+            width={538}
+            height={550}
+            className="w-full h-full object-cover"
+                priority
+            sizes="50vw"
+                onError={() => setImageError(true)}
+                loading="eager"
+            quality={95}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
+                <span className="text-center">
+                  {imageError ? "Failed to load image" : "Loading image..."}
+                </span>
+            </div>
+            )}
+      </div>
+
+      {/* Mobile Layout - Completely restructured */}
+      <div className="lg:hidden relative w-full min-h-[774px] flex flex-col z-20 pt-[77px]">
+        {/* Mobile Content Container */}
+        <div className="flex-1 px-[29px] py-[39px] flex flex-col justify-start items-start max-w-[508px] mx-auto">
+          {/* Mobile Title - Match Figma exactly */}
+          <h1 className="text-[48px] font-medium leading-[120%] font-gilroy mb-[29px] w-full">
+            <span className="text-[#171D23]">Expert IB Tutors.</span>
             <br />
-            <span className="text-[#001A96]">{heroData.titleSecondRow}</span>
+            <span className="text-[#001A96]">Dubai & Online.</span>
           </h1>
 
-          {/* Mobile Subtitle */}
-          <p className="text-[#171D23] text-base font-light leading-[160%] font-gilroy">
-            {heroData.subtitle}
+          {/* Mobile Subtitle - Match Figma text */}
+          <p className="text-[#171D23] text-[20px] font-light leading-[150%] font-gilroy mb-[39px] w-full">
+            Learn from the world's #1 rated tutors for school exams and admissions. Trusted by 10,000+ students in Dubai and globally!
           </p>
 
-          {/* Mobile Button and Rating */}
-          <div className="flex flex-col gap-4">
-            <Link
-              href={heroData.primaryButton?.link || "#contact-form"}
-              className="flex h-12 px-6 justify-center items-center rounded-[28px] bg-[#001A96] text-white text-center text-base font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy w-fit"
-            >
-              {heroData.primaryButton?.text || 'Hire a tutor'}
-            </Link>
-
-            <div className="flex items-center gap-4">
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, index) => (
-                  <StarIcon key={index} />
-                ))}
-              </div>
-              <span className="text-[#0D2854] text-sm font-light font-gilroy">
-                {heroData.rating?.score || '4.92/5'} (<span className="font-bold underline">{heroData.rating?.reviewCount || '480 reviews'}</span>)
-              </span>
+          {/* Mobile Rating Section - Match Figma layout */}
+          <div className="flex items-center gap-[10px] mb-[39px]">
+            <div className="flex gap-[4px]">
+              <StarIcon />
             </div>
+            <span className="text-[#171D23] text-[20px] font-light font-gilroy">
+              4.92/5 based on <span className="font-bold underline">480 reviews</span>
+            </span>
           </div>
 
-          {/* Mobile Features */}
-          <div className="flex flex-col gap-2">
-            {heroData.features?.map((feature, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <CheckIcon />
-                <span className="text-[#171D23] text-sm font-light leading-[140%] font-gilroy">
-                  {feature}
-                </span>
-              </div>
-            ))}
+          {/* Mobile Button - Match Figma size and style */}
+          <Link
+            href={heroData.primaryButton?.link || "#contact-form"}
+            className="flex h-[68px] px-[39px] justify-center items-center rounded-[34px] bg-[#001A96] text-white text-center text-[22px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy w-full max-w-[424px] mb-[39px]"
+          >
+            Hire a tutor
+          </Link>
+
+          {/* Mobile Features - Match Figma with orange checkmarks */}
+          <div className="flex flex-col gap-[20px] w-full">
+            <div className="flex items-center gap-[14px]">
+              <CheckIcon />
+              <span className="text-[#171D23] text-[20px] font-light leading-[140%] font-gilroy">
+                Experienced Teachers & Examiners
+              </span>
+            </div>
+            <div className="flex items-center gap-[14px]">
+              <CheckIcon />
+              <span className="text-[#171D23] text-[20px] font-light leading-[140%] font-gilroy">
+                Proven Success Rates
+              </span>
+            </div>
           </div>
         </div>
       </div>

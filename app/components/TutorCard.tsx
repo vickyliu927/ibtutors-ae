@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,48 +23,239 @@ interface TutorCardProps {
   tutor: TutorCardData;
 }
 
+// Star Icon Component
+const StarIcon = () => (
+  <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M10 0L12.2451 6.90983H19.5106L13.6327 11.1803L15.8779 18.0902L10 13.8197L4.12215 18.0902L6.36729 11.1803L0.489435 6.90983H7.75486L10 0Z"
+      fill="#FCBD00"
+    />
+  </svg>
+);
+
+// People Icon Component
+const PeopleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M4 7.125C4 6.03098 4.4346 4.98177 5.20818 4.20818C5.98177 3.4346 7.03098 3 8.125 3C9.21902 3 10.2682 3.4346 11.0418 4.20818C11.8154 4.98177 12.25 6.03098 12.25 7.125C12.25 8.21902 11.8154 9.26823 11.0418 10.0418C10.2682 10.8154 9.21902 11.25 8.125 11.25C7.03098 11.25 5.98177 10.8154 5.20818 10.0418C4.4346 9.26823 4 8.21902 4 7.125ZM13.75 9.375C13.75 8.93179 13.8373 8.49292 14.0069 8.08344C14.1765 7.67397 14.4251 7.30191 14.7385 6.98851C15.0519 6.67512 15.424 6.42652 15.8334 6.25691C16.2429 6.0873 16.6818 6 17.125 6C17.5682 6 18.0071 6.0873 18.4166 6.25691C18.826 6.42652 19.1981 6.67512 19.5115 6.98851C19.8249 7.30191 20.0735 7.67397 20.2431 8.08344C20.4127 8.49292 20.5 8.93179 20.5 9.375C20.5 10.2701 20.1444 11.1285 19.5115 11.7615C18.8786 12.3944 18.0201 12.75 17.125 12.75C16.2299 12.75 15.3715 12.3944 14.7385 11.7615C14.1056 11.1285 13.75 10.2701 13.75 9.375ZM1 19.875C1 17.9853 1.75067 16.1731 3.08686 14.8369C4.42306 13.5007 6.23533 12.75 8.125 12.75C10.0147 12.75 11.8269 13.5007 13.1631 14.8369C14.4993 16.1731 15.25 17.9853 15.25 19.875V19.878L15.249 19.997C15.2469 20.1242 15.2125 20.2487 15.1489 20.3589C15.0854 20.4691 14.995 20.5614 14.886 20.627C12.8452 21.856 10.5073 22.5036 8.125 22.5C5.653 22.5 3.339 21.816 1.365 20.627C1.25585 20.5615 1.16517 20.4693 1.10149 20.3591C1.03781 20.2489 1.00323 20.1243 1.001 19.997L1 19.875ZM16.75 19.878L16.749 20.022C16.7434 20.3553 16.6638 20.6832 16.516 20.982C18.2617 21.0897 20.0054 20.7416 21.576 19.972C21.6975 19.9126 21.8006 19.8215 21.8745 19.7083C21.9485 19.5951 21.9904 19.4641 21.996 19.329C22.0313 18.4902 21.8494 17.6566 21.4679 16.9088C21.0864 16.1609 20.5183 15.5243 19.8185 15.0605C19.1188 14.5967 18.3111 14.3215 17.4738 14.2615C16.6364 14.2015 15.7977 14.3587 15.039 14.718C16.1522 16.2066 16.7522 18.0162 16.749 19.875L16.75 19.878Z"
+      fill="#4053B0"
+    />
+  </svg>
+);
+
 const TutorCard = ({ tutor }: TutorCardProps) => {
-  // Generate star rating display
-  const renderStars = () => {
-    const rating = tutor.rating || 4.9;
-    const stars = [];
-
-    for (let i = 0; i < 5; i++) {
-      stars.push(
-        <path
-          key={i}
-          d="M9 2.125L11.0206 8.34385H17.5595L12.2694 12.1873L14.2901 18.4062L9 14.5627L3.70993 18.4062L5.73056 12.1873L0.440492 8.34385H6.97937L9 2.125Z"
-          fill="#FCBD00"
-          transform={`translate(${i * 21}, 0.75)`}
-        />,
-      );
-    }
-
-    return stars;
-  };
+  const [nameFontSize, setNameFontSize] = useState(22);
+  const [titleFontSize, setTitleFontSize] = useState(15);
+  const [iconSize, setIconSize] = useState(24);
+  const [headerPadding, setHeaderPadding] = useState(16); // New state for dynamic padding
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const rating = tutor.rating || 4.9;
   const studentCount = tutor.activeStudents || 100;
 
+  useEffect(() => {
+    const adjustFontSizes = () => {
+      if (!headerRef.current || !cardRef.current) return;
+
+      const cardWidth = cardRef.current.offsetWidth;
+      const imageWidth = cardWidth * 0.4; // 40% of card width (square image)
+      const headerHeight = headerRef.current.offsetHeight;
+      
+      // Get positions for alignment checking
+      const cardRect = cardRef.current.getBoundingClientRect();
+      const headerRect = headerRef.current.getBoundingClientRect();
+      
+      // Calculate image dimensions and position
+      const imageHeight = imageWidth; // Square image
+      const imageTop = headerRect.bottom - imageHeight; // Image is bottom-aligned in header
+      const imageBottom = headerRect.bottom; // Image bottom aligns with header bottom (divider line)
+      
+      // Trigger Condition 1: Image top doesn't touch card top border (with 1px tolerance)
+      const imageTopMisaligned = imageTop > cardRect.top + 1;
+      
+      // Trigger Condition 2: Image bottom doesn't touch divider line (header bottom)
+      // Since image is positioned with `flex items-end`, this should be automatic, 
+      // but we check if the image is too tall for the header
+      const imageTooTallForHeader = imageHeight > headerHeight;
+      
+      // Trigger font reduction if either condition is met
+      if (imageTopMisaligned || imageTooTallForHeader) {
+        // Step 1: Reduce name font size to 18px first
+        if (nameFontSize > 18) {
+          setNameFontSize(prev => Math.max(18, prev - 2));
+          return;
+        }
+        // Step 2: When name reaches 18px, start reducing padding
+        if (nameFontSize === 18 && headerPadding > 12) {
+          setHeaderPadding(prev => Math.max(12, prev - 2));
+          return;
+        }
+        // Step 3: After padding reduced, continue reducing name font size
+        if (headerPadding === 12 && nameFontSize > 14) {
+          setNameFontSize(prev => Math.max(14, prev - 2));
+          return;
+        }
+        // Step 4: Reduce icon size for extreme cases
+        if (iconSize > 18) {
+          setIconSize(prev => Math.max(18, prev - 3));
+          return;
+        }
+        // Step 5: Reduce title font size
+        if (titleFontSize > 13) {
+          setTitleFontSize(prev => Math.max(13, prev - 1));
+          return;
+        }
+        // Step 6: Further reduce title font size as last resort
+        if (titleFontSize > 12) {
+          setTitleFontSize(prev => Math.max(12, prev - 1));
+          return;
+        }
+      }
+    };
+
+    // Adjust on mount and window resize
+    adjustFontSizes();
+    window.addEventListener('resize', adjustFontSizes);
+    
+    // Also adjust when content changes
+    const observer = new ResizeObserver(adjustFontSizes);
+    if (headerRef.current) {
+      observer.observe(headerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', adjustFontSizes);
+      observer.disconnect();
+    };
+  }, [nameFontSize, titleFontSize, iconSize, headerPadding, tutor.name, tutor.professionalTitle]);
+
+  // Dynamic Graduation Cap Icon Component
+  const DynamicGraduationCapIcon = () => (
+    <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18ZM12 3L1 9L12 15L21 10.09V17H23V9L12 3Z"
+        fill="#001A96"
+      />
+    </svg>
+  );
+
   return (
-    <div
-      className="flex items-center border border-[#E6E7ED] bg-white relative w-full"
-      style={{
-        maxWidth: "1320px",
-        width: "100%",
-        height: "280px",
-        borderRadius: "20px",
-      }}
-    >
-      {/* Left side - Tutor Image */}
-      <div
-        className="relative flex-shrink-0 overflow-hidden"
+    <>
+      {/* Mobile Layout - Dynamic Responsive Design */}
+      <div ref={cardRef} className="lg:hidden w-full max-w-[400px] mx-auto bg-white rounded-[20px] border border-[#E6E7ED] overflow-hidden shadow-sm">
+        {/* Header Section - Photo and Name */}
+        <div ref={headerRef} className="flex items-stretch min-h-[140px] relative">
+          {/* Profile Photo - Left Side - 40% width, perfect square, bottom-aligned with divider */}
+          <div className="relative flex-shrink-0 z-10 flex items-end" style={{ width: '40%' }}>
+            {/* Square container using padding-bottom technique */}
+            <div className="w-full relative">
+              <div 
+                className="w-full"
+                style={{ paddingBottom: '100%' }}
+              >
+                <div className="absolute inset-0 rounded-tl-[20px] overflow-hidden">
+                  {tutor.profilePhoto ? (
+                    <Image
+                      src={urlFor(tutor.profilePhoto).width(280).height(280).url()}
+                      alt={tutor.name}
+                      fill
+                      className="object-cover object-center"
+                      sizes="40vw"
+                      priority={true}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                      <span className="text-gray-400 text-xs sm:text-sm">No Photo</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Name and Title - Right Side - Takes remaining 60% */}
+          <div 
+            className="flex-1 min-w-0 flex flex-col justify-center"
         style={{
-          width: "280px",
-          height: "280px",
-          borderRadius: "20px 0px 0px 20px",
-        }}
-      >
+              padding: headerPadding + 'px', 
+              paddingBottom: Math.max(headerPadding - 1, 12) + 'px' 
+            }}
+          >
+            <h3 
+              className="font-medium leading-[120%] font-gilroy text-[#171D23] mb-3 sm:mb-4 break-words"
+              style={{ fontSize: nameFontSize + 'px' }}
+            >
+              {tutor.name}
+            </h3>
+            
+            <div className="flex items-start gap-2">
+              <div className="flex-shrink-0 mt-1">
+                <DynamicGraduationCapIcon />
+              </div>
+              <span 
+                className="font-normal leading-[140%] font-gilroy text-[#171D23] break-words" 
+                style={{ fontSize: titleFontSize + 'px', fontWeight: 200 }}
+              >
+                {tutor.professionalTitle || "IB Maths Tutor | University of Amsterdam"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider Line - Full width to intersect with borders */}
+        <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
+
+        {/* Rating and Students Section - Increased spacing */}
+        <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center gap-4 sm:gap-6 flex-wrap">
+          <div className="flex items-center gap-2">
+            <StarIcon />
+            <span className="text-[18px] sm:text-[20px] font-medium leading-[140%] font-gilroy text-[#171D23]">
+              {rating}
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <PeopleIcon />
+            <span className="text-[14px] sm:text-[16px] font-light leading-[140%] font-gilroy text-[#171D23]">
+              {studentCount}+ students
+            </span>
+          </div>
+        </div>
+
+        {/* Divider Line - Full width to intersect with borders */}
+        <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
+
+        {/* Bio Section - Increased spacing and 16px font size */}
+        <div className="px-4 sm:px-6 py-5 sm:py-7">
+          <p className="text-[16px] leading-[150%] font-gilroy text-[#171D23]" style={{ fontWeight: 200 }}>
+            {tutor.experience}
+          </p>
+        </div>
+
+        {/* Divider Line - Full width to intersect with borders */}
+        <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
+
+        {/* Teaches Section - Increased spacing */}
+        <div className="px-4 sm:px-6 py-4 sm:py-5">
+          <span className="text-[16px] font-medium leading-[140%] font-gilroy text-[#171D23]">
+            Teaches: <span className="text-[#001A96] font-medium">{tutor.specialization.mainSubject}</span>
+          </span>
+        </div>
+
+        {/* Full-Width Button */}
+        <Link
+          href={tutor.hireButtonLink || "/#contact-form"}
+          className="block w-full bg-[#001A96] text-white text-center text-[16px] sm:text-[18px] font-medium leading-[140%] font-gilroy py-3 sm:py-4 hover:bg-[#001A96]/90 transition-colors rounded-b-[20px]"
+        >
+          Hire a Tutor
+        </Link>
+      </div>
+
+      {/* Desktop Layout - Original Design Completely Unchanged */}
+      <div className="hidden lg:flex items-center border border-[#E6E7ED] bg-white relative w-full" style={{ maxWidth: "1320px", width: "100%", height: "280px", borderRadius: "20px" }}>
+        {/* Left side - Tutor Image */}
+        <div className="relative flex-shrink-0 overflow-hidden" style={{ width: "280px", height: "280px", borderRadius: "20px 0px 0px 20px" }}>
         {tutor.profilePhoto ? (
           <Image
             src={urlFor(tutor.profilePhoto).width(560).height(560).url()}
@@ -89,47 +280,27 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
       {/* Right side - Info Panel */}
       <div className="flex flex-col justify-between items-start flex-1 h-full">
         {/* Top section - Name, Rating, Students */}
-        <div
-          className="flex flex-col items-start gap-3 self-stretch"
-          style={{ padding: "24px 32px 0px 32px" }}
-        >
+          <div className="flex flex-col items-start gap-3 self-stretch" style={{ padding: "24px 32px 0px 32px" }}>
           {/* Name Row */}
           <div className="flex items-center self-stretch">
             <div className="flex items-center gap-8">
               {/* Name */}
-              <div
-                className="text-[#171D23] font-gilroy font-medium leading-[120%]"
-                style={{
-                  width: "160px",
-                  fontSize: "24px",
-                  fontWeight: 500,
-                }}
-              >
+                <div className="text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ width: "160px", fontSize: "24px", fontWeight: 500 }}>
                 {tutor.name}
               </div>
 
               {/* Rating Stars */}
               <div className="flex items-center gap-2">
-                <svg
-                  width="131"
-                  height="23"
-                  viewBox="0 0 131 23"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="flex items-center gap-2"
-                >
-                  {renderStars()}
-                  <text
-                    fill="#171D23"
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 500,
-                      fontFamily:
-                        "Gilroy, -apple-system, Roboto, Helvetica, sans-serif",
-                    }}
-                    x="110"
-                    y="16.964"
-                  >
+                  <svg width="131" height="23" viewBox="0 0 131 23" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex items-center gap-2">
+                    {[...Array(5)].map((_, index) => (
+                      <path
+                        key={index}
+                        d="M9 2.125L11.0206 8.34385H17.5595L12.2694 12.1873L14.2901 18.4062L9 14.5627L3.70993 18.4062L5.73056 12.1873L0.440492 8.34385H6.97937L9 2.125Z"
+                        fill="#FCBD00"
+                        transform={"translate(" + (index * 21) + ", 0.75)"}
+                      />
+                    ))}
+                    <text fill="#171D23" style={{ fontSize: "16px", fontWeight: 500, fontFamily: "Gilroy, -apple-system, Roboto, Helvetica, sans-serif" }} x="110" y="16.964">
                     {rating}
                   </text>
                 </svg>
@@ -137,47 +308,21 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
 
               {/* Students Count */}
               <div className="flex items-center gap-1.5">
-                <svg
-                  width="24"
-                  height="25"
-                  viewBox="0 0 24 25"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                >
-                  <path
-                    d="M4 7.125C4 6.03098 4.4346 4.98177 5.20818 4.20818C5.98177 3.4346 7.03098 3 8.125 3C9.21902 3 10.2682 3.4346 11.0418 4.20818C11.8154 4.98177 12.25 6.03098 12.25 7.125C12.25 8.21902 11.8154 9.26823 11.0418 10.0418C10.2682 10.8154 9.21902 11.25 8.125 11.25C7.03098 11.25 5.98177 10.8154 5.20818 10.0418C4.4346 9.26823 4 8.21902 4 7.125ZM13.75 9.375C13.75 8.93179 13.8373 8.49292 14.0069 8.08344C14.1765 7.67397 14.4251 7.30191 14.7385 6.98851C15.0519 6.67512 15.424 6.42652 15.8334 6.25691C16.2429 6.0873 16.6818 6 17.125 6C17.5682 6 18.0071 6.0873 18.4166 6.25691C18.826 6.42652 19.1981 6.67512 19.5115 6.98851C19.8249 7.30191 20.0735 7.67397 20.2431 8.08344C20.4127 8.49292 20.5 8.93179 20.5 9.375C20.5 10.2701 20.1444 11.1285 19.5115 11.7615C18.8786 12.3944 18.0201 12.75 17.125 12.75C16.2299 12.75 15.3715 12.3944 14.7385 11.7615C14.1056 11.1285 13.75 10.2701 13.75 9.375ZM1 19.875C1 17.9853 1.75067 16.1731 3.08686 14.8369C4.42306 13.5007 6.23533 12.75 8.125 12.75C10.0147 12.75 11.8269 13.5007 13.1631 14.8369C14.4993 16.1731 15.25 17.9853 15.25 19.875V19.878L15.249 19.997C15.2469 20.1242 15.2125 20.2487 15.1489 20.3589C15.0854 20.4691 14.995 20.5614 14.886 20.627C12.8452 21.856 10.5073 22.5036 8.125 22.5C5.653 22.5 3.339 21.816 1.365 20.627C1.25585 20.5615 1.16517 20.4693 1.10149 20.3591C1.03781 20.2489 1.00323 20.1243 1.001 19.997L1 19.875ZM16.75 19.878L16.749 20.022C16.7434 20.3553 16.6638 20.6832 16.516 20.982C18.2617 21.0897 20.0054 20.7416 21.576 19.972C21.6975 19.9126 21.8006 19.8215 21.8745 19.7083C21.9485 19.5951 21.9904 19.4641 21.996 19.329C22.0313 18.4902 21.8494 17.6566 21.4679 16.9088C21.0864 16.1609 20.5183 15.5243 19.8185 15.0605C19.1188 14.5967 18.3111 14.3215 17.4738 14.2615C16.6364 14.2015 15.7977 14.3587 15.039 14.718C16.1522 16.2066 16.7522 18.0162 16.749 19.875L16.75 19.878Z"
-                    fill="#4053B0"
-                  />
+                  <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                    <path d="M4 7.125C4 6.03098 4.4346 4.98177 5.20818 4.20818C5.98177 3.4346 7.03098 3 8.125 3C9.21902 3 10.2682 3.4346 11.0418 4.20818C11.8154 4.98177 12.25 6.03098 12.25 7.125C12.25 8.21902 11.8154 9.26823 11.0418 10.0418C10.2682 10.8154 9.21902 11.25 8.125 11.25C7.03098 11.25 5.98177 10.8154 5.20818 10.0418C4.4346 9.26823 4 8.21902 4 7.125ZM13.75 9.375C13.75 8.93179 13.8373 8.49292 14.0069 8.08344C14.1765 7.67397 14.4251 7.30191 14.7385 6.98851C15.0519 6.67512 15.424 6.42652 15.8334 6.25691C16.2429 6.0873 16.6818 6 17.125 6C17.5682 6 18.0071 6.0873 18.4166 6.25691C18.826 6.42652 19.1981 6.67512 19.5115 6.98851C19.8249 7.30191 20.0735 7.67397 20.2431 8.08344C20.4127 8.49292 20.5 8.93179 20.5 9.375C20.5 10.2701 20.1444 11.1285 19.5115 11.7615C18.8786 12.3944 18.0201 12.75 17.125 12.75C16.2299 12.75 15.3715 12.3944 14.7385 11.7615C14.1056 11.1285 13.75 10.2701 13.75 9.375ZM1 19.875C1 17.9853 1.75067 16.1731 3.08686 14.8369C4.42306 13.5007 6.23533 12.75 8.125 12.75C10.0147 12.75 11.8269 13.5007 13.1631 14.8369C14.4993 16.1731 15.25 17.9853 15.25 19.875V19.878L15.249 19.997C15.2469 20.1242 15.2125 20.2487 15.1489 20.3589C15.0854 20.4691 14.995 20.5614 14.886 20.627C12.8452 21.856 10.5073 22.5036 8.125 22.5C5.653 22.5 3.339 21.816 1.365 20.627C1.25585 20.5615 1.16517 20.4693 1.10149 20.3591C1.03781 20.2489 1.00323 20.1243 1.001 19.997L1 19.875ZM16.75 19.878L16.749 20.022C16.7434 20.3553 16.6638 20.6832 16.516 20.982C18.2617 21.0897 20.0054 20.7416 21.576 19.972C21.6975 19.9126 21.8006 19.8215 21.8745 19.7083C21.9485 19.5951 21.9904 19.4641 21.996 19.329C22.0313 18.4902 21.8494 17.6566 21.4679 16.9088C21.0864 16.1609 20.5183 15.5243 19.8185 15.0605C19.1188 14.5967 18.3111 14.3215 17.4738 14.2615C16.6364 14.2015 15.7977 14.3587 15.039 14.718C16.1522 16.2066 16.7522 18.0162 16.749 19.875L16.75 19.878Z" fill="#4053B0" />
                 </svg>
-                <div
-                  className="text-[#171D23] font-gilroy font-light leading-[140%]"
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: 300,
-                  }}
-                >
+                  <div className="text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 300 }}>
                   {studentCount}+ students
-                </div>
+                  </div>
               </div>
             </div>
           </div>
 
           {/* University Info */}
           <div className="flex items-center gap-3 self-stretch">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
               <g clipPath="url(#clip0_14183_13882)">
-                <path
-                  d="M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18ZM12 3L1 9L12 15L21 10.09V17H23V9L12 3Z"
-                  fill="#F57C40"
-                />
+                  <path d="M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18ZM12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="#F57C40" />
               </g>
               <defs>
                 <clipPath id="clip0_14183_13882">
@@ -185,85 +330,43 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                 </clipPath>
               </defs>
             </svg>
-            <div
-              className="flex-1 text-[#171D23] font-gilroy font-medium leading-[120%]"
-              style={{
-                fontSize: "16px",
-                fontWeight: 400,
-              }}
-            >
-              {tutor.professionalTitle ||
-                "IB Maths Tutor | University of Amsterdam"}
-            </div>
+              <div className="flex-1 text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ fontSize: "16px", fontWeight: 400 }}>
+                {tutor.professionalTitle || "IB Maths Tutor | University of Amsterdam"}
+              </div>
           </div>
 
           {/* Description */}
-          <div
-            className="self-stretch text-[#171D23] font-gilroy font-light leading-[140%]"
-            style={{
-              fontSize: "16px",
-              fontWeight: 300,
-            }}
-          >
+            <div className="self-stretch text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 300 }}>
             {tutor.experience}
           </div>
         </div>
 
         {/* Bottom section - Tags and Button */}
-        <div className="flex justify-between items-end gap-4 self-stretch">
+          <div className="flex justify-between items-end gap-4 self-stretch">
           {/* Tags section */}
-          <div
-            className="flex items-start content-start gap-2 flex-1 self-stretch flex-wrap"
-            style={{ padding: "8px 0px 24px 32px" }}
-          >
-            <div
-              className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]"
-              style={{
-                width: "57px",
-                height: "28px",
-                fontSize: "14px",
-                fontWeight: 600,
-              }}
-            >
+            <div className="flex items-start content-start gap-2 flex-1 self-stretch flex-wrap" style={{ padding: "8px 0px 24px 32px" }}>
+              <div className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]" style={{ width: "57px", height: "28px", fontSize: "14px", fontWeight: 600 }}>
               Teaches:
             </div>
-            <div
-              className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5"
-              style={{
-                height: "28px",
-                borderRadius: "8px",
-              }}
-            >
-              <div
-                className="text-center font-gilroy font-medium leading-[140%]"
-                style={{
-                  color: "#001A96",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                }}
-              >
+              <div className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
+                <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
                 {tutor.specialization.mainSubject}
-              </div>
+                </div>
             </div>
           </div>
 
           {/* Hire Button */}
           <Link
             href={tutor.hireButtonLink || "/#contact-form"}
-            className="flex justify-center items-center bg-[#001A96] text-white text-center font-gilroy font-normal leading-[140%] transition-all hover:bg-blue-800"
-            style={{
-              padding: "16px 36px",
-              borderRadius: "16px 0px 20px 0px",
-              fontSize: "16px",
-              fontWeight: 400,
-              marginBottom: "0px",
-            }}
+              className="flex justify-center items-center bg-[#001A96] text-white text-center font-gilroy font-normal leading-[140%] transition-all hover:bg-blue-800"
+              style={{ padding: "16px 36px", borderRadius: "16px 0px 20px 0px", fontSize: "16px", fontWeight: 400, marginBottom: "0px" }}
           >
             Hire a Tutor
           </Link>
         </div>
       </div>
     </div>
+    </>
   );
 };
 
