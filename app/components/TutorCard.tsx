@@ -60,53 +60,89 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
     setTitleFontSize(15);
     setIconSize(24);
     setHeaderPadding(16);
+  }, [tutor.name, tutor.professionalTitle]);
 
-    // Give time for DOM to update, then check if adjustment is needed
-    const timeoutId = setTimeout(() => {
+  useEffect(() => {
+    const adjustFontSizes = () => {
       if (!headerRef.current || !cardRef.current) return;
 
       const cardWidth = cardRef.current.offsetWidth;
-      const imageWidth = cardWidth * 0.4;
+      const imageWidth = cardWidth * 0.4; // 40% of card width (square image)
       const headerHeight = headerRef.current.offsetHeight;
+      
+      // Get positions for alignment checking
+      const cardRect = cardRef.current.getBoundingClientRect();
+      const headerRect = headerRef.current.getBoundingClientRect();
+      
+      // Calculate image dimensions and position
       const imageHeight = imageWidth; // Square image
-
-      // Check if image is too tall for header (needs adjustment)
-      if (imageHeight > headerHeight) {
-        // Apply all necessary reductions at once for this specific content
-        let newNameSize = 22;
-        let newTitleSize = 15;
-        let newIconSize = 24;
-        let newPadding = 16;
-
-        // Determine what reductions are needed based on content length
-        const nameLength = tutor.name.length;
-        const titleLength = (tutor.professionalTitle || "").length;
-
-        // For long names (like Luis Pérez García)
-        if (nameLength > 15) {
-          newNameSize = 14; // Reduce name significantly
-          newIconSize = 18; // Reduce icon
-          newPadding = 12; // Reduce padding
+      const imageTop = headerRect.bottom - imageHeight; // Image is bottom-aligned in header
+      const imageBottom = headerRect.bottom; // Image bottom aligns with header bottom (divider line)
+      
+      // Trigger Condition 1: Image top doesn't touch card top border (with 1px tolerance)
+      const imageTopMisaligned = imageTop > cardRect.top + 1;
+      
+      // Trigger Condition 2: Image bottom doesn't touch divider line (header bottom)
+      // Since image is positioned with `flex items-end`, this should be automatic, 
+      // but we check if the image is too tall for the header
+      const imageTooTallForHeader = imageHeight > headerHeight;
+      
+      // Trigger font reduction if either condition is met
+      if (imageTopMisaligned || imageTooTallForHeader) {
+        // Step 1: Reduce name font size to 18px first
+        if (nameFontSize > 18) {
+          setNameFontSize(prev => Math.max(18, prev - 2));
+          return;
         }
-        
-        // For long titles
-        if (titleLength > 40) {
-          newTitleSize = 12; // Reduce title
-        } else if (titleLength > 30) {
-          newTitleSize = 13; // Moderate title reduction
+        // Step 2: When name reaches 18px, start reducing padding
+        if (nameFontSize === 18 && headerPadding > 12) {
+          setHeaderPadding(prev => Math.max(12, prev - 2));
+          return;
         }
-
-        // Apply all changes at once
-        setNameFontSize(newNameSize);
-        setTitleFontSize(newTitleSize);
-        setIconSize(newIconSize);
-        setHeaderPadding(newPadding);
+        // Step 3: After padding reduced, continue reducing name font size
+        if (headerPadding === 12 && nameFontSize > 14) {
+          setNameFontSize(prev => Math.max(14, prev - 2));
+          return;
+        }
+        // Step 4: Reduce icon size for extreme cases
+        if (iconSize > 18) {
+          setIconSize(prev => Math.max(18, prev - 3));
+          return;
+        }
+        // Step 5: Reduce title font size
+        if (titleFontSize > 13) {
+          setTitleFontSize(prev => Math.max(13, prev - 1));
+          return;
+        }
+        // Step 6: Further reduce title font size as last resort
+        if (titleFontSize > 12) {
+          setTitleFontSize(prev => Math.max(12, prev - 1));
+          return;
+        }
       }
-      // If no adjustment needed, keep default sizes (already set above)
-    }, 100);
+    };
 
-    return () => clearTimeout(timeoutId);
-  }, [tutor.name, tutor.professionalTitle]); // Only re-run when tutor content changes
+    // Small delay to ensure DOM is fully rendered and state is updated
+    const timeoutId = setTimeout(adjustFontSizes, 150);
+
+    // Adjust on window resize
+    window.addEventListener('resize', adjustFontSizes);
+    
+    // Also adjust when header dimensions change
+    const observer = new ResizeObserver(() => {
+      setTimeout(adjustFontSizes, 50);
+    });
+    
+    if (headerRef.current) {
+      observer.observe(headerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', adjustFontSizes);
+      observer.disconnect();
+    };
+  }, [nameFontSize, titleFontSize, iconSize, headerPadding]); // Include state to trigger re-evaluation after each step
 
   // Dynamic Graduation Cap Icon Component
   const DynamicGraduationCapIcon = () => (
