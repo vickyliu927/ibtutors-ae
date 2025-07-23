@@ -33,7 +33,7 @@ const SubjectHeroSection = ({ className = '', subjectSlug }: SubjectHeroSectionP
     >
 
       {/* Main Content */}
-      <div className="flex w-full max-w-[1441px] mx-auto px-4 pt-[120px] md:pt-[100px] lg:pt-[105px] pb-[40px] md:pb-[45px] lg:pb-[50px] flex-col justify-end md:justify-start items-center gap-4 md:gap-3 lg:gap-4">
+      <div className="flex w-full max-w-[1441px] mx-auto px-4 pt-[60px] md:pt-[100px] lg:pt-[105px] pb-[40px] md:pb-[45px] lg:pb-[50px] flex-col justify-end md:justify-start items-center gap-4 md:gap-3 lg:gap-4">
         
         {/* Mobile Layout - Title, Description, Ratings */}
         <div className="flex md:hidden flex-col justify-start items-start gap-6 text-left px-4 w-full">
