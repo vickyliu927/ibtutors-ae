@@ -211,6 +211,7 @@ const TutorProfiles = ({
                 hireButtonLink: tutor.hireButtonLink,
                 rating: tutor.rating,
                 activeStudents: tutor.activeStudents,
+                price: tutor.price,
               };
 
               return <TutorCard key={tutor._id} tutor={tutorCardData} />;

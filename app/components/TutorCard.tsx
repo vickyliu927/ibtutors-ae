@@ -17,6 +17,11 @@ export interface TutorCardData {
   hireButtonLink: string;
   rating?: number;
   activeStudents?: number;
+  price?: {
+    amount: number;
+    currency: string;
+    displayText?: string;
+  };
 }
 
 interface TutorCardProps {
@@ -48,22 +53,30 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
   const [titleFontSize, setTitleFontSize] = useState(15);
   const [iconSize, setIconSize] = useState(24);
   const [headerPadding, setHeaderPadding] = useState(16);
-  const [currentScreenWidth, setCurrentScreenWidth] = useState(() => 
+  const [currentScreenWidth, setCurrentScreenWidth] = useState(() =>
     typeof window !== 'undefined' ? window.innerWidth : 0
   ); // Initialize with actual screen width
-  
+
+  // Ratings row font sizes
+  const [ratingFontSize, setRatingFontSize] = useState(18);
+  const [studentsFontSize, setStudentsFontSize] = useState(14);
+  const [priceFontSize, setPriceFontSize] = useState(18);
+  const [priceSmallFontSize, setPriceSmallFontSize] = useState(12);
+
   const headerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLSpanElement>(null);
+  const ratingsRowRef = useRef<HTMLDivElement>(null);
 
   const rating = tutor.rating || 4.9;
   const studentCount = tutor.activeStudents || 100;
+  const price = tutor.price || { amount: 200, currency: "AED" };
 
   useEffect(() => {
     // Get current screen width
     const screenWidth = window.innerWidth;
-    
+
     // Reset to defaults when screen width changes significantly (more than 20px difference)
     if (Math.abs(screenWidth - currentScreenWidth) > 20) {
       console.log(`${tutor.name}: Screen width changed from ${currentScreenWidth} to ${screenWidth}, resetting fonts`);
@@ -71,6 +84,11 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
       setTitleFontSize(15);
       setIconSize(24);
       setHeaderPadding(16);
+      // Reset ratings row font sizes
+      setRatingFontSize(18);
+      setStudentsFontSize(14);
+      setPriceFontSize(18);
+      setPriceSmallFontSize(12);
       setCurrentScreenWidth(screenWidth);
     }
 
@@ -83,16 +101,38 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
       // Calculate required square image size (40% of card width)
       const cardWidth = cardRef.current.offsetWidth;
       const imageSize = cardWidth * 0.4;
-      
+
       // Set header height to EXACTLY match the square image size
       headerRef.current.style.height = `${imageSize}px`;
       headerRef.current.style.minHeight = `${imageSize}px`;
-      
+
       console.log(`${tutor.name} square setup (${screenWidth}px screen):`, {
         cardWidth: cardWidth.toFixed(1),
         imageSize: imageSize.toFixed(1),
         headerHeight: `${imageSize}px (exact match)`
       });
+    };
+
+    const checkRatingsRowFit = () => {
+      if (!isActive || !ratingsRowRef.current) return;
+
+      const ratingsRow = ratingsRowRef.current;
+      const isOverflowing = ratingsRow.scrollWidth > ratingsRow.clientWidth;
+
+      if (isOverflowing) {
+        console.log(`${tutor.name}: Ratings row overflowing, reducing font sizes`);
+        
+        // Reduce font sizes by 1px
+        setRatingFontSize(prev => Math.max(prev - 1, 12));
+        setStudentsFontSize(prev => Math.max(prev - 1, 10));
+        setPriceFontSize(prev => Math.max(prev - 1, 12));
+        setPriceSmallFontSize(prev => Math.max(prev - 1, 8));
+
+        // Check again after state update
+        setTimeout(() => {
+          if (isActive) checkRatingsRowFit();
+        }, 100);
+      }
     };
 
     const checkAndAdjust = () => {
@@ -118,14 +158,14 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         const cardRect = cardRef.current.getBoundingClientRect();
         const headerRect = headerRef.current.getBoundingClientRect();
         const imageContainerRect = imageContainerRef.current.getBoundingClientRect();
-        
+
         const cardWidth = cardRef.current.offsetWidth;
         const expectedImageSize = cardWidth * 0.4;
 
         // Calculate gaps
         const topGap = imageContainerRect.top - cardRect.top;
         const bottomGap = Math.abs(imageContainerRect.bottom - headerRect.bottom);
-        
+
         // Check for title text crossing divider line
         let titleCrossesLine = false;
         if (titleRef.current) {
@@ -133,7 +173,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
           const dividerLineY = headerRect.bottom;
           titleCrossesLine = titleRect.bottom > dividerLineY + 2; // 2px tolerance
         }
-        
+
         // AGGRESSIVE gap detection - any visible gap triggers reduction
         const hasTopGap = topGap > 1; // Very sensitive - any gap > 1px
         const imageTooTall = expectedImageSize > headerRect.height;
@@ -152,7 +192,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         // Trigger reduction for ANY issue
         if (hasTopGap || imageTooTall || titleCrossesLine) {
           adjustmentInProgress = true;
-          
+
           // PRIORITY 1: Fix title crossing divider line (most critical for narrow screens)
           if (titleCrossesLine && currentTitleSize > 11) {
             console.log(`${tutor.name} (${screenWidth}px): Title crossing divider! Reducing title from ${currentTitleSize} to ${currentTitleSize - 2}`);
@@ -196,49 +236,60 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
 
     // Ensure square setup happens immediately
     ensureSquareAndNoGaps();
-    
+
     // Check for gaps after layout stabilizes
     const timeoutId = setTimeout(checkAndAdjust, 1000);
-    
+
     // Earlier check to catch obvious gaps sooner
     const earlyTimeoutId = setTimeout(checkAndAdjust, 300);
+
+    // Check ratings row fit after layout stabilizes
+    const ratingsTimeoutId = setTimeout(checkRatingsRowFit, 1200);
 
     // Handle window resize to maintain square ratio AND re-optimize for new screen width
     const handleResize = () => {
       const newScreenWidth = window.innerWidth;
-      
+
       // If screen width changed significantly, reset and re-optimize
       if (Math.abs(newScreenWidth - currentScreenWidth) > 20) {
         console.log(`${tutor.name}: Resize detected - ${currentScreenWidth} to ${newScreenWidth}, will re-optimize`);
         setCurrentScreenWidth(newScreenWidth);
-        
+
         // Reset to defaults for new screen width
         setNameFontSize(22);
         setTitleFontSize(15);
         setIconSize(24);
         setHeaderPadding(16);
-        
+        // Reset ratings row font sizes
+        setRatingFontSize(18);
+        setStudentsFontSize(14);
+        setPriceFontSize(18);
+        setPriceSmallFontSize(12);
+
         // Re-optimize after reset
         setTimeout(() => {
           ensureSquareAndNoGaps();
           setTimeout(checkAndAdjust, 200);
+          setTimeout(checkRatingsRowFit, 400);
         }, 100);
       } else {
         // Minor resize - just maintain square ratio
         ensureSquareAndNoGaps();
         setTimeout(checkAndAdjust, 100);
+        setTimeout(checkRatingsRowFit, 200);
       }
     };
-    
+
     window.addEventListener('resize', handleResize);
 
     return () => {
       isActive = false;
       clearTimeout(timeoutId);
       clearTimeout(earlyTimeoutId);
+      clearTimeout(ratingsTimeoutId);
       window.removeEventListener('resize', handleResize);
     };
-  }, [tutor.name, tutor.professionalTitle, currentScreenWidth]); // Include screen width in dependencies
+  }, [tutor.name, tutor.professionalTitle, currentScreenWidth, ratingFontSize, studentsFontSize, priceFontSize, priceSmallFontSize]); // Include screen width and font sizes in dependencies
 
   // Dynamic Graduation Cap Icon Component
   const DynamicGraduationCapIcon = () => (
@@ -255,15 +306,15 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
       {/* Mobile Layout - Dynamic Responsive Design */}
       <div ref={cardRef} className="lg:hidden w-full max-w-[400px] mx-auto bg-white rounded-[20px] border border-[#E6E7ED] overflow-hidden shadow-sm">
         {/* Header Section - Photo and Name - Height controlled by JavaScript */}
-        <div 
-          ref={headerRef} 
+        <div
+          ref={headerRef}
           className="flex items-start relative"
         >
           {/* Profile Photo - Left Side - Perfect Square (40% width) */}
-          <div 
+          <div
             ref={imageContainerRef}
             className="relative flex-shrink-0"
-            style={{ 
+            style={{
               width: '40%',
               paddingBottom: '40%', // Creates perfect square based on card width
             }}
@@ -287,52 +338,60 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
           </div>
 
           {/* Name and Title - Right Side - Takes remaining 60% */}
-          <div 
+          <div
             className="flex-1 min-w-0 flex flex-col justify-center"
-            style={{ 
-              padding: headerPadding + 'px', 
-              paddingBottom: Math.max(headerPadding - 1, 12) + 'px' 
+            style={{
+              padding: headerPadding + 'px',
+              paddingBottom: Math.max(headerPadding - 1, 12) + 'px'
             }}
           >
-            <h3 
+            <h3
               className="font-medium leading-[120%] font-gilroy text-[#171D23] mb-3 sm:mb-4 break-words"
-              style={{ fontSize: nameFontSize + 'px' }}
+              style={{ fontSize: nameFontSize + 'px', fontWeight: 500 }}
             >
               {tutor.name}
             </h3>
-            
-            <div className="flex items-start gap-2">
+
+            <div className="flex items-start gap-2 mb-2">
               <div className="flex-shrink-0 mt-1">
                 <DynamicGraduationCapIcon />
               </div>
-              <span 
+              <span
                 ref={titleRef}
-                className="font-normal leading-[140%] font-gilroy text-[#171D23] break-words" 
+                className="font-normal leading-[140%] font-gilroy text-[#171D23] break-words"
                 style={{ fontSize: titleFontSize + 'px', fontWeight: 200 }}
               >
                 {tutor.professionalTitle || "IB Maths Tutor | University of Amsterdam"}
               </span>
             </div>
+
           </div>
         </div>
 
         {/* Divider Line - Full width to intersect with borders */}
         <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
 
-        {/* Rating and Students Section - Increased spacing */}
-        <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center gap-4 sm:gap-6 flex-wrap">
-          <div className="flex items-center gap-2">
+        {/* Rating and Students Section - Same row, even spacing */}
+        <div ref={ratingsRowRef} className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between overflow-hidden">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <StarIcon />
-            <span className="text-[18px] sm:text-[20px] font-medium leading-[140%] font-gilroy text-[#171D23]">
+            <span className="font-medium leading-[140%] font-gilroy text-[#171D23]" style={{ fontSize: `${ratingFontSize}px` }}>
               {rating}
             </span>
           </div>
-          
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-2 flex-shrink-0">
             <PeopleIcon />
-            <span className="text-[14px] sm:text-[16px] font-light leading-[140%] font-gilroy text-[#171D23]">
+            <span className="font-light leading-[140%] font-gilroy text-[#171D23]" style={{ fontSize: `${studentsFontSize}px` }}>
               {studentCount}+ students
             </span>
+          </div>
+
+          {/* Price Tag for mobile */}
+          <div className="text-[#171D23] font-gilroy leading-[120%] flex-shrink-0" style={{ fontSize: `${priceFontSize}px`, fontWeight: 500 }}>
+            <span style={{ fontSize: `${priceSmallFontSize}px`, fontWeight: 500, color: "#8B8E91" }}>from</span>
+            <span style={{ fontSize: `${priceFontSize}px`, fontWeight: 500, color: "#171D23" }}> {price.currency} {price.amount}</span>
+            <span style={{ fontSize: `${priceSmallFontSize}px`, fontWeight: 500, color: "#8B8E91" }}>/h</span>
           </div>
         </div>
 
@@ -395,7 +454,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         {/* Top section - Name, Rating, Students */}
           <div className="flex flex-col items-start gap-3 self-stretch" style={{ padding: "24px 32px 0px 32px" }}>
           {/* Name Row */}
-          <div className="flex items-center self-stretch">
+          <div className="flex justify-between items-center self-stretch">
             <div className="flex items-center gap-8">
               {/* Name */}
                 <div className="text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ width: "160px", fontSize: "24px", fontWeight: 500 }}>
@@ -424,10 +483,17 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                   <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                     <path d="M4 7.125C4 6.03098 4.4346 4.98177 5.20818 4.20818C5.98177 3.4346 7.03098 3 8.125 3C9.21902 3 10.2682 3.4346 11.0418 4.20818C11.8154 4.98177 12.25 6.03098 12.25 7.125C12.25 8.21902 11.8154 9.26823 11.0418 10.0418C10.2682 10.8154 9.21902 11.25 8.125 11.25C7.03098 11.25 5.98177 10.8154 5.20818 10.0418C4.4346 9.26823 4 8.21902 4 7.125ZM13.75 9.375C13.75 8.93179 13.8373 8.49292 14.0069 8.08344C14.1765 7.67397 14.4251 7.30191 14.7385 6.98851C15.0519 6.67512 15.424 6.42652 15.8334 6.25691C16.2429 6.0873 16.6818 6 17.125 6C17.5682 6 18.0071 6.0873 18.4166 6.25691C18.826 6.42652 19.1981 6.67512 19.5115 6.98851C19.8249 7.30191 20.0735 7.67397 20.2431 8.08344C20.4127 8.49292 20.5 8.93179 20.5 9.375C20.5 10.2701 20.1444 11.1285 19.5115 11.7615C18.8786 12.3944 18.0201 12.75 17.125 12.75C16.2299 12.75 15.3715 12.3944 14.7385 11.7615C14.1056 11.1285 13.75 10.2701 13.75 9.375ZM1 19.875C1 17.9853 1.75067 16.1731 3.08686 14.8369C4.42306 13.5007 6.23533 12.75 8.125 12.75C10.0147 12.75 11.8269 13.5007 13.1631 14.8369C14.4993 16.1731 15.25 17.9853 15.25 19.875V19.878L15.249 19.997C15.2469 20.1242 15.2125 20.2487 15.1489 20.3589C15.0854 20.4691 14.995 20.5614 14.886 20.627C12.8452 21.856 10.5073 22.5036 8.125 22.5C5.653 22.5 3.339 21.816 1.365 20.627C1.25585 20.5615 1.16517 20.4693 1.10149 20.3591C1.03781 20.2489 1.00323 20.1243 1.001 19.997L1 19.875ZM16.75 19.878L16.749 20.022C16.7434 20.3553 16.6638 20.6832 16.516 20.982C18.2617 21.0897 20.0054 20.7416 21.576 19.972C21.6975 19.9126 21.8006 19.8215 21.8745 19.7083C21.9485 19.5951 21.9904 19.4641 21.996 19.329C22.0313 18.4902 21.8494 17.6566 21.4679 16.9088C21.0864 16.1609 20.5183 15.5243 19.8185 15.0605C19.1188 14.5967 18.3111 14.3215 17.4738 14.2615C16.6364 14.2015 15.7977 14.3587 15.039 14.718C16.1522 16.2066 16.7522 18.0162 16.749 19.875L16.75 19.878Z" fill="#4053B0" />
                 </svg>
-                  <div className="text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 300 }}>
+                  <div className="text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 400 }}>
                   {studentCount}+ students
                   </div>
               </div>
+            </div>
+
+            {/* Price Tag */}
+            <div className="text-[#171D23] font-gilroy leading-[120%]" style={{ fontSize: "22px", fontWeight: 500 }}>
+              <span style={{ fontSize: "14px", fontWeight: 500, color: "#8B8E91" }}>from</span>
+              <span style={{ fontSize: "22px", fontWeight: 500, color: "#171D23" }}> {price.currency} {price.amount}</span>
+              <span style={{ fontSize: "14px", fontWeight: 500, color: "#8B8E91" }}>/h</span>
             </div>
           </div>
 

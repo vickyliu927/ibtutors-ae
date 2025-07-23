@@ -119,7 +119,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
 
     fetchSubjects();
     fetchCurriculums();
-    
+
     // Set initial scroll state and add listeners (client-side only)
     if (typeof window !== 'undefined') {
       // Small delay to ensure DOM is loaded

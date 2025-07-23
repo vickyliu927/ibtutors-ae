@@ -46,7 +46,7 @@ const TutoringPlatformBanner = ({ data }: Props) => {
                   className="rounded-lg w-full h-[462px] sm:h-[594px] object-contain block lg:hidden"
                 />
                 {/* Desktop image - first screenshot with lesson panels */}
-                <img 
+                      <img 
                   src="/images/tutoring-platform.jpg" 
                   alt="Online tutoring platform"
                   className="rounded-lg w-full h-[350px] sm:h-[450px] lg:h-[650px] object-contain hidden lg:block"
