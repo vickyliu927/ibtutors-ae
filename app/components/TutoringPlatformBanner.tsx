@@ -37,12 +37,19 @@ const TutoringPlatformBanner = ({ data }: Props) => {
         <div className="flex flex-wrap items-center">
           <div className="w-full lg:w-3/5 mb-8 lg:mb-0 flex justify-center">
             <div className="relative w-full">
-              {/* Platform image - enlarged for desktop */}
-              <div className="w-full px-4 sm:px-8 md:px-12 lg:px-0">
-                      <img 
+              {/* Platform image - different images for mobile vs desktop */}
+              <div className="w-full px-0 sm:px-2 md:px-4 lg:px-0">
+                {/* Mobile image - second screenshot with mathematical graph - 30% larger total */}
+                <img 
+                  src="/images/tutoring-platform-mobile.jpg" 
+                  alt="Online tutoring platform"
+                  className="rounded-lg w-full h-[462px] sm:h-[594px] object-contain block lg:hidden"
+                />
+                {/* Desktop image - first screenshot with lesson panels */}
+                <img 
                   src="/images/tutoring-platform.jpg" 
                   alt="Online tutoring platform"
-                  className="rounded-lg w-full h-[350px] sm:h-[450px] lg:h-[650px] object-contain"
+                  className="rounded-lg w-full h-[350px] sm:h-[450px] lg:h-[650px] object-contain hidden lg:block"
                 />
               </div>
             </div>
