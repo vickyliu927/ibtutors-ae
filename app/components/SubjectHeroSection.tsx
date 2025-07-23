@@ -26,14 +26,14 @@ const SubjectHeroSection = ({ className = '', subjectSlug }: SubjectHeroSectionP
 
   return (
     <div
-      className={`relative w-full min-h-[500px] md:min-h-0 md:h-auto overflow-hidden ${className}`}
+      className={`relative w-full min-h-[500px] md:min-h-[200px] md:h-auto overflow-hidden md:overflow-visible ${className}`}
       style={{
         background: 'linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)'
       }}
     >
 
       {/* Main Content */}
-      <div className="flex w-full max-w-[1441px] mx-auto px-4 pt-[60px] md:pt-[100px] lg:pt-[105px] pb-[40px] md:pb-[45px] lg:pb-[50px] flex-col justify-end md:justify-start items-center gap-4 md:gap-3 lg:gap-4">
+      <div className="flex w-full max-w-[1441px] mx-auto px-4 pt-[60px] md:pt-[105px] lg:pt-[110px] pb-[40px] md:pb-[60px] lg:pb-[65px] flex-col justify-end md:justify-start items-center gap-4 md:gap-4 lg:gap-5">
         
         {/* Mobile Layout - Title, Description, Ratings */}
         <div className="flex md:hidden flex-col justify-start items-start gap-6 text-left px-4 w-full">
@@ -73,7 +73,7 @@ const SubjectHeroSection = ({ className = '', subjectSlug }: SubjectHeroSectionP
         {/* Desktop Layout - Original centered layout */}
         <div className="hidden md:flex flex-col justify-center items-center gap-6 text-center px-4">
           {/* Rating Section - Desktop */}
-          <div className="flex items-center gap-3 flex-wrap justify-center">
+          <div className="flex items-center gap-3 flex-wrap justify-center py-2">
             {/* Stars */}
             <div className="flex gap-1">
               {[...Array(5)].map((_, index) => (
@@ -84,17 +84,17 @@ const SubjectHeroSection = ({ className = '', subjectSlug }: SubjectHeroSectionP
             </div>
 
             {/* Rating Text */}
-            <span className="text-[16px] leading-[140%] font-gilroy text-textDark opacity-70">
+            <span className="text-[16px] leading-[160%] font-gilroy text-textDark opacity-70 py-1">
               {heroData?.rating?.score || '4.92/5'} {heroData?.rating?.basedOnText || 'based on'}
             </span>
 
-            <span className="text-[16px] leading-[140%] font-gilroy text-black underline">
+            <span className="text-[16px] leading-[160%] font-gilroy text-black underline py-1">
               {heroData?.rating?.reviewCount || '546 reviews'}
             </span>
           </div>
 
           {/* Title - Desktop */}
-          <h1 className="text-[28px] sm:text-[40px] lg:text-[56px] font-semibold leading-[100%] font-gilroy" style={{ fontWeight: 600 }}>
+          <h1 className="text-[28px] sm:text-[40px] lg:text-[56px] font-semibold leading-[110%] font-gilroy" style={{ fontWeight: 600 }}>
             <span className="text-[#1D1D35]">{heroData?.title?.firstPart || '#1 Rated '}</span>
             <span className="text-primary">{heroData?.title?.secondPart || 'Online IB Tutors'}</span>
           </h1>

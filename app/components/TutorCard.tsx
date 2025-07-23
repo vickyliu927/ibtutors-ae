@@ -60,7 +60,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
   // Ratings row font sizes
   const [ratingFontSize, setRatingFontSize] = useState(18);
   const [studentsFontSize, setStudentsFontSize] = useState(14);
-  const [priceFontSize, setPriceFontSize] = useState(18);
+  const [priceFontSize, setPriceFontSize] = useState(16);
   const [priceSmallFontSize, setPriceSmallFontSize] = useState(12);
 
   const headerRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
       // Reset ratings row font sizes
       setRatingFontSize(18);
       setStudentsFontSize(14);
-      setPriceFontSize(18);
+      setPriceFontSize(16);
       setPriceSmallFontSize(12);
       setCurrentScreenWidth(screenWidth);
     }
@@ -117,21 +117,22 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
       if (!isActive || !ratingsRowRef.current) return;
 
       const ratingsRow = ratingsRowRef.current;
-      const isOverflowing = ratingsRow.scrollWidth > ratingsRow.clientWidth;
+      // Add a 5px buffer to prevent unnecessary reductions
+      const isOverflowing = ratingsRow.scrollWidth > (ratingsRow.clientWidth + 5);
 
-      if (isOverflowing) {
+      if (isOverflowing && ratingFontSize > 16) {
         console.log(`${tutor.name}: Ratings row overflowing, reducing font sizes`);
         
-        // Reduce font sizes by 1px
-        setRatingFontSize(prev => Math.max(prev - 1, 12));
-        setStudentsFontSize(prev => Math.max(prev - 1, 10));
-        setPriceFontSize(prev => Math.max(prev - 1, 12));
-        setPriceSmallFontSize(prev => Math.max(prev - 1, 8));
+        // Reduce font sizes by 1px but with higher minimums
+        setRatingFontSize(prev => Math.max(prev - 1, 16));
+        setStudentsFontSize(prev => Math.max(prev - 1, 12));
+        setPriceFontSize(prev => Math.max(prev - 1, 16));
+        setPriceSmallFontSize(prev => Math.max(prev - 1, 10));
 
-        // Check again after state update
+        // Check again after state update, but less frequently
         setTimeout(() => {
           if (isActive) checkRatingsRowFit();
-        }, 100);
+        }, 200);
       }
     };
 
@@ -263,7 +264,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         // Reset ratings row font sizes
         setRatingFontSize(18);
         setStudentsFontSize(14);
-        setPriceFontSize(18);
+        setPriceFontSize(16);
         setPriceSmallFontSize(12);
 
         // Re-optimize after reset
@@ -372,23 +373,23 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
 
         {/* Rating and Students Section - Same row, even spacing */}
-        <div ref={ratingsRowRef} className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between overflow-hidden">
-          <div className="flex items-center gap-2 flex-shrink-0">
+        <div ref={ratingsRowRef} className="px-4 sm:px-6 py-6 sm:py-7 flex items-center gap-3 min-h-[60px]">
+          <div className="flex items-center gap-2 min-w-[60px]">
             <StarIcon />
-            <span className="font-medium leading-[140%] font-gilroy text-[#171D23]" style={{ fontSize: `${ratingFontSize}px` }}>
+            <span className="font-medium leading-[200%] font-gilroy text-[#171D23] px-1 py-2 min-w-[30px]" style={{ fontSize: `${ratingFontSize}px`, minHeight: '24px', display: 'flex', alignItems: 'center' }}>
               {rating}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-1 justify-center">
             <PeopleIcon />
-            <span className="font-light leading-[140%] font-gilroy text-[#171D23]" style={{ fontSize: `${studentsFontSize}px` }}>
+            <span className="font-light leading-[160%] font-gilroy text-[#171D23] py-1" style={{ fontSize: `${studentsFontSize}px` }}>
               {studentCount}+ students
             </span>
           </div>
 
           {/* Price Tag for mobile */}
-          <div className="text-[#171D23] font-gilroy leading-[120%] flex-shrink-0" style={{ fontSize: `${priceFontSize}px`, fontWeight: 500 }}>
+          <div className="text-[#171D23] font-gilroy leading-[160%] flex-shrink-0 py-1 text-right" style={{ fontSize: `${priceFontSize}px`, fontWeight: 500 }}>
             <span style={{ fontSize: `${priceSmallFontSize}px`, fontWeight: 500, color: "#8B8E91" }}>from</span>
             <span style={{ fontSize: `${priceFontSize}px`, fontWeight: 500, color: "#171D23" }}> {price.currency} {price.amount}</span>
             <span style={{ fontSize: `${priceSmallFontSize}px`, fontWeight: 500, color: "#8B8E91" }}>/h</span>
@@ -463,19 +464,21 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
 
               {/* Rating Stars */}
               <div className="flex items-center gap-2">
-                  <svg width="131" height="23" viewBox="0 0 131 23" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex items-center gap-2">
-                    {[...Array(5)].map((_, index) => (
+                {/* Stars */}
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, index) => (
+                    <svg key={index} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
-                        key={index}
-                        d="M9 2.125L11.0206 8.34385H17.5595L12.2694 12.1873L14.2901 18.4062L9 14.5627L3.70993 18.4062L5.73056 12.1873L0.440492 8.34385H6.97937L9 2.125Z"
+                        d="M9 0L11.0206 6.21885H17.5595L12.2694 10.0623L14.2901 16.2812L9 12.4377L3.70993 16.2812L5.73056 10.0623L0.440492 6.21885H6.97937L9 0Z"
                         fill="#FCBD00"
-                        transform={"translate(" + (index * 21) + ", 0.75)"}
                       />
-                    ))}
-                    <text fill="#171D23" style={{ fontSize: "16px", fontWeight: 500, fontFamily: "Gilroy, -apple-system, Roboto, Helvetica, sans-serif" }} x="110" y="16.964">
-                    {rating}
-                  </text>
-                </svg>
+                    </svg>
+                  ))}
+                </div>
+                {/* Rating Text */}
+                <span className="text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ fontSize: "16px", fontWeight: 500 }}>
+                  {rating}
+                </span>
               </div>
 
               {/* Students Count */}
