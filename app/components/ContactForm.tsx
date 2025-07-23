@@ -149,21 +149,32 @@ const ContactForm = () => {
   };
 
   return (
-    <section className="py-16 flex justify-center items-center min-h-screen bg-gray-50">
-      <div className="relative rounded-[20px] bg-primary overflow-hidden max-w-[1056px] w-full mx-4">
+    <section className="py-0 md:py-16 flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="relative rounded-none md:rounded-[20px] bg-primary overflow-hidden max-w-[1056px] w-full md:mx-4 min-h-screen md:min-h-0">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0">
-        {/* Background SVG Lines */}
-          <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 1056 927" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1079.2 -79.7461L22.7704 793.785C8.98548 805.183 1.00488 822.137 1.00488 840.025V1140.85" stroke="white" strokeWidth="1" opacity="0.3"/>
-            <path d="M961.324 0.662109L1.12402 795.404" stroke="white" strokeWidth="1" opacity="0.3"/>
-            <path d="M941.087 0.404297L0.938477 758.001" stroke="white" strokeWidth="1" opacity="0.3"/>
-            <path d="M366.085 -95.9531L24.2694 163.946C9.3468 175.292 0.584961 192.961 0.584961 211.708V561.133" stroke="white" strokeWidth="1" opacity="0.3"/>
+        {/* Background SVG Lines - Desktop */}
+        <svg className="hidden md:block absolute top-0 left-0 w-full h-full" viewBox="0 0 1056 927" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1079.2 -79.7461L22.7704 793.785C8.98548 805.183 1.00488 822.137 1.00488 840.025V1140.85" stroke="white" strokeWidth="1" opacity="0.3"/>
+          <path d="M961.324 0.662109L1.12402 795.404" stroke="white" strokeWidth="1" opacity="0.3"/>
+          <path d="M941.087 0.404297L0.938477 758.001" stroke="white" strokeWidth="1" opacity="0.3"/>
+          <path d="M366.085 -95.9531L24.2694 163.946C9.3468 175.292 0.584961 192.961 0.584961 211.708V561.133" stroke="white" strokeWidth="1" opacity="0.3"/>
+        </svg>
+        
+        {/* Background SVG Lines - Mobile */}
+        <svg className="md:hidden absolute top-0 left-0 w-full h-full" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <path d="M420 -50L-30 650C-35 665 -40 680 -40 695V900" stroke="white" strokeWidth="1" opacity="0.25"/>
+          <path d="M375 0L-15 600" stroke="white" strokeWidth="1" opacity="0.25"/>
+          <path d="M350 10L5 580" stroke="white" strokeWidth="1" opacity="0.25"/>
+          <path d="M160 -80L15 140C8 155 0 170 0 185V450" stroke="white" strokeWidth="1" opacity="0.25"/>
+          <path d="M400 120L80 750" stroke="white" strokeWidth="1" opacity="0.28"/>
+          <path d="M320 80L40 680" stroke="white" strokeWidth="1" opacity="0.22"/>
+          <path d="M-20 200L300 812" stroke="white" strokeWidth="1" opacity="0.2"/>
         </svg>
       </div>
 
         {/* Content */}
-        <div className="relative z-10 p-8 lg:p-16">
+        <div className="relative z-10 pt-16 px-4 pb-8 lg:pt-20 lg:px-8 lg:pb-8">
       {/* Header Text */}
           <div className="text-center mb-12">
             <h2 className="font-gilroy text-4xl lg:text-5xl font-medium leading-[120%] text-white mb-4">
@@ -176,10 +187,10 @@ const ContactForm = () => {
       </div>
 
       {/* Form Container */}
-          <div className="bg-white rounded-[20px] p-8 max-w-[773px] mx-auto">
+          <div className="bg-white rounded-[20px] p-4 lg:p-6 max-w-[773px] mx-auto">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* First Row - Full Name and Country */}
-              <div className="flex gap-4">
+              {/* First Row - Full Name and Country - Responsive Layout */}
+              <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 space-y-2">
                   <label htmlFor="fullName" className="block font-gilroy text-base font-normal text-textDark">
                 Full name *
@@ -219,8 +230,8 @@ const ContactForm = () => {
             </div>
           </div>
 
-          {/* Second Row - Phone and Email */}
-              <div className="flex gap-4">
+          {/* Second Row - Phone and Email - Responsive Layout */}
+              <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 space-y-2">
                   <label htmlFor="phone" className="block font-gilroy text-base font-normal text-textDark">
                 Your phone (with country code) *
@@ -300,14 +311,16 @@ const ContactForm = () => {
             )}
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-                className="w-full h-12 bg-primary text-white font-gilroy text-base font-semibold rounded-[28px] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
+          {/* Submit Button - Enhanced Mobile Design */}
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              className="w-full md:w-full max-w-sm md:max-w-full h-14 md:h-12 bg-primary text-white font-gilroy text-lg md:text-base font-semibold rounded-[28px] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg"
+            >
               {status === 'loading' ? 'Submitting...' : 'Submit'}
-          </button>
+            </button>
+          </div>
           
           {message && (
                 <p className={`text-center text-sm ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>

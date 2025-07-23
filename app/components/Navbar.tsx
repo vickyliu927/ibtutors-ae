@@ -32,6 +32,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
   const [curriculums, setCurriculums] = useState<CurriculumPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const [showLevelsDropdown, setShowLevelsDropdown] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
   const levelsDropdownRef = useRef<HTMLDivElement>(null);
@@ -102,8 +103,30 @@ const Navbar = ({ navbarData }: NavbarProps) => {
       }
     };
 
+    const handleScroll = () => {
+      if (typeof window === 'undefined') return; // SSR safety
+      
+      const scrollTop = window.scrollY;
+      const isMobile = window.innerWidth < 768;
+      
+      if (isMobile) {
+        const shouldShowBg = scrollTop > 10;
+        setIsScrolled(shouldShowBg);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
     fetchSubjects();
     fetchCurriculums();
+    
+    // Set initial scroll state and add listeners (client-side only)
+    if (typeof window !== 'undefined') {
+      // Small delay to ensure DOM is loaded
+      setTimeout(() => handleScroll(), 100);
+      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleScroll);
+    }
 
     return () => {
       if (subjectsTimeoutRef.current) {
@@ -111,6 +134,10 @@ const Navbar = ({ navbarData }: NavbarProps) => {
       }
       if (levelsTimeoutRef.current) {
         clearTimeout(levelsTimeoutRef.current);
+      }
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
       }
     };
   }, []);
@@ -120,7 +147,11 @@ const Navbar = ({ navbarData }: NavbarProps) => {
   };
 
   return (
-    <nav className="absolute top-0 left-0 right-0 z-30 w-full bg-transparent">
+    <nav 
+      className={`${isScrolled ? 'fixed' : 'absolute'} md:absolute top-0 left-0 right-0 z-30 w-full transition-all duration-300 ${
+        isScrolled ? 'bg-white md:bg-transparent shadow-md md:shadow-none' : 'bg-transparent'
+      }`}
+    >
       <div className="flex w-full max-w-[1440px] mx-auto px-[16px] py-[24px] justify-between items-center">
         {/* Logo */}
         <Link href={navbarData?.logoLink || "/"} className="flex items-center">

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ExternalLink from './ui/ExternalLink';
 import { PortableText } from '@portabletext/react';
 
@@ -158,17 +158,17 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
             <StarRating rating={5} />
         </div>
 
-          {/* Title */}
+          {/* Title - Split into two lines */}
           <div className="flex flex-col items-center gap-3">
-                <div className="text-center">
-              <span className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-textDark">
-                Rated {sectionData.rating}/5 based on{' '}
-              </span>
-              <span className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-primary">
-                {sectionData.totalReviews} reviews
-              </span>
+            <div className="text-center">
+              <div className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-textDark">
+                Rated {sectionData.rating}/5
+              </div>
+              <div className="font-gilroy font-medium text-3xl lg:text-4xl leading-[140%] text-primary">
+                based on {sectionData.totalReviews} reviews
+              </div>
             </div>
-                  <div className="text-center">
+            <div className="text-center">
               <span className="font-gilroy text-lg leading-[150%] text-[#F57C40] uppercase" style={{ fontWeight: 200 }}>
                 Trusted globally by students and parents
               </span>
@@ -176,51 +176,87 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
           </div>
         </div>
 
-        {/* Testimonial cards - UPDATED LAYOUT */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9 max-w-none mx-auto px-4 justify-items-center">
-          {displayTestimonials.slice(0, 3).map((testimonial, index) => (
-              <div
-                key={testimonial._id}
-              className="flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-2xl bg-white shadow-[0px_16px_40px_0px_rgba(0,14,81,0.05)] h-[352px] w-full max-w-[450px]"
-            >
-              {/* Testimonial Text */}
-               <div className="text-center font-gilroy text-lg leading-[150%] text-textDark flex-1 flex items-center justify-center px-2" style={{ fontWeight: 200 }}>
-                 <div className="testimonial-content">
-                   "<PortableText 
-                     value={testimonial.testimonialText}
-                     components={{
-                         marks: {
-                           strong: ({children}: any) => <strong className="font-medium">{children}</strong>,
-                           em: ({children}: any) => <em className="italic">{children}</em>,
-                         },
-                         block: {
-                           normal: ({children}: any) => <span>{children}</span>,
-                         },
-                       }}
-                   />"
-                </div>
-               </div>
-
-              {/* Author Info */}
-              <div className="flex flex-col items-center gap-3">
-                <StarRating rating={testimonial.rating} />
-                <div className="flex items-center gap-3" style={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>
-                  <span className="font-gilroy text-base text-textDark font-medium">
-                    {testimonial.reviewerName}
-                  </span>
-                  <span className="font-gilroy text-base text-textDark opacity-80 flex-shrink-0">|</span>
-                  <span className="font-gilroy text-base text-[#8B8E91]">
-                    {testimonial.reviewerType}
-                  </span>
-                  </div>
-                </div>
-              </div>
+        {/* Testimonial cards - HORIZONTAL SCROLLING LAYOUT */}
+        <div className="overflow-x-auto overflow-y-hidden pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <div className="flex gap-6 px-4 sm:px-0" style={{ width: 'max-content' }}>
+            {displayTestimonials.slice(0, 3).map((testimonial, index) => (
+              <TestimonialCard key={testimonial._id} testimonial={testimonial} />
             ))}
           </div>
-
-
+        </div>
       </div>
     </section>
+  );
+};
+
+// Separate component for testimonial card with overflow detection
+const TestimonialCard = ({ testimonial }: { testimonial: TestimonialData }) => {
+  const textRef = useRef<HTMLDivElement>(null);
+  const [fontSize, setFontSize] = useState('text-lg');
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (textRef.current) {
+        const element = textRef.current;
+        const isOverflowing = element.scrollHeight > element.clientHeight;
+        
+        if (isOverflowing) {
+          // Reduce font size if overflowing
+          setFontSize('text-base');
+          
+          // Check again after font size change
+          setTimeout(() => {
+            if (element.scrollHeight > element.clientHeight) {
+              setFontSize('text-sm');
+            }
+          }, 100);
+        }
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, []);
+
+  return (
+    <div className="flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-2xl bg-white shadow-[0px_16px_40px_0px_rgba(0,14,81,0.05)] h-[352px] w-[380px] sm:w-[420px] flex-shrink-0">
+      {/* Testimonial Text with overflow detection */}
+      <div 
+        ref={textRef}
+        className={`text-center font-gilroy ${fontSize} leading-[150%] text-textDark flex-1 flex items-center justify-center px-2 overflow-hidden`} 
+        style={{ fontWeight: 200 }}
+      >
+        <div className="testimonial-content">
+          "<PortableText 
+            value={testimonial.testimonialText}
+            components={{
+                marks: {
+                  strong: ({children}: any) => <strong className="font-medium">{children}</strong>,
+                  em: ({children}: any) => <em className="italic">{children}</em>,
+                },
+                block: {
+                  normal: ({children}: any) => <span>{children}</span>,
+                },
+              }}
+          />"
+        </div>
+      </div>
+
+      {/* Author Info */}
+      <div className="flex flex-col items-center gap-3">
+        <StarRating rating={testimonial.rating} />
+        <div className="flex items-center gap-3" style={{ whiteSpace: 'nowrap', minWidth: 'max-content' }}>
+          <span className="font-gilroy text-base text-textDark font-medium">
+            {testimonial.reviewerName}
+          </span>
+          <span className="font-gilroy text-base text-textDark opacity-80 flex-shrink-0">|</span>
+          <span className="font-gilroy text-base text-[#8B8E91]">
+            {testimonial.reviewerType}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 };
 

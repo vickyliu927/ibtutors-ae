@@ -356,6 +356,9 @@ export default async function DynamicPage({
     // Render curriculum page with clone context
     return (
       <main>
+        {/* Navigation */}
+        <Navbar />
+        
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
@@ -431,6 +434,9 @@ export default async function DynamicPage({
   // Render subject page with clone context
   return (
     <main>
+      {/* Navigation */}
+      <Navbar />
+      
       {/* Enhanced Clone Debug Panel - Development Only */}
       <CloneIndicatorBanner {...cloneIndicatorProps} />
       
