@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,101 +48,197 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
   const [titleFontSize, setTitleFontSize] = useState(15);
   const [iconSize, setIconSize] = useState(24);
   const [headerPadding, setHeaderPadding] = useState(16);
+  const [currentScreenWidth, setCurrentScreenWidth] = useState(() => 
+    typeof window !== 'undefined' ? window.innerWidth : 0
+  ); // Initialize with actual screen width
+  
   const headerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLSpanElement>(null);
 
   const rating = tutor.rating || 4.9;
   const studentCount = tutor.activeStudents || 100;
 
   useEffect(() => {
-    // Reset to defaults whenever tutor data changes
-    setNameFontSize(22);
-    setTitleFontSize(15);
-    setIconSize(24);
-    setHeaderPadding(16);
-  }, [tutor.name, tutor.professionalTitle]);
+    // Get current screen width
+    const screenWidth = window.innerWidth;
+    
+    // Reset to defaults when screen width changes significantly (more than 20px difference)
+    if (Math.abs(screenWidth - currentScreenWidth) > 20) {
+      console.log(`${tutor.name}: Screen width changed from ${currentScreenWidth} to ${screenWidth}, resetting fonts`);
+      setNameFontSize(22);
+      setTitleFontSize(15);
+      setIconSize(24);
+      setHeaderPadding(16);
+      setCurrentScreenWidth(screenWidth);
+    }
 
-  useEffect(() => {
-    const adjustFontSizes = () => {
-      if (!headerRef.current || !cardRef.current) return;
+    let isActive = true;
+    let adjustmentInProgress = false;
 
+    const ensureSquareAndNoGaps = () => {
+      if (!isActive || !cardRef.current || !headerRef.current) return;
+
+      // Calculate required square image size (40% of card width)
       const cardWidth = cardRef.current.offsetWidth;
-      const imageWidth = cardWidth * 0.4; // 40% of card width (square image)
-      const headerHeight = headerRef.current.offsetHeight;
+      const imageSize = cardWidth * 0.4;
       
-      // Get positions for alignment checking
-      const cardRect = cardRef.current.getBoundingClientRect();
-      const headerRect = headerRef.current.getBoundingClientRect();
+      // Set header height to EXACTLY match the square image size
+      headerRef.current.style.height = `${imageSize}px`;
+      headerRef.current.style.minHeight = `${imageSize}px`;
       
-      // Calculate image dimensions and position
-      const imageHeight = imageWidth; // Square image
-      const imageTop = headerRect.bottom - imageHeight; // Image is bottom-aligned in header
-      const imageBottom = headerRect.bottom; // Image bottom aligns with header bottom (divider line)
-      
-      // Trigger Condition 1: Image top doesn't touch card top border (with 1px tolerance)
-      const imageTopMisaligned = imageTop > cardRect.top + 1;
-      
-      // Trigger Condition 2: Image bottom doesn't touch divider line (header bottom)
-      // Since image is positioned with `flex items-end`, this should be automatic, 
-      // but we check if the image is too tall for the header
-      const imageTooTallForHeader = imageHeight > headerHeight;
-      
-      // Trigger font reduction if either condition is met
-      if (imageTopMisaligned || imageTooTallForHeader) {
-        // Step 1: Reduce name font size to 18px first
-        if (nameFontSize > 18) {
-          setNameFontSize(prev => Math.max(18, prev - 2));
-          return;
+      console.log(`${tutor.name} square setup (${screenWidth}px screen):`, {
+        cardWidth: cardWidth.toFixed(1),
+        imageSize: imageSize.toFixed(1),
+        headerHeight: `${imageSize}px (exact match)`
+      });
+    };
+
+    const checkAndAdjust = () => {
+      if (!isActive || adjustmentInProgress) {
+        return;
+      }
+
+      if (!cardRef.current || !headerRef.current || !imageContainerRef.current) {
+        return;
+      }
+
+      try {
+        // First ensure square setup
+        ensureSquareAndNoGaps();
+
+        // Get current state values directly (avoid stale closures)
+        const currentNameSize = nameFontSize;
+        const currentTitleSize = titleFontSize;
+        const currentIconSize = iconSize;
+        const currentPadding = headerPadding;
+        const screenWidth = window.innerWidth; // Get screen width inside checkAndAdjust
+
+        const cardRect = cardRef.current.getBoundingClientRect();
+        const headerRect = headerRef.current.getBoundingClientRect();
+        const imageContainerRect = imageContainerRef.current.getBoundingClientRect();
+        
+        const cardWidth = cardRef.current.offsetWidth;
+        const expectedImageSize = cardWidth * 0.4;
+
+        // Calculate gaps
+        const topGap = imageContainerRect.top - cardRect.top;
+        const bottomGap = Math.abs(imageContainerRect.bottom - headerRect.bottom);
+        
+        // Check for title text crossing divider line
+        let titleCrossesLine = false;
+        if (titleRef.current) {
+          const titleRect = titleRef.current.getBoundingClientRect();
+          const dividerLineY = headerRect.bottom;
+          titleCrossesLine = titleRect.bottom > dividerLineY + 2; // 2px tolerance
         }
-        // Step 2: When name reaches 18px, start reducing padding
-        if (nameFontSize === 18 && headerPadding > 12) {
-          setHeaderPadding(prev => Math.max(12, prev - 2));
-          return;
+        
+        // AGGRESSIVE gap detection - any visible gap triggers reduction
+        const hasTopGap = topGap > 1; // Very sensitive - any gap > 1px
+        const imageTooTall = expectedImageSize > headerRect.height;
+
+        console.log(`${tutor.name} gap check (${screenWidth}px screen):`, {
+          topGap: topGap.toFixed(1),
+          bottomGap: bottomGap.toFixed(1),
+          hasTopGap,
+          imageTooTall,
+          titleCrossesLine,
+          imageHeight: imageContainerRect.height.toFixed(1),
+          headerHeight: headerRect.height.toFixed(1),
+          currentSizes: { currentNameSize, currentTitleSize, currentIconSize, currentPadding }
+        });
+
+        // Trigger reduction for ANY issue
+        if (hasTopGap || imageTooTall || titleCrossesLine) {
+          adjustmentInProgress = true;
+          
+          // PRIORITY 1: Fix title crossing divider line (most critical for narrow screens)
+          if (titleCrossesLine && currentTitleSize > 11) {
+            console.log(`${tutor.name} (${screenWidth}px): Title crossing divider! Reducing title from ${currentTitleSize} to ${currentTitleSize - 2}`);
+            setTitleFontSize(currentTitleSize - 2);
+          }
+          // PRIORITY 2: Standard gap reduction (after title is fixed)
+          else if (currentNameSize > 18) {
+            console.log(`${tutor.name} (${screenWidth}px): Reducing name font from ${currentNameSize} to 18`);
+            setNameFontSize(18);
+          } else if (currentPadding > 12) {
+            console.log(`${tutor.name} (${screenWidth}px): Reducing padding from ${currentPadding} to 12`);
+            setHeaderPadding(12);
+          } else if (currentNameSize > 15) {
+            console.log(`${tutor.name} (${screenWidth}px): Further reducing name font from ${currentNameSize} to 15`);
+            setNameFontSize(15);
+          } else if (currentIconSize > 18) {
+            console.log(`${tutor.name} (${screenWidth}px): Reducing icon from ${currentIconSize} to 18`);
+            setIconSize(18);
+          } else if (currentTitleSize > 13) {
+            console.log(`${tutor.name} (${screenWidth}px): Reducing title from ${currentTitleSize} to 13`);
+            setTitleFontSize(13);
+          } else {
+            console.log(`${tutor.name} (${screenWidth}px): No more reductions possible, issues may persist`);
+          }
+
+          // Wait for state update and layout, then check once more
+          setTimeout(() => {
+            adjustmentInProgress = false;
+            if (isActive) {
+              setTimeout(checkAndAdjust, 300); // Single recheck after adjustment
+            }
+          }, 200);
+        } else {
+          console.log(`${tutor.name} (${screenWidth}px): Perfect square alignment achieved`);
         }
-        // Step 3: After padding reduced, continue reducing name font size
-        if (headerPadding === 12 && nameFontSize > 14) {
-          setNameFontSize(prev => Math.max(14, prev - 2));
-          return;
-        }
-        // Step 4: Reduce icon size for extreme cases
-        if (iconSize > 18) {
-          setIconSize(prev => Math.max(18, prev - 3));
-          return;
-        }
-        // Step 5: Reduce title font size
-        if (titleFontSize > 13) {
-          setTitleFontSize(prev => Math.max(13, prev - 1));
-          return;
-        }
-        // Step 6: Further reduce title font size as last resort
-        if (titleFontSize > 12) {
-          setTitleFontSize(prev => Math.max(12, prev - 1));
-          return;
-        }
+      } catch (error) {
+        console.error(`TutorCard error (${tutor.name}):`, error);
+        adjustmentInProgress = false;
       }
     };
 
-    // Small delay to ensure DOM is fully rendered and state is updated
-    const timeoutId = setTimeout(adjustFontSizes, 150);
+    // Ensure square setup happens immediately
+    ensureSquareAndNoGaps();
+    
+    // Check for gaps after layout stabilizes
+    const timeoutId = setTimeout(checkAndAdjust, 1000);
+    
+    // Earlier check to catch obvious gaps sooner
+    const earlyTimeoutId = setTimeout(checkAndAdjust, 300);
 
-    // Adjust on window resize
-    window.addEventListener('resize', adjustFontSizes);
+    // Handle window resize to maintain square ratio AND re-optimize for new screen width
+    const handleResize = () => {
+      const newScreenWidth = window.innerWidth;
+      
+      // If screen width changed significantly, reset and re-optimize
+      if (Math.abs(newScreenWidth - currentScreenWidth) > 20) {
+        console.log(`${tutor.name}: Resize detected - ${currentScreenWidth} to ${newScreenWidth}, will re-optimize`);
+        setCurrentScreenWidth(newScreenWidth);
+        
+        // Reset to defaults for new screen width
+        setNameFontSize(22);
+        setTitleFontSize(15);
+        setIconSize(24);
+        setHeaderPadding(16);
+        
+        // Re-optimize after reset
+        setTimeout(() => {
+          ensureSquareAndNoGaps();
+          setTimeout(checkAndAdjust, 200);
+        }, 100);
+      } else {
+        // Minor resize - just maintain square ratio
+        ensureSquareAndNoGaps();
+        setTimeout(checkAndAdjust, 100);
+      }
+    };
     
-    // Also adjust when header dimensions change
-    const observer = new ResizeObserver(() => {
-      setTimeout(adjustFontSizes, 50);
-    });
-    
-    if (headerRef.current) {
-      observer.observe(headerRef.current);
-    }
+    window.addEventListener('resize', handleResize);
 
     return () => {
+      isActive = false;
       clearTimeout(timeoutId);
-      window.removeEventListener('resize', adjustFontSizes);
-      observer.disconnect();
+      clearTimeout(earlyTimeoutId);
+      window.removeEventListener('resize', handleResize);
     };
-  }, [nameFontSize, titleFontSize, iconSize, headerPadding]); // Include state to trigger re-evaluation after each step
+  }, [tutor.name, tutor.professionalTitle, currentScreenWidth]); // Include screen width in dependencies
 
   // Dynamic Graduation Cap Icon Component
   const DynamicGraduationCapIcon = () => (
@@ -158,40 +254,42 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
     <>
       {/* Mobile Layout - Dynamic Responsive Design */}
       <div ref={cardRef} className="lg:hidden w-full max-w-[400px] mx-auto bg-white rounded-[20px] border border-[#E6E7ED] overflow-hidden shadow-sm">
-        {/* Header Section - Photo and Name */}
-        <div ref={headerRef} className="flex items-stretch min-h-[140px] relative">
-          {/* Profile Photo - Left Side - 40% width, perfect square, bottom-aligned with divider */}
-          <div className="relative flex-shrink-0 z-10 flex items-end" style={{ width: '40%' }}>
-            {/* Square container using padding-bottom technique */}
-            <div className="w-full relative">
-              <div 
-                className="w-full"
-                style={{ paddingBottom: '100%' }}
-              >
-                <div className="absolute inset-0 rounded-tl-[20px] overflow-hidden">
-                  {tutor.profilePhoto ? (
-                    <Image
-                      src={urlFor(tutor.profilePhoto).width(280).height(280).url()}
-                      alt={tutor.name}
-                      fill
-                      className="object-cover object-center"
-                      sizes="40vw"
-                      priority={true}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                      <span className="text-gray-400 text-xs sm:text-sm">No Photo</span>
-                    </div>
-                  )}
+        {/* Header Section - Photo and Name - Height controlled by JavaScript */}
+        <div 
+          ref={headerRef} 
+          className="flex items-start relative"
+        >
+          {/* Profile Photo - Left Side - Perfect Square (40% width) */}
+          <div 
+            ref={imageContainerRef}
+            className="relative flex-shrink-0"
+            style={{ 
+              width: '40%',
+              paddingBottom: '40%', // Creates perfect square based on card width
+            }}
+          >
+            <div className="absolute inset-0 rounded-tl-[20px] overflow-hidden">
+              {tutor.profilePhoto ? (
+                <Image
+                  src={urlFor(tutor.profilePhoto).width(280).height(280).url()}
+                  alt={tutor.name}
+                  fill
+                  className="object-cover object-center"
+                  sizes="40vw"
+                  priority={true}
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <span className="text-gray-400 text-xs sm:text-sm">No Photo</span>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
           {/* Name and Title - Right Side - Takes remaining 60% */}
           <div 
             className="flex-1 min-w-0 flex flex-col justify-center"
-        style={{
+            style={{ 
               padding: headerPadding + 'px', 
               paddingBottom: Math.max(headerPadding - 1, 12) + 'px' 
             }}
@@ -208,6 +306,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                 <DynamicGraduationCapIcon />
               </div>
               <span 
+                ref={titleRef}
                 className="font-normal leading-[140%] font-gilroy text-[#171D23] break-words" 
                 style={{ fontSize: titleFontSize + 'px', fontWeight: 200 }}
               >
