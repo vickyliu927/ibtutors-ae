@@ -74,8 +74,8 @@ Details: ${encodeHTML(details)}
 Budget: ${encodeHTML(budget)}`;
 
     const emailData = await resend.emails.send({
-      from: 'Your App <onboarding@resend.dev>',
-      to: 'rahil@tutorchase.com',
+      from: 'IBTutors AE <noreply@ibtutorsae.com>', // Change to your verified domain
+      to: process.env.NOTIFICATION_EMAIL || 'vicliu927@gmail.com',
       subject,
       text,
     });

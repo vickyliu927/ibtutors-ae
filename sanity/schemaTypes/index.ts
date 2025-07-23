@@ -6,6 +6,7 @@ import testimonialSection from './testimonialSection'
 import tutor from './tutor'
 import hero from './hero'
 import contactFormSubmission from './contactFormSubmission'
+import contactFormContent from './contactFormContent'
 import footerSection from './footerSection'
 import tutorProfilesSection from './tutorProfilesSection'
 import subjectPage from './subjectPage'
@@ -35,6 +36,7 @@ export const schemaTypes = [
   faq_section,
   hero,
   contactFormSubmission,
+  contactFormContent,
   footerSection,
   subjectPage,
   curriculumPage,
