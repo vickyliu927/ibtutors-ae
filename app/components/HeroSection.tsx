@@ -213,50 +213,46 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
       <div className="lg:hidden relative w-full min-h-[774px] flex flex-col z-20 pt-[77px]">
         {/* Mobile Content Container */}
         <div className="flex-1 px-[29px] py-[39px] flex flex-col justify-start items-start max-w-[508px] mx-auto">
-          {/* Mobile Title - Match Figma exactly */}
+          {/* Mobile Title - Using Sanity data */}
           <h1 className="text-[48px] font-medium leading-[120%] font-gilroy mb-[29px] w-full">
-            <span className="text-[#171D23]">Expert IB Tutors.</span>
+            <span className="text-[#171D23]">{heroData.titleFirstRow}</span>
             <br />
-            <span className="text-[#001A96]">Dubai & Online.</span>
+            <span className="text-[#001A96]">{heroData.titleSecondRow}</span>
           </h1>
 
-          {/* Mobile Subtitle - Match Figma text */}
+          {/* Mobile Subtitle - Using Sanity data */}
           <p className="text-[#171D23] text-[20px] font-light leading-[150%] font-gilroy mb-[39px] w-full">
-            Learn from the world's #1 rated tutors for school exams and admissions. Trusted by 10,000+ students in Dubai and globally!
+            {heroData.subtitle}
           </p>
 
-          {/* Mobile Rating Section - Match Figma layout */}
+          {/* Mobile Rating Section - Using Sanity data */}
           <div className="flex items-center gap-[10px] mb-[39px]">
             <div className="flex gap-[4px]">
               <StarIcon />
             </div>
             <span className="text-[#171D23] text-[20px] font-light font-gilroy">
-              4.92/5 based on <span className="font-bold underline">480 reviews</span>
+              {heroData.rating?.score || '4.92/5'} {heroData.rating?.basedOnText || 'based on'} <span className="font-bold underline">{heroData.rating?.reviewCount || '480 reviews'}</span>
             </span>
           </div>
 
-          {/* Mobile Button - Match Figma size and style */}
+          {/* Mobile Button - Using Sanity data */}
           <Link
             href={heroData.primaryButton?.link || "#contact-form"}
             className="flex h-[68px] px-[39px] justify-center items-center rounded-[34px] bg-[#001A96] text-white text-center text-[22px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy w-full max-w-[424px] mb-[39px]"
           >
-            Hire a tutor
+            {heroData.primaryButton?.text || 'Hire a tutor'}
           </Link>
 
-          {/* Mobile Features - Match Figma with orange checkmarks */}
+          {/* Mobile Features - Using Sanity data */}
           <div className="flex flex-col gap-[20px] w-full">
-            <div className="flex items-center gap-[14px]">
-              <CheckIcon />
-              <span className="text-[#171D23] text-[20px] font-light leading-[140%] font-gilroy">
-                Experienced Teachers & Examiners
-              </span>
-            </div>
-            <div className="flex items-center gap-[14px]">
-              <CheckIcon />
-              <span className="text-[#171D23] text-[20px] font-light leading-[140%] font-gilroy">
-                Proven Success Rates
-              </span>
-            </div>
+            {heroData.features?.map((feature, index) => (
+              <div key={index} className="flex items-center gap-[14px]">
+                <CheckIcon />
+                <span className="text-[#171D23] text-[20px] font-light leading-[140%] font-gilroy">
+                  {feature}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -51,10 +51,18 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
                   {/* Logo Grid - Centered with increased spacing */}
           <div className="flex justify-center">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-24 items-center justify-items-center max-w-6xl">
-              {sortedLogos.map((institution, index) => (
+              {sortedLogos.map((institution, index) => {
+                // Check if this is the last item and if total count is odd (mobile only)
+                const isLastItem = index === sortedLogos.length - 1;
+                const isOddTotal = sortedLogos.length % 2 === 1;
+                const shouldCenterOnMobile = isLastItem && isOddTotal;
+                
+                return (
                 <div 
                   key={`${institution.name}-${index}`} 
-                  className="flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200"
+                  className={`flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200 ${
+                    shouldCenterOnMobile ? 'md:col-span-1 col-span-2' : ''
+                  }`}
                 >
                   <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 mb-4">
                     <Image
@@ -75,7 +83,8 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
                     {institution.name}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
