@@ -168,10 +168,12 @@ const ContactForm = () => {
   };
 
   const handleReturnHome = () => {
+    closeSuccessModal();
     router.push(contentData?.successModal.secondaryButtonLink || '/');
   };
 
   const handleViewResources = () => {
+    closeSuccessModal();
     router.push(contentData?.successModal.primaryButtonLink || '/');
   };
 
@@ -206,7 +208,7 @@ const ContactForm = () => {
           </div>
 
           {/* Description */}
-          <p className="max-w-[680px] text-textDark text-center font-gilroy text-lg md:text-xl font-normal leading-[150%]">
+          <p className="max-w-[680px] text-textDark text-center font-gilroy text-lg md:text-xl font-light leading-[150%]">
             {contentData?.successModal.description || 'You can additionally message on WhatsApp now with one of our academic consultants to discuss your tutoring requirements in more detail'}
           </p>
 
@@ -227,7 +229,7 @@ const ContactForm = () => {
           </div>
 
           {/* Footer Text */}
-          <p className="self-stretch text-textDark text-center font-gilroy text-lg md:text-xl font-normal leading-[150%]">
+          <p className="self-stretch text-textDark text-center font-gilroy text-lg md:text-xl font-light leading-[150%]">
             {contentData?.successModal.footerText || 'Please also check your junk email folder if you have not heard from us'}
           </p>
         </div>
