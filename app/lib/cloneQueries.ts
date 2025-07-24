@@ -437,6 +437,7 @@ export const navbarQueries = {
     logo,
     logoLink,
     navigation,
+    mobileMenu,
     buttonText,
     buttonLink,
     isActive,

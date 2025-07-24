@@ -14,6 +14,13 @@ interface NavbarData {
   navigation: {
     levelsText: string;
     subjectsText: string;
+    allLevelsPageLink?: string;
+    allSubjectsPageLink?: string;
+  };
+  mobileMenu?: {
+    closeButtonColor?: string;
+    dropdownArrowColor?: string;
+    borderColor?: string;
   };
   buttonText: string;
   buttonLink: string;
@@ -33,6 +40,8 @@ const Navbar = ({ navbarData }: NavbarProps) => {
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const [showLevelsDropdown, setShowLevelsDropdown] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  // Mobile submenu states
+  const [mobileSubmenuView, setMobileSubmenuView] = useState<'main' | 'subjects' | 'levels'>('main');
 
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
   const levelsDropdownRef = useRef<HTMLDivElement>(null);
@@ -105,10 +114,10 @@ const Navbar = ({ navbarData }: NavbarProps) => {
 
     const handleScroll = () => {
       if (typeof window === 'undefined') return; // SSR safety
-      
+
       const scrollTop = window.scrollY;
       const isMobile = window.innerWidth < 768;
-      
+
       if (isMobile) {
         const shouldShowBg = scrollTop > 10;
         setIsScrolled(shouldShowBg);
@@ -147,7 +156,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
   };
 
   return (
-    <nav 
+    <nav
       className={`${isScrolled ? 'fixed' : 'absolute'} md:absolute top-0 left-0 right-0 z-30 w-full transition-all duration-300 ${
         isScrolled ? 'bg-white md:bg-transparent shadow-md md:shadow-none' : 'bg-transparent'
       }`}
@@ -188,7 +197,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
             </div>
           )}
             </Link>
-          
+
           {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-[44px]">
           {/* All Levels Dropdown */}
@@ -216,7 +225,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
                 />
                           </svg>
                         </button>
-                        
+
             {showLevelsDropdown && (
               <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
                 {curriculums.map((curriculum) => {
@@ -236,7 +245,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
           </div>
 
           {/* All Subjects Dropdown */}
-              <div 
+              <div
                 className="relative"
                 ref={subjectsDropdownRef}
                 onMouseEnter={handleSubjectsMouseEnter}
@@ -260,7 +269,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
                 />
                   </svg>
                 </button>
-                
+
                 {showSubjectsDropdown && (
               <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
                       {subjects.map((subject) => (
@@ -307,49 +316,280 @@ const Navbar = ({ navbarData }: NavbarProps) => {
           </svg>
         </button>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay */}
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg md:hidden z-30">
-            <div className="px-4 py-4 space-y-4">
-              <div>
-                <div className="font-semibold text-gray-800 mb-2">Levels</div>
-                  {curriculums.map((curriculum) => {
-                    const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
-                    return (
-                      <Link
-                        key={curriculum.slug.current}
-                        href={curriculumPath}
-                      className="block py-2 text-gray-600"
-                      >
-                        {curriculum.curriculum}
-                      </Link>
-                    );
-                  })}
-                </div>
-              <div>
-                <div className="font-semibold text-gray-800 mb-2">Subjects</div>
-                {subjects.slice(0, 6).map((subject) => (
-                  <Link
-                    key={subject.slug.current}
-                    href={`/${subject.slug.current}`}
-                    className="block py-2 text-gray-600"
-                  >
-                    {subject.subject}
-                  </Link>
-                ))}
-              </div>
-                <Link 
-                href={navbarData?.buttonLink || "#contact-form"}
-                className="block w-full py-3 px-6 bg-[#001A96] text-white text-center rounded-[28px] font-semibold"
+          <div className="fixed inset-0 bg-white z-50 md:hidden">
+            {/* Mobile Header */}
+            <div className="flex w-full max-w-[1440px] mx-auto px-[16px] py-[24px] justify-between items-center">
+              {/* Logo - Same as main header */}
+              <Link href={navbarData?.logoLink || "/"} className="flex items-center">
+                {navbarData?.logo ? (
+                  <Image
+                    src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
+                    alt="Company Logo"
+                    width={188}
+                    height={41}
+                    className="object-contain"
+                    sizes="188px"
+                  />
+                ) : (
+                  <div className="relative w-[188px] h-[41px]">
+                    <Image
+                      src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
+                      alt="TutorChase Logo"
+                      width={149}
+                      height={18}
+                      className="absolute left-[39px] top-[3px]"
+                    />
+                    <Image
+                      src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
+                      alt="Logo Icon"
+                      width={32}
+                      height={41}
+                      className="absolute left-0 top-0"
+                    />
+                    <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
+                      <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
+                        Dubai Tutors
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </Link>
+
+              {/* Close Button */}
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setMobileSubmenuView('main');
+                }}
+                className="w-6 h-6 flex items-center justify-center"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                {navbarData?.buttonText || 'Hire a tutor'}
+                  <g clipPath="url(#clip0_14011_125636)">
+                    <path
+                      d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"
+                      fill={navbarData?.mobileMenu?.closeButtonColor || '#000000'}
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_14011_125636">
+                      <rect width="24" height="24" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col justify-between items-start px-4 pt-3 pb-16" style={{ height: 'calc(100vh - 72px)' }}>
+              
+              {/* Main Menu View */}
+              {mobileSubmenuView === 'main' && (
+                <div className="flex flex-col items-start w-full">
+                  {/* All Levels Button */}
+                  <div className="w-full">
+                    <button
+                      onClick={() => setMobileSubmenuView('levels')}
+                      className="flex w-full py-4 px-4 justify-between items-center border-t border-b bg-white"
+                      style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                    >
+                      <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
+                        {navbarData?.navigation?.levelsText || 'All Levels'}
+                      </span>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3.5 11L8.49886 6L3.5 1"
+                          stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* All Subjects Button */}
+                  <div className="w-full">
+                    <button
+                      onClick={() => setMobileSubmenuView('subjects')}
+                      className="flex w-full py-4 px-4 justify-between items-center border-b bg-white"
+                      style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                    >
+                      <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
+                        {navbarData?.navigation?.subjectsText || 'All Subjects'}
+                      </span>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3.5 11L8.49886 6L3.5 1"
+                          stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Levels Submenu View */}
+              {mobileSubmenuView === 'levels' && (
+                <div className="flex flex-col items-start w-full">
+                  {/* Back button with title */}
+                  <div className="flex items-center gap-4 py-4 px-4 w-full border-b" style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}>
+                    <button
+                      onClick={() => setMobileSubmenuView('main')}
+                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 1L3.50114 6L8.5 11"
+                          stroke="white"
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <h2 className="text-[#001A96] font-gilroy text-base font-medium leading-[140%]">
+                      {navbarData?.navigation?.levelsText || 'All Levels'}
+                    </h2>
+                  </div>
+                  
+                  {/* Levels list */}
+                  <div className="w-full">
+                    {/* Individual curriculum links */}
+                    {curriculums.map((curriculum) => {
+                      const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
+                      return (
+                        <Link
+                          key={curriculum.slug.current}
+                          href={curriculumPath}
+                          onClick={() => setIsOpen(false)}
+                          className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                          style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                        >
+                          <span>{curriculum.curriculum}</span>
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M3.5 11L8.49886 6L3.5 1"
+                              stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                              strokeWidth="1.6"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Subjects Submenu View */}
+              {mobileSubmenuView === 'subjects' && (
+                <div className="flex flex-col items-start w-full">
+                  {/* Back button with title */}
+                  <div className="flex items-center gap-4 py-4 px-4 w-full border-b" style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}>
+                    <button
+                      onClick={() => setMobileSubmenuView('main')}
+                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 1L3.50114 6L8.5 11"
+                          stroke="white"
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <h2 className="text-[#001A96] font-gilroy text-base font-medium leading-[140%]">
+                      {navbarData?.navigation?.subjectsText || 'All Subjects'}
+                    </h2>
+                  </div>
+                  
+                                    {/* Subjects list */}
+                  <div className="w-full">
+                    {/* Individual subject links */}
+                    {subjects.map((subject) => (
+                      <Link
+                        key={subject.slug.current}
+                        href={`/${subject.slug.current}`}
+                        onClick={() => setIsOpen(false)}
+                        className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                        style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                      >
+                        <span>{subject.subject}</span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3.5 11L8.49886 6L3.5 1"
+                            stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                            strokeWidth="1.6"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Hire a tutor Button */}
+              <div className="flex w-full flex-col justify-center items-start gap-3">
+                <Link
+                  href={navbarData?.buttonLink || "#contact-form"}
+                  onClick={() => setIsOpen(false)}
+                  className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
+                >
+                  {navbarData?.buttonText || 'Hire a tutor'}
                 </Link>
+              </div>
             </div>
           </div>
         )}
-        </div>
+      </div>
     </nav>
   );
 };
 
-export default Navbar; 
+export default Navbar;

@@ -268,6 +268,13 @@ export interface NavbarContent {
   navigation: {
     levelsText: string;
     subjectsText: string;
+    allLevelsPageLink?: string;
+    allSubjectsPageLink?: string;
+  };
+  mobileMenu?: {
+    closeButtonColor?: string;
+    dropdownArrowColor?: string;
+    borderColor?: string;
   };
   buttonText: string;
   buttonLink: string;
@@ -594,6 +601,7 @@ export async function getNavbarForClone(cloneId: string): Promise<FallbackResult
     logo,
     logoLink,
     navigation,
+    mobileMenu,
     buttonText,
     buttonLink,
     cloneSpecificData
