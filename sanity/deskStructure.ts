@@ -18,7 +18,7 @@ export const structure = (S: StructureBuilder) =>
           S.list()
             .title('Content by Website Clone')
             .items([
-              // Dynamic clone-specific sections
+              // Dubai Tutors = Global Content (baseline)
               S.listItem()
                 .title('Dubai Tutors')
                 .child(
@@ -30,56 +30,56 @@ export const structure = (S: StructureBuilder) =>
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Hero Sections')
-                            .filter('_type == "hero" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "hero" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('highlightsSection')
                         .title('Highlights Sections')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Highlights Sections')
-                            .filter('_type == "highlightsSection" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "highlightsSection" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('tutorProfilesSection')
                         .title('Tutor Profile Sections')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Tutor Profile Sections')
-                            .filter('_type == "tutorProfilesSection" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "tutorProfilesSection" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('subjectGridSection')
                         .title('Subject Grid Sections')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Subject Grid Sections')
-                            .filter('_type == "subjectGridSection" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "subjectGridSection" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('advertBlockSection')
                         .title('Advert Block Sections')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Advert Block Sections')
-                            .filter('_type == "advertBlockSection" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "advertBlockSection" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('platformBanner')
                         .title('Platform Banners')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Platform Banners')
-                            .filter('_type == "platformBanner" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "platformBanner" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('trustedInstitutionsBanner')
                         .title('Trusted Institutions Banners')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Trusted Institutions Banners')
-                            .filter('_type == "trustedInstitutionsBanner" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "trustedInstitutionsBanner" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('testimonialSection')
                         .title('Testimonial Sections')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Testimonial Sections')
-                            .filter('_type == "testimonialSection" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "testimonialSection" && !defined(cloneReference)')
                         ),
                       S.listItem()
                         .title('FAQ Sections')
@@ -87,35 +87,35 @@ export const structure = (S: StructureBuilder) =>
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - FAQ Sections')
-                            .filter('_type == "faq_section" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "faq_section" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('footerSection')
                         .title('Footer Sections')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Footer Sections')
-                            .filter('_type == "footerSection" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "footerSection" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('tutor')
                         .title('Tutors')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Tutors')
-                            .filter('_type == "tutor" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "tutor" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('testimonial')
                         .title('Testimonials')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - Testimonials')
-                            .filter('_type == "testimonial" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "testimonial" && !defined(cloneReference)')
                         ),
                       S.documentTypeListItem('faq')
                         .title('FAQ Items')
                         .child(
                           S.documentList()
                             .title('Dubai Tutors - FAQ Items')
-                            .filter('_type == "faq" && cloneReference->cloneName match "Dubai*"')
+                            .filter('_type == "faq" && !defined(cloneReference)')
                         ),
                     ])
                 ),
@@ -221,107 +221,7 @@ export const structure = (S: StructureBuilder) =>
                     ])
                 ),
 
-              // Global Content (no clone reference)
-              S.listItem()
-                .title('Global Content (All Websites)')
-                .child(
-                  S.list()
-                    .title('Global Content')
-                    .items([
-                      S.documentTypeListItem('hero')
-                        .title('Hero Sections')
-                        .child(
-                          S.documentList()
-                            .title('Global - Hero Sections')
-                            .filter('_type == "hero" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('highlightsSection')
-                        .title('Highlights Sections')
-                        .child(
-                          S.documentList()
-                            .title('Global - Highlights Sections')
-                            .filter('_type == "highlightsSection" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('tutorProfilesSection')
-                        .title('Tutor Profile Sections')
-                        .child(
-                          S.documentList()
-                            .title('Global - Tutor Profile Sections')
-                            .filter('_type == "tutorProfilesSection" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('subjectGridSection')
-                        .title('Subject Grid Sections')
-                        .child(
-                          S.documentList()
-                            .title('Global - Subject Grid Sections')
-                            .filter('_type == "subjectGridSection" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('advertBlockSection')
-                        .title('Advert Block Sections')
-                        .child(
-                          S.documentList()
-                            .title('Global - Advert Block Sections')
-                            .filter('_type == "advertBlockSection" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('platformBanner')
-                        .title('Platform Banners')
-                        .child(
-                          S.documentList()
-                            .title('Global - Platform Banners')
-                            .filter('_type == "platformBanner" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('trustedInstitutionsBanner')
-                        .title('Trusted Institutions Banners')
-                        .child(
-                          S.documentList()
-                            .title('Global - Trusted Institutions Banners')
-                            .filter('_type == "trustedInstitutionsBanner" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('testimonialSection')
-                        .title('Testimonial Sections')
-                        .child(
-                          S.documentList()
-                            .title('Global - Testimonial Sections')
-                            .filter('_type == "testimonialSection" && !defined(cloneReference)')
-                        ),
-                      S.listItem()
-                        .title('FAQ Sections')
-                        .icon(BsQuestionCircle)
-                        .child(
-                          S.documentList()
-                            .title('Global - FAQ Sections')
-                            .filter('_type == "faq_section" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('footerSection')
-                        .title('Footer Sections')
-                        .child(
-                          S.documentList()
-                            .title('Global - Footer Sections')
-                            .filter('_type == "footerSection" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('tutor')
-                        .title('Tutors')
-                        .child(
-                          S.documentList()
-                            .title('Global - Tutors')
-                            .filter('_type == "tutor" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('testimonial')
-                        .title('Testimonials')
-                        .child(
-                          S.documentList()
-                            .title('Global - Testimonials')
-                            .filter('_type == "testimonial" && !defined(cloneReference)')
-                        ),
-                      S.documentTypeListItem('faq')
-                        .title('FAQ Items')
-                        .child(
-                          S.documentList()
-                            .title('Global - FAQ Items')
-                            .filter('_type == "faq" && !defined(cloneReference)')
-                        ),
-                    ])
-                ),
+
             ])
         ),
 
