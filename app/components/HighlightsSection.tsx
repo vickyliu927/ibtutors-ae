@@ -48,9 +48,9 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
 }) => {
   return (
     <section className="py-16 bg-white relative">
-      {/* Desktop layout - 20% smaller than original */}
+      {/* Desktop layout - Made wider than tutor cards */}
       <div className="hidden lg:block">
-        <div className="flex items-center gap-6 w-[1235px] h-[320px] mx-auto">
+        <div className="flex items-center gap-6 w-[1440px] max-w-[calc(100vw-4rem)] h-[320px] mx-auto">
           {highlights.map((item, index) => {
             const IconComponent = iconMap[item.iconType] || iconMap.star;
 
@@ -58,7 +58,7 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({
               <div
                 key={index}
                 className={`flex p-8 flex-col items-start gap-6 flex-shrink-0 rounded-[20px] h-[320px] ${
-                  index === 0 ? "w-[480px]" : "w-[352px]"
+                  index === 0 ? "w-[560px]" : "w-[416px]"
                 } ${
                   index === 0
                     ? "bg-[#001A96] text-white"
