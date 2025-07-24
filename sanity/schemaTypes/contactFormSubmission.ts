@@ -47,17 +47,35 @@ export default defineType({
       type: 'datetime',
       validation: Rule => Rule.required(),
     }),
+    defineField({
+      name: 'sourceDomain',
+      title: 'Source Domain',
+      type: 'string',
+      description: 'The domain/website where this contact form was submitted from',
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'sourceWebsite',
+      title: 'Source Website',
+      type: 'string',
+      description: 'Friendly name of the website (e.g., "Dubai Tutors", "Abu Dhabi Tutors")',
+    }),
   ],
   preview: {
     select: {
       title: 'fullName',
-      subtitle: 'email',
+      email: 'email',
       date: 'submittedAt',
+      sourceDomain: 'sourceDomain',
+      sourceWebsite: 'sourceWebsite',
     },
-    prepare({ title, subtitle, date }) {
+    prepare({ title, email, date, sourceDomain, sourceWebsite }) {
+      const websiteDisplay = sourceWebsite || sourceDomain || 'Unknown Source';
+      const dateDisplay = date ? new Date(date).toLocaleString() : '';
+      
       return {
         title: title || 'No name',
-        subtitle: `${subtitle || 'No email'} — ${date ? new Date(date).toLocaleString() : ''}`,
+        subtitle: `${email || 'No email'} • ${websiteDisplay} • ${dateDisplay}`,
       }
     },
   },

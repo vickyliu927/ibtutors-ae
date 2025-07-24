@@ -15,6 +15,18 @@ const ContactFormSchema = z.object({
   budget: z.string().min(1, "Budget is required"),
 });
 
+// Helper function to determine website name from domain
+function getWebsiteName(domain: string): string {
+  if (domain.includes('dubaitutors.ae') || domain.includes('ibtutors-ae')) {
+    return 'Dubai Tutors';
+  } else if (domain.includes('abudhabitutors') || domain.includes('abu-dhabi')) {
+    return 'Abu Dhabi Tutors';
+  } else if (domain.includes('localhost') || domain.includes('vercel.app')) {
+    return 'Development/Staging';
+  }
+  return 'Unknown Website';
+}
+
 // Helper function to encode HTML entities
 function encodeHTML(str: string): string {
   return String(str)
@@ -35,6 +47,11 @@ export async function POST(req: Request) {
 
   try {
     const formData = await req.json();
+    
+    // Extract domain information from request headers
+    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const sourceDomain = origin.replace(/^https?:\/\//, '').split('/')[0];
+    const sourceWebsite = getWebsiteName(sourceDomain);
     
     // Validate form data
     const result = ContactFormSchema.safeParse(formData);
@@ -60,18 +77,23 @@ export async function POST(req: Request) {
       details,
       budget,
       submittedAt: new Date().toISOString(),
+      sourceDomain,
+      sourceWebsite,
     });
 
     // Send email notification with encoded HTML entities
-    const subject = 'New Contact Form Submission';
-    const text = `New contact form submission:
+    const subject = `New Contact Form Submission - ${sourceWebsite}`;
+    const text = `New contact form submission from ${sourceWebsite}:
 
 Name: ${encodeHTML(fullName)}
 Country: ${encodeHTML(country)}
 Phone: ${encodeHTML(phone)}
 Email: ${encodeHTML(email)}
 Details: ${encodeHTML(details)}
-Budget: ${encodeHTML(budget)}`;
+Budget: ${encodeHTML(budget)}
+
+Source Website: ${encodeHTML(sourceWebsite)}
+Source Domain: ${encodeHTML(sourceDomain)}`;
 
     const emailData = await resend.emails.send({
       from: 'IBTutors AE <noreply@ibtutorsae.com>', // Change to your verified domain
