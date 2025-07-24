@@ -10,20 +10,6 @@ export const structure = (S: StructureBuilder) =>
   S.list()
     .title('Content')
     .items([
-      // Website Clones Group
-      S.listItem()
-        .title('Website Clones')
-        .icon(FiGlobe)
-        .child(
-          S.list()
-            .title('Clone Management')
-            .items([
-              S.documentTypeListItem('clone')
-                .title('All Clones')
-                .icon(BiCopy),
-            ])
-        ),
-
       // Homepage Content Group
       S.listItem()
         .title('Homepage Content')
@@ -32,6 +18,11 @@ export const structure = (S: StructureBuilder) =>
           S.list()
             .title('Homepage Sections')
             .items([
+              S.documentTypeListItem('advertBlockSection')
+                .title('Advert Block Sections'),
+              S.documentTypeListItem('subjectGridSection')
+                .title('Subject Grid Sections')
+                .icon(BsGridFill),
               S.documentTypeListItem('hero')
                 .title('Hero Sections')
                 .icon(BiHome),
@@ -39,11 +30,6 @@ export const structure = (S: StructureBuilder) =>
                 .title('Highlights Sections'),
               S.documentTypeListItem('tutorProfilesSection')
                 .title('Tutor Profile Sections'),
-              S.documentTypeListItem('subjectGridSection')
-                .title('Subject Grid Sections')
-                .icon(BsGridFill),
-              S.documentTypeListItem('advertBlockSection')
-                .title('Advert Block Sections'),
               S.documentTypeListItem('platformBanner')
                 .title('Platform Banners'),
               S.documentTypeListItem('trustedInstitutionsBanner')
@@ -118,6 +104,35 @@ export const structure = (S: StructureBuilder) =>
             ])
         ),
 
+      // Forms & Communication
+      S.listItem()
+        .title('Forms & Communication')
+        .icon(AiOutlineMessage)
+        .child(
+          S.list()
+            .title('Forms & Messages')
+            .items([
+              S.documentTypeListItem('contactFormContent')
+                .title('Contact Form Content'),
+              S.documentTypeListItem('contactFormSubmission')
+                .title('Contact Form Submissions'),
+            ])
+        ),
+
+      // Website Clones Group
+      S.listItem()
+        .title('Website Clones')
+        .icon(FiGlobe)
+        .child(
+          S.list()
+            .title('Clone Management')
+            .items([
+              S.documentTypeListItem('clone')
+                .title('All Clones')
+                .icon(BiCopy),
+            ])
+        ),
+
       // Content Library Group (Reusable Content)
       S.listItem()
         .title('Content Library')
@@ -165,19 +180,6 @@ export const structure = (S: StructureBuilder) =>
             ])
         ),
 
-      // Forms & Submissions
-      S.listItem()
-        .title('Forms & Communication')
-        .icon(AiOutlineMessage)
-        .child(
-          S.list()
-            .title('Forms & Messages')
-            .items([
-              S.documentTypeListItem('contactFormSubmission')
-                .title('Contact Form Submissions'),
-            ])
-        ),
-
       // Show any remaining document types that aren't organized above
       ...S.documentTypeListItems().filter(
         (listItem) =>
@@ -186,6 +188,8 @@ export const structure = (S: StructureBuilder) =>
             'hero',
             'highlightsSection',
             'tutorProfilesSection',
+            'advertBlockSection',
+            'subjectGridSection',
             'platformBanner',
             'trustedInstitutionsBanner',
             'testimonialSection',
@@ -195,10 +199,12 @@ export const structure = (S: StructureBuilder) =>
             'testimonial',
             'faq',
             'subjectPage',
+            'subjectHeroSection',
             'curriculumPage',
             'seoSettings',
             'navbarSettings',
             'linkSettings',
+            'contactFormContent',
             'contactFormSubmission',
           ].includes(listItem.getId() || '')
       ),
