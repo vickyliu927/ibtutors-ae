@@ -242,7 +242,7 @@ const ContactForm = () => {
       {/* Success Modal */}
       {status === 'success' && <SuccessModal />}
 
-      <section className="py-0 md:py-16 flex justify-center items-center min-h-screen bg-gray-50">
+      <section id="contact-form" className="py-0 md:py-16 flex justify-center items-center min-h-screen bg-gray-50">
         <div className="relative rounded-none md:rounded-[20px] bg-primary overflow-hidden max-w-[1056px] w-full md:mx-4 min-h-screen md:min-h-0">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0">
