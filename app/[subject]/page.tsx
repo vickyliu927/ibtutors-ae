@@ -20,7 +20,7 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
-import { subjectPageFaqQueries } from '../lib/cloneQueries';
+import { subjectPageFaqQueries, navbarQueries } from '../lib/cloneQueries';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 
 // Disable static page generation and enable revalidation
@@ -117,7 +117,7 @@ interface CurriculumPageData {
 async function getCurriculumPageDataWithCloneContext(
   subject: string, 
   cloneId: string | null = null
-): Promise<{ pageData: CurriculumPageData | null; testimonialSection: any | null; type: string | null }> {
+): Promise<{ pageData: CurriculumPageData | null; testimonialSection: any | null; navbarData: any | null; type: string | null }> {
   try {
     console.log(`[CurriculumPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
     
@@ -178,9 +178,10 @@ async function getCurriculumPageDataWithCloneContext(
       }
     `;
 
-    const [pageData, testimonialSection] = await Promise.all([
+    const [pageData, testimonialSection, navbarResult] = await Promise.all([
       client.fetch(query, { subject }),
-      client.fetch(testimonialsQuery)
+      client.fetch(testimonialsQuery),
+      navbarQueries.fetch(cloneId || 'global')
     ]);
     
     if (!pageData) {
@@ -189,7 +190,7 @@ async function getCurriculumPageDataWithCloneContext(
     }
     
     console.log(`[CurriculumPage] Successfully fetched curriculum page data for: ${subject}`);
-    return { pageData, testimonialSection, type: 'curriculum' };
+    return { pageData, testimonialSection, navbarData: navbarResult?.data || null, type: 'curriculum' };
   } catch (error) {
     console.error(`[CurriculumPage] Error fetching curriculum page for ${subject}:`, error);
     return { pageData: null, testimonialSection: null, type: null };
@@ -202,7 +203,7 @@ async function getCurriculumPageDataWithCloneContext(
 async function getSubjectPageDataWithCloneContext(
   subject: string,
   cloneId: string | null = null
-): Promise<{ pageData: SubjectPageData | null; testimonialSection: any | null; type: string | null }> {
+): Promise<{ pageData: SubjectPageData | null; testimonialSection: any | null; navbarData: any | null; type: string | null }> {
   try {
     console.log(`[SubjectPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
     
@@ -254,15 +255,16 @@ async function getSubjectPageDataWithCloneContext(
       "testimonialSection": *[_type == "testimonialSection"][0]
     }`;
 
-    // Use server-side caching with Next.js and fetch clone-aware FAQ
-    const [data, faqSectionResult] = await Promise.all([
+    // Use server-side caching with Next.js and fetch clone-aware FAQ and navbar
+    const [data, faqSectionResult, navbarResult] = await Promise.all([
       client.fetch(query, { subject }, { next: { revalidate: 300 } }),
-      subjectPageFaqQueries.fetch(cloneId || 'global', subject)
+      subjectPageFaqQueries.fetch(cloneId || 'global', subject),
+      navbarQueries.fetch(cloneId || 'global')
     ]);
 
     if (!data.subjectPage) {
       console.log(`[SubjectPage] No subject page found for: ${subject}`);
-      return { pageData: null, testimonialSection: null, type: null };
+      return { pageData: null, testimonialSection: null, navbarData: null, type: null };
     }
 
     console.log(`[SubjectPage] Found subject: ${data.subjectPage._id}, tutors: ${data.tutors.length}, FAQ source: ${faqSectionResult?.source || 'direct-reference'}`);
@@ -277,11 +279,16 @@ async function getSubjectPageDataWithCloneContext(
       faqSection: faqSection
     };
 
-    return { pageData, testimonialSection: data.testimonialSection, type: 'subject' };
-  } catch (error) {
-    console.error(`[SubjectPage] Error fetching subject page data for ${subject}:`, error);
-    return { pageData: null, testimonialSection: null, type: null };
-  }
+    return { 
+      pageData, 
+      testimonialSection: data.testimonialSection, 
+      navbarData: navbarResult?.data || null,
+      type: 'subject' 
+    };
+      } catch (error) {
+      console.error(`[SubjectPage] Error fetching subject page data for ${subject}:`, error);
+      return { pageData: null, testimonialSection: null, navbarData: null, type: null };
+    }
 }
 
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
@@ -420,7 +427,7 @@ export default async function DynamicPage({
   }
   
   // If not a curriculum page, check if it's a subject page
-  const { pageData, testimonialSection } = await getSubjectPageDataWithCloneContext(
+  const { pageData, testimonialSection, navbarData } = await getSubjectPageDataWithCloneContext(
     params.subject,
     cloneContext.cloneId
   );
@@ -434,7 +441,7 @@ export default async function DynamicPage({
   return (
     <main>
       {/* Navigation */}
-      <Navbar />
+      <Navbar navbarData={navbarData} />
       
       {/* Enhanced Clone Debug Panel - Development Only */}
       <CloneIndicatorBanner {...cloneIndicatorProps} />
