@@ -186,14 +186,14 @@ async function getCurriculumPageDataWithCloneContext(
     
     if (!pageData) {
       console.log(`[CurriculumPage] No curriculum page found for: ${subject}`);
-      return { pageData: null, testimonialSection: null, type: null };
+      return { pageData: null, testimonialSection: null, navbarData: null, type: null };
     }
     
     console.log(`[CurriculumPage] Successfully fetched curriculum page data for: ${subject}`);
     return { pageData, testimonialSection, navbarData: navbarResult?.data || null, type: 'curriculum' };
   } catch (error) {
     console.error(`[CurriculumPage] Error fetching curriculum page for ${subject}:`, error);
-    return { pageData: null, testimonialSection: null, type: null };
+    return { pageData: null, testimonialSection: null, navbarData: null, type: null };
   }
 }
 
@@ -363,7 +363,7 @@ export default async function DynamicPage({
     return (
       <main>
         {/* Navigation */}
-        <Navbar />
+        <Navbar navbarData={curriculumResult.navbarData} />
         
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
