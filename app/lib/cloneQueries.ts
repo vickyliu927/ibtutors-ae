@@ -485,27 +485,48 @@ export const testimonialSectionQueries = {
  * FAQ SECTION QUERIES
  */
 export const faqSectionQueries = {
-  buildQuery: (cloneId: string) => buildFallbackQuery(
-    'faq_section',
-    cloneId,
-    `
-    _id,
-    title,
-    subtitle,
-    faqReferences[]-> {
+  buildQuery: (cloneId: string, pageType: string = 'homepage', subjectSlug?: string) => {
+    // Build filter conditions
+    let additionalFilter = `pageType == "${pageType}"`;
+    
+    if (pageType === 'subject' && subjectSlug) {
+      // For subject pages, filter by specific subject if provided
+      additionalFilter += ` && subjectPage->slug.current == "${subjectSlug}"`;
+    } else if (pageType === 'subject' && !subjectSlug) {
+      // For subject pages without specific subject, get general subject FAQs
+      additionalFilter += ` && !defined(subjectPage)`;
+    }
+    
+    return buildFallbackQuery(
+      'faq_section',
+      cloneId,
+      `
       _id,
-      question,
-      answer,
-      displayOrder
-    },
-    isActive,
-    cloneReference,
-    cloneSpecificData
-    `
-  ),
+      title,
+      subtitle,
+      pageType,
+      subjectPage-> {
+        _id,
+        title,
+        subject,
+        slug
+      },
+      faqReferences[]-> {
+        _id,
+        question,
+        answer,
+        displayOrder
+      },
+      isActive,
+      cloneReference,
+      cloneSpecificData
+      `,
+      additionalFilter
+    );
+  },
 
-  async fetch(cloneId: string): Promise<ContentResult<any>> {
-    const query = faqSectionQueries.buildQuery(cloneId);
+  async fetch(cloneId: string, pageType: string = 'homepage', subjectSlug?: string): Promise<ContentResult<any>> {
+    const query = faqSectionQueries.buildQuery(cloneId, pageType, subjectSlug);
     const result = await client.fetch(query);
     return resolveContent(result);
   }
@@ -651,6 +672,25 @@ export const trustedInstitutionsQueries = {
 };
 
 /**
+ * SUBJECT PAGE FAQ QUERIES
+ */
+export const subjectPageFaqQueries = {
+  async fetch(cloneId: string, subjectSlug: string): Promise<ContentResult<any>> {
+    // First try to get subject-specific FAQ section, then fall back to general subject FAQs
+    const subjectSpecificResult = await faqSectionQueries.fetch(cloneId, 'subject', subjectSlug);
+    
+    // If we found subject-specific FAQs, return them
+    if (subjectSpecificResult.data) {
+      return subjectSpecificResult;
+    }
+    
+    // Otherwise, fall back to general subject FAQs (no subjectSlug filter)
+    const generalSubjectResult = await faqSectionQueries.fetch(cloneId, 'subject');
+    return generalSubjectResult;
+  }
+};
+
+/**
  * COMPREHENSIVE HOMEPAGE DATA QUERY
  * Fetches all homepage content in a single request with fallback hierarchy
  */
@@ -698,7 +738,7 @@ export const homepageQueries = {
       platformBannerQueries.fetch(cloneId),
       testimonialSectionQueries.fetch(cloneId),
       testimonialQueries.fetch(cloneId),
-      faqSectionQueries.fetch(cloneId),
+      faqSectionQueries.fetch(cloneId, 'homepage'),
       footerQueries.fetch(cloneId),
       navbarQueries.fetch(cloneId),
       seoQueries.fetch(cloneId),

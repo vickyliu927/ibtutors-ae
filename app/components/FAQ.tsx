@@ -1,8 +1,14 @@
 import { getFAQData } from '../lib/getFaqData';
 import FAQSection from './FAQSection';
 
-const FAQ = async () => {
-  const { sectionData, faqs } = await getFAQData();
+interface FAQProps {
+  pageType?: 'homepage' | 'subject' | 'curriculum' | 'general';
+  cloneId?: string | null;
+  subjectSlug?: string;
+}
+
+const FAQ = async ({ pageType = 'homepage', cloneId, subjectSlug }: FAQProps = {}) => {
+  const { sectionData, faqs } = await getFAQData(pageType, cloneId, subjectSlug);
 
   if (!sectionData || faqs.length === 0) {
     return (

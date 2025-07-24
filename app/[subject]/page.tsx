@@ -20,6 +20,7 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
+import { subjectPageFaqQueries } from '../lib/cloneQueries';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 
 // Disable static page generation and enable revalidation
@@ -220,17 +221,7 @@ async function getSubjectPageDataWithCloneContext(
           rating,
           order
         },
-        "faqSection": faqSection->{
-          _id,
-          title,
-          subtitle,
-          "faqs": faqReferences[]-> {
-            _id,
-            question,
-            answer,
-            displayOrder
-          } | order(displayOrder asc)
-        },
+        faqSection,
         seo
       },
       "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject][0]._id)] | order(displayOrder asc) {
@@ -262,20 +253,27 @@ async function getSubjectPageDataWithCloneContext(
       "testimonialSection": *[_type == "testimonialSection"][0]
     }`;
 
-    // Use server-side caching with Next.js
-    const data = await client.fetch(query, { subject }, { next: { revalidate: 300 } });
+    // Use server-side caching with Next.js and fetch clone-aware FAQ
+    const [data, faqSectionResult] = await Promise.all([
+      client.fetch(query, { subject }, { next: { revalidate: 300 } }),
+      cloneId ? subjectPageFaqQueries.fetch(cloneId, subject) : Promise.resolve({ data: null, source: null })
+    ]);
 
     if (!data.subjectPage) {
       console.log(`[SubjectPage] No subject page found for: ${subject}`);
       return { pageData: null, testimonialSection: null, type: null };
     }
 
-    console.log(`[SubjectPage] Found subject: ${data.subjectPage._id}, tutors: ${data.tutors.length}`);
+    console.log(`[SubjectPage] Found subject: ${data.subjectPage._id}, tutors: ${data.tutors.length}, FAQ source: ${faqSectionResult?.source || 'direct-reference'}`);
+
+    // Use clone-aware FAQ section if available, otherwise fall back to direct reference
+    const faqSection = faqSectionResult?.data || data.subjectPage.faqSection;
 
     // Combine the data
     const pageData = {
       ...data.subjectPage,
-      tutorsList: data.tutors
+      tutorsList: data.tutors,
+      faqSection: faqSection
     };
 
     return { pageData, testimonialSection: data.testimonialSection, type: 'subject' };

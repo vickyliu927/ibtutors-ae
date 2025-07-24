@@ -810,11 +810,22 @@ export async function getHighlightsForClone(cloneId: string): Promise<FallbackRe
 /**
  * Get FAQ section for a specific clone
  */
-export async function getFaqSectionForClone(cloneId: string): Promise<FallbackResult<FaqSectionContent>> {
+export async function getFaqSectionForClone(
+  cloneId: string, 
+  pageType: string = 'homepage',
+  subjectSlug?: string
+): Promise<FallbackResult<FaqSectionContent>> {
   const fields = `
     _id,
     title,
     subtitle,
+    pageType,
+    subjectPage-> {
+      _id,
+      title,
+      subject,
+      slug
+    },
     faqReferences[]-> {
       _id,
       question,
@@ -824,7 +835,18 @@ export async function getFaqSectionForClone(cloneId: string): Promise<FallbackRe
     cloneSpecificData
   `;
   
-  const query = buildContentQuery('faq_section', cloneId, fields);
+  // Build filter conditions
+  let additionalFilter = `pageType == "${pageType}"`;
+  
+  if (pageType === 'subject' && subjectSlug) {
+    // For subject pages, filter by specific subject if provided
+    additionalFilter += ` && subjectPage->slug.current == "${subjectSlug}"`;
+  } else if (pageType === 'subject' && !subjectSlug) {
+    // For subject pages without specific subject, get general subject FAQs
+    additionalFilter += ` && !defined(subjectPage)`;
+  }
+  
+  const query = buildContentQuery('faq_section', cloneId, fields, additionalFilter);
   const result = await safeQuery<RawFallbackData<FaqSectionContent>>(query);
   
   if (!result) {

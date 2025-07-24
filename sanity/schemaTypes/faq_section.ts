@@ -37,6 +37,27 @@ const faqSectionSchema = defineType({
       description: 'Which type of page this FAQ section is designed for',
     }),
     defineField({
+      name: 'subjectPage',
+      title: 'Subject Page',
+      type: 'reference',
+      to: [{ type: 'subjectPage' }],
+      description: 'Select a specific subject page this FAQ section is for. Leave empty for general subject FAQs that apply to all subjects.',
+      hidden: ({ document }: any) => document?.pageType !== 'subject',
+      options: {
+        filter: ({ document }: any) => {
+          // If this FAQ section has a clone reference, filter subject pages by the same clone
+          if (document?.cloneReference?._ref) {
+            return {
+              filter: 'cloneReference._ref == $cloneId || !defined(cloneReference)',
+              params: { cloneId: document.cloneReference._ref }
+            };
+          }
+          // Otherwise show all subject pages
+          return {};
+        },
+      },
+    }),
+    defineField({
       name: 'faqReferences',
       title: 'FAQs',
       type: 'array',
@@ -50,8 +71,10 @@ const faqSectionSchema = defineType({
       title: 'title',
       subtitle: 'subtitle',
       pageType: 'pageType',
+      subjectPageTitle: 'subjectPage.title',
+      subjectPageSubject: 'subjectPage.subject',
     },
-    prepare({ title = '', subtitle = '', pageType = '' }: Record<string, string>) {
+    prepare({ title = '', subtitle = '', pageType = '', subjectPageTitle = '', subjectPageSubject = '' }: Record<string, string>) {
       const pageTypeLabels: Record<string, string> = {
         homepage: '🏠 Homepage',
         subject: '📚 Subject Pages',
@@ -60,10 +83,11 @@ const faqSectionSchema = defineType({
       };
 
       const pageTypeLabel = pageTypeLabels[pageType] || '❓ Unknown';
+      const subjectLabel = subjectPageTitle ? ` → ${subjectPageTitle}` : (subjectPageSubject ? ` → ${subjectPageSubject}` : '');
       
       return {
         title: `${title}`,
-        subtitle: `${pageTypeLabel}${subtitle ? ` • ${subtitle}` : ''}`,
+        subtitle: `${pageTypeLabel}${subjectLabel}${subtitle ? ` • ${subtitle}` : ''}`,
       }
     },
   },
