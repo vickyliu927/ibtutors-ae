@@ -64,7 +64,7 @@ interface SubjectPageData {
     _id: string;
     title: string;
     subtitle?: string;
-    faqs: {
+    faqReferences: {
       _id: string;
       question: string;
       answer: string;
@@ -98,10 +98,11 @@ interface CurriculumPageData {
     _id: string;
     title: string;
     subtitle?: string;
-    faqs: {
+    faqReferences: {
       _id: string;
       question: string;
       answer: string;
+      displayOrder: number;
     }[];
   };
   seo: {
@@ -400,8 +401,8 @@ export default async function DynamicPage({
               </div>
 
               <div className="max-w-3xl mx-auto">
-                {curriculumResult.pageData.faqSection.faqs &&
-                  curriculumResult.pageData.faqSection.faqs.map((faq: any) => (
+                {curriculumResult.pageData.faqSection.faqReferences &&
+                  curriculumResult.pageData.faqSection.faqReferences.map((faq: any) => (
                     <FaqAccordion 
                       key={faq._id} 
                       question={faq.question} 
@@ -453,13 +454,13 @@ export default async function DynamicPage({
       )}
 
       {/* FAQ Section - Optional */}
-      {pageData.faqSection && pageData.faqSection.faqs && pageData.faqSection.faqs.length > 0 && (
+      {pageData.faqSection && pageData.faqSection.faqReferences && pageData.faqSection.faqReferences.length > 0 && (
         <FAQSection 
           sectionData={{
             title: pageData.faqSection.title,
             subtitle: pageData.faqSection.subtitle
           }}
-          faqs={pageData.faqSection.faqs}
+          faqs={pageData.faqSection.faqReferences}
         />
       )}
 

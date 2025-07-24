@@ -696,7 +696,7 @@ export const subjectPageFaqQueries = {
             question,
             answer,
             displayOrder
-          }
+          } | order(displayOrder asc)
         }
       `;
       
