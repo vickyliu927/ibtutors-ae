@@ -256,7 +256,7 @@ async function getSubjectPageDataWithCloneContext(
     // Use server-side caching with Next.js and fetch clone-aware FAQ
     const [data, faqSectionResult] = await Promise.all([
       client.fetch(query, { subject }, { next: { revalidate: 300 } }),
-      cloneId ? subjectPageFaqQueries.fetch(cloneId, subject) : Promise.resolve({ data: null, source: null })
+      subjectPageFaqQueries.fetch(cloneId || 'global', subject)
     ]);
 
     if (!data.subjectPage) {

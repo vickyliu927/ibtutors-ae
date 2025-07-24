@@ -675,16 +675,69 @@ export const trustedInstitutionsQueries = {
  * SUBJECT PAGE FAQ QUERIES
  */
 export const subjectPageFaqQueries = {
-  async fetch(cloneId: string, subjectSlug: string): Promise<ContentResult<any>> {
-    // First try to get subject-specific FAQ section, then fall back to general subject FAQs
+  async fetch(cloneId: string | null, subjectSlug: string): Promise<ContentResult<any>> {
+    // Handle global content (Dubai Tutors) when no cloneId
+    if (!cloneId || cloneId === 'global') {
+      // For global content, fetch FAQ sections without clone reference
+      const globalSubjectSpecificQuery = `
+        *[_type == "faq_section" && pageType == "subject" && subjectPage->slug.current == "${subjectSlug}" && !defined(cloneReference)][0] {
+          _id,
+          title,
+          subtitle,
+          pageType,
+          subjectPage-> {
+            _id,
+            title,
+            subject,
+            slug
+          },
+          faqReferences[]-> {
+            _id,
+            question,
+            answer,
+            displayOrder
+          }
+        }
+      `;
+      
+      const subjectSpecificResult = await client.fetch(globalSubjectSpecificQuery);
+      
+      if (subjectSpecificResult) {
+        return { data: subjectSpecificResult, source: 'default' };
+      }
+      
+      // Fall back to general global subject FAQs
+      const globalGeneralQuery = `
+        *[_type == "faq_section" && pageType == "subject" && !defined(subjectPage) && !defined(cloneReference)][0] {
+          _id,
+          title,
+          subtitle,
+          pageType,
+          faqReferences[]-> {
+            _id,
+            question,
+            answer,
+            displayOrder
+          }
+        }
+      `;
+      
+      const generalResult = await client.fetch(globalGeneralQuery);
+      
+      return { 
+        data: generalResult || null, 
+        source: generalResult ? 'default' : null 
+      };
+    }
+    
+    // For clone-specific content, use the existing logic
     const subjectSpecificResult = await faqSectionQueries.fetch(cloneId, 'subject', subjectSlug);
     
-    // If we found subject-specific FAQs, return them
     if (subjectSpecificResult.data) {
       return subjectSpecificResult;
     }
     
-    // Otherwise, fall back to general subject FAQs (no subjectSlug filter)
+    // Otherwise, fall back to general subject FAQs for this clone
     const generalSubjectResult = await faqSectionQueries.fetch(cloneId, 'subject');
     return generalSubjectResult;
   }
