@@ -420,13 +420,13 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         {/* Teaches Section - Premium Tag Design */}
         <div className="px-4 sm:px-6 py-5 sm:py-6">
           <div className="flex flex-wrap items-start gap-3" style={{ rowGap: "12px" }}>
-            <span className="text-[16px] font-medium leading-[140%] font-gilroy text-[#171D23] flex items-center" style={{ height: "40px" }}>
+            <span className="text-[16px] font-medium leading-[140%] font-gilroy text-[#171D23] flex items-center" style={{ height: "40px", fontSize: "16px" }}>
               Teaches:
             </span>
             
             {/* Main Subject Tag */}
             <div className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
-              <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "14px", fontWeight: 500 }}>
+              <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
                 {tutor.specialization.mainSubject}
               </span>
             </div>
@@ -438,13 +438,13 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                   <>
                     {tutor.specialization.additionalSubjects.slice(0, 3).map((subject, index) => (
                       <div key={index} className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
-                        <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "14px", fontWeight: 500 }}>
+                        <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
                           {subject}
                         </span>
                       </div>
                     ))}
                     <div className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
-                      <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "14px", fontWeight: 500 }}>
+                      <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
                         +{tutor.specialization.additionalSubjects.length - 3} others
                       </span>
                     </div>
@@ -452,7 +452,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                 ) : (
                   tutor.specialization.additionalSubjects.map((subject, index) => (
                     <div key={index} className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
-                      <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "14px", fontWeight: 500 }}>
+                      <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
                         {subject}
                       </span>
                     </div>
@@ -579,13 +579,13 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
           <div className="flex justify-between items-end gap-4 self-stretch">
           {/* Tags section */}
             <div className="flex items-start content-start gap-2 flex-1 self-stretch flex-wrap" style={{ padding: "8px 0px 24px 32px" }}>
-              <div className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]" style={{ width: "57px", height: "28px", fontSize: "14px", fontWeight: 600 }}>
+              <div className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]" style={{ width: "57px", height: "28px", fontSize: "16px", fontWeight: 600 }}>
               Teaches:
             </div>
               
               {/* Main Subject */}
               <div className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
-                <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
+                <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "16px", fontWeight: 500 }}>
                 {tutor.specialization.mainSubject}
                 </div>
               </div>
@@ -597,13 +597,13 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                     <>
                       {tutor.specialization.additionalSubjects.slice(0, 3).map((subject, index) => (
                         <div key={index} className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
-                          <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
+                          <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "16px", fontWeight: 500 }}>
                             {subject}
                           </div>
                         </div>
                       ))}
                       <div className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
-                        <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
+                        <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "16px", fontWeight: 500 }}>
                           +{tutor.specialization.additionalSubjects.length - 3} others
                         </div>
                       </div>
@@ -611,7 +611,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                   ) : (
                     tutor.specialization.additionalSubjects.map((subject, index) => (
                       <div key={index} className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
-                        <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
+                        <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "16px", fontWeight: 500 }}>
                           {subject}
                         </div>
                       </div>
