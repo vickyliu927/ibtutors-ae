@@ -360,7 +360,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
               <span
                 ref={titleRef}
                 className="font-normal leading-[140%] font-gilroy text-[#171D23] break-words"
-                style={{ fontSize: titleFontSize + 'px', fontWeight: 200 }}
+                style={{ fontSize: titleFontSize + 'px', fontWeight: 300 }}
               >
                 {tutor.professionalTitle || "IB Maths Tutor | University of Amsterdam"}
               </span>
@@ -401,7 +401,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
 
         {/* Bio Section - Increased spacing and 16px font size */}
         <div className="px-4 sm:px-6 py-5 sm:py-7">
-          <p className="text-[16px] leading-[150%] font-gilroy text-[#171D23]" style={{ fontWeight: 200 }}>
+          <p className="text-[16px] leading-[150%] font-gilroy text-[#171D23]" style={{ fontWeight: 300 }}>
             {tutor.experience}
           </p>
         </div>
@@ -419,7 +419,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         {/* Full-Width Button */}
         <Link
           href={tutor.hireButtonLink || "/#contact-form"}
-          className="block w-full bg-[#001A96] text-white text-center text-[16px] sm:text-[18px] font-medium leading-[140%] font-gilroy py-3 sm:py-4 hover:bg-[#001A96]/90 transition-colors rounded-b-[20px]"
+          className="block w-full bg-[#001A96] text-white text-center text-[16px] sm:text-[18px] font-medium leading-[140%] font-gilroy py-4 sm:py-5 hover:bg-[#001A96]/90 transition-colors rounded-b-[20px]"
         >
           Hire a Tutor
         </Link>
