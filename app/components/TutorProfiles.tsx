@@ -28,9 +28,8 @@ export interface TutorData {
     };
   };
   price?: {
-    amount: number;
-    currency: string;
-    displayText?: string;
+    amount?: string;
+    unit?: string;
   };
   rating?: number;
   reviewCount?: number;
@@ -414,8 +413,9 @@ const TutorProfiles = ({
                           className="text-blue-800 font-medium"
                           style={{ fontSize: "0.9rem" }}
                         >
-                          {tutor.price.displayText ||
-                            `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
+                          {tutor.price.amount && tutor.price.unit 
+                            ? `${tutor.price.amount}/${tutor.price.unit}`
+                            : 'Price on request'}
                         </p>
                       </div>
                     )}
@@ -624,8 +624,9 @@ const TutorProfiles = ({
                               Rate:
                             </p>
                             <p className="text-blue-800 font-medium text-sm">
-                              {tutor.price.displayText ||
-                                `Starting from ${tutor.price.currency} ${tutor.price.amount}/hour`}
+                              {tutor.price.amount && tutor.price.unit 
+                                ? `${tutor.price.amount}/${tutor.price.unit}`
+                                : 'Price on request'}
                             </p>
                           </div>
                         )}
