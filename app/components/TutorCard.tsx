@@ -579,7 +579,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
           <div className="flex justify-between items-end gap-4 self-stretch">
           {/* Tags section */}
             <div className="flex items-start content-start gap-2 flex-1 self-stretch flex-wrap" style={{ padding: "8px 0px 24px 32px" }}>
-              <div className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]" style={{ width: "57px", height: "28px", fontSize: "16px", fontWeight: 600 }}>
+              <div className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]" style={{ width: "70px", height: "28px", fontSize: "16px", fontWeight: 600 }}>
               Teaches:
             </div>
               
