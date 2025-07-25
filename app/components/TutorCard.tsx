@@ -18,8 +18,6 @@ export interface TutorCardData {
   rating?: number;
   activeStudents?: number;
   price?: {
-    amount: number;
-    currency: string;
     displayText?: string;
   };
 }
@@ -69,9 +67,9 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
   const titleRef = useRef<HTMLSpanElement>(null);
   const ratingsRowRef = useRef<HTMLDivElement>(null);
 
-  const rating = tutor.rating || 4.9;
-  const studentCount = tutor.activeStudents || 100;
-  const price = tutor.price || { amount: 200, currency: "AED" };
+  const rating = tutor.rating;
+  const studentCount = tutor.activeStudents;
+  const price = tutor.price;
 
   useEffect(() => {
     // Get current screen width
@@ -369,35 +367,43 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
           </div>
         </div>
 
-        {/* Divider Line - Full width to intersect with borders */}
-        <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
+        {/* Rating and Students Section - Conditional display */}
+        {(rating || studentCount || price?.displayText) && (
+          <>
+            {/* Divider Line - Full width to intersect with borders */}
+            <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
 
-        {/* Rating and Students Section - Same row, even spacing */}
-        <div ref={ratingsRowRef} className="px-4 sm:px-6 py-6 sm:py-7 flex items-center gap-3 min-h-[60px]">
-          <div className="flex items-center gap-2 min-w-[60px]">
-            <StarIcon />
-            <span className="font-medium leading-[200%] font-gilroy text-[#171D23] px-1 py-2 min-w-[30px]" style={{ fontSize: `${ratingFontSize}px`, minHeight: '24px', display: 'flex', alignItems: 'center' }}>
-              {rating}
-            </span>
-          </div>
+            <div ref={ratingsRowRef} className="px-4 sm:px-6 py-6 sm:py-7 flex items-center gap-3 min-h-[60px]">
+              {rating && (
+                <div className="flex items-center gap-2 min-w-[60px]">
+                  <StarIcon />
+                  <span className="font-medium leading-[200%] font-gilroy text-[#171D23] px-1 py-2 min-w-[30px]" style={{ fontSize: `${ratingFontSize}px`, minHeight: '24px', display: 'flex', alignItems: 'center' }}>
+                    {rating}
+                  </span>
+                </div>
+              )}
 
-          <div className="flex items-center gap-2 flex-1 justify-center">
-            <PeopleIcon />
-            <span className="font-light leading-[160%] font-gilroy text-[#171D23] py-1" style={{ fontSize: `${studentsFontSize}px` }}>
-              {studentCount}+ students
-            </span>
-          </div>
+              {studentCount && (
+                <div className="flex items-center gap-2 flex-1 justify-center">
+                  <PeopleIcon />
+                  <span className="font-light leading-[160%] font-gilroy text-[#171D23] py-1" style={{ fontSize: `${studentsFontSize}px` }}>
+                    {studentCount}+ students
+                  </span>
+                </div>
+              )}
 
-          {/* Price Tag for mobile */}
-          <div className="text-[#171D23] font-gilroy leading-[160%] flex-shrink-0 py-1 text-right" style={{ fontSize: `${priceFontSize}px`, fontWeight: 500 }}>
-            <span style={{ fontSize: `${priceSmallFontSize}px`, fontWeight: 500, color: "#8B8E91" }}>from</span>
-            <span style={{ fontSize: `${priceFontSize}px`, fontWeight: 500, color: "#171D23" }}> {price.currency} {price.amount}</span>
-            <span style={{ fontSize: `${priceSmallFontSize}px`, fontWeight: 500, color: "#8B8E91" }}>/h</span>
-          </div>
-        </div>
+              {/* Price Tag for mobile */}
+              {price?.displayText && (
+                <div className="text-[#171D23] font-gilroy leading-[160%] flex-shrink-0 py-1 text-right" style={{ fontSize: `${priceFontSize}px`, fontWeight: 500 }}>
+                  {price.displayText}
+                </div>
+              )}
+            </div>
 
-        {/* Divider Line - Full width to intersect with borders */}
-        <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
+            {/* Divider Line - Full width to intersect with borders */}
+            <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
+          </>
+        )}
 
         {/* Bio Section - Increased spacing and 16px font size */}
         <div className="px-4 sm:px-6 py-5 sm:py-7">
@@ -412,7 +418,15 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         {/* Teaches Section - Increased spacing */}
         <div className="px-4 sm:px-6 py-4 sm:py-5">
           <span className="text-[16px] font-medium leading-[140%] font-gilroy text-[#171D23]">
-            Teaches: <span className="text-[#001A96] font-medium">{tutor.specialization.mainSubject}</span>
+            Teaches: 
+            <span className="text-[#001A96] font-medium"> {tutor.specialization.mainSubject}</span>
+            {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && (
+              <span className="text-[#001A96] font-medium">
+                {tutor.specialization.additionalSubjects.map((subject, index) => (
+                  <span key={index}>, {subject}</span>
+                ))}
+              </span>
+            )}
           </span>
         </div>
 
@@ -463,41 +477,45 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
               </div>
 
               {/* Rating Stars */}
-              <div className="flex items-center gap-2">
-                {/* Stars */}
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, index) => (
-                    <svg key={index} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M9 0L11.0206 6.21885H17.5595L12.2694 10.0623L14.2901 16.2812L9 12.4377L3.70993 16.2812L5.73056 10.0623L0.440492 6.21885H6.97937L9 0Z"
-                        fill="#FCBD00"
-                      />
-                    </svg>
-                  ))}
+              {rating && (
+                <div className="flex items-center gap-2">
+                  {/* Stars */}
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, index) => (
+                      <svg key={index} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M9 0L11.0206 6.21885H17.5595L12.2694 10.0623L14.2901 16.2812L9 12.4377L3.70993 16.2812L5.73056 10.0623L0.440492 6.21885H6.97937L9 0Z"
+                          fill="#FCBD00"
+                        />
+                      </svg>
+                    ))}
+                  </div>
+                  {/* Rating Text */}
+                  <span className="text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ fontSize: "16px", fontWeight: 500 }}>
+                    {rating}
+                  </span>
                 </div>
-                {/* Rating Text */}
-                <span className="text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ fontSize: "16px", fontWeight: 500 }}>
-                  {rating}
-                </span>
-              </div>
+              )}
 
               {/* Students Count */}
-              <div className="flex items-center gap-1.5">
-                  <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
-                    <path d="M4 7.125C4 6.03098 4.4346 4.98177 5.20818 4.20818C5.98177 3.4346 7.03098 3 8.125 3C9.21902 3 10.2682 3.4346 11.0418 4.20818C11.8154 4.98177 12.25 6.03098 12.25 7.125C12.25 8.21902 11.8154 9.26823 11.0418 10.0418C10.2682 10.8154 9.21902 11.25 8.125 11.25C7.03098 11.25 5.98177 10.8154 5.20818 10.0418C4.4346 9.26823 4 8.21902 4 7.125ZM13.75 9.375C13.75 8.93179 13.8373 8.49292 14.0069 8.08344C14.1765 7.67397 14.4251 7.30191 14.7385 6.98851C15.0519 6.67512 15.424 6.42652 15.8334 6.25691C16.2429 6.0873 16.6818 6 17.125 6C17.5682 6 18.0071 6.0873 18.4166 6.25691C18.826 6.42652 19.1981 6.67512 19.5115 6.98851C19.8249 7.30191 20.0735 7.67397 20.2431 8.08344C20.4127 8.49292 20.5 8.93179 20.5 9.375C20.5 10.2701 20.1444 11.1285 19.5115 11.7615C18.8786 12.3944 18.0201 12.75 17.125 12.75C16.2299 12.75 15.3715 12.3944 14.7385 11.7615C14.1056 11.1285 13.75 10.2701 13.75 9.375ZM1 19.875C1 17.9853 1.75067 16.1731 3.08686 14.8369C4.42306 13.5007 6.23533 12.75 8.125 12.75C10.0147 12.75 11.8269 13.5007 13.1631 14.8369C14.4993 16.1731 15.25 17.9853 15.25 19.875V19.878L15.249 19.997C15.2469 20.1242 15.2125 20.2487 15.1489 20.3589C15.0854 20.4691 14.995 20.5614 14.886 20.627C12.8452 21.856 10.5073 22.5036 8.125 22.5C5.653 22.5 3.339 21.816 1.365 20.627C1.25585 20.5615 1.16517 20.4693 1.10149 20.3591C1.03781 20.2489 1.00323 20.1243 1.001 19.997L1 19.875ZM16.75 19.878L16.749 20.022C16.7434 20.3553 16.6638 20.6832 16.516 20.982C18.2617 21.0897 20.0054 20.7416 21.576 19.972C21.6975 19.9126 21.8006 19.8215 21.8745 19.7083C21.9485 19.5951 21.9904 19.4641 21.996 19.329C22.0313 18.4902 21.8494 17.6566 21.4679 16.9088C21.0864 16.1609 20.5183 15.5243 19.8185 15.0605C19.1188 14.5967 18.3111 14.3215 17.4738 14.2615C16.6364 14.2015 15.7977 14.3587 15.039 14.718C16.1522 16.2066 16.7522 18.0162 16.749 19.875L16.75 19.878Z" fill="#4053B0" />
-                </svg>
-                  <div className="text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 400 }}>
-                  {studentCount}+ students
-                  </div>
-              </div>
+              {studentCount && (
+                <div className="flex items-center gap-1.5">
+                    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                      <path d="M4 7.125C4 6.03098 4.4346 4.98177 5.20818 4.20818C5.98177 3.4346 7.03098 3 8.125 3C9.21902 3 10.2682 3.4346 11.0418 4.20818C11.8154 4.98177 12.25 6.03098 12.25 7.125C12.25 8.21902 11.8154 9.26823 11.0418 10.0418C10.2682 10.8154 9.21902 11.25 8.125 11.25C7.03098 11.25 5.98177 10.8154 5.20818 10.0418C4.4346 9.26823 4 8.21902 4 7.125ZM13.75 9.375C13.75 8.93179 13.8373 8.49292 14.0069 8.08344C14.1765 7.67397 14.4251 7.30191 14.7385 6.98851C15.0519 6.67512 15.424 6.42652 15.8334 6.25691C16.2429 6.0873 16.6818 6 17.125 6C17.5682 6 18.0071 6.0873 18.4166 6.25691C18.826 6.42652 19.1981 6.67512 19.5115 6.98851C19.8249 7.30191 20.0735 7.67397 20.2431 8.08344C20.4127 8.49292 20.5 8.93179 20.5 9.375C20.5 10.2701 20.1444 11.1285 19.5115 11.7615C18.8786 12.3944 18.0201 12.75 17.125 12.75C16.2299 12.75 15.3715 12.3944 14.7385 11.7615C14.1056 11.1285 13.75 10.2701 13.75 9.375ZM1 19.875C1 17.9853 1.75067 16.1731 3.08686 14.8369C4.42306 13.5007 6.23533 12.75 8.125 12.75C10.0147 12.75 11.8269 13.5007 13.1631 14.8369C14.4993 16.1731 15.25 17.9853 15.25 19.875V19.878L15.249 19.997C15.2469 20.1242 15.2125 20.2487 15.1489 20.3589C15.0854 20.4691 14.995 20.5614 14.886 20.627C12.8452 21.856 10.5073 22.5036 8.125 22.5C5.653 22.5 3.339 21.816 1.365 20.627C1.25585 20.5615 1.16517 20.4693 1.10149 20.3591C1.03781 20.2489 1.00323 20.1243 1.001 19.997L1 19.875ZM16.75 19.878L16.749 20.022C16.7434 20.3553 16.6638 20.6832 16.516 20.982C18.2617 21.0897 20.0054 20.7416 21.576 19.972C21.6975 19.9126 21.8006 19.8215 21.8745 19.7083C21.9485 19.5951 21.9904 19.4641 21.996 19.329C22.0313 18.4902 21.8494 17.6566 21.4679 16.9088C21.0864 16.1609 20.5183 15.5243 19.8185 15.0605C19.1188 14.5967 18.3111 14.3215 17.4738 14.2615C16.6364 14.2015 15.7977 14.3587 15.039 14.718C16.1522 16.2066 16.7522 18.0162 16.749 19.875L16.75 19.878Z" fill="#4053B0" />
+                  </svg>
+                    <div className="text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 400 }}>
+                    {studentCount}+ students
+                    </div>
+                </div>
+              )}
             </div>
 
             {/* Price Tag */}
-            <div className="text-[#171D23] font-gilroy leading-[120%]" style={{ fontSize: "22px", fontWeight: 500 }}>
-              <span style={{ fontSize: "14px", fontWeight: 500, color: "#8B8E91" }}>from</span>
-              <span style={{ fontSize: "22px", fontWeight: 500, color: "#171D23" }}> {price.currency} {price.amount}</span>
-              <span style={{ fontSize: "14px", fontWeight: 500, color: "#8B8E91" }}>/h</span>
-            </div>
+            {price?.displayText && (
+              <div className="text-[#171D23] font-gilroy leading-[120%]" style={{ fontSize: "22px", fontWeight: 500 }}>
+                {price.displayText}
+              </div>
+            )}
           </div>
 
           {/* University Info */}
@@ -530,11 +548,31 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
               <div className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]" style={{ width: "57px", height: "28px", fontSize: "14px", fontWeight: 600 }}>
               Teaches:
             </div>
+              
+              {/* Main Subject */}
               <div className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
                 <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
                 {tutor.specialization.mainSubject}
                 </div>
-            </div>
+              </div>
+
+              {/* Additional Subjects */}
+              {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && (
+                tutor.specialization.additionalSubjects.slice(0, 4).map((subject, index) => (
+                  <div key={index} className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
+                    <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
+                      {subject}
+                    </div>
+                  </div>
+                ))
+              )}
+
+              {/* Show "+X others" if there are more than 4 additional subjects */}
+              {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 4 && (
+                <span className="text-[#001A96] font-gilroy text-[12px] font-normal leading-[120%]">
+                  +{tutor.specialization.additionalSubjects.length - 4} others
+                </span>
+              )}
           </div>
 
           {/* Hire Button */}

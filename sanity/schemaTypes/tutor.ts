@@ -26,31 +26,7 @@ const tutorSchema = defineType({
       validation: (Rule: any) => Rule.required().precision(0).positive(),
       initialValue: 100,
     }),
-    defineField({
-      name: 'priceTag',
-      title: 'Price Tag',
-      type: 'object',
-      description: 'Show price tag badge if enabled',
-      fields: [
-        {
-          name: 'enabled',
-          title: 'Enable Badge',
-          type: 'boolean',
-          initialValue: false,
-        },
-        {
-          name: 'badgeText',
-          title: 'Badge Text',
-          type: 'string',
-          description: 'Text to display on the price tag badge (e.g., "Starting from AED 200/hour")',
-          initialValue: 'Starting from AED 200/hour',
-        }
-      ],
-      initialValue: {
-        enabled: false,
-        badgeText: 'Starting from AED 200/hour'
-      }
-    }),
+
     defineField({
       name: 'displayOnHomepage',
       title: 'Display on Homepage',
@@ -311,12 +287,7 @@ const tutorSchema = defineType({
         }
       ],
     }),
-    defineField({
-      name: 'yearsOfExperience',
-      title: 'Years of Experience',
-      type: 'number',
-      validation: (Rule: any) => Rule.min(0),
-    }),
+
     defineField({
       name: 'hireButtonLink',
       title: 'Hire Button Link',
@@ -324,12 +295,7 @@ const tutorSchema = defineType({
       description: 'Link for the "Hire a Tutor" button. For subject pages, use /{slug}#contact-form format (e.g., "/online-dubai-english-tutor#contact-form"). For homepage, use "/#contact-form"',
       validation: (Rule: any) => Rule.required(),
     }),
-    defineField({
-      name: 'profilePDF',
-      title: 'Profile PDF',
-      type: 'file',
-      description: 'PDF file that will be available through the "View Profile" button',
-    }),
+
     defineField({
       name: 'price',
       title: 'Hourly Rate',
@@ -337,30 +303,10 @@ const tutorSchema = defineType({
       description: 'Optional hourly rate information',
       fields: [
         {
-          name: 'amount',
-          title: 'Amount',
-          type: 'number',
-          description: 'The hourly rate amount',
-        },
-        {
-          name: 'currency',
-          title: 'Currency',
-          type: 'string',
-          description: 'The currency of the hourly rate',
-          options: {
-            list: [
-              { title: 'AED (UAE Dirham)', value: 'AED' },
-              { title: 'USD (US Dollar)', value: 'USD' },
-              { title: 'GBP (British Pound)', value: 'GBP' },
-              { title: 'EUR (Euro)', value: 'EUR' },
-            ],
-          },
-        },
-        {
           name: 'displayText',
           title: 'Display Text',
           type: 'string',
-          description: 'Custom text to display for the price (e.g., "Starting from AED 200/hour")',
+          description: 'Custom text to display for the price (e.g., "from AED 200/h")',
         }
       ],
     }),
@@ -371,13 +317,7 @@ const tutorSchema = defineType({
       description: 'Tutor rating (e.g., 4.8)',
       validation: (Rule: any) => Rule.min(0).max(5).precision(1),
     }),
-    defineField({
-      name: 'reviewCount',
-      title: 'Number of Reviews',
-      type: 'number',
-      description: 'Total number of reviews received',
-      validation: (Rule: any) => Rule.min(0).precision(0),
-    }),
+
     defineField({
       name: 'activeStudents',
       title: 'Active Students',
@@ -385,55 +325,8 @@ const tutorSchema = defineType({
       description: 'Number of current active students',
       validation: (Rule: any) => Rule.min(0).precision(0),
     }),
-    defineField({
-      name: 'totalLessons',
-      title: 'Total Lessons',
-      type: 'number',
-      description: 'Total number of lessons conducted',
-      validation: (Rule: any) => Rule.min(0).precision(0),
-    }),
-    defineField({
-      name: 'languagesSpoken',
-      title: 'Languages Spoken',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            {
-              name: 'language',
-              title: 'Language',
-              type: 'string',
-            },
-            {
-              name: 'proficiency',
-              title: 'Proficiency',
-              type: 'string',
-              options: {
-                list: [
-                  'Native',
-                  'Fluent',
-                  'Advanced',
-                  'Intermediate',
-                  'Basic'
-                ]
-              }
-            }
-          ],
-          preview: {
-            select: {
-              language: 'language',
-              proficiency: 'proficiency',
-            },
-            prepare({ language, proficiency }) {
-              return {
-                title: `${language} (${proficiency})`,
-              }
-            }
-          }
-        }
-      ],
-    }),
+
+
   ],
   preview: {
     select: {
