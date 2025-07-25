@@ -421,45 +421,45 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         <div className="px-4 sm:px-6 py-5 sm:py-6">
           <div className="flex flex-wrap items-start gap-3" style={{ rowGap: "12px" }}>
             <span className="text-[16px] font-medium leading-[140%] font-gilroy text-[#171D23] flex items-center" style={{ height: "40px", fontSize: "16px" }}>
-            Teaches:
-          </span>
+              Teaches:
+            </span>
             
             {/* Main Subject Tag */}
-            <div className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
+            <div className="flex justify-center items-center bg-[#F8F9FF]/60 px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
               <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
-              {tutor.specialization.mainSubject}
-            </span>
-          </div>
+                {tutor.specialization.mainSubject}
+              </span>
+            </div>
 
             {/* Additional Subject Tags */}
-          {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && (
+            {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && (
               <>
                 {tutor.specialization.additionalSubjects.length > 3 ? (
-            <>
-              {tutor.specialization.additionalSubjects.slice(0, 3).map((subject, index) => (
-                      <div key={index} className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
+                  <>
+                    {tutor.specialization.additionalSubjects.slice(0, 3).map((subject, index) => (
+                      <div key={index} className="flex justify-center items-center bg-[#F8F9FF]/60 px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
                         <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
-                    {subject}
-                  </span>
-                </div>
-              ))}
-                    <div className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
+                          {subject}
+                        </span>
+                      </div>
+                    ))}
+                    <div className="flex justify-center items-center bg-[#F8F9FF]/60 px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
                       <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
-                  +{tutor.specialization.additionalSubjects.length - 3} others
-                </span>
+                        +{tutor.specialization.additionalSubjects.length - 3} others
+                      </span>
                     </div>
                   </>
                 ) : (
                   tutor.specialization.additionalSubjects.map((subject, index) => (
-                    <div key={index} className="flex justify-center items-center bg-[#F8F9FF] px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
+                    <div key={index} className="flex justify-center items-center bg-[#F8F9FF]/60 px-4 py-2.5" style={{ height: "40px", borderRadius: "12px", minWidth: "fit-content" }}>
                       <span className="text-center font-gilroy font-medium leading-[140%] whitespace-nowrap text-[#001A96]" style={{ fontSize: "16px", fontWeight: 500 }}>
                         {subject}
                       </span>
                     </div>
                   ))
-              )}
-            </>
-          )}
+                )}
+              </>
+            )}
           </div>
         </div>
 
