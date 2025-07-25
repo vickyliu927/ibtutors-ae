@@ -303,10 +303,16 @@ const tutorSchema = defineType({
       description: 'Optional hourly rate information',
       fields: [
         {
-          name: 'displayText',
-          title: 'Display Text',
+          name: 'amount',
+          title: 'Price Amount',
           type: 'string',
-          description: 'Custom text to display for the price (e.g., "from AED 200/h")',
+          description: 'Price with currency (e.g., "AED 200", "from USD 150")',
+        },
+        {
+          name: 'unit',
+          title: 'Price Unit',
+          type: 'string',
+          description: 'Time unit (e.g., "hr", "/hour", "per hour")',
         }
       ],
     }),

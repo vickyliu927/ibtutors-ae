@@ -18,7 +18,8 @@ export interface TutorCardData {
   rating?: number;
   activeStudents?: number;
   price?: {
-    displayText?: string;
+    amount?: string;
+    unit?: string;
   };
 }
 
@@ -368,34 +369,35 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         </div>
 
         {/* Rating and Students Section - Conditional display */}
-        {(rating || studentCount || price?.displayText) && (
+        {(rating || studentCount || (price?.amount && price?.unit)) && (
           <>
             {/* Divider Line - Full width to intersect with borders */}
             <div className="w-full h-[1px] bg-[#E6E7ED]"></div>
 
-            <div ref={ratingsRowRef} className="px-4 sm:px-6 py-6 sm:py-7 flex items-center gap-3 min-h-[60px]">
+            <div ref={ratingsRowRef} className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-2 min-h-[50px]">
               {rating && (
-                <div className="flex items-center gap-2 min-w-[60px]">
+                <div className="flex items-center gap-1.5">
                   <StarIcon />
-                  <span className="font-medium leading-[200%] font-gilroy text-[#171D23] px-1 py-2 min-w-[30px]" style={{ fontSize: `${ratingFontSize}px`, minHeight: '24px', display: 'flex', alignItems: 'center' }}>
+                  <span className="font-semibold leading-[140%] font-gilroy text-[#171D23]" style={{ fontSize: '14px', fontWeight: 600 }}>
                     {rating}
                   </span>
                 </div>
               )}
 
               {studentCount && (
-                <div className="flex items-center gap-2 flex-1 justify-center">
+                <div className="flex items-center gap-1.5">
                   <PeopleIcon />
-                  <span className="font-light leading-[160%] font-gilroy text-[#171D23] py-1" style={{ fontSize: `${studentsFontSize}px` }}>
+                  <span className="font-light leading-[140%] font-gilroy text-[#171D23]" style={{ fontSize: '14px' }}>
                     {studentCount}+ students
                   </span>
                 </div>
               )}
 
               {/* Price Tag for mobile */}
-              {price?.displayText && (
-                <div className="text-[#171D23] font-gilroy leading-[160%] flex-shrink-0 py-1 text-right" style={{ fontSize: `${priceFontSize}px`, fontWeight: 500 }}>
-                  {price.displayText}
+              {price?.amount && price?.unit && (
+                <div className="text-[#171D23] font-gilroy leading-[140%] flex-shrink-0" style={{ fontSize: '14px' }}>
+                  <span style={{ fontWeight: 600 }}>{price.amount}</span>
+                  <span style={{ fontWeight: 400 }}>/{price.unit}</span>
                 </div>
               )}
             </div>
@@ -422,9 +424,18 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
             <span className="text-[#001A96] font-medium"> {tutor.specialization.mainSubject}</span>
             {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && (
               <span className="text-[#001A96] font-medium">
-                {tutor.specialization.additionalSubjects.map((subject, index) => (
-                  <span key={index}>, {subject}</span>
-                ))}
+                {tutor.specialization.additionalSubjects.length > 3 ? (
+                  <>
+                    {tutor.specialization.additionalSubjects.slice(0, 3).map((subject, index) => (
+                      <span key={index}>, {subject}</span>
+                    ))}
+                    <span>, +{tutor.specialization.additionalSubjects.length - 3} others</span>
+                  </>
+                ) : (
+                  tutor.specialization.additionalSubjects.map((subject, index) => (
+                    <span key={index}>, {subject}</span>
+                  ))
+                )}
               </span>
             )}
           </span>
@@ -511,9 +522,10 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
             </div>
 
             {/* Price Tag */}
-            {price?.displayText && (
-              <div className="text-[#171D23] font-gilroy leading-[120%]" style={{ fontSize: "22px", fontWeight: 500 }}>
-                {price.displayText}
+            {price?.amount && price?.unit && (
+              <div className="text-[#171D23] font-gilroy leading-[120%]" style={{ fontSize: "22px" }}>
+                <span style={{ fontWeight: 600 }}>{price.amount}</span>
+                <span style={{ fontSize: "14px", fontWeight: 400 }}>/{price.unit}</span>
               </div>
             )}
           </div>
@@ -544,7 +556,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
         {/* Bottom section - Tags and Button */}
           <div className="flex justify-between items-end gap-4 self-stretch">
           {/* Tags section */}
-            <div className="flex items-start content-start gap-2 flex-1 self-stretch flex-wrap" style={{ padding: "8px 0px 24px 32px" }}>
+            <div className="flex items-start content-start gap-6 flex-1 self-stretch flex-wrap" style={{ padding: "8px 0px 24px 32px" }}>
               <div className="flex flex-col justify-center text-[#171D23] text-center font-gilroy font-semibold leading-[140%]" style={{ width: "57px", height: "28px", fontSize: "14px", fontWeight: 600 }}>
               Teaches:
             </div>
@@ -558,20 +570,30 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
 
               {/* Additional Subjects */}
               {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 0 && (
-                tutor.specialization.additionalSubjects.slice(0, 4).map((subject, index) => (
-                  <div key={index} className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
-                    <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
-                      {subject}
-                    </div>
-                  </div>
-                ))
-              )}
-
-              {/* Show "+X others" if there are more than 4 additional subjects */}
-              {tutor.specialization.additionalSubjects && tutor.specialization.additionalSubjects.length > 4 && (
-                <span className="text-[#001A96] font-gilroy text-[12px] font-normal leading-[120%]">
-                  +{tutor.specialization.additionalSubjects.length - 4} others
-                </span>
+                <>
+                  {tutor.specialization.additionalSubjects.length > 3 ? (
+                    <>
+                      {tutor.specialization.additionalSubjects.slice(0, 3).map((subject, index) => (
+                        <div key={index} className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
+                          <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
+                            {subject}
+                          </div>
+                        </div>
+                      ))}
+                      <span className="text-[#001A96] font-gilroy font-normal leading-[140%] flex items-center" style={{ fontSize: "14px" }}>
+                        +{tutor.specialization.additionalSubjects.length - 3} others
+                      </span>
+                    </>
+                  ) : (
+                    tutor.specialization.additionalSubjects.map((subject, index) => (
+                      <div key={index} className="flex justify-center items-center gap-2.5 bg-[#FBFCFD] px-2 py-1.5" style={{ height: "28px", borderRadius: "8px" }}>
+                        <div className="text-center font-gilroy font-medium leading-[140%]" style={{ color: "#001A96", fontSize: "14px", fontWeight: 500 }}>
+                          {subject}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </>
               )}
           </div>
 
