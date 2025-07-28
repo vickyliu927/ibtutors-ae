@@ -6,479 +6,332 @@ import { MdSettings, MdLink } from 'react-icons/md'
 import { FiGlobe, FiUsers } from 'react-icons/fi'
 import { AiOutlineMessage } from 'react-icons/ai'
 
+// Helper function to create the five standard content categories for a clone
+const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
+  const cloneName = clone.cloneName
+  const isGlobalClone = !clone.cloneReference // Global content (Dubai Tutors baseline)
+  
+  return [
+    // Homepage Content Group
+    S.listItem()
+      .title('Homepage Content')
+      .icon(BiHome)
+      .child(
+        S.list()
+          .title(`${cloneName} - Homepage Sections`)
+          .items([
+            S.documentTypeListItem('navbarSettings')
+              .title('NavBar Settings')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - NavBar Settings`)
+                  .filter(isGlobalClone 
+                    ? '_type == "navbarSettings" && !defined(cloneReference)'
+                    : `_type == "navbarSettings" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('hero')
+              .title('Hero Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Hero Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "hero" && !defined(cloneReference)'
+                    : `_type == "hero" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('highlightsSection')
+              .title('Highlights Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Highlights Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "highlightsSection" && !defined(cloneReference)'
+                    : `_type == "highlightsSection" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('tutorProfilesSection')
+              .title('Tutor Profile Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Tutor Profile Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "tutorProfilesSection" && !defined(cloneReference)'
+                    : `_type == "tutorProfilesSection" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('trustedInstitutionsBanner')
+              .title('Trusted Institutions Banners')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Trusted Institutions Banners`)
+                  .filter(isGlobalClone 
+                    ? '_type == "trustedInstitutionsBanner" && !defined(cloneReference)'
+                    : `_type == "trustedInstitutionsBanner" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('subjectGridSection')
+              .title('Subject Grid Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Subject Grid Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "subjectGridSection" && !defined(cloneReference)'
+                    : `_type == "subjectGridSection" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('advertBlockSection')
+              .title('Advert Block Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Advert Block Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "advertBlockSection" && !defined(cloneReference)'
+                    : `_type == "advertBlockSection" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('platformBanner')
+              .title('Platform Banners')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Platform Banners`)
+                  .filter(isGlobalClone 
+                    ? '_type == "platformBanner" && !defined(cloneReference)'
+                    : `_type == "platformBanner" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('testimonialSection')
+              .title('Testimonial Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Testimonial Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "testimonialSection" && !defined(cloneReference)'
+                    : `_type == "testimonialSection" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.listItem()
+              .title('FAQ Sections (Homepage)')
+              .icon(BsQuestionCircle)
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Homepage FAQ Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "faq_section" && !defined(cloneReference) && (pageType == "homepage" || !defined(pageType))'
+                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}" && (pageType == "homepage" || !defined(pageType))`
+                  )
+                  .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
+              ),
+            S.documentTypeListItem('footerSection')
+              .title('Footer Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Footer Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "footerSection" && !defined(cloneReference)'
+                    : `_type == "footerSection" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+          ])
+      ),
+
+    // Subject Pages Content Group
+    S.listItem()
+      .title('Subject Pages Content')
+      .icon(BsBook)
+      .child(
+        S.list()
+          .title(`${cloneName} - Subject Page Sections`)
+          .items([
+            S.documentTypeListItem('subjectHeroSection')
+              .title('Subject Hero Sections')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Subject Hero Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "subjectHeroSection" && !defined(cloneReference)'
+                    : `_type == "subjectHeroSection" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('subjectPage')
+              .title('Subject Page Settings')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Subject Page Settings`)
+                  .filter(isGlobalClone 
+                    ? '_type == "subjectPage" && !defined(cloneReference)'
+                    : `_type == "subjectPage" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.listItem()
+              .title('FAQ Sections (Subject Pages)')
+              .icon(BsQuestionCircle)
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Subject FAQ Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "faq_section" && !defined(cloneReference) && pageType == "subject"'
+                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}" && pageType == "subject"`
+                  )
+                  .defaultOrdering([
+                    {field: 'subjectPage.subject', direction: 'asc'},
+                    {field: '_createdAt', direction: 'desc'}
+                  ])
+              ),
+          ])
+      ),
+
+    // Curriculum Pages Content Group
+    S.listItem()
+      .title('Curriculum Pages Content')
+      .icon(BsGridFill)
+      .child(
+        S.list()
+          .title(`${cloneName} - Curriculum Page Sections`)
+          .items([
+            S.documentTypeListItem('curriculumPage')
+              .title('Curriculum Page Settings')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Curriculum Page Settings`)
+                  .filter(isGlobalClone 
+                    ? '_type == "curriculumPage" && !defined(cloneReference)'
+                    : `_type == "curriculumPage" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.listItem()
+              .title('FAQ Sections (Curriculum Pages)')
+              .icon(BsQuestionCircle)
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Curriculum FAQ Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "faq_section" && !defined(cloneReference) && pageType == "curriculum"'
+                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}" && pageType == "curriculum"`
+                  )
+                  .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
+              ),
+          ])
+      ),
+
+    // Forms & Communication Group
+    S.listItem()
+      .title('Forms & Communication')
+      .icon(AiOutlineMessage)
+      .child(
+        S.list()
+          .title(`${cloneName} - Forms & Messages`)
+          .items([
+            S.documentTypeListItem('contactFormContent')
+              .title('Contact Form Content')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Contact Form Content`)
+                  .filter(isGlobalClone 
+                    ? '_type == "contactFormContent" && !defined(cloneReference)'
+                    : `_type == "contactFormContent" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.listItem()
+              .title('Contact Form Submissions')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Contact Form Submissions`)
+                  .filter(`_type == "contactFormSubmission" && sourceWebsite == "${cloneName}"`)
+                  .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
+              ),
+          ])
+      ),
+
+    // Content Library Group
+    S.listItem()
+      .title('Content Library')
+      .icon(FiUsers)
+      .child(
+        S.list()
+          .title(`${cloneName} - Reusable Content`)
+          .items([
+            S.documentTypeListItem('tutor')
+              .title('Tutors')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Tutors`)
+                  .filter(isGlobalClone 
+                    ? '_type == "tutor" && !defined(cloneReference)'
+                    : `_type == "tutor" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('testimonial')
+              .title('Testimonials')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - Testimonials`)
+                  .filter(isGlobalClone 
+                    ? '_type == "testimonial" && !defined(cloneReference)'
+                    : `_type == "testimonial" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.documentTypeListItem('faq')
+              .title('FAQ Items')
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - FAQ Items`)
+                  .filter(isGlobalClone 
+                    ? '_type == "faq" && !defined(cloneReference)'
+                    : `_type == "faq" && cloneReference->cloneName == "${cloneName}"`
+                  )
+              ),
+            S.listItem()
+              .title('All FAQ Sections (Overview)')
+              .icon(BsQuestionCircle)
+              .child(
+                S.documentList()
+                  .title(`${cloneName} - All FAQ Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "faq_section" && !defined(cloneReference)'
+                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}"`
+                  )
+                  .defaultOrdering([{field: 'pageType', direction: 'asc'}, {field: '_createdAt', direction: 'desc'}])
+              ),
+          ])
+      ),
+  ]
+}
+
 export const structure = (S: StructureBuilder) =>
   S.list()
     .title('Content')
     .items([
-      // All Content by Website
+      // All Content by Website - Now Dynamic!
       S.listItem()
         .title('All Content by Website')
         .icon(FiGlobe)
         .child(
-          S.list()
+          S.documentTypeList('clone')
             .title('Content by Website Clone')
-            .items([
-              // Dubai Tutors = Global Content (baseline)
-              S.listItem()
-                .title('Dubai Tutors')
-                .child(
-                  S.list()
-                    .title('Dubai Tutors Content')
-                    .items([
-                      // Homepage Content Group
-                      S.listItem()
-                        .title('Homepage Content')
-                        .icon(BiHome)
-                        .child(
-                          S.list()
-                            .title('Dubai Tutors - Homepage Sections')
-                            .items([
-                              S.documentTypeListItem('navbarSettings')
-                                .title('NavBar Settings')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - NavBar Settings')
-                                    .filter('_type == "navbarSettings" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('hero')
-                                .title('Hero Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Hero Sections')
-                                    .filter('_type == "hero" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('highlightsSection')
-                                .title('Highlights Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Highlights Sections')
-                                    .filter('_type == "highlightsSection" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('tutorProfilesSection')
-                                .title('Tutor Profile Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Tutor Profile Sections')
-                                    .filter('_type == "tutorProfilesSection" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('trustedInstitutionsBanner')
-                                .title('Trusted Institutions Banners')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Trusted Institutions Banners')
-                                    .filter('_type == "trustedInstitutionsBanner" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('subjectGridSection')
-                                .title('Subject Grid Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Subject Grid Sections')
-                                    .filter('_type == "subjectGridSection" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('advertBlockSection')
-                                .title('Advert Block Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Advert Block Sections')
-                                    .filter('_type == "advertBlockSection" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('platformBanner')
-                                .title('Platform Banners')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Platform Banners')
-                                    .filter('_type == "platformBanner" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('testimonialSection')
-                                .title('Testimonial Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Testimonial Sections')
-                                    .filter('_type == "testimonialSection" && !defined(cloneReference)')
-                                ),
-                              S.listItem()
-                                .title('FAQ Sections (Homepage)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Homepage FAQ Sections')
-                                    .filter('_type == "faq_section" && !defined(cloneReference) && (pageType == "homepage" || !defined(pageType))')
-                                    .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
-                                ),
-                              S.documentTypeListItem('footerSection')
-                                .title('Footer Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Footer Sections')
-                                    .filter('_type == "footerSection" && !defined(cloneReference)')
-                                ),
-                            ])
-                        ),
+            .filter('isActive == true')
+            .child((cloneId: string) => {
+              return S.document()
+                .schemaType('clone')
+                .documentId(cloneId)
+                .child((context: any) => {
+                  const clone = context.document?.displayed
+                  
+                  if (!clone) {
+                    return S.list().title('Loading...').items([])
+                  }
 
-                      // Subject Pages Content Group
-                      S.listItem()
-                        .title('Subject Pages Content')
-                        .icon(BsBook)
-                        .child(
-                          S.list()
-                            .title('Dubai Tutors - Subject Page Sections')
-                            .items([
-                              S.documentTypeListItem('subjectHeroSection')
-                                .title('Subject Hero Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Subject Hero Sections')
-                                    .filter('_type == "subjectHeroSection" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('subjectPage')
-                                .title('Subject Page Settings')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Subject Page Settings')
-                                    .filter('_type == "subjectPage" && !defined(cloneReference)')
-                                ),
-                              S.listItem()
-                                .title('FAQ Sections (Subject Pages)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Subject FAQ Sections')
-                                    .filter('_type == "faq_section" && !defined(cloneReference) && pageType == "subject"')
-                                    .defaultOrdering([
-                                      {field: 'subjectPage.subject', direction: 'asc'},
-                                      {field: '_createdAt', direction: 'desc'}
-                                    ])
-                                ),
-                            ])
-                        ),
+                  // Create special handling for Dubai Tutors (baseline/global content)
+                  const isDubaiTutors = clone.cloneName === 'Dubai Tutors'
 
-                      // Curriculum Pages Content Group
-                      S.listItem()
-                        .title('Curriculum Pages Content')
-                        .icon(BsGridFill)
-                        .child(
-                          S.list()
-                            .title('Dubai Tutors - Curriculum Page Sections')
-                            .items([
-                              S.documentTypeListItem('curriculumPage')
-                                .title('Curriculum Page Settings')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Curriculum Page Settings')
-                                    .filter('_type == "curriculumPage" && !defined(cloneReference)')
-                                ),
-                              S.listItem()
-                                .title('FAQ Sections (Curriculum Pages)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Curriculum FAQ Sections')
-                                    .filter('_type == "faq_section" && !defined(cloneReference) && pageType == "curriculum"')
-                                    .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
-                                ),
-                            ])
-                        ),
-
-                      // Forms & Communication Group
-                      S.listItem()
-                        .title('Forms & Communication')
-                        .icon(AiOutlineMessage)
-                        .child(
-                          S.list()
-                            .title('Dubai Tutors - Forms & Messages')
-                            .items([
-                              S.documentTypeListItem('contactFormContent')
-                                .title('Contact Form Content')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Contact Form Content')
-                                    .filter('_type == "contactFormContent" && !defined(cloneReference)')
-                                ),
-                              S.listItem()
-                                .title('Contact Form Submissions')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Contact Form Submissions')
-                                    .filter('_type == "contactFormSubmission" && sourceWebsite == "Dubai Tutors"')
-                                    .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
-                                ),
-                            ])
-                        ),
-
-                      // Content Library Group
-                      S.listItem()
-                        .title('Content Library')
-                        .icon(FiUsers)
-                        .child(
-                          S.list()
-                            .title('Dubai Tutors - Reusable Content')
-                            .items([
-                              S.documentTypeListItem('tutor')
-                                .title('Tutors')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Tutors')
-                                    .filter('_type == "tutor" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('testimonial')
-                                .title('Testimonials')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Testimonials')
-                                    .filter('_type == "testimonial" && !defined(cloneReference)')
-                                ),
-                              S.documentTypeListItem('faq')
-                                .title('FAQ Items')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - FAQ Items')
-                                    .filter('_type == "faq" && !defined(cloneReference)')
-                                ),
-                              S.listItem()
-                                .title('All FAQ Sections (Overview)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - All FAQ Sections')
-                                    .filter('_type == "faq_section" && !defined(cloneReference)')
-                                    .defaultOrdering([{field: 'pageType', direction: 'asc'}, {field: '_createdAt', direction: 'desc'}])
-                                ),
-                            ])
-                        ),
-                    ])
-                ),
-              
-              S.listItem()
-                .title('Abu Dhabi Tutors')
-                .child(
-                  S.list()
-                    .title('Abu Dhabi Tutors Content')
-                    .items([
-                      // Homepage Content Group
-                      S.listItem()
-                        .title('Homepage Content')
-                        .icon(BiHome)
-                        .child(
-                          S.list()
-                            .title('Abu Dhabi Tutors - Homepage Sections')
-                            .items([
-                              S.documentTypeListItem('navbarSettings')
-                                .title('NavBar Settings')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - NavBar Settings')
-                                    .filter('_type == "navbarSettings" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('hero')
-                                .title('Hero Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Hero Sections')
-                                    .filter('_type == "hero" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('highlightsSection')
-                                .title('Highlights Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Highlights Sections')
-                                    .filter('_type == "highlightsSection" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('tutorProfilesSection')
-                                .title('Tutor Profile Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Tutor Profile Sections')
-                                    .filter('_type == "tutorProfilesSection" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('trustedInstitutionsBanner')
-                                .title('Trusted Institutions Banners')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Trusted Institutions Banners')
-                                    .filter('_type == "trustedInstitutionsBanner" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('subjectGridSection')
-                                .title('Subject Grid Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Subject Grid Sections')
-                                    .filter('_type == "subjectGridSection" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('advertBlockSection')
-                                .title('Advert Block Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Advert Block Sections')
-                                    .filter('_type == "advertBlockSection" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('platformBanner')
-                                .title('Platform Banners')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Platform Banners')
-                                    .filter('_type == "platformBanner" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('testimonialSection')
-                                .title('Testimonial Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Testimonial Sections')
-                                    .filter('_type == "testimonialSection" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.listItem()
-                                .title('FAQ Sections (Homepage)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Homepage FAQ Sections')
-                                    .filter('_type == "faq_section" && cloneReference->cloneName match "Abu Dhabi*" && (pageType == "homepage" || !defined(pageType))')
-                                    .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
-                                ),
-                              S.documentTypeListItem('footerSection')
-                                .title('Footer Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Footer Sections')
-                                    .filter('_type == "footerSection" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                            ])
-                        ),
-
-                      // Subject Pages Content Group
-                      S.listItem()
-                        .title('Subject Pages Content')
-                        .icon(BsBook)
-                        .child(
-                          S.list()
-                            .title('Abu Dhabi Tutors - Subject Page Sections')
-                            .items([
-                              S.documentTypeListItem('subjectHeroSection')
-                                .title('Subject Hero Sections')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Subject Hero Sections')
-                                    .filter('_type == "subjectHeroSection" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('subjectPage')
-                                .title('Subject Page Settings')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Subject Page Settings')
-                                    .filter('_type == "subjectPage" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.listItem()
-                                .title('FAQ Sections (Subject Pages)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Subject FAQ Sections')
-                                    .filter('_type == "faq_section" && cloneReference->cloneName match "Abu Dhabi*" && pageType == "subject"')
-                                    .defaultOrdering([
-                                      {field: 'subjectPage.subject', direction: 'asc'},
-                                      {field: '_createdAt', direction: 'desc'}
-                                    ])
-                                ),
-                            ])
-                        ),
-
-                      // Curriculum Pages Content Group
-                      S.listItem()
-                        .title('Curriculum Pages Content')
-                        .icon(BsGridFill)
-                        .child(
-                          S.list()
-                            .title('Abu Dhabi Tutors - Curriculum Page Sections')
-                            .items([
-                              S.documentTypeListItem('curriculumPage')
-                                .title('Curriculum Page Settings')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Curriculum Page Settings')
-                                    .filter('_type == "curriculumPage" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.listItem()
-                                .title('FAQ Sections (Curriculum Pages)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Curriculum FAQ Sections')
-                                    .filter('_type == "faq_section" && cloneReference->cloneName match "Abu Dhabi*" && pageType == "curriculum"')
-                                    .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
-                                ),
-                            ])
-                        ),
-
-                      // Forms & Communication Group
-                      S.listItem()
-                        .title('Forms & Communication')
-                        .icon(AiOutlineMessage)
-                        .child(
-                          S.list()
-                            .title('Abu Dhabi Tutors - Forms & Messages')
-                            .items([
-                              S.documentTypeListItem('contactFormContent')
-                                .title('Contact Form Content')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Contact Form Content')
-                                    .filter('_type == "contactFormContent" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.listItem()
-                                .title('Contact Form Submissions')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Contact Form Submissions')
-                                    .filter('_type == "contactFormSubmission" && sourceWebsite == "Abu Dhabi Tutors"')
-                                    .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
-                                ),
-                            ])
-                        ),
-
-                      // Content Library Group
-                      S.listItem()
-                        .title('Content Library')
-                        .icon(FiUsers)
-                        .child(
-                          S.list()
-                            .title('Abu Dhabi Tutors - Reusable Content')
-                            .items([
-                              S.documentTypeListItem('tutor')
-                                .title('Tutors')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Tutors')
-                                    .filter('_type == "tutor" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('testimonial')
-                                .title('Testimonials')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Testimonials')
-                                    .filter('_type == "testimonial" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.documentTypeListItem('faq')
-                                .title('FAQ Items')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - FAQ Items')
-                                    .filter('_type == "faq" && cloneReference->cloneName match "Abu Dhabi*"')
-                                ),
-                              S.listItem()
-                                .title('All FAQ Sections (Overview)')
-                                .icon(BsQuestionCircle)
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - All FAQ Sections')
-                                    .filter('_type == "faq_section" && cloneReference->cloneName match "Abu Dhabi*"')
-                                    .defaultOrdering([{field: 'pageType', direction: 'asc'}, {field: '_createdAt', direction: 'desc'}])
-                                ),
-                            ])
-                        ),
-                    ])
-                ),
-
-
-            ])
+                  return S.list()
+                    .title(`${clone.cloneName} Content`)
+                    .items(createCloneContentCategories(S, {
+                      cloneName: clone.cloneName,
+                      cloneReference: isDubaiTutors ? null : clone._id // Dubai Tutors is treated as global
+                    }))
+                })
+            })
         ),
 
       // All Content by Section
