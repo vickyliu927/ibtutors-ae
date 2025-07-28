@@ -9,7 +9,8 @@ import { AiOutlineMessage } from 'react-icons/ai'
 // Helper function to create the five standard content categories for a clone
 const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
   const cloneName = clone.cloneName
-  const isGlobalClone = !clone.cloneReference // Global content (Dubai Tutors baseline)
+  const cloneId = clone.cloneReference // This is the clone document ID for filtering
+  const isGlobalClone = !cloneId // Global content (Dubai Tutors baseline)
   
   return [
                       // Homepage Content Group
@@ -27,7 +28,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - NavBar Settings`)
                   .filter(isGlobalClone 
                     ? '_type == "navbarSettings" && !defined(cloneReference)'
-                    : `_type == "navbarSettings" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "navbarSettings" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('hero')
@@ -37,7 +38,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Hero Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "hero" && !defined(cloneReference)'
-                    : `_type == "hero" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "hero" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('highlightsSection')
@@ -47,7 +48,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Highlights Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "highlightsSection" && !defined(cloneReference)'
-                    : `_type == "highlightsSection" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "highlightsSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('tutorProfilesSection')
@@ -57,7 +58,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Tutor Profile Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "tutorProfilesSection" && !defined(cloneReference)'
-                    : `_type == "tutorProfilesSection" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "tutorProfilesSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('trustedInstitutionsBanner')
@@ -67,7 +68,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Trusted Institutions Banners`)
                   .filter(isGlobalClone 
                     ? '_type == "trustedInstitutionsBanner" && !defined(cloneReference)'
-                    : `_type == "trustedInstitutionsBanner" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "trustedInstitutionsBanner" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('subjectGridSection')
@@ -77,7 +78,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Subject Grid Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "subjectGridSection" && !defined(cloneReference)'
-                    : `_type == "subjectGridSection" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "subjectGridSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('advertBlockSection')
@@ -87,7 +88,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Advert Block Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "advertBlockSection" && !defined(cloneReference)'
-                    : `_type == "advertBlockSection" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "advertBlockSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('platformBanner')
@@ -97,7 +98,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Platform Banners`)
                   .filter(isGlobalClone 
                     ? '_type == "platformBanner" && !defined(cloneReference)'
-                    : `_type == "platformBanner" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "platformBanner" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('testimonialSection')
@@ -107,7 +108,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Testimonial Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "testimonialSection" && !defined(cloneReference)'
-                    : `_type == "testimonialSection" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "testimonialSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.listItem()
@@ -118,7 +119,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Homepage FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference) && (pageType == "homepage" || !defined(pageType))'
-                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}" && (pageType == "homepage" || !defined(pageType))`
+                    : `_type == "faq_section" && cloneReference._ref == "${cloneId}" && (pageType == "homepage" || !defined(pageType))`
                   )
                                     .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
                                 ),
@@ -129,7 +130,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Footer Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "footerSection" && !defined(cloneReference)'
-                    : `_type == "footerSection" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "footerSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                             ])
@@ -150,7 +151,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Subject Hero Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "subjectHeroSection" && !defined(cloneReference)'
-                    : `_type == "subjectHeroSection" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "subjectHeroSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('subjectPage')
@@ -160,7 +161,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Subject Page Settings`)
                   .filter(isGlobalClone 
                     ? '_type == "subjectPage" && !defined(cloneReference)'
-                    : `_type == "subjectPage" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "subjectPage" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.listItem()
@@ -171,7 +172,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Subject FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference) && pageType == "subject"'
-                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}" && pageType == "subject"`
+                    : `_type == "faq_section" && cloneReference._ref == "${cloneId}" && pageType == "subject"`
                   )
                                     .defaultOrdering([
                                       {field: 'subjectPage.subject', direction: 'asc'},
@@ -196,7 +197,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Curriculum Page Settings`)
                   .filter(isGlobalClone 
                     ? '_type == "curriculumPage" && !defined(cloneReference)'
-                    : `_type == "curriculumPage" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "curriculumPage" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.listItem()
@@ -207,7 +208,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Curriculum FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference) && pageType == "curriculum"'
-                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}" && pageType == "curriculum"`
+                    : `_type == "faq_section" && cloneReference._ref == "${cloneId}" && pageType == "curriculum"`
                   )
                                     .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
                                 ),
@@ -229,7 +230,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Contact Form Content`)
                   .filter(isGlobalClone 
                     ? '_type == "contactFormContent" && !defined(cloneReference)'
-                    : `_type == "contactFormContent" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "contactFormContent" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.listItem()
@@ -268,7 +269,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Testimonials`)
                   .filter(isGlobalClone 
                     ? '_type == "testimonial" && !defined(cloneReference)'
-                    : `_type == "testimonial" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "testimonial" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('faq')
@@ -278,7 +279,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - FAQ Items`)
                   .filter(isGlobalClone 
                     ? '_type == "faq" && !defined(cloneReference)'
-                    : `_type == "faq" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "faq" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.listItem()
@@ -289,7 +290,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - All FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference)'
-                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}"`
+                    : `_type == "faq_section" && cloneReference._ref == "${cloneId}"`
                   )
                                     .defaultOrdering([{field: 'pageType', direction: 'asc'}, {field: '_createdAt', direction: 'desc'}])
                                 ),
@@ -302,36 +303,55 @@ export const structure = (S: StructureBuilder) =>
                   S.list()
     .title('Content')
                     .items([
-      // All Content by Website - Fully Dynamic Clone Folders!
-                      S.listItem()
+            // All Content by Website - Fully Dynamic Clone Folders!
+      S.listItem()
         .title('All Content by Website')
         .icon(FiGlobe)
-                        .child(
-          S.documentTypeList('clone')
+        .child(
+          S.list()
             .title('Content by Website Clone')
-            .filter('isActive == true')
-            .child((cloneId: string) => {
-              return S.document()
-                .schemaType('clone')
-                .documentId(cloneId)
-                .child((context: any) => {
-                  const clone = context.document?.displayed
-                  
-                  if (!clone) {
-                    return S.list().title('Loading...').items([])
-                  }
-
-                  // Create special handling for Dubai Tutors (baseline/global content)
-                  const isDubaiTutors = clone.cloneName === 'Dubai Tutors'
-
-                  return S.list()
-                    .title(`${clone.cloneName} Content`)
+            .items([
+              // Dubai Tutors (Global/Baseline Content)
+              S.listItem()
+                .title('Dubai Tutors')
+                .icon(FiGlobe)
+                .child(
+                  S.list()
+                    .title('Dubai Tutors Content')
                     .items(createCloneContentCategories(S, {
-                      cloneName: clone.cloneName,
-                      cloneReference: isDubaiTutors ? null : clone._id
+                      cloneName: 'Dubai Tutors',
+                      cloneReference: null // Global content
                     }))
-                })
-            })
+                ),
+              
+              // Abu Dhabi Tutors  
+              S.listItem()
+                .title('Abu Dhabi Tutors')
+                .icon(FiGlobe)
+                .child(
+                  S.list()
+                    .title('Abu Dhabi Tutors Content')
+                    .items(createCloneContentCategories(S, {
+                      cloneName: 'Abu Dhabi Tutors',
+                      cloneReference: '9aab910c-dd46-48e9-a44f-594906d32ca7' // Actual Abu Dhabi Tutors document ID
+                    }))
+                ),
+
+              // Singapore Tutors
+              S.listItem()
+                .title('Singapore Tutors')
+                .icon(FiGlobe)
+                .child(
+                  S.list()
+                    .title('Singapore Tutors Content')
+                    .items(createCloneContentCategories(S, {
+                      cloneName: 'Singapore Tutors',
+                      cloneReference: '4c395ebb-26a8-48a5-a83c-4f5d4e078587' // Actual Singapore Tutors document ID
+                    }))
+                ),
+
+              // Add more clones here as needed...
+            ])
         ),
 
       // All Content by Section

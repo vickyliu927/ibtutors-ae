@@ -151,15 +151,29 @@ Dubai Tutors is treated as the baseline clone and shows global content (document
 
 1. **Create a new clone** in the "Website Clones" → "All Clones" section
 2. **Set it as active** using the "Active" toggle
-3. **The folder structure appears automatically!** 🎉
-4. **Navigate to "All Content by Website"** - your new clone folder is there
-5. **Start creating content** by navigating to the appropriate category
+3. **Get the clone document ID** by running: `npx sanity exec getClones.js --with-user-token` in the sanity folder
+4. **Add the clone folder** in `sanity/deskStructure.ts`:
+   ```typescript
+   S.listItem()
+     .title('Your Clone Name')
+     .icon(FiGlobe)
+     .child(
+       S.list()
+         .title('Your Clone Name Content')
+         .items(createCloneContentCategories(S, {
+           cloneName: 'Your Clone Name',
+           cloneReference: 'actual-document-id-here'
+         }))
+     ),
+   ```
+5. **Navigate to "All Content by Website"** - your new clone folder is there
+6. **Start creating content** by navigating to the appropriate category
 
-#### ✨ Fully Automatic Process
-- **No code changes needed** - the system detects new active clones automatically
-- **Instant folder creation** - as soon as you set a clone as active, it appears
-- **Alphabetical ordering** - clones are automatically sorted A-Z
+#### 📝 Semi-Automatic Process
+- **Clone creation** is done through Sanity Studio
+- **Folder addition** requires one code update with the correct document ID  
 - **Consistent structure** - every clone gets the same five categories
+- **Proper filtering** - content is correctly filtered by clone reference
 
 #### 🧪 Testing the System
 To test the automatic folder creation:
@@ -189,7 +203,14 @@ To test the automatic folder creation:
 ### GROQ Filter Issues (Fixed)
 - **Issue**: Error about "cloneName field not existing on tutor schema"
 - **Fix**: System now uses `cloneReference._ref == "cloneId"` for filtering
+- **Solution**: Updated desk structure with actual clone document IDs
 - All content filtering is done by document ID references for optimal performance
+
+### Clone Document IDs
+The system now uses the actual Sanity document IDs for filtering:
+- Dubai Tutors: Global content (no clone reference)
+- Abu Dhabi Tutors: `9aab910c-dd46-48e9-a44f-594906d32ca7`
+- Singapore Tutors: `4c395ebb-26a8-48a5-a83c-4f5d4e078587`
 
 ### Performance Issues
 - The system is designed to be efficient, but with many clones, consider archiving inactive ones
