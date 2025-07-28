@@ -55,9 +55,10 @@ The system uses intelligent filters to show the right content:
 - Form submissions are automatically filtered by source website
 
 ### 4. **Maintenance-Free Structure**
-- No code changes needed when adding new clones
-- Folder structure automatically updates when clones are activated/deactivated
-- Consistent experience regardless of how many clones exist
+- **Zero code changes needed** when adding new clones
+- **Instant updates** - folder structure automatically updates when clones are activated/deactivated
+- **Truly dynamic** - works seamlessly regardless of how many clones you create
+- **Self-organizing** - clones are automatically sorted alphabetically
 
 ## Content Categories Explained
 
@@ -102,21 +103,32 @@ Contains reusable content that can be shared:
 
 ### Desk Structure Configuration
 
-The system uses a helper function `createCloneContentCategories()` that generates the five standard categories for any clone. The main structure uses Sanity's document context system to access clone data:
+The system uses a fully dynamic approach that automatically detects active clones and creates folders:
 
 ```typescript
 S.documentTypeList('clone')
+  .title('Content by Website Clone')
   .filter('isActive == true')
+  .defaultOrdering([{field: 'cloneName', direction: 'asc'}])
   .child((cloneId: string) => {
     return S.document()
       .schemaType('clone')
       .documentId(cloneId)
       .child((context: any) => {
         const clone = context.document?.displayed
-        // Generate categories based on clone data
+        // Automatically generate the five categories for this clone
+        return S.list()
+          .title(`${clone.cloneName} Content`)
+          .items(createCloneContentCategories(S, clone))
       })
   })
 ```
+
+This approach:
+- **Automatically fetches** all active clones from the database
+- **Sorts them alphabetically** by clone name
+- **Creates folders dynamically** without any manual configuration
+- **Updates instantly** when clones are added/removed or activated/deactivated
 
 ### Special Handling for Dubai Tutors
 
@@ -139,8 +151,23 @@ Dubai Tutors is treated as the baseline clone and shows global content (document
 
 1. **Create a new clone** in the "Website Clones" → "All Clones" section
 2. **Set it as active** using the "Active" toggle
-3. **The folder structure appears automatically** in "All Content by Website"
-4. **Start creating content** by navigating to the appropriate category
+3. **The folder structure appears automatically!** 🎉
+4. **Navigate to "All Content by Website"** - your new clone folder is there
+5. **Start creating content** by navigating to the appropriate category
+
+#### ✨ Fully Automatic Process
+- **No code changes needed** - the system detects new active clones automatically
+- **Instant folder creation** - as soon as you set a clone as active, it appears
+- **Alphabetical ordering** - clones are automatically sorted A-Z
+- **Consistent structure** - every clone gets the same five categories
+
+#### 🧪 Testing the System
+To test the automatic folder creation:
+1. Go to "Website Clones" → "All Clones"
+2. Create a new clone (e.g., "Singapore Tutors")
+3. Set it as "Active" 
+4. Navigate to "All Content by Website"
+5. You'll see "Singapore Tutors" folder appear automatically with all five categories!
 
 ### Best Practices
 

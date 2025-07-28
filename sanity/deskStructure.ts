@@ -302,7 +302,7 @@ export const structure = (S: StructureBuilder) =>
   S.list()
     .title('Content')
     .items([
-      // All Content by Website - Now Dynamic!
+      // All Content by Website - Fully Dynamic Clone Folders!
       S.listItem()
         .title('All Content by Website')
         .icon(FiGlobe)
@@ -310,6 +310,7 @@ export const structure = (S: StructureBuilder) =>
           S.documentTypeList('clone')
             .title('Content by Website Clone')
             .filter('isActive == true')
+            .defaultOrdering([{field: 'cloneName', direction: 'asc'}])
             .child((cloneId: string) => {
               return S.document()
                 .schemaType('clone')
@@ -328,7 +329,7 @@ export const structure = (S: StructureBuilder) =>
                     .title(`${clone.cloneName} Content`)
                     .items(createCloneContentCategories(S, {
                       cloneName: clone.cloneName,
-                      cloneReference: isDubaiTutors ? null : clone._id // Dubai Tutors is treated as global
+                      cloneReference: isDubaiTutors ? null : clone._id
                     }))
                 })
             })
