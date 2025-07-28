@@ -186,6 +186,11 @@ To test the automatic folder creation:
 - Verify the content has the correct clone reference set
 - Check that the content type is supported in the category you're looking in
 
+### GROQ Filter Issues (Fixed)
+- **Issue**: Error about "cloneName field not existing on tutor schema"
+- **Fix**: System now uses `cloneReference._ref == "cloneId"` for filtering
+- All content filtering is done by document ID references for optimal performance
+
 ### Performance Issues
 - The system is designed to be efficient, but with many clones, consider archiving inactive ones
 

@@ -12,305 +12,304 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
   const isGlobalClone = !clone.cloneReference // Global content (Dubai Tutors baseline)
   
   return [
-    // Homepage Content Group
-    S.listItem()
-      .title('Homepage Content')
-      .icon(BiHome)
-      .child(
-        S.list()
+                      // Homepage Content Group
+                      S.listItem()
+                        .title('Homepage Content')
+                        .icon(BiHome)
+                        .child(
+                          S.list()
           .title(`${cloneName} - Homepage Sections`)
-          .items([
-            S.documentTypeListItem('navbarSettings')
-              .title('NavBar Settings')
-              .child(
-                S.documentList()
+                            .items([
+                              S.documentTypeListItem('navbarSettings')
+                                .title('NavBar Settings')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - NavBar Settings`)
                   .filter(isGlobalClone 
                     ? '_type == "navbarSettings" && !defined(cloneReference)'
-                    : `_type == "navbarSettings" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "navbarSettings" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('hero')
-              .title('Hero Sections')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('hero')
+                                .title('Hero Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Hero Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "hero" && !defined(cloneReference)'
-                    : `_type == "hero" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "hero" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('highlightsSection')
-              .title('Highlights Sections')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('highlightsSection')
+                                .title('Highlights Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Highlights Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "highlightsSection" && !defined(cloneReference)'
-                    : `_type == "highlightsSection" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "highlightsSection" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('tutorProfilesSection')
-              .title('Tutor Profile Sections')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('tutorProfilesSection')
+                                .title('Tutor Profile Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Tutor Profile Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "tutorProfilesSection" && !defined(cloneReference)'
-                    : `_type == "tutorProfilesSection" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "tutorProfilesSection" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('trustedInstitutionsBanner')
-              .title('Trusted Institutions Banners')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('trustedInstitutionsBanner')
+                                .title('Trusted Institutions Banners')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Trusted Institutions Banners`)
                   .filter(isGlobalClone 
                     ? '_type == "trustedInstitutionsBanner" && !defined(cloneReference)'
-                    : `_type == "trustedInstitutionsBanner" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "trustedInstitutionsBanner" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('subjectGridSection')
-              .title('Subject Grid Sections')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('subjectGridSection')
+                                .title('Subject Grid Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Subject Grid Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "subjectGridSection" && !defined(cloneReference)'
-                    : `_type == "subjectGridSection" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "subjectGridSection" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('advertBlockSection')
-              .title('Advert Block Sections')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('advertBlockSection')
+                                .title('Advert Block Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Advert Block Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "advertBlockSection" && !defined(cloneReference)'
-                    : `_type == "advertBlockSection" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "advertBlockSection" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('platformBanner')
-              .title('Platform Banners')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('platformBanner')
+                                .title('Platform Banners')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Platform Banners`)
                   .filter(isGlobalClone 
                     ? '_type == "platformBanner" && !defined(cloneReference)'
-                    : `_type == "platformBanner" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "platformBanner" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('testimonialSection')
-              .title('Testimonial Sections')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('testimonialSection')
+                                .title('Testimonial Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Testimonial Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "testimonialSection" && !defined(cloneReference)'
-                    : `_type == "testimonialSection" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "testimonialSection" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.listItem()
-              .title('FAQ Sections (Homepage)')
-              .icon(BsQuestionCircle)
-              .child(
-                S.documentList()
+                                ),
+                              S.listItem()
+                                .title('FAQ Sections (Homepage)')
+                                .icon(BsQuestionCircle)
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Homepage FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference) && (pageType == "homepage" || !defined(pageType))'
-                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}" && (pageType == "homepage" || !defined(pageType))`
+                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}" && (pageType == "homepage" || !defined(pageType))`
                   )
-                  .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
-              ),
-            S.documentTypeListItem('footerSection')
-              .title('Footer Sections')
-              .child(
-                S.documentList()
+                                    .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
+                                ),
+                              S.documentTypeListItem('footerSection')
+                                .title('Footer Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Footer Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "footerSection" && !defined(cloneReference)'
-                    : `_type == "footerSection" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "footerSection" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-          ])
-      ),
+                                ),
+                            ])
+                        ),
 
-    // Subject Pages Content Group
-    S.listItem()
-      .title('Subject Pages Content')
-      .icon(BsBook)
-      .child(
-        S.list()
+                      // Subject Pages Content Group
+                      S.listItem()
+                        .title('Subject Pages Content')
+                        .icon(BsBook)
+                        .child(
+                          S.list()
           .title(`${cloneName} - Subject Page Sections`)
-          .items([
-            S.documentTypeListItem('subjectHeroSection')
-              .title('Subject Hero Sections')
-              .child(
-                S.documentList()
+                            .items([
+                              S.documentTypeListItem('subjectHeroSection')
+                                .title('Subject Hero Sections')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Subject Hero Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "subjectHeroSection" && !defined(cloneReference)'
-                    : `_type == "subjectHeroSection" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "subjectHeroSection" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('subjectPage')
-              .title('Subject Page Settings')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('subjectPage')
+                                .title('Subject Page Settings')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Subject Page Settings`)
                   .filter(isGlobalClone 
                     ? '_type == "subjectPage" && !defined(cloneReference)'
-                    : `_type == "subjectPage" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "subjectPage" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.listItem()
-              .title('FAQ Sections (Subject Pages)')
-              .icon(BsQuestionCircle)
-              .child(
-                S.documentList()
+                                ),
+                              S.listItem()
+                                .title('FAQ Sections (Subject Pages)')
+                                .icon(BsQuestionCircle)
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Subject FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference) && pageType == "subject"'
-                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}" && pageType == "subject"`
+                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}" && pageType == "subject"`
                   )
-                  .defaultOrdering([
-                    {field: 'subjectPage.subject', direction: 'asc'},
-                    {field: '_createdAt', direction: 'desc'}
-                  ])
-              ),
-          ])
-      ),
+                                    .defaultOrdering([
+                                      {field: 'subjectPage.subject', direction: 'asc'},
+                                      {field: '_createdAt', direction: 'desc'}
+                                    ])
+                                ),
+                            ])
+                        ),
 
-    // Curriculum Pages Content Group
-    S.listItem()
-      .title('Curriculum Pages Content')
-      .icon(BsGridFill)
-      .child(
-        S.list()
+                      // Curriculum Pages Content Group
+                      S.listItem()
+                        .title('Curriculum Pages Content')
+                        .icon(BsGridFill)
+                        .child(
+                          S.list()
           .title(`${cloneName} - Curriculum Page Sections`)
-          .items([
-            S.documentTypeListItem('curriculumPage')
-              .title('Curriculum Page Settings')
-              .child(
-                S.documentList()
+                            .items([
+                              S.documentTypeListItem('curriculumPage')
+                                .title('Curriculum Page Settings')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Curriculum Page Settings`)
                   .filter(isGlobalClone 
                     ? '_type == "curriculumPage" && !defined(cloneReference)'
-                    : `_type == "curriculumPage" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "curriculumPage" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.listItem()
-              .title('FAQ Sections (Curriculum Pages)')
-              .icon(BsQuestionCircle)
-              .child(
-                S.documentList()
+                                ),
+                              S.listItem()
+                                .title('FAQ Sections (Curriculum Pages)')
+                                .icon(BsQuestionCircle)
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Curriculum FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference) && pageType == "curriculum"'
-                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}" && pageType == "curriculum"`
+                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}" && pageType == "curriculum"`
                   )
-                  .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
-              ),
-          ])
-      ),
+                                    .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
+                                ),
+                            ])
+                        ),
 
-    // Forms & Communication Group
-    S.listItem()
-      .title('Forms & Communication')
-      .icon(AiOutlineMessage)
-      .child(
-        S.list()
+                      // Forms & Communication Group
+                      S.listItem()
+                        .title('Forms & Communication')
+                        .icon(AiOutlineMessage)
+                        .child(
+                          S.list()
           .title(`${cloneName} - Forms & Messages`)
-          .items([
-            S.documentTypeListItem('contactFormContent')
-              .title('Contact Form Content')
-              .child(
-                S.documentList()
+                            .items([
+                              S.documentTypeListItem('contactFormContent')
+                                .title('Contact Form Content')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Contact Form Content`)
                   .filter(isGlobalClone 
                     ? '_type == "contactFormContent" && !defined(cloneReference)'
-                    : `_type == "contactFormContent" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "contactFormContent" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.listItem()
-              .title('Contact Form Submissions')
-              .child(
-                S.documentList()
+                                ),
+                              S.listItem()
+                                .title('Contact Form Submissions')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Contact Form Submissions`)
                   .filter(`_type == "contactFormSubmission" && sourceWebsite == "${cloneName}"`)
-                  .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
-              ),
-          ])
-      ),
+                                    .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
+                                ),
+                            ])
+                        ),
 
-    // Content Library Group
-    S.listItem()
-      .title('Content Library')
-      .icon(FiUsers)
-      .child(
-        S.list()
+                      // Content Library Group
+                      S.listItem()
+                        .title('Content Library')
+                        .icon(FiUsers)
+                        .child(
+                          S.list()
           .title(`${cloneName} - Reusable Content`)
-          .items([
-            S.documentTypeListItem('tutor')
-              .title('Tutors')
-              .child(
-                S.documentList()
+                            .items([
+                              S.documentTypeListItem('tutor')
+                                .title('Tutors')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Tutors`)
                   .filter(isGlobalClone 
                     ? '_type == "tutor" && !defined(cloneReference)'
-                    : `_type == "tutor" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "tutor" && cloneReference._ref == "${clone._id}"`
                   )
-              ),
-            S.documentTypeListItem('testimonial')
-              .title('Testimonials')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('testimonial')
+                                .title('Testimonials')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - Testimonials`)
                   .filter(isGlobalClone 
                     ? '_type == "testimonial" && !defined(cloneReference)'
-                    : `_type == "testimonial" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "testimonial" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.documentTypeListItem('faq')
-              .title('FAQ Items')
-              .child(
-                S.documentList()
+                                ),
+                              S.documentTypeListItem('faq')
+                                .title('FAQ Items')
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - FAQ Items`)
                   .filter(isGlobalClone 
                     ? '_type == "faq" && !defined(cloneReference)'
-                    : `_type == "faq" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "faq" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-              ),
-            S.listItem()
-              .title('All FAQ Sections (Overview)')
-              .icon(BsQuestionCircle)
-              .child(
-                S.documentList()
+                                ),
+                              S.listItem()
+                                .title('All FAQ Sections (Overview)')
+                                .icon(BsQuestionCircle)
+                                .child(
+                                  S.documentList()
                   .title(`${cloneName} - All FAQ Sections`)
                   .filter(isGlobalClone 
                     ? '_type == "faq_section" && !defined(cloneReference)'
-                    : `_type == "faq_section" && cloneReference->cloneName == "${cloneName}"`
+                    : `_type == "faq_section" && cloneReference._ref == "${clone.cloneReference}"`
                   )
-                  .defaultOrdering([{field: 'pageType', direction: 'asc'}, {field: '_createdAt', direction: 'desc'}])
-              ),
-          ])
-      ),
+                                    .defaultOrdering([{field: 'pageType', direction: 'asc'}, {field: '_createdAt', direction: 'desc'}])
+                                ),
+                            ])
+                        ),
   ]
 }
-
+              
 export const structure = (S: StructureBuilder) =>
-  S.list()
+                  S.list()
     .title('Content')
-    .items([
+                    .items([
       // All Content by Website - Fully Dynamic Clone Folders!
-      S.listItem()
+                      S.listItem()
         .title('All Content by Website')
         .icon(FiGlobe)
-        .child(
+                        .child(
           S.documentTypeList('clone')
             .title('Content by Website Clone')
             .filter('isActive == true')
-            .defaultOrdering([{field: 'cloneName', direction: 'asc'}])
             .child((cloneId: string) => {
               return S.document()
                 .schemaType('clone')
