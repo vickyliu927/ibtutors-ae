@@ -1,6 +1,68 @@
 import { defineField } from 'sanity'
 
 /**
+ * Custom slug validation that allows the same slug across different clones
+ * but ensures uniqueness within each clone
+ */
+export async function isUniqueAcrossClones(slug: string, context: any) {
+  const { document, getClient } = context
+  const client = getClient({ apiVersion: '2024-03-20' })
+  
+  if (!slug) return true
+  
+  // Get the current document's clone reference
+  const currentCloneRef = document?.cloneReference?._ref
+  
+  // Get current document ID (handle both draft and published)
+  const id = document._id.replace(/^drafts\./, '')
+  const params = {
+    draft: `drafts.${id}`,
+    published: id,
+    slug,
+    cloneRef: currentCloneRef || null,
+  }
+  
+  // Build query to check for slug uniqueness within the same clone
+  let query
+  if (currentCloneRef) {
+    // If document has a clone reference, check for uniqueness within that clone
+    query = `!defined(*[
+      !(_id in [$draft, $published]) && 
+      slug.current == $slug && 
+      cloneReference._ref == $cloneRef
+    ][0]._id)`
+  } else {
+    // If document has no clone reference (global content), check for uniqueness among global content
+    query = `!defined(*[
+      !(_id in [$draft, $published]) && 
+      slug.current == $slug && 
+      !defined(cloneReference)
+    ][0]._id)`
+  }
+  
+  const result = await client.fetch(query, params)
+  return result
+}
+
+/**
+ * Enhanced slug field definition with clone-aware validation
+ */
+export function createCloneAwareSlugField(options: any = {}) {
+  return defineField({
+    name: 'slug',
+    title: 'Slug',
+    type: 'slug',
+    validation: Rule => Rule.required(),
+    options: {
+      source: options.source || 'title',
+      maxLength: options.maxLength || 96,
+      isUnique: isUniqueAcrossClones,
+      ...options,
+    },
+  })
+}
+
+/**
  * Standard clone support fields to be added to all content schemas
  * These fields enable content to be clone-specific, baseline, or global
  */
@@ -117,14 +179,25 @@ export function createCloneAwarePreview(originalPreview: any) {
 }
 
 /**
- * Add clone support to existing schema
+ * Add clone support to existing schema and automatically replace slug fields with clone-aware versions
  */
 export function addCloneSupport(schema: any) {
+  // Replace any existing slug fields with clone-aware versions
+  const updatedFields = schema.fields.map((field: any) => {
+    if (field.type === 'slug') {
+      return createCloneAwareSlugField({
+        ...field.options,
+        source: field.options?.source || field.name === 'slug' ? 'title' : field.name,
+      })
+    }
+    return field
+  })
+
   return {
     ...schema,
     fields: [
       ...cloneSupportFields,
-      ...schema.fields,
+      ...updatedFields,
     ],
     preview: createCloneAwarePreview(schema.preview || {}),
   };
