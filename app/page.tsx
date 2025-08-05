@@ -10,7 +10,7 @@ import {
   TestimonialData,
   TestimonialSectionData,
 } from "./components/TestimonialSection";
-import Footer from "./components/Footer";
+
 import TrustedInstitutionsBanner from "./components/TrustedInstitutionsBanner";
 import FAQSection from "./components/FAQSection";
 
@@ -361,7 +361,6 @@ export default async function Home({
       )}
 
       <LazyContactForm />
-      <Footer />
     </main>
   );
 }
