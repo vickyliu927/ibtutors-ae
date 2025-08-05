@@ -747,7 +747,11 @@ export default async function DynamicPage({
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
         {/* New Hero Section */}
-        <SubjectHeroSection subjectSlug={params.subject} heroData={subjectResult.heroData} />
+        <SubjectHeroSection 
+          subjectSlug={params.subject} 
+          heroData={subjectResult.heroData}
+          key={`hero-${cloneContext.cloneId}-${params.subject}`} // Force re-render when clone changes
+        />
 
         {/* Tutors Section */}
         <TutorProfiles 

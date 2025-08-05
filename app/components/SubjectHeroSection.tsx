@@ -11,26 +11,17 @@ interface SubjectHeroSectionProps {
 const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroData }: SubjectHeroSectionProps) => {
   const [heroData, setHeroData] = useState<SubjectHeroData | null>(serverHeroData || null);
 
-  // Fetch hero data on mount only if not provided by server
+  // DISABLED CLIENT-SIDE FALLBACK - Always use server-side data for clone-aware content
   useEffect(() => {
-    if (!serverHeroData) {
-      console.log('[SubjectHeroSection] ⚠️  No server-side hero data provided, fetching client-side for:', subjectSlug);
-      const fetchHeroData = async () => {
-        try {
-          const data = await getSubjectHeroData(subjectSlug);
-          console.log('[SubjectHeroSection] 📱 Client-side data fetched:', data);
-          setHeroData(data);
-        } catch (error) {
-          console.error('Error fetching subject hero data:', error);
-        }
-      };
-
-      fetchHeroData();
-    } else {
-      console.log('[SubjectHeroSection] ✅ Using server-side hero data:', serverHeroData);
+    if (serverHeroData) {
+      console.log('[SubjectHeroSection] ✅ Using server-side hero data (clone-aware):', serverHeroData);
       setHeroData(serverHeroData);
+    } else {
+      console.log('[SubjectHeroSection] ❌ No server-side hero data provided - this should not happen');
+      console.log('[SubjectHeroSection] 🚫 Client-side fallback DISABLED to prevent override of clone-aware content');
+      // NO CLIENT-SIDE FALLBACK - this was causing Dubai content to override Qatar content
     }
-  }, [subjectSlug, serverHeroData]); // Re-fetch when subjectSlug or serverHeroData changes
+  }, [serverHeroData]); // Only depend on serverHeroData, not subjectSlug
 
   return (
     <div
