@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "./components/Navbar";
 import HeroSection, { HeroData } from "./components/HeroSection";
 import AdvertBlock from "./components/AdvertBlock";
 import TutorProfiles, { TutorData } from "./components/TutorProfiles";
@@ -65,7 +64,6 @@ interface HomepageData {
   testimonialSection: any | null;
   testimonials: any[];
   faqSection: any | null;
-  navbar: any | null;
 }
 
 /**
@@ -145,11 +143,6 @@ async function getHomepageDataWithCloneContext(
 
         console.log("Clone-aware homepage data processed successfully");
 
-        // Extract navbar data
-        const navbar = content.navbar?.data
-          ? cloneQueryUtils.getContentWithCustomizations(content.navbar)
-          : null;
-
         return {
           heroData,
           highlightsSection,
@@ -161,7 +154,6 @@ async function getHomepageDataWithCloneContext(
           testimonialSection,
           testimonials,
           faqSection,
-          navbar,
         };
       } catch (error) {
         console.error("Error fetching homepage content:", error);
@@ -177,7 +169,6 @@ async function getHomepageDataWithCloneContext(
           testimonialSection: null,
           testimonials: [],
           faqSection: null,
-          navbar: null,
         };
       }
     },
@@ -216,7 +207,6 @@ export default async function Home({
     testimonialSection,
     testimonials,
     faqSection,
-    navbar,
   } = pageData || {
     heroData: null,
     highlightsSection: null,
@@ -228,7 +218,6 @@ export default async function Home({
     testimonialSection: null,
     testimonials: [],
     faqSection: null,
-    navbar: null,
   };
 
   // Generate clone indicator props
@@ -241,8 +230,7 @@ export default async function Home({
 
   return (
     <main className="min-h-screen">
-      {/* Separate Header and Hero Components */}
-      <Navbar navbarData={navbar} />
+      {/* Hero Section */}
       {heroData && <HeroSection heroData={heroData} />}
 
       {highlightsSection?.highlights ? (

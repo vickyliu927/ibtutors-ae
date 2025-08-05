@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import { getNavigationData } from './lib/getNavigationData';
 import { getSeoData } from './lib/getSeoData';
 
 // Load Inter font with display: swap for better performance
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap', // Use 'swap' to prevent layout shifts
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoData();
@@ -21,24 +21,33 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Fetch navigation data server-side with clone awareness
+  const navigationData = await getNavigationData();
+
   return (
     <html lang="en">
       <head>
-        {/* Preload critical CSS */}
-        <link
-          rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          as="style"
-          crossOrigin="anonymous"
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Gilroy:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" 
+          rel="stylesheet" 
         />
       </head>
       <body className={inter.className}>
+        <Navbar 
+          navbarData={navigationData.navbarData}
+          subjects={navigationData.subjects}
+          curriculums={navigationData.curriculums}
+          currentDomain={navigationData.currentDomain}
+        />
         {children}
+        <Footer />
       </body>
     </html>
   );
