@@ -121,9 +121,9 @@ async function getCurriculumPageDataWithCloneContext(
   try {
     console.log(`[CurriculumPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
     
-    // Base curriculum page query - this can be enhanced to support clone-specific curriculum pages in the future
-    const query = `
-      *[_type == "curriculumPage" && slug.current == $subject][0] {
+    // Clone-aware curriculum page query with 3-tier fallback
+    const query = `{
+      "cloneSpecific": *[_type == "curriculumPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0] {
         title,
         curriculum,
         slug,
@@ -163,9 +163,105 @@ async function getCurriculumPageDataWithCloneContext(
             answer
           }
         },
-        seo
+        seo,
+        "sourceInfo": {
+          "source": "cloneSpecific",
+          "cloneId": $cloneId
+        }
+      },
+      "baseline": *[_type == "curriculumPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0] {
+        title,
+        curriculum,
+        slug,
+        firstSection,
+        tutorsListSectionHead,
+        tutorsList[] -> {
+          _id,
+          name,
+          slug,
+          profilePhoto,
+          professionalTitle,
+          experience,
+          specialization,
+          hireButtonLink,
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken,
+          profilePDF
+        },
+        testimonials[] -> {
+          _id,
+          reviewerName,
+          reviewerType,
+          testimonialText,
+          rating,
+          order
+        },
+        faqSection -> {
+          title,
+          subtitle,
+          faqs[] -> {
+            _id,
+            question,
+            answer
+          }
+        },
+        seo,
+        "sourceInfo": {
+          "source": "baseline",
+          "cloneId": cloneReference->cloneId.current
+        }
+      },
+      "default": *[_type == "curriculumPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0] {
+        title,
+        curriculum,
+        slug,
+        firstSection,
+        tutorsListSectionHead,
+        tutorsList[] -> {
+          _id,
+          name,
+          slug,
+          profilePhoto,
+          professionalTitle,
+          experience,
+          specialization,
+          hireButtonLink,
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken,
+          profilePDF
+        },
+        testimonials[] -> {
+          _id,
+          reviewerName,
+          reviewerType,
+          testimonialText,
+          rating,
+          order
+        },
+        faqSection -> {
+          title,
+          subtitle,
+          faqs[] -> {
+            _id,
+            question,
+            answer
+          }
+        },
+        seo,
+        "sourceInfo": {
+          "source": "default",
+          "cloneId": null
+        }
       }
-    `;
+    }`;
 
     // Enhanced testimonial section query with clone support
     const testimonialsQuery = `
@@ -178,18 +274,36 @@ async function getCurriculumPageDataWithCloneContext(
       }
     `;
 
-    const [pageData, testimonialSection, navbarResult] = await Promise.all([
-      client.fetch(query, { subject }),
+    const [fallbackResult, testimonialSection, navbarResult] = await Promise.all([
+      client.fetch(query, { subject, cloneId: cloneId || 'none' }),
       client.fetch(testimonialsQuery),
       navbarQueries.fetch(cloneId || 'global')
     ]);
     
+    // Resolve using 3-tier fallback: cloneSpecific → baseline → default
+    let pageData: CurriculumPageData | null = null;
+    let resolvedSource = 'none';
+    
+    if (fallbackResult.cloneSpecific) {
+      pageData = fallbackResult.cloneSpecific;
+      resolvedSource = 'cloneSpecific';
+      console.log(`[CurriculumPage] Using clone-specific content for ${subject}, clone: ${cloneId}`);
+    } else if (fallbackResult.baseline) {
+      pageData = fallbackResult.baseline;
+      resolvedSource = 'baseline';
+      console.log(`[CurriculumPage] Using baseline content for ${subject}`);
+    } else if (fallbackResult.default) {
+      pageData = fallbackResult.default;
+      resolvedSource = 'default';
+      console.log(`[CurriculumPage] Using default content for ${subject}`);
+    }
+    
     if (!pageData) {
-      console.log(`[CurriculumPage] No curriculum page found for: ${subject}`);
+      console.log(`[CurriculumPage] No curriculum page found for subject: ${subject}, clone: ${cloneId || 'none'}`);
       return { pageData: null, testimonialSection: null, navbarData: null, type: null };
     }
     
-    console.log(`[CurriculumPage] Successfully fetched curriculum page data for: ${subject}`);
+    console.log(`[CurriculumPage] Successfully fetched curriculum page data for: ${subject} (source: ${resolvedSource})`);
     return { pageData, testimonialSection, navbarData: navbarResult?.data || null, type: 'curriculum' };
   } catch (error) {
     console.error(`[CurriculumPage] Error fetching curriculum page for ${subject}:`, error);
@@ -207,88 +321,205 @@ async function getSubjectPageDataWithCloneContext(
   try {
     console.log(`[SubjectPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
     
-    // Enhanced query that can support clone-specific content in the future
+    // Enhanced clone-aware query with 3-tier fallback
     const query = `{
-      "subjectPage": *[_type == "subjectPage" && slug.current == $subject][0]{
-        _id,
-        subject,
-        title,
-        firstSection,
-        tutorsListSectionHead,
-        testimonials[]->{
+      "cloneSpecific": {
+        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]{
           _id,
-          reviewerName,
-          reviewerType,
-          testimonialText,
-          rating,
-          order
-        },
-        faqSection,
-        seo
-      },
-      "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject][0]._id)] | order(displayOrder asc) {
-        _id,
-        name,
-        professionalTitle,
-        priceTag {
-          enabled,
-          badgeText
-        },
-        experience,
-        profilePhoto,
-        specialization,
-        hireButtonLink,
-        displayOnSubjectPages,
-        displayOrder,
-        profilePDF {
-          asset-> {
-            url
+          subject,
+          title,
+          firstSection,
+          tutorsListSectionHead,
+          testimonials[]->{
+            _id,
+            reviewerName,
+            reviewerType,
+            testimonialText,
+            rating,
+            order
+          },
+          faqSection,
+          seo,
+          "sourceInfo": {
+            "source": "cloneSpecific",
+            "cloneId": $cloneId
           }
         },
-        price,
-        rating,
-        reviewCount,
-        activeStudents,
-        totalLessons,
-        languagesSpoken
+        "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]._id)] | order(displayOrder asc) {
+          _id,
+          name,
+          professionalTitle,
+          priceTag {
+            enabled,
+            badgeText
+          },
+          experience,
+          profilePhoto,
+          specialization,
+          hireButtonLink,
+          displayOnSubjectPages,
+          displayOrder,
+          profilePDF {
+            asset-> {
+              url
+            }
+          },
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken
+        }
+      },
+      "baseline": {
+        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]{
+          _id,
+          subject,
+          title,
+          firstSection,
+          tutorsListSectionHead,
+          testimonials[]->{
+            _id,
+            reviewerName,
+            reviewerType,
+            testimonialText,
+            rating,
+            order
+          },
+          faqSection,
+          seo,
+          "sourceInfo": {
+            "source": "baseline",
+            "cloneId": cloneReference->cloneId.current
+          }
+        },
+        "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]._id)] | order(displayOrder asc) {
+          _id,
+          name,
+          professionalTitle,
+          priceTag {
+            enabled,
+            badgeText
+          },
+          experience,
+          profilePhoto,
+          specialization,
+          hireButtonLink,
+          displayOnSubjectPages,
+          displayOrder,
+          profilePDF {
+            asset-> {
+              url
+            }
+          },
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken
+        }
+      },
+      "default": {
+        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]{
+          _id,
+          subject,
+          title,
+          firstSection,
+          tutorsListSectionHead,
+          testimonials[]->{
+            _id,
+            reviewerName,
+            reviewerType,
+            testimonialText,
+            rating,
+            order
+          },
+          faqSection,
+          seo,
+          "sourceInfo": {
+            "source": "default",
+            "cloneId": null
+          }
+        },
+        "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]._id)] | order(displayOrder asc) {
+          _id,
+          name,
+          professionalTitle,
+          priceTag {
+            enabled,
+            badgeText
+          },
+          experience,
+          profilePhoto,
+          specialization,
+          hireButtonLink,
+          displayOnSubjectPages,
+          displayOrder,
+          profilePDF {
+            asset-> {
+              url
+            }
+          },
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken
+        }
       },
       "testimonialSection": *[_type == "testimonialSection"][0]
     }`;
 
     // Use server-side caching with Next.js and fetch clone-aware FAQ and navbar
-    const [data, faqSectionResult, navbarResult] = await Promise.all([
-      client.fetch(query, { subject }, { next: { revalidate: 300 } }),
+    const [fallbackResult, faqSectionResult, navbarResult] = await Promise.all([
+      client.fetch(query, { subject, cloneId: cloneId || 'none' }, { next: { revalidate: 300 } }),
       subjectPageFaqQueries.fetch(cloneId || 'global', subject),
       navbarQueries.fetch(cloneId || 'global')
     ]);
 
-    if (!data.subjectPage) {
-      console.log(`[SubjectPage] No subject page found for: ${subject}`);
+    // Resolve using 3-tier fallback: cloneSpecific → baseline → default
+    let resolvedData: { subjectPage: any; tutors: any[] } | null = null;
+    let resolvedSource = 'none';
+    
+    if (fallbackResult.cloneSpecific?.subjectPage) {
+      resolvedData = fallbackResult.cloneSpecific;
+      resolvedSource = 'cloneSpecific';
+      console.log(`[SubjectPage] Using clone-specific content for ${subject}, clone: ${cloneId}`);
+    } else if (fallbackResult.baseline?.subjectPage) {
+      resolvedData = fallbackResult.baseline;
+      resolvedSource = 'baseline';
+      console.log(`[SubjectPage] Using baseline content for ${subject}`);
+    } else if (fallbackResult.default?.subjectPage) {
+      resolvedData = fallbackResult.default;
+      resolvedSource = 'default';
+      console.log(`[SubjectPage] Using default content for ${subject}`);
+    }
+
+    if (!resolvedData?.subjectPage) {
+      console.log(`[SubjectPage] No subject page found for subject: ${subject}, clone: ${cloneId || 'none'}`);
       return { pageData: null, testimonialSection: null, navbarData: null, type: null };
     }
 
-    console.log(`[SubjectPage] Found subject: ${data.subjectPage._id}, tutors: ${data.tutors.length}, FAQ source: ${faqSectionResult?.source || 'direct-reference'}`);
-
-    // Use clone-aware FAQ section if available, otherwise fall back to direct reference
-    const faqSection = faqSectionResult?.data || data.subjectPage.faqSection;
-
-    // Combine the data
-    const pageData = {
-      ...data.subjectPage,
-      tutorsList: data.tutors,
-      faqSection: faqSection
+    const pageData: SubjectPageData = {
+      ...resolvedData.subjectPage,
+      tutorsList: resolvedData.tutors || [],
+      faqSection: faqSectionResult?.data || resolvedData.subjectPage.faqSection,
     };
 
+    console.log(`[SubjectPage] Successfully fetched subject page data for: ${subject} (source: ${resolvedSource})`);
     return { 
       pageData, 
-      testimonialSection: data.testimonialSection, 
-      navbarData: navbarResult?.data || null,
+      testimonialSection: fallbackResult.testimonialSection, 
+      navbarData: navbarResult?.data || null, 
       type: 'subject' 
     };
-      } catch (error) {
-      console.error(`[SubjectPage] Error fetching subject page data for ${subject}:`, error);
-      return { pageData: null, testimonialSection: null, navbarData: null, type: null };
-    }
+  } catch (error) {
+    console.error(`[SubjectPage] Error fetching subject page for ${subject}:`, error);
+    return { pageData: null, testimonialSection: null, navbarData: null, type: null };
+  }
 }
 
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
