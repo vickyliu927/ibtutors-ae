@@ -669,6 +669,13 @@ export default async function DynamicPage({
         <TutorProfiles 
           tutors={curriculumResult.pageData.tutorsList} 
           useNewCardDesign={true}
+          sectionTitle={curriculumResult.pageData.firstSection?.title}
+          description={curriculumResult.pageData.firstSection?.description}
+          trustedByText={
+            cloneContext.cloneId === 'qatar-tutors' 
+              ? "Trusted by 15,000+ students across Qatar and globally."
+              : undefined
+          }
         />
 
         {/* Testimonials Section */}
@@ -727,6 +734,14 @@ export default async function DynamicPage({
   );
 
   if (subjectResult.pageData) {
+    // Debug what data we're working with
+    console.log(`[SubjectPageRender] Rendering subject page for: ${params.subject}`);
+    console.log(`[SubjectPageRender] Clone ID: ${cloneContext.cloneId}`);
+    console.log(`[SubjectPageRender] Clone Name: ${cloneContext.clone?.cloneName}`);
+    console.log(`[SubjectPageRender] FirstSection Title: ${subjectResult.pageData.firstSection?.title}`);
+    console.log(`[SubjectPageRender] FirstSection Description: ${subjectResult.pageData.firstSection?.description?.substring(0, 80)}...`);
+    console.log(`[SubjectPageRender] Hero Data: ${subjectResult.heroData ? 'Present' : 'Missing'}`);
+    
     // Render subject page with clone context
     return (
       <main>
@@ -740,7 +755,17 @@ export default async function DynamicPage({
         <SubjectHeroSection subjectSlug={params.subject} heroData={subjectResult.heroData} />
 
         {/* Tutors Section */}
-        <TutorProfiles tutors={subjectResult.pageData.tutorsList} useNewCardDesign={true} />
+        <TutorProfiles 
+          tutors={subjectResult.pageData.tutorsList} 
+          useNewCardDesign={true}
+          sectionTitle={subjectResult.pageData.firstSection?.title}
+          description={subjectResult.pageData.firstSection?.description}
+          trustedByText={
+            cloneContext.cloneId === 'qatar-tutors' 
+              ? "Trusted by 15,000+ students across Qatar and globally."
+              : undefined
+          }
+        />
 
         {/* Testimonials Section */}
         {subjectResult.pageData.testimonials && subjectResult.testimonialSection && (

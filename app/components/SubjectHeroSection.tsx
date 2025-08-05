@@ -14,10 +14,11 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
   // Fetch hero data on mount only if not provided by server
   useEffect(() => {
     if (!serverHeroData) {
+      console.log('[SubjectHeroSection] ⚠️  No server-side hero data provided, fetching client-side for:', subjectSlug);
       const fetchHeroData = async () => {
         try {
-          console.log('[SubjectHeroSection] Fetching client-side hero data for:', subjectSlug);
           const data = await getSubjectHeroData(subjectSlug);
+          console.log('[SubjectHeroSection] 📱 Client-side data fetched:', data);
           setHeroData(data);
         } catch (error) {
           console.error('Error fetching subject hero data:', error);
@@ -26,7 +27,7 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
 
       fetchHeroData();
     } else {
-      console.log('[SubjectHeroSection] Using server-side hero data:', serverHeroData);
+      console.log('[SubjectHeroSection] ✅ Using server-side hero data:', serverHeroData);
       setHeroData(serverHeroData);
     }
   }, [subjectSlug, serverHeroData]); // Re-fetch when subjectSlug or serverHeroData changes
