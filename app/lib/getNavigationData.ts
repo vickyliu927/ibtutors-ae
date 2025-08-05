@@ -258,9 +258,11 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
  * Fetch navbar data with clone awareness
  */
 async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
+  console.log(`[NavigationData] Fetching navbar for cloneId: ${cloneId || 'none'}`);
+  
   if (!cloneId) {
     // Fetch default navbar
-    const query = `*[_type == "navbar" && !defined(cloneReference)][0] {
+    const query = `*[_type == "navbarSettings" && !defined(cloneReference)][0] {
       logo,
       logoAlt,
       logoLink,
@@ -270,52 +272,76 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       mobileMenu
     }`;
     
-    return await client.fetch(query);
+    const result = await client.fetch(query);
+    console.log(`[NavigationData] Default navbar result:`, result ? 'Found' : 'Not found');
+    return result;
   }
   
   // Clone-aware navbar query with fallback
   const query = `{
-    "cloneSpecific": *[_type == "navbar" && cloneReference->cloneId.current == $cloneId][0] {
+    "cloneSpecific": *[_type == "navbarSettings" && cloneReference->cloneId.current == $cloneId][0] {
       logo,
       logoAlt,
       logoLink,
       navigation,
       buttonText,
       buttonLink,
-      mobileMenu
+      mobileMenu,
+      "sourceInfo": {
+        "source": "cloneSpecific",
+        "cloneId": $cloneId
+      }
     },
-    "baseline": *[_type == "navbar" && cloneReference->baselineClone == true][0] {
+    "baseline": *[_type == "navbarSettings" && cloneReference->baselineClone == true][0] {
       logo,
       logoAlt,
       logoLink,
       navigation,
       buttonText,
       buttonLink,
-      mobileMenu
+      mobileMenu,
+      "sourceInfo": {
+        "source": "baseline",
+        "cloneId": cloneReference->cloneId.current
+      }
     },
-    "default": *[_type == "navbar" && !defined(cloneReference)][0] {
+    "default": *[_type == "navbarSettings" && !defined(cloneReference)][0] {
       logo,
       logoAlt,
       logoLink,
       navigation,
       buttonText,
       buttonLink,
-      mobileMenu
+      mobileMenu,
+      "sourceInfo": {
+        "source": "default",
+        "cloneId": null
+      }
     }
   }`;
   
   try {
     const result = await client.fetch(query, { cloneId });
     
+    console.log(`[NavigationData] Navbar query results:`, {
+      cloneSpecific: result.cloneSpecific ? 'Found' : 'Not found',
+      baseline: result.baseline ? 'Found' : 'Not found', 
+      default: result.default ? 'Found' : 'Not found'
+    });
+    
     // Resolve using 3-tier fallback
     if (result.cloneSpecific) {
+      console.log(`[NavigationData] Using clone-specific navbar for ${cloneId}`);
       return result.cloneSpecific;
     } else if (result.baseline) {
+      console.log(`[NavigationData] Using baseline navbar for ${cloneId}`);
       return result.baseline;
     } else if (result.default) {
+      console.log(`[NavigationData] Using default navbar for ${cloneId}`);
       return result.default;
     }
     
+    console.log(`[NavigationData] No navbar found for ${cloneId}`);
     return null;
   } catch (error) {
     console.error(`[NavigationData] Error fetching navbar for clone ${cloneId}:`, error);
