@@ -669,13 +669,8 @@ export default async function DynamicPage({
         <TutorProfiles 
           tutors={curriculumResult.pageData.tutorsList} 
           useNewCardDesign={true}
-          sectionTitle={curriculumResult.pageData.firstSection?.title}
-          description={curriculumResult.pageData.firstSection?.description}
-          trustedByText={
-            cloneContext.cloneId === 'qatar-tutors' 
-              ? "Trusted by 15,000+ students across Qatar and globally."
-              : undefined
-          }
+          sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
+          description={curriculumResult.pageData.tutorsListSectionHead?.description}
         />
 
         {/* Testimonials Section */}
@@ -738,8 +733,8 @@ export default async function DynamicPage({
     console.log(`[SubjectPageRender] Rendering subject page for: ${params.subject}`);
     console.log(`[SubjectPageRender] Clone ID: ${cloneContext.cloneId}`);
     console.log(`[SubjectPageRender] Clone Name: ${cloneContext.clone?.cloneName}`);
-    console.log(`[SubjectPageRender] FirstSection Title: ${subjectResult.pageData.firstSection?.title}`);
-    console.log(`[SubjectPageRender] FirstSection Description: ${subjectResult.pageData.firstSection?.description?.substring(0, 80)}...`);
+    console.log(`[SubjectPageRender] Tutors Section Title: ${subjectResult.pageData.tutorsListSectionHead?.sectionTitle}`);
+    console.log(`[SubjectPageRender] Tutors Section Description: ${subjectResult.pageData.tutorsListSectionHead?.description?.substring(0, 80)}...`);
     console.log(`[SubjectPageRender] Hero Data: ${subjectResult.heroData ? 'Present' : 'Missing'}`);
     
     // Render subject page with clone context
@@ -758,13 +753,8 @@ export default async function DynamicPage({
         <TutorProfiles 
           tutors={subjectResult.pageData.tutorsList} 
           useNewCardDesign={true}
-          sectionTitle={subjectResult.pageData.firstSection?.title}
-          description={subjectResult.pageData.firstSection?.description}
-          trustedByText={
-            cloneContext.cloneId === 'qatar-tutors' 
-              ? "Trusted by 15,000+ students across Qatar and globally."
-              : undefined
-          }
+          sectionTitle={subjectResult.pageData.tutorsListSectionHead?.sectionTitle}
+          description={subjectResult.pageData.tutorsListSectionHead?.description}
         />
 
         {/* Testimonials Section */}
