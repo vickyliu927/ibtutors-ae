@@ -1,8 +1,6 @@
 import React from 'react';
 import { client } from '@/sanity/lib/client';
-import Navbar from '../components/Navbar';
 import ContactForm from '../components/ContactForm';
-import Footer from '../components/Footer';
 import TutorProfiles from '../components/TutorProfiles';
 import TestimonialSection, { TestimonialSectionData } from '../components/TestimonialSection';
 import FAQSection from '../components/FAQSection';
@@ -656,9 +654,6 @@ export default async function DynamicPage({
     // Render curriculum page with clone context
     return (
       <main>
-        {/* Navigation */}
-        <Navbar navbarData={curriculumResult.navbarData} />
-        
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
@@ -717,7 +712,6 @@ export default async function DynamicPage({
           </section>
         )}
 
-        <Footer />
       </main>
     );
   }
@@ -740,9 +734,6 @@ export default async function DynamicPage({
     // Render subject page with clone context
     return (
       <main>
-        {/* Navigation */}
-        <Navbar navbarData={subjectResult.navbarData} />
-        
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
@@ -781,7 +772,6 @@ export default async function DynamicPage({
         )}
 
         <ContactForm />
-        <Footer />
       </main>
     );
   }
