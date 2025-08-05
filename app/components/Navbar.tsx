@@ -48,6 +48,28 @@ const Navbar = ({ navbarData }: NavbarProps) => {
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const levelsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Simple client-side clone detection from domain
+  const getCloneIdFromDomain = (): string | null => {
+    if (typeof window === 'undefined') return null;
+    
+    const hostname = window.location.hostname.toLowerCase();
+    
+    // Map domains to clone IDs based on our known domains
+    if (hostname.includes('onlinetutors.qa')) {
+      return 'qatar-tutors';
+    } else if (hostname.includes('adtutors.ae')) {
+      return 'abu-dhabi';
+    } else if (hostname.includes('hongkongtutors.hk')) {
+      return 'hong-kong-tutors';
+    } else if (hostname.includes('singapore-tutors.sg')) {
+      return 'singapore-tutors';
+    } else if (hostname.includes('onlinetutors.es')) {
+      return 'spain-tutors';
+    }
+    
+    return null; // Default/Dubai
+  };
+
   // Add global style when component mounts
   useEffect(() => {
     const style = document.createElement('style');
@@ -95,8 +117,11 @@ const Navbar = ({ navbarData }: NavbarProps) => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const subjectPages = await getSubjectPages();
+        const cloneId = getCloneIdFromDomain();
+        console.log(`[Navbar] Fetching subjects for clone: ${cloneId || 'global'}`);
+        const subjectPages = await getSubjectPages(cloneId);
         setSubjects(subjectPages);
+        console.log(`[Navbar] Loaded ${subjectPages.length} subject pages`);
       } catch (error) {
         console.error('Error fetching subject pages:', error);
       }
@@ -104,9 +129,12 @@ const Navbar = ({ navbarData }: NavbarProps) => {
 
     const fetchCurriculums = async () => {
       try {
-        const curriculumPages = await getCurriculumPages();
+        const cloneId = getCloneIdFromDomain();
+        console.log(`[Navbar] Fetching curriculums for clone: ${cloneId || 'global'}`);
+        const curriculumPages = await getCurriculumPages(cloneId);
         const sortedCurriculums = curriculumPages.sort((a, b) => a.displayOrder - b.displayOrder);
         setCurriculums(sortedCurriculums);
+        console.log(`[Navbar] Loaded ${sortedCurriculums.length} curriculum pages`);
       } catch (error) {
         console.error('Error fetching curriculum pages:', error);
       }
@@ -149,7 +177,7 @@ const Navbar = ({ navbarData }: NavbarProps) => {
         window.removeEventListener('resize', handleScroll);
       }
     };
-  }, []);
+  }, []); // No dependencies needed since domain won't change during session
 
   const isExternalLink = (url: string) => {
     return url && (url.startsWith('http://') || url.startsWith('https://'));
