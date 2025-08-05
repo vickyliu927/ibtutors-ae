@@ -2,27 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getSubjectPages, type SubjectPageData } from './NavSubjects';
+import { getCurriculumPages, type CurriculumPageData } from './NavCurriculums';
 import { urlFor } from '@/sanity/lib/image';
 import ExternalLink from './ui/ExternalLink';
-
-// Import types for server-side props
-interface SubjectPageData {
-  title: string;
-  subject: string;
-  slug: {
-    current: string;
-  };
-  displayOrder: number;
-}
-
-interface CurriculumPageData {
-  title: string;
-  curriculum: string;
-  slug: {
-    current: string;
-  };
-  displayOrder: number;
-}
 
 // Navbar data interface
 interface NavbarData {
@@ -45,16 +28,15 @@ interface NavbarData {
 
 interface NavbarProps {
   navbarData?: NavbarData | null;
-  subjects?: SubjectPageData[];  // Server-side data
-  curriculums?: CurriculumPageData[];  // Server-side data
-  currentDomain?: string;  // Domain context for link generation
 }
 
 // Create a class name with specific meaning to avoid conflicts
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 
-const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: NavbarProps) => {
+const Navbar = ({ navbarData }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [subjects, setSubjects] = useState<SubjectPageData[]>([]);
+  const [curriculums, setCurriculums] = useState<CurriculumPageData[]>([]);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const [showLevelsDropdown, setShowLevelsDropdown] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,15 +48,26 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const levelsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Helper function to generate proper domain-aware links
-  const generateSubjectLink = (slug: string) => {
-    if (currentDomain && currentDomain.includes('onlinetutors.qa')) {
-      return `https://onlinetutors.qa/${slug}`;
-    } else if (currentDomain && currentDomain.includes('dubaitutors.ae')) {
-      return `https://dubaitutors.ae/${slug}`;
+  // Simple client-side clone detection from domain
+  const getCloneIdFromDomain = (): string | null => {
+    if (typeof window === 'undefined') return null;
+    
+    const hostname = window.location.hostname.toLowerCase();
+    
+    // Map domains to clone IDs based on our known domains
+    if (hostname.includes('onlinetutors.qa')) {
+      return 'qatar-tutors';
+    } else if (hostname.includes('adtutors.ae')) {
+      return 'abu-dhabi';
+    } else if (hostname.includes('hongkongtutors.hk')) {
+      return 'hong-kong-tutors';
+    } else if (hostname.includes('singapore-tutors.sg')) {
+      return 'singapore-tutors';
+    } else if (hostname.includes('onlinetutors.es')) {
+      return 'spain-tutors';
     }
-    // Default to relative link if domain not recognized
-    return `/${slug}`;
+    
+    return null; // Default/Dubai
   };
 
   // Add global style when component mounts
@@ -121,8 +114,32 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
     }, 300);
   };
 
-  // Handle scroll for mobile background (keep original functionality)
   useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const cloneId = getCloneIdFromDomain();
+        console.log(`[Navbar] Fetching subjects for clone: ${cloneId || 'global'}`);
+        const subjectPages = await getSubjectPages(cloneId);
+        setSubjects(subjectPages);
+        console.log(`[Navbar] Loaded ${subjectPages.length} subject pages`);
+      } catch (error) {
+        console.error('Error fetching subject pages:', error);
+      }
+    };
+
+    const fetchCurriculums = async () => {
+      try {
+        const cloneId = getCloneIdFromDomain();
+        console.log(`[Navbar] Fetching curriculums for clone: ${cloneId || 'global'}`);
+        const curriculumPages = await getCurriculumPages(cloneId);
+        const sortedCurriculums = curriculumPages.sort((a, b) => a.displayOrder - b.displayOrder);
+        setCurriculums(sortedCurriculums);
+        console.log(`[Navbar] Loaded ${sortedCurriculums.length} curriculum pages`);
+      } catch (error) {
+        console.error('Error fetching curriculum pages:', error);
+      }
+    };
+
     const handleScroll = () => {
       if (typeof window === 'undefined') return; // SSR safety
 
@@ -136,6 +153,9 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
         setIsScrolled(false);
       }
     };
+
+    fetchSubjects();
+    fetchCurriculums();
 
     // Set initial scroll state and add listeners (client-side only)
     if (typeof window !== 'undefined') {
@@ -157,7 +177,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
         window.removeEventListener('resize', handleScroll);
       }
     };
-  }, []);
+  }, []); // No dependencies needed since domain won't change during session
 
   const isExternalLink = (url: string) => {
     return url && (url.startsWith('http://') || url.startsWith('https://'));
@@ -204,17 +224,17 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
               </div>
             </div>
           )}
-        </Link>
+            </Link>
 
-        {/* Desktop Navigation */}
+          {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-[44px]">
           {/* All Levels Dropdown */}
           <div
-            className="relative"
+                        className="relative"
             ref={levelsDropdownRef}
             onMouseEnter={handleLevelsMouseEnter}
             onMouseLeave={handleLevelsMouseLeave}
-          >
+                      >
             <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
               {navbarData?.navigation?.levelsText || 'All Levels'}
               <svg
@@ -231,13 +251,13 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-              </svg>
-            </button>
+                          </svg>
+                        </button>
 
             {showLevelsDropdown && (
               <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
                 {curriculums.map((curriculum) => {
-                  const curriculumPath = generateSubjectLink(curriculum.slug.current);
+                  const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
                   return (
                     <Link
                       key={curriculum.slug.current}
@@ -253,14 +273,14 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
           </div>
 
           {/* All Subjects Dropdown */}
-          <div 
-            className="relative"
-            ref={subjectsDropdownRef}
-            onMouseEnter={handleSubjectsMouseEnter}
-            onMouseLeave={handleSubjectsMouseLeave}
-          >
+              <div
+                className="relative"
+                ref={subjectsDropdownRef}
+                onMouseEnter={handleSubjectsMouseEnter}
+                onMouseLeave={handleSubjectsMouseLeave}
+              >
             <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
-              {navbarData?.navigation?.subjectsText || 'All Subjects'}
+                  {navbarData?.navigation?.subjectsText || 'All Subjects'}
               <svg
                 width="12"
                 height="12"
@@ -275,32 +295,32 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-              </svg>
-            </button>
-            
-            {showSubjectsDropdown && (
+                  </svg>
+                </button>
+
+                {showSubjectsDropdown && (
               <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
-                {subjects.map((subject) => (
-                  <Link
-                    key={subject.slug.current}
-                    href={generateSubjectLink(subject.slug.current)}
+                      {subjects.map((subject) => (
+                        <Link
+                          key={subject.slug.current}
+                          href={`/${subject.slug.current}`}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    {subject.subject}
-                  </Link>
-                ))}
-              </div>
+                        >
+                          {subject.subject}
+                        </Link>
+                      ))}
+                    </div>
             )}
           </div>
         </div>
 
         {/* CTA Button */}
-        <Link
+                        <Link
           href={navbarData?.buttonLink || "#contact-form"}
           className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-        >
+                        >
           {navbarData?.buttonText || 'Hire a tutor'}
-        </Link>
+                        </Link>
 
         {/* Mobile Menu Button */}
         <button
@@ -313,7 +333,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-          >
+                        >
             <path
               d="M3 12H21M3 6H21M3 18H21"
               stroke="#171D23"
@@ -485,12 +505,12 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
                       {navbarData?.navigation?.levelsText || 'All Levels'}
                     </h2>
                   </div>
-
+                  
                   {/* Levels list */}
                   <div className="w-full">
                     {/* Individual curriculum links */}
                     {curriculums.map((curriculum) => {
-                      const curriculumPath = generateSubjectLink(curriculum.slug.current);
+                      const curriculumPath = `/${curriculum.slug.current.replace(/^\/+/, '')}`;
                       return (
                         <Link
                           key={curriculum.slug.current}
@@ -550,13 +570,13 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
                     </h2>
                   </div>
                   
-                  {/* Subjects list */}
+                                    {/* Subjects list */}
                   <div className="w-full">
                     {/* Individual subject links */}
                     {subjects.map((subject) => (
                       <Link
                         key={subject.slug.current}
-                        href={generateSubjectLink(subject.slug.current)}
+                        href={`/${subject.slug.current}`}
                         onClick={() => setIsOpen(false)}
                         className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
                         style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
