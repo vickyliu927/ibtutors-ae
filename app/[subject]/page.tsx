@@ -557,16 +557,29 @@ async function getSubjectPageDataWithCloneContext(
       faqSection: faqSectionResult?.data || resolvedData.subjectPage.faqSection,
     };
 
+    // Resolve hero data using same fallback logic
+    let heroData = null;
+    if (fallbackResult.cloneSpecific?.heroData) {
+      heroData = fallbackResult.cloneSpecific.heroData;
+    } else if (fallbackResult.baseline?.heroData) {
+      heroData = fallbackResult.baseline.heroData;
+    } else if (fallbackResult.default?.heroData) {
+      heroData = fallbackResult.default.heroData;
+    }
+
     console.log(`[SubjectPage] Successfully fetched subject page data for: ${subject} (source: ${resolvedSource})`);
+    console.log(`[SubjectPage] Hero data ${heroData ? 'found' : 'not found'} for: ${subject}`);
+    
     return { 
       pageData, 
+      heroData,
       testimonialSection: fallbackResult.testimonialSection, 
       navbarData: navbarResult?.data || null, 
       type: 'subject' 
     };
   } catch (error) {
     console.error(`[SubjectPage] Error fetching subject page for ${subject}:`, error);
-    return { pageData: null, testimonialSection: null, navbarData: null, type: null };
+    return { pageData: null, heroData: null, testimonialSection: null, navbarData: null, type: null };
   }
 }
 
@@ -724,7 +737,7 @@ export default async function DynamicPage({
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
         {/* New Hero Section */}
-        <SubjectHeroSection subjectSlug={params.subject} />
+        <SubjectHeroSection subjectSlug={params.subject} heroData={subjectResult.heroData} />
 
         {/* Tutors Section */}
         <TutorProfiles tutors={subjectResult.pageData.tutorsList} useNewCardDesign={true} />

@@ -5,24 +5,31 @@ import { getSubjectHeroData, type SubjectHeroData } from '../lib/getSubjectHeroD
 interface SubjectHeroSectionProps {
   className?: string;
   subjectSlug?: string;
+  heroData?: any;
 }
 
-const SubjectHeroSection = ({ className = '', subjectSlug }: SubjectHeroSectionProps) => {
-  const [heroData, setHeroData] = useState<SubjectHeroData | null>(null);
+const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroData }: SubjectHeroSectionProps) => {
+  const [heroData, setHeroData] = useState<SubjectHeroData | null>(serverHeroData || null);
 
-  // Fetch hero data on mount
+  // Fetch hero data on mount only if not provided by server
   useEffect(() => {
-    const fetchHeroData = async () => {
-      try {
-        const data = await getSubjectHeroData(subjectSlug);
-        setHeroData(data);
-      } catch (error) {
-        console.error('Error fetching subject hero data:', error);
-      }
-    };
+    if (!serverHeroData) {
+      const fetchHeroData = async () => {
+        try {
+          console.log('[SubjectHeroSection] Fetching client-side hero data for:', subjectSlug);
+          const data = await getSubjectHeroData(subjectSlug);
+          setHeroData(data);
+        } catch (error) {
+          console.error('Error fetching subject hero data:', error);
+        }
+      };
 
-    fetchHeroData();
-  }, [subjectSlug]); // Re-fetch when subjectSlug changes
+      fetchHeroData();
+    } else {
+      console.log('[SubjectHeroSection] Using server-side hero data:', serverHeroData);
+      setHeroData(serverHeroData);
+    }
+  }, [subjectSlug, serverHeroData]); // Re-fetch when subjectSlug or serverHeroData changes
 
   return (
     <div
