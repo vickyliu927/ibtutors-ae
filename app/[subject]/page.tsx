@@ -568,31 +568,12 @@ export default async function DynamicPage({
     }
   });
 
-  // DEBUG: Check headers and clone detection
-  const { headers } = await import('next/headers');
-  const headersList = headers();
-  console.log(`[DEBUG] ${params.subject} page - Headers:`, {
-    'x-clone-id': headersList.get('x-clone-id'),
-    'x-clone-name': headersList.get('x-clone-name'),
-    'x-clone-source': headersList.get('x-clone-source'),
-    'host': headersList.get('host'),
-    'user-agent': headersList.get('user-agent')?.substring(0, 50) + '...'
-  });
-
   // Get enhanced clone-aware data for the page
   const { cloneContext, cloneData, debugInfo } = await getCloneAwarePageData(
     urlSearchParams,
     async (cloneId: string | null) => null, // We'll handle page data separately
     `Subject: ${params.subject}`
   );
-
-  console.log(`[DEBUG] ${params.subject} page - Clone context:`, {
-    cloneId: cloneContext.cloneId,
-    cloneName: cloneContext.clone?.cloneName,
-    source: cloneContext.source,
-    isBaseline: cloneContext.isBaseline,
-    error: cloneContext.error
-  });
 
   // Generate clone indicator props
   const cloneIndicatorProps = getCloneIndicatorData(

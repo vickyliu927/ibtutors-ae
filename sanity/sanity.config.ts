@@ -29,7 +29,9 @@ export default defineConfig({
       'https://dubai-tutors.vercel.app',
       'https://dubai-tutors-*.vercel.app',
       'https://dubaitutors.ae',
-      'https://www.dubaitutors.ae'
+      'https://www.dubaitutors.ae',
+      'https://onlinetutors.qa',
+      'https://www.onlinetutors.qa'
     ],
     allowCredentials: true,
   }
