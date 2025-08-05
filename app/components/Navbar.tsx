@@ -68,13 +68,21 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
 
   // Helper function to generate proper domain-aware links
   const generateSubjectLink = (slug: string) => {
+    console.log(`[Navbar] generateSubjectLink - currentDomain: "${currentDomain}", slug: "${slug}"`);
+    
     if (currentDomain && currentDomain.includes('onlinetutors.qa')) {
-      return `https://onlinetutors.qa/${slug}`;
+      const link = `https://onlinetutors.qa/${slug}`;
+      console.log(`[Navbar] Qatar domain detected, generated link: ${link}`);
+      return link;
     } else if (currentDomain && currentDomain.includes('dubaitutors.ae')) {
-      return `https://dubaitutors.ae/${slug}`;
+      const link = `https://dubaitutors.ae/${slug}`;
+      console.log(`[Navbar] Dubai domain detected, generated link: ${link}`);
+      return link;
     }
     // Default to relative link if domain not recognized
-    return `/${slug}`;
+    const link = `/${slug}`;
+    console.log(`[Navbar] Unknown domain, generated relative link: ${link}`);
+    return link;
   };
 
   // Add global style when component mounts

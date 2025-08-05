@@ -359,13 +359,18 @@ function getCurrentDomain(): string {
     const headersList = headers();
     const host = headersList.get('host');
     
+    console.log(`[NavigationData] getCurrentDomain() - host header: ${host}`);
+    
     if (host) {
+      console.log(`[NavigationData] Returning domain: ${host}`);
       return host;
     }
   } catch (error) {
     // Headers not available (might be during build)
+    console.log(`[NavigationData] Headers not available in getCurrentDomain:`, error);
   }
   
   // Fallback to empty string
+  console.log(`[NavigationData] getCurrentDomain() - returning empty string`);
   return '';
 } 
