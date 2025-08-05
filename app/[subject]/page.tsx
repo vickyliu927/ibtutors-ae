@@ -568,22 +568,7 @@ export default async function DynamicPage({
     }
   });
 
-  // ENHANCED DEBUGGING: Check what headers we're receiving
-  const { headers } = await import('next/headers');
-  const headersList = headers();
-  console.log(`🚨 [SUBJECT PAGE DEBUG] === SUBJECT PAGE: ${params.subject} ===`);
-  console.log(`🚨 [SUBJECT PAGE DEBUG] All Headers:`, {
-    'x-clone-id': headersList.get('x-clone-id'),
-    'x-clone-name': headersList.get('x-clone-name'),
-    'x-clone-source': headersList.get('x-clone-source'),
-    'x-debug-middleware-executed': headersList.get('x-debug-middleware-executed'),
-    'x-debug-hostname': headersList.get('x-debug-hostname'),
-    'x-debug-clone-result': headersList.get('x-debug-clone-result'),
-    'host': headersList.get('host'),
-    'x-forwarded-host': headersList.get('x-forwarded-host'),
-    'x-forwarded-for': headersList.get('x-forwarded-for'),
-    'x-middleware-error': headersList.get('x-middleware-error'),
-  });
+
 
   // Get enhanced clone-aware data for the page
   const { cloneContext, cloneData, debugInfo } = await getCloneAwarePageData(
@@ -591,14 +576,6 @@ export default async function DynamicPage({
     async (cloneId: string | null) => null, // We'll handle page data separately
     `Subject: ${params.subject}`
   );
-
-  console.log(`🚨 [SUBJECT PAGE DEBUG] Clone Context Result:`, {
-    cloneId: cloneContext.cloneId,
-    cloneName: cloneContext.clone?.cloneName,
-    source: cloneContext.source,
-    isBaseline: cloneContext.isBaseline,
-    error: cloneContext.error
-  });
 
   // Generate clone indicator props
   const cloneIndicatorProps = getCloneIndicatorData(
@@ -609,15 +586,12 @@ export default async function DynamicPage({
   );
 
   // First check if it's a curriculum page
-  console.log(`🚨 [SUBJECT PAGE DEBUG] Fetching curriculum data with cloneId: ${cloneContext.cloneId}`);
   const curriculumResult = await getCurriculumPageDataWithCloneContext(
     params.subject, 
     cloneContext.cloneId
   );
   
   if (curriculumResult.pageData) {
-    console.log(`🚨 [SUBJECT PAGE DEBUG] ✅ Found curriculum page: ${curriculumResult.pageData.title}`);
-    console.log(`🚨 [SUBJECT PAGE DEBUG] Curriculum page type: ${curriculumResult.type}`);
     // Render curriculum page with clone context
     return (
       <main>
@@ -686,16 +660,12 @@ export default async function DynamicPage({
   }
   
   // If not a curriculum page, check if it's a subject page
-  console.log(`🚨 [SUBJECT PAGE DEBUG] Fetching subject data with cloneId: ${cloneContext.cloneId}`);
   const subjectResult = await getSubjectPageDataWithCloneContext(
     params.subject,
     cloneContext.cloneId
   );
 
   if (subjectResult.pageData) {
-    console.log(`🚨 [SUBJECT PAGE DEBUG] ✅ Found subject page: ${subjectResult.pageData.title}`);
-    console.log(`🚨 [SUBJECT PAGE DEBUG] Subject page type: ${subjectResult.type}`);
-    
     // Render subject page with clone context
     return (
       <main>

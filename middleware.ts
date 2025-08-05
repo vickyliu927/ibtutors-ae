@@ -210,24 +210,18 @@ export async function middleware(request: NextRequest) {
   // Extract hostname early for logging
   const hostname = extractHostname(request);
   
-  // ENHANCED DEBUGGING: Log every middleware execution
-  console.log(`🔥 [MIDDLEWARE DEBUG] === MIDDLEWARE EXECUTING ===`);
-  console.log(`🔥 [MIDDLEWARE DEBUG] URL: ${request.url}`);
-  console.log(`🔥 [MIDDLEWARE DEBUG] Pathname: ${pathname}`);
-  console.log(`🔥 [MIDDLEWARE DEBUG] Hostname: ${hostname}`);
-  console.log(`🔥 [MIDDLEWARE DEBUG] Method: ${request.method}`);
-  console.log(`🔥 [MIDDLEWARE DEBUG] User-Agent: ${request.headers.get('user-agent')?.substring(0, 100)}...`);
+  // Log middleware execution for debugging
+  console.log(`[Middleware] Processing ${request.method} ${pathname} for ${hostname}`);
   
   try {
     // Skip middleware for development domains
     if (shouldSkipDomain(hostname)) {
-      console.log(`🔥 [MIDDLEWARE DEBUG] Skipping domain: ${hostname}`);
+      console.log(`[Middleware] Skipping domain: ${hostname}`);
       return NextResponse.next();
     }
     
     // Handle specific routes that need special treatment
     if (pathname.endsWith('/sitemap.xml')) {
-      console.log(`🔥 [MIDDLEWARE DEBUG] Handling sitemap.xml`);
       const response = NextResponse.next();
       response.headers.set('Content-Type', 'application/xml; charset=utf-8');
       response.headers.set('X-Content-Type-Options', 'nosniff');
@@ -235,7 +229,6 @@ export async function middleware(request: NextRequest) {
     }
     
     if (pathname.endsWith('/robots.txt')) {
-      console.log(`🔥 [MIDDLEWARE DEBUG] Handling robots.txt`);
       const response = NextResponse.next();
       response.headers.set('Content-Type', 'text/plain; charset=utf-8');
       return response;
@@ -246,20 +239,17 @@ export async function middleware(request: NextRequest) {
     // ========================================================================
     
     const normalizedHostname = normalizeHostname(hostname);
-    console.log(`🔥 [MIDDLEWARE DEBUG] Normalized hostname: ${normalizedHostname}`);
     
     // Check cache first
     let cacheResult = getCachedResult(normalizedHostname);
     
     if (cacheResult) {
-      console.log(`🔥 [MIDDLEWARE DEBUG] Cache hit for domain: ${normalizedHostname} -> ${cacheResult.cloneId || 'null'}`);
+      console.log(`[Middleware] Cache hit for domain: ${normalizedHostname} -> ${cacheResult.cloneId || 'null'}`);
     } else {
-      console.log(`🔥 [MIDDLEWARE DEBUG] Cache miss for domain: ${normalizedHostname}, querying Sanity...`);
+      console.log(`[Middleware] Cache miss for domain: ${normalizedHostname}, querying Sanity...`);
       
       // Query Sanity for domain mapping
       const cloneResult = await findCloneByDomain(hostname);
-      
-      console.log(`🔥 [MIDDLEWARE DEBUG] Sanity query result:`, cloneResult);
       
       // Cache the result (whether found or not)
       setCachedResult(
@@ -274,8 +264,6 @@ export async function middleware(request: NextRequest) {
         timestamp: Date.now(),
         isValid: cloneResult !== null,
       };
-      
-      console.log(`🔥 [MIDDLEWARE DEBUG] Cached result:`, cacheResult);
     }
     
     // Create response with clone context
@@ -287,17 +275,14 @@ export async function middleware(request: NextRequest) {
       response.headers.set('x-clone-name', cacheResult.cloneName || 'unknown');
       response.headers.set('x-clone-source', 'domain-mapping');
       
-      console.log(`🔥 [MIDDLEWARE DEBUG] ✅ SET CLONE HEADERS:`);
-      console.log(`🔥 [MIDDLEWARE DEBUG]    x-clone-id: ${cacheResult.cloneId}`);
-      console.log(`🔥 [MIDDLEWARE DEBUG]    x-clone-name: ${cacheResult.cloneName || 'unknown'}`);
-      console.log(`🔥 [MIDDLEWARE DEBUG]    x-clone-source: domain-mapping`);
+      console.log(`[Middleware] Set clone headers: ${cacheResult.cloneId} for domain: ${normalizedHostname}`);
     } else {
       // No clone found, remove any existing clone headers
       response.headers.delete('x-clone-id');
       response.headers.delete('x-clone-name');
       response.headers.delete('x-clone-source');
       
-      console.log(`🔥 [MIDDLEWARE DEBUG] ❌ NO CLONE HEADERS SET - No clone mapping for domain: ${normalizedHostname}`);
+      console.log(`[Middleware] No clone mapping for domain: ${normalizedHostname}`);
     }
     
     // Add cache-busting headers to prevent browser caching issues
@@ -313,25 +298,15 @@ export async function middleware(request: NextRequest) {
       response.headers.set('x-middleware-timestamp', new Date().toISOString());
     }
     
-    // ALWAYS set debug headers in production for troubleshooting
+    // Set debug headers for troubleshooting
     response.headers.set('x-debug-middleware-executed', 'true');
     response.headers.set('x-debug-hostname', hostname);
     response.headers.set('x-debug-clone-result', cacheResult.cloneId || 'none');
     
-    console.log(`🔥 [MIDDLEWARE DEBUG] === MIDDLEWARE COMPLETE ===`);
-    console.log(`🔥 [MIDDLEWARE DEBUG] Final headers:`, {
-      'x-clone-id': response.headers.get('x-clone-id'),
-      'x-clone-name': response.headers.get('x-clone-name'), 
-      'x-clone-source': response.headers.get('x-clone-source'),
-      'x-debug-middleware-executed': response.headers.get('x-debug-middleware-executed'),
-      'x-debug-hostname': response.headers.get('x-debug-hostname'),
-      'x-debug-clone-result': response.headers.get('x-debug-clone-result')
-    });
-    
     return response;
     
   } catch (error) {
-    console.error(`🔥 [MIDDLEWARE DEBUG] ❌ ERROR in middleware for ${hostname}${pathname}:`, error);
+    console.error(`[Middleware] Unexpected error processing ${hostname}${pathname}:`, error);
     
     // Return response without clone headers on error
     const response = NextResponse.next();
