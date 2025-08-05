@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import DebuggerInitializer from './components/DebuggerInitializer';
 import { getNavigationData } from './lib/getNavigationData';
 import { getSeoData } from './lib/getSeoData';
-import { headers } from 'next/headers';
 
 // Load Inter font with display: swap for better performance
 const inter = Inter({ subsets: ['latin'] });
