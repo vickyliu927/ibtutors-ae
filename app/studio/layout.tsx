@@ -1,14 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-
-// Load Inter font
-const inter = Inter({ subsets: ['latin'] });
+import '../globals.css';
 
 export const metadata: Metadata = {
   title: 'Sanity Studio - IB Tutors',
   description: 'Content management for IB Tutors',
 };
 
+// Studio layout that completely overrides the root layout
 export default function StudioLayout({
   children,
 }: {
@@ -16,9 +14,10 @@ export default function StudioLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {/* No navbar, footer, or other components - just the studio */}
-        {children}
+      <body style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
+        <div style={{ height: '100vh', width: '100vw' }}>
+          {children}
+        </div>
       </body>
     </html>
   );
