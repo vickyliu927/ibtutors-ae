@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import DebuggerInitializer from './components/DebuggerInitializer';
 import { getNavigationData } from './lib/getNavigationData';
 import { getSeoData } from './lib/getSeoData';
 
@@ -40,6 +41,7 @@ export default async function RootLayout({
         />
       </head>
       <body className={inter.className}>
+        <DebuggerInitializer />
         <Navbar 
           navbarData={navigationData.navbarData}
           subjects={navigationData.subjects}
