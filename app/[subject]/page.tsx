@@ -317,7 +317,7 @@ async function getCurriculumPageDataWithCloneContext(
 async function getSubjectPageDataWithCloneContext(
   subject: string,
   cloneId: string | null = null
-): Promise<{ pageData: SubjectPageData | null; testimonialSection: any | null; navbarData: any | null; type: string | null }> {
+): Promise<{ pageData: SubjectPageData | null; heroData: any | null; testimonialSection: any | null; navbarData: any | null; type: string | null }> {
   try {
     console.log(`[SubjectPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
     
@@ -340,6 +340,22 @@ async function getSubjectPageDataWithCloneContext(
           },
           faqSection,
           seo,
+          "sourceInfo": {
+            "source": "cloneSpecific",
+            "cloneId": $cloneId
+          }
+        },
+        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && cloneReference->cloneId.current == $cloneId][0]{
+          rating {
+            score,
+            basedOnText,
+            reviewCount
+          },
+          title {
+            firstPart,
+            secondPart
+          },
+          subtitle,
           "sourceInfo": {
             "source": "cloneSpecific",
             "cloneId": $cloneId
@@ -394,6 +410,22 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": cloneReference->cloneId.current
           }
         },
+        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && cloneReference->baselineClone == true][0]{
+          rating {
+            score,
+            basedOnText,
+            reviewCount
+          },
+          title {
+            firstPart,
+            secondPart
+          },
+          subtitle,
+          "sourceInfo": {
+            "source": "baseline",
+            "cloneId": cloneReference->cloneId.current
+          }
+        },
         "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]._id)] | order(displayOrder asc) {
           _id,
           name,
@@ -438,6 +470,22 @@ async function getSubjectPageDataWithCloneContext(
           },
           faqSection,
           seo,
+          "sourceInfo": {
+            "source": "default",
+            "cloneId": null
+          }
+        },
+        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && !defined(cloneReference)][0]{
+          rating {
+            score,
+            basedOnText,
+            reviewCount
+          },
+          title {
+            firstPart,
+            secondPart
+          },
+          subtitle,
           "sourceInfo": {
             "source": "default",
             "cloneId": null
@@ -500,7 +548,7 @@ async function getSubjectPageDataWithCloneContext(
 
     if (!resolvedData?.subjectPage) {
       console.log(`[SubjectPage] No subject page found for subject: ${subject}, clone: ${cloneId || 'none'}`);
-      return { pageData: null, testimonialSection: null, navbarData: null, type: null };
+      return { pageData: null, heroData: null, testimonialSection: null, navbarData: null, type: null };
     }
 
     const pageData: SubjectPageData = {
