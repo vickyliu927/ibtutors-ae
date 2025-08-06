@@ -583,20 +583,22 @@ async function getSubjectPageDataWithCloneContext(
 }
 
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
+  // Get clone-aware SEO data that will automatically detect clone from middleware headers
+  const cloneSeoData = await getSeoData();
+  
   // First check if it's a curriculum page
   const curriculumResult = await getCurriculumPageDataWithCloneContext(params.subject);
   
   if (curriculumResult.pageData) {
+    // Use clone-specific SEO settings, falling back to curriculum page SEO, then curriculum title
     return {
-      title: curriculumResult.pageData.seo?.pageTitle || curriculumResult.pageData.title,
-      description: curriculumResult.pageData.seo?.description || `Find expert tutors for ${curriculumResult.pageData.curriculum} in Dubai.`,
+      title: cloneSeoData.title || curriculumResult.pageData.seo?.pageTitle || curriculumResult.pageData.title,
+      description: cloneSeoData.description || curriculumResult.pageData.seo?.description || `Find expert tutors for ${curriculumResult.pageData.curriculum}.`,
     };
   }
   
   // If not, check if it's a subject page
   const { pageData } = await getSubjectPageDataWithCloneContext(params.subject);
-  // Use clone-aware SEO data that will automatically detect clone from middleware headers
-  const subjectSeo = await getSeoData();
 
   if (!pageData) {
     return {
@@ -605,10 +607,10 @@ export async function generateMetadata({ params }: { params: { subject: string }
     };
   }
 
-  // Use the page-specific SEO data, falling back to the clone-aware subject SEO data
+  // Use clone-specific SEO settings, falling back to subject page SEO, then subject title
   return {
-    title: pageData.seo.pageTitle || `${pageData.title} | IB Tutors UAE`,
-    description: pageData.seo.description || subjectSeo.description,
+    title: cloneSeoData.title || pageData.seo?.pageTitle || `${pageData.title} | IB Tutors UAE`,
+    description: cloneSeoData.description || pageData.seo?.description || 'Find expert tutors for your subject.',
   };
 }
 
