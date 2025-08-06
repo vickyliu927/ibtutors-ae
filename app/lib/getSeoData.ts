@@ -49,8 +49,7 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
 
     const params = { cloneId: targetCloneId };
 
-    // Using cachedFetch with clone-aware cache key
-    const cacheKey = `seoSettings-${targetCloneId || 'default'}`;
+    // Using cachedFetch with clone-aware caching (cache key auto-generated from query + params)
     const result = await cachedFetch<{
       cloneSpecific: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
       baseline: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
@@ -59,8 +58,7 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
       query,
       params,
       { next: { revalidate: 86400 } }, // 24 hours cache
-      24 * 60 * 60 * 1000, // 24 hours TTL
-      cacheKey
+      24 * 60 * 60 * 1000 // 24 hours TTL
     );
 
     if (!result) {
