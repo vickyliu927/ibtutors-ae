@@ -190,6 +190,16 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                           S.list()
           .title(`${cloneName} - Curriculum Page Sections`)
                             .items([
+                              S.documentTypeListItem('curriculumHeroSection')
+                                .title('Curriculum Hero Sections')
+                                .child(
+                                  S.documentList()
+                  .title(`${cloneName} - Curriculum Hero Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "curriculumHeroSection" && !defined(cloneReference)'
+                    : `_type == "curriculumHeroSection" && cloneReference._ref == "${cloneId}"`
+                  )
+                                ),
                               S.documentTypeListItem('curriculumPage')
                                 .title('Curriculum Page Settings')
                                 .child(
@@ -471,6 +481,9 @@ export const structure = (S: StructureBuilder) =>
                   S.list()
                     .title('Curriculum Page Sections')
                     .items([
+                      S.documentTypeListItem('curriculumHeroSection')
+                        .title('Curriculum Hero Sections')
+                        .icon(BiHome),
                       S.documentTypeListItem('curriculumPage')
                         .title('Curriculum Page Settings')
                         .icon(BsGridFill),
@@ -612,6 +625,7 @@ export const structure = (S: StructureBuilder) =>
             'subjectPage',
             'subjectHeroSection',
             'curriculumPage',
+            'curriculumHeroSection',
             'seoSettings',
             'navbarSettings',
             'linkSettings',
