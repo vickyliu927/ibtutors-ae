@@ -11,6 +11,7 @@ import { getSeoData } from './lib/getSeoData';
 const inter = Inter({ subsets: ['latin'] });
 
 export async function generateMetadata(): Promise<Metadata> {
+  // Use clone-aware SEO data that will automatically detect clone from middleware headers
   const seo = await getSeoData();
 
   return {

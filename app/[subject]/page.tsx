@@ -594,6 +594,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
   
   // If not, check if it's a subject page
   const { pageData } = await getSubjectPageDataWithCloneContext(params.subject);
+  // Use clone-aware SEO data that will automatically detect clone from middleware headers
   const subjectSeo = await getSeoData();
 
   if (!pageData) {
@@ -603,7 +604,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
     };
   }
 
-  // Use the page-specific SEO data, falling back to the default subject SEO data
+  // Use the page-specific SEO data, falling back to the clone-aware subject SEO data
   return {
     title: pageData.seo.pageTitle || `${pageData.title} | IB Tutors UAE`,
     description: pageData.seo.description || subjectSeo.description,
