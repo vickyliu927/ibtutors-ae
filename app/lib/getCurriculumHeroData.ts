@@ -1,17 +1,7 @@
 import { client } from '@/sanity/lib/client';
+import { type CurriculumHeroData } from './heroTypes';
 
-export interface CurriculumHeroData {
-  rating: {
-    score: string;
-    basedOnText: string;
-    reviewCount: string;
-  };
-  title: {
-    firstPart: string;
-    secondPart: string;
-  };
-  subtitle: string;
-}
+export type { CurriculumHeroData };
 
 export async function getCurriculumHeroData(curriculumSlug?: string): Promise<CurriculumHeroData | null> {
   try {

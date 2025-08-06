@@ -1,15 +1,16 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { getSubjectHeroData, type SubjectHeroData } from '../lib/getSubjectHeroData';
+import { getSubjectHeroData } from '../lib/getSubjectHeroData';
+import { HeroData } from '../lib/heroTypes';
 
 interface SubjectHeroSectionProps {
   className?: string;
   subjectSlug?: string;
-  heroData?: any;
+  heroData?: HeroData | null;
 }
 
 const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroData }: SubjectHeroSectionProps) => {
-  const [heroData, setHeroData] = useState<SubjectHeroData | null>(serverHeroData || null);
+  const [heroData, setHeroData] = useState<HeroData | null>(serverHeroData || null);
 
   // DISABLED CLIENT-SIDE FALLBACK - Always use server-side data for clone-aware content
   useEffect(() => {
