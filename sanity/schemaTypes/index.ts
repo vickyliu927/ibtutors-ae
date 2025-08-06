@@ -20,6 +20,7 @@ import advertBlockSection from './advertBlockSection'
 import linkSettings from './linkSettings'
 import clone from './clone'
 import subjectHeroSection from './subjectHeroSection'
+import curriculumHeroSection from './curriculumHeroSection'
 
 export const schemaTypes = [
   clone,
@@ -44,4 +45,5 @@ export const schemaTypes = [
   navbarSettings,
   linkSettings,
   subjectHeroSection,
+  curriculumHeroSection,
 ] 

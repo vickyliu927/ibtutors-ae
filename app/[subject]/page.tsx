@@ -8,6 +8,7 @@ import FaqAccordion from '../components/FaqAccordion';
 import SubjectHeroSection from '../components/SubjectHeroSection';
 import { Metadata } from 'next';
 import { getSeoData, SeoData } from '../lib/getSeoData';
+import { getCurriculumHeroData } from '../lib/getCurriculumHeroData';
 import { notFound } from 'next/navigation';
 
 // Import enhanced clone-aware utilities
@@ -652,14 +653,17 @@ export default async function DynamicPage({
   );
   
   if (curriculumResult.pageData) {
+    // Fetch curriculum-specific hero data
+    const curriculumHeroData = await getCurriculumHeroData(params.subject);
+    
     // Render curriculum page with clone context
     return (
       <main>
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
-        {/* New Hero Section */}
-        <SubjectHeroSection subjectSlug={params.subject} />
+        {/* New Hero Section - using curriculum hero data */}
+        <SubjectHeroSection subjectSlug={params.subject} heroData={curriculumHeroData} />
 
         {/* Tutors Section */}
         <TutorProfiles 
