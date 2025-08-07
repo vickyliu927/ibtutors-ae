@@ -1,4 +1,5 @@
-import { client } from '@/sanity/lib/client';
+import { cachedFetch } from '@/sanity/lib/queryCache';
+import { headers } from 'next/headers';
 
 export interface ContactFormData {
   formHeader: string;
@@ -71,36 +72,107 @@ const FALLBACK_CONTACT_FORM_DATA: ContactFormData = {
   },
 };
 
-export async function getContactFormData(): Promise<ContactFormData> {
+export async function getContactFormData(cloneId?: string | null): Promise<ContactFormData> {
   try {
-    const query = `*[_type == "contactFormContent"][0] {
-      formHeader,
-      formSubtitle,
-      companyName,
-      formFields,
-      submitButtonText,
-      submittingText,
-      successModal,
-      errorMessages
+    // If no cloneId provided, try to get it from middleware headers
+    let targetCloneId = cloneId;
+    if (!targetCloneId) {
+      try {
+        const headersList = headers();
+        targetCloneId = headersList.get('x-clone-id');
+      } catch (error) {
+        console.log('[getContactFormData] Could not access headers (client-side call)');
+      }
+    }
+
+    // Build clone-aware query with 3-tier fallback
+    const query = `{
+      "cloneSpecific": *[_type == "contactFormContent" && defined($cloneId) && cloneReference->cloneId.current == $cloneId][0] {
+        formHeader,
+        formSubtitle,
+        companyName,
+        formFields,
+        submitButtonText,
+        submittingText,
+        successModal,
+        errorMessages,
+        "sourceInfo": {
+          "source": "cloneSpecific",
+          "cloneId": $cloneId
+        }
+      },
+      "baseline": *[_type == "contactFormContent" && cloneReference->baselineClone == true][0] {
+        formHeader,
+        formSubtitle,
+        companyName,
+        formFields,
+        submitButtonText,
+        submittingText,
+        successModal,
+        errorMessages,
+        "sourceInfo": {
+          "source": "baseline",
+          "cloneId": cloneReference->cloneId.current
+        }
+      },
+      "default": *[_type == "contactFormContent" && !defined(cloneReference)][0] {
+        formHeader,
+        formSubtitle,
+        companyName,
+        formFields,
+        submitButtonText,
+        submittingText,
+        successModal,
+        errorMessages,
+        "sourceInfo": {
+          "source": "default",
+          "cloneId": null
+        }
+      }
     }`;
 
-    const data = await client.fetch<ContactFormData | null>(query);
+    const params = { cloneId: targetCloneId };
 
-    if (!data) {
-      console.log('No contact form content found in Sanity, using fallback data');
+    // Using cachedFetch with clone-aware caching
+    const result = await cachedFetch<{
+      cloneSpecific: (ContactFormData & { sourceInfo?: { source: string; cloneId: string } }) | null;
+      baseline: (ContactFormData & { sourceInfo?: { source: string; cloneId: string } }) | null;
+      default: (ContactFormData & { sourceInfo?: { source: string; cloneId: string } }) | null;
+    }>(
+      query,
+      params,
+      { next: { revalidate: 86400 } }, // 24 hours cache
+      24 * 60 * 60 * 1000 // 24 hours TTL
+    );
+
+    if (!result) {
       return FALLBACK_CONTACT_FORM_DATA;
     }
 
+    // Apply 3-tier fallback resolution
+    const contactFormData = result.cloneSpecific || result.baseline || result.default;
+    
+    if (!contactFormData) {
+      return FALLBACK_CONTACT_FORM_DATA;
+    }
+
+    console.log(`[getContactFormData] Resolved contact form data from: ${contactFormData.sourceInfo?.source || 'unknown'} for clone: ${targetCloneId || 'none'}`);
+    
     // Process the subtitle to replace company name placeholder
     const processedData = {
-      ...data,
-      formSubtitle: data.formSubtitle.replace('{companyName}', data.companyName || 'TutorChase'),
+      formHeader: contactFormData.formHeader,
+      formSubtitle: contactFormData.formSubtitle.replace('{companyName}', contactFormData.companyName || 'TutorChase'),
+      companyName: contactFormData.companyName,
+      formFields: contactFormData.formFields,
+      submitButtonText: contactFormData.submitButtonText,
+      submittingText: contactFormData.submittingText,
+      successModal: contactFormData.successModal,
+      errorMessages: contactFormData.errorMessages,
     };
 
     return processedData;
   } catch (error) {
-    console.error('Error fetching contact form content:', error);
-    console.log('Using fallback contact form data');
+    console.error('Error fetching contact form data:', error);
     return FALLBACK_CONTACT_FORM_DATA;
   }
 } 
