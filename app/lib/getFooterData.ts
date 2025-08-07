@@ -1,5 +1,4 @@
 import { cachedFetch } from '@/sanity/lib/queryCache';
-import { headers } from 'next/headers';
 
 export interface FooterData {
   title?: string;
@@ -18,10 +17,14 @@ export async function getFooterData(cloneId?: string | null): Promise<FooterData
     let targetCloneId = cloneId;
     if (!targetCloneId) {
       try {
+        // Dynamically import next/headers only on server-side
+        const { headers } = await import('next/headers');
         const headersList = headers();
         targetCloneId = headersList.get('x-clone-id');
       } catch (error) {
-        console.log('[getFooterData] Could not access headers (client-side call)');
+        console.log('[getFooterData] Could not access headers (client-side call), using default fallback');
+        // When called client-side, return fallback data immediately
+        return getDefaultFooterData();
       }
     }
 

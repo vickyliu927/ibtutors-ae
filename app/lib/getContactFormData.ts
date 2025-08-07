@@ -1,5 +1,4 @@
 import { cachedFetch } from '@/sanity/lib/queryCache';
-import { headers } from 'next/headers';
 
 export interface ContactFormData {
   formHeader: string;
@@ -78,10 +77,14 @@ export async function getContactFormData(cloneId?: string | null): Promise<Conta
     let targetCloneId = cloneId;
     if (!targetCloneId) {
       try {
+        // Dynamically import next/headers only on server-side
+        const { headers } = await import('next/headers');
         const headersList = headers();
         targetCloneId = headersList.get('x-clone-id');
       } catch (error) {
-        console.log('[getContactFormData] Could not access headers (client-side call)');
+        console.log('[getContactFormData] Could not access headers (client-side call), using fallback');
+        // When called client-side, return fallback data immediately
+        return FALLBACK_CONTACT_FORM_DATA;
       }
     }
 

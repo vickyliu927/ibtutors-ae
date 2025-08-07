@@ -1,5 +1,4 @@
 import { cachedFetch } from '@/sanity/lib/queryCache';
-import { headers } from 'next/headers';
 
 export interface SubjectPageData {
   _id: string;
@@ -22,10 +21,13 @@ export async function getSubjectGridData(cloneId?: string | null): Promise<Subje
     let targetCloneId = cloneId;
     if (!targetCloneId) {
       try {
+        // Dynamically import next/headers only on server-side
+        const { headers } = await import('next/headers');
         const headersList = headers();
         targetCloneId = headersList.get('x-clone-id');
       } catch (error) {
-        console.log('[getSubjectGridData] Could not access headers (client-side call)');
+        console.log('[getSubjectGridData] Could not access headers (client-side call), will use basic query');
+        // For client-side calls, continue without clone ID (will use default data)
       }
     }
 
@@ -106,7 +108,10 @@ export async function getSubjectGridData(cloneId?: string | null): Promise<Subje
     console.log(`[getSubjectGridData] Resolved ${subjectData.length} subjects from: ${source} for clone: ${targetCloneId || 'none'}`);
     
     // Clean up the data (remove sourceInfo)
-    return subjectData.map(({ sourceInfo, ...subject }) => subject);
+    return subjectData.map((item) => {
+      const { sourceInfo, ...subject } = item as SubjectPageData & { sourceInfo?: any };
+      return subject;
+    });
   } catch (err) {
     console.error('Error fetching subject grid data:', err);
     return [];
