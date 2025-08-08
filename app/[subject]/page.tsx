@@ -655,8 +655,8 @@ export default async function DynamicPage({
   );
   
   if (curriculumResult.pageData) {
-    // Fetch curriculum-specific hero data
-    const curriculumHeroData = await getCurriculumHeroData(params.subject);
+    // Fetch curriculum-specific hero data with clone context
+    const curriculumHeroData = await getCurriculumHeroData(params.subject, cloneContext.cloneId);
     
     // Render curriculum page with clone context
     return (
