@@ -360,6 +360,58 @@ export const structure = (S: StructureBuilder) =>
                     }))
                 ),
 
+              // Germany Tutors
+              S.listItem()
+                .title('Germany Tutors')
+                .icon(FiGlobe)
+                .child(
+                  S.list()
+                    .title('Germany Tutors Content')
+                    .items(createCloneContentCategories(S, {
+                      cloneName: 'Germany Tutors',
+                      cloneReference: 'c6952c71-7f8e-43b5-9a73-03686371e8cc'
+                    }))
+                ),
+
+              // Italy Tutors
+              S.listItem()
+                .title('Italy Tutors')
+                .icon(FiGlobe)
+                .child(
+                  S.list()
+                    .title('Italy Tutors Content')
+                    .items(createCloneContentCategories(S, {
+                      cloneName: 'Italy Tutors',
+                      cloneReference: '86b1da5e-639b-43c5-8b64-063a71f0d575'
+                    }))
+                ),
+
+              // Qatar Tutors
+              S.listItem()
+                .title('Qatar Tutors')
+                .icon(FiGlobe)
+                .child(
+                  S.list()
+                    .title('Qatar Tutors Content')
+                    .items(createCloneContentCategories(S, {
+                      cloneName: 'Qatar Tutors',
+                      cloneReference: 'c04bc280-7316-4ebb-b992-91166ea5c826'
+                    }))
+                ),
+
+              // Spain Tutors
+              S.listItem()
+                .title('Spain Tutors')
+                .icon(FiGlobe)
+                .child(
+                  S.list()
+                    .title('Spain Tutors Content')
+                    .items(createCloneContentCategories(S, {
+                      cloneName: 'Spain Tutors',
+                      cloneReference: 'db2574dd-3841-41a3-976e-c6df0fe6cfda'
+                    }))
+                ),
+
               // Add more clones here as needed...
             ])
         ),
