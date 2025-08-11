@@ -45,7 +45,7 @@ const FALLBACK_CONTACT_FORM_DATA: ContactFormData = {
     fullNamePlaceholder: 'Enter your name here',
     countryLabel: 'Country *',
     countryPlaceholder: 'Enter your country here',
-    phoneLabel: 'Your phone (with country code) *',
+    phoneLabel: 'Your phone (with country code - e.g. +44) *',
     phonePlaceholder: 'Enter your phone here',
     emailLabel: 'Your email *',
     emailPlaceholder: 'Enter your email here',

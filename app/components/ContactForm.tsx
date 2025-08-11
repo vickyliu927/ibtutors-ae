@@ -330,7 +330,7 @@ const ContactForm = () => {
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 space-y-2">
                   <label htmlFor="phone" className="block font-gilroy text-base font-normal text-textDark">
-                {contentData?.formFields.phoneLabel || 'Your phone (with country code) *'}
+                {contentData?.formFields.phoneLabel || 'Your phone (with country code - e.g. +44) *'}
               </label>
                 <input
                   type="tel"
