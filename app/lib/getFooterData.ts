@@ -84,8 +84,8 @@ export async function getFooterData(cloneId?: string | null): Promise<FooterData
     }>(
       query,
       params,
-      { next: { revalidate: 86400 } }, // 24 hours cache
-      24 * 60 * 60 * 1000 // 24 hours TTL
+      { next: { revalidate: 3600 } }, // 1 hour cache
+      60 * 60 * 1000 // 1 hour TTL
     );
 
     if (!result) {
