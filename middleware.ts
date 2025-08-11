@@ -166,7 +166,7 @@ async function findCloneByDomain(hostname: string): Promise<{ cloneId: string; c
     
     console.log(`[Middleware] Querying Sanity for domain: ${normalizedHostname}`);
     
-    const query = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0] {
+    const query = `*[_type == "clone" && $hostname in .domains && isActive == true][0] {
       cloneId,
       cloneName,
       "domains": metadata.domains
