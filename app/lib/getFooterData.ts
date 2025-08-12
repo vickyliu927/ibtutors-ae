@@ -21,6 +21,31 @@ export async function getFooterData(cloneId?: string | null): Promise<FooterData
         const { headers } = await import('next/headers');
         const headersList = headers();
         targetCloneId = headersList.get('x-clone-id');
+        
+        // If middleware header is missing, resolve clone by domain directly (server-side fallback)
+        if (!targetCloneId) {
+          const forwardedHost = headersList.get('x-forwarded-host');
+          const host = (forwardedHost || headersList.get('host') || '').toLowerCase();
+          const normalizedHost = host.split(',')[0].trim().split(':')[0].replace(/^www\./, '');
+          if (normalizedHost) {
+            // Look up clone by domain with caching (10 min)
+            const domainQuery = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0]{
+              "cloneId": cloneId.current
+            }`;
+            const domainResult = await cachedFetch<{ cloneId?: string | null }>(
+              domainQuery,
+              { hostname: normalizedHost },
+              { next: { revalidate: 600 } },
+              10 * 60 * 1000
+            );
+            if (domainResult?.cloneId) {
+              targetCloneId = domainResult.cloneId;
+              console.log(`[getFooterData] Resolved cloneId from domain '${normalizedHost}': ${targetCloneId}`);
+            } else {
+              console.log(`[getFooterData] No clone mapping found for domain '${normalizedHost}', will use baseline/default footer`);
+            }
+          }
+        }
       } catch (error) {
         console.log('[getFooterData] Could not access headers (client-side call), using default fallback');
         // When called client-side, return fallback data immediately
