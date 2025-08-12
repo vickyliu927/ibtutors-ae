@@ -166,7 +166,7 @@ async function findCloneByDomain(hostname: string): Promise<{ cloneId: string; c
     
     console.log(`[Middleware] Querying Sanity for domain: ${normalizedHostname}`);
     
-    const query = `*[_type == "clone" && $hostname in .domains && isActive == true][0] {
+    const query = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0] {
       cloneId,
       cloneName,
       "domains": metadata.domains
@@ -266,23 +266,31 @@ export async function middleware(request: NextRequest) {
       };
     }
     
-    // Create response with clone context
-    const response = NextResponse.next();
+    // Create request headers to forward downstream (server components read request headers)
+    const requestHeaders = new Headers(request.headers);
     
-    // Set clone headers if domain has a matching clone
+    // Set clone headers on the REQUEST so next/headers() can read them server-side
+    if (cacheResult.cloneId) {
+      requestHeaders.set('x-clone-id', cacheResult.cloneId);
+      requestHeaders.set('x-clone-name', cacheResult.cloneName || 'unknown');
+      requestHeaders.set('x-clone-source', 'domain-mapping');
+      console.log(`[Middleware] Forwarding clone headers on request: ${cacheResult.cloneId} for domain: ${normalizedHostname}`);
+    } else {
+      requestHeaders.delete('x-clone-id');
+      requestHeaders.delete('x-clone-name');
+      requestHeaders.delete('x-clone-source');
+      console.log(`[Middleware] No clone mapping for domain: ${normalizedHostname}`);
+    }
+
+    // Build response and also echo headers on the RESPONSE for debugging/inspection in browser devtools
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    });
+    
     if (cacheResult.cloneId) {
       response.headers.set('x-clone-id', cacheResult.cloneId);
       response.headers.set('x-clone-name', cacheResult.cloneName || 'unknown');
       response.headers.set('x-clone-source', 'domain-mapping');
-      
-      console.log(`[Middleware] Set clone headers: ${cacheResult.cloneId} for domain: ${normalizedHostname}`);
-    } else {
-      // No clone found, remove any existing clone headers
-      response.headers.delete('x-clone-id');
-      response.headers.delete('x-clone-name');
-      response.headers.delete('x-clone-source');
-      
-      console.log(`[Middleware] No clone mapping for domain: ${normalizedHostname}`);
     }
     
     // Add cache-busting headers to prevent browser caching issues
