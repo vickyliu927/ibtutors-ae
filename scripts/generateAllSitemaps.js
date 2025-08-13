@@ -143,7 +143,7 @@ async function generateSitemapForDomain(domain) {
   // Add curriculum pages
   curriculumPages.forEach(page => {
     urls.push({
-      url: joinUrl(baseUrl, `curriculum/${page.slug.current}`),
+      url: joinUrl(baseUrl, page.slug.current),
       lastModified: page._updatedAt,
       changeFrequency: 'weekly',
       priority: 0.9,

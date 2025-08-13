@@ -201,9 +201,9 @@ export async function generateSitemapForDomain(domain: string): Promise<Metadata
     priority: 0.9,
   }));
 
-  // Create URLs for each curriculum page
+  // Create URLs for each curriculum page (short format at root)
   const curriculumUrls: MetadataRoute.Sitemap = curriculumPages.map((page) => ({
-    url: joinUrl(baseUrl, `curriculum/${page.slug.current}`),
+    url: joinUrl(baseUrl, page.slug.current),
     lastModified: new Date(page._updatedAt),
     changeFrequency: 'weekly' as const,
     priority: 0.9,

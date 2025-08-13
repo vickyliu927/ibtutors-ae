@@ -47,7 +47,7 @@ async function testSitemapForDomain(domain) {
       const sampleUrls = [
         `${protocol}://${domain}`,
         ...subjectPages.slice(0, 3).map(p => `${protocol}://${domain}/${p.slug.current}`),
-        ...curriculumPages.slice(0, 2).map(p => `${protocol}://${domain}/curriculum/${p.slug.current}`)
+    ...curriculumPages.slice(0, 2).map(p => `${protocol}://${domain}/${p.slug.current}`)
       ];
       
       console.log(`   🔗 Sample URLs generated:`);
