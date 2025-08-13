@@ -14,6 +14,28 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
       try {
         const headersList = headers();
         targetCloneId = headersList.get('x-clone-id');
+
+        // Server-side fallback: resolve clone by domain if header missing
+        if (!targetCloneId) {
+          const forwardedHost = headersList.get('x-forwarded-host');
+          const host = (forwardedHost || headersList.get('host') || '').toLowerCase();
+          const normalizedHost = host.split(',')[0].trim().split(':')[0].replace(/^www\./, '');
+          if (normalizedHost) {
+            const domainQuery = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0]{
+              "cloneId": cloneId.current
+            }`;
+            const domainResult = await cachedFetch<{ cloneId?: string | null }>(
+              domainQuery,
+              { hostname: normalizedHost },
+              { next: { revalidate: 600 } },
+              10 * 60 * 1000
+            );
+            if (domainResult?.cloneId) {
+              targetCloneId = domainResult.cloneId;
+              console.log(`[getSeoData] Resolved cloneId from domain '${normalizedHost}': ${targetCloneId}`);
+            }
+          }
+        }
       } catch (error) {
         console.log('[getSeoData] Could not access headers (client-side call)');
       }
@@ -57,8 +79,8 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
     }>(
       query,
       params,
-      { next: { revalidate: 86400 } }, // 24 hours cache
-      24 * 60 * 60 * 1000 // 24 hours TTL
+      { next: { revalidate: 3600 } }, // 1 hour cache
+      60 * 60 * 1000 // 1 hour TTL
     );
 
     if (!result) {
