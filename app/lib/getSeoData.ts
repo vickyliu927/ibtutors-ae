@@ -1,5 +1,6 @@
-import { cachedFetch } from '@/sanity/lib/queryCache';
 import { headers } from 'next/headers';
+import { createClient } from 'next-sanity';
+import { apiVersion, dataset, projectId } from '@/sanity/env';
 
 export interface SeoData {
   title: string;
@@ -71,17 +72,21 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
 
     const params = { cloneId: targetCloneId };
 
-    // Using cachedFetch with clone-aware caching (cache key auto-generated from query + params)
-    const result = await cachedFetch<{
+    // Fetch WITHOUT CDN and WITHOUT local cache so SEO changes reflect immediately
+    const freshClient = createClient({
+      projectId,
+      dataset,
+      apiVersion,
+      useCdn: false,
+      perspective: 'published',
+      token: process.env.SANITY_API_TOKEN,
+    });
+
+    const result = await freshClient.fetch<{
       cloneSpecific: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
       baseline: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
       default: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
-    }>(
-      query,
-      params,
-      { next: { revalidate: 3600 } }, // 1 hour cache
-      60 * 60 * 1000 // 1 hour TTL
-    );
+    }>(query, params, { next: { revalidate: 0 } });
 
     if (!result) {
       return getDefaultSeoData();
