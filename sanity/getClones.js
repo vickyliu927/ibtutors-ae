@@ -1,6 +1,11 @@
-import { getCliClient } from 'sanity/cli'
+import { createClient } from '@sanity/client'
 
-const client = getCliClient()
+const client = createClient({
+  projectId: 'r689038t',
+  dataset: 'production',
+  apiVersion: '2024-03-20',
+  useCdn: false
+})
 
 async function getClones() {
   try {

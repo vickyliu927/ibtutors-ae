@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { client } from '@/sanity/lib/client';
 
 // Secret to validate webhook requests
@@ -22,6 +22,9 @@ export async function POST(request: NextRequest) {
       await handleSubjectSlugChange(body);
     }
 
+    // Enhanced sitemap refresh logic
+    await handleSitemapRefresh(body);
+
     // Revalidate applicable paths
     if (body.slug?.current) {
       revalidatePath(`/${body.slug.current}`);
@@ -38,6 +41,36 @@ export async function POST(request: NextRequest) {
   } catch (err: any) {
     console.error('Webhook error:', err);
     return NextResponse.json({ message: err.message }, { status: 500 });
+  }
+}
+
+/**
+ * Handle sitemap refresh based on document changes
+ */
+async function handleSitemapRefresh(document: any) {
+  const documentType = document._type;
+  const documentId = document._id;
+  
+  console.log(`[Sitemap Refresh] Document changed: ${documentType} (${documentId})`);
+
+  // Determine refresh actions based on document type
+  if (documentType === 'clone') {
+    // New clone or clone domains changed - refresh all sitemap caches
+    revalidateTag('sitemap-data');
+    revalidateTag('clone-mappings');
+    console.log('[Sitemap Refresh] Clone document changed - refreshed all sitemap caches');
+    
+  } else if (documentType === 'subjectPage' || documentType === 'curriculumPage') {
+    // Page content changed - refresh sitemap data
+    revalidateTag('sitemap-data');
+    revalidateTag('subject-pages');
+    revalidateTag('curriculum-pages');
+    console.log(`[Sitemap Refresh] ${documentType} changed - refreshed page caches`);
+    
+  } else if (['hero', 'testimonialSection', 'footerSection'].includes(documentType)) {
+    // Content changed but doesn't affect sitemap structure - light refresh
+    revalidateTag('sitemap-data');
+    console.log(`[Sitemap Refresh] ${documentType} changed - light cache refresh`);
   }
 }
 

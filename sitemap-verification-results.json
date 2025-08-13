@@ -1,0 +1,165 @@
+{
+  "timestamp": "2025-08-13T18:03:42.794Z",
+  "checks": [
+    {
+      "name": "Domain-Clone Mappings",
+      "status": "passed",
+      "details": {
+        "uniqueClones": 8,
+        "totalDomains": 16,
+        "clones": [
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "Singapore Tutors"
+            },
+            "cloneName": "Singapore Tutors",
+            "domains": [
+              "singapore-tutors.sg",
+              "www.singapore-tutors.sg"
+            ],
+            "isActive": true
+          },
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "nigeria-tutors"
+            },
+            "cloneName": "Nigeria Tutors",
+            "domains": [
+              "online-tutors.ni",
+              "www.online-tutors.ni"
+            ],
+            "isActive": true
+          },
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "italy-tutors"
+            },
+            "cloneName": "Italy Tutors",
+            "domains": [
+              "online-tutors.it",
+              "www.online-tutors.it"
+            ],
+            "isActive": true
+          },
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "hong-kong-tutors"
+            },
+            "cloneName": "Hong Kong Tutors",
+            "domains": [
+              "hongkongtutors.hk",
+              "www.hongkongtutors.hk"
+            ],
+            "isActive": true
+          },
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "abu-dhabi"
+            },
+            "cloneName": "Abu Dhabi Tutors",
+            "domains": [
+              "adtutors.ae",
+              "www.adtutors.ae"
+            ],
+            "isActive": true
+          },
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "qatar-tutors"
+            },
+            "cloneName": "Qatar Tutors",
+            "domains": [
+              "www.onlinetutors.qa",
+              "onlinetutors.qa"
+            ],
+            "isActive": true
+          },
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "germany-tutors"
+            },
+            "cloneName": "Germany Tutors",
+            "domains": [
+              "online-tutors.de",
+              "www.online-tutors.de"
+            ],
+            "isActive": true
+          },
+          {
+            "cloneId": {
+              "_type": "slug",
+              "current": "spain-tutors"
+            },
+            "cloneName": "Spain Tutors",
+            "domains": [
+              "onlinetutors.es",
+              "www.onlinetutors.es"
+            ],
+            "isActive": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Clone-Specific Pages",
+      "status": "passed",
+      "details": {
+        "globalSubjects": 5,
+        "cloneSubjects": 20,
+        "globalCurriculum": 5,
+        "cloneCurriculum": 17,
+        "clonePageGroups": {
+          "qatar-tutors": {
+            "subjects": 5,
+            "curriculum": 5
+          },
+          "germany-tutors": {
+            "subjects": 5,
+            "curriculum": 5
+          },
+          "italy-tutors": {
+            "subjects": 5,
+            "curriculum": 1
+          },
+          "spain-tutors": {
+            "subjects": 5,
+            "curriculum": 5
+          },
+          "abu-dhabi": {
+            "subjects": 0,
+            "curriculum": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "Generated Sitemap Files",
+      "status": "passed",
+      "details": {
+        "xmlFiles": 16,
+        "hasReport": true
+      }
+    },
+    {
+      "name": "Implementation Files",
+      "status": "passed",
+      "details": {
+        "required": 7,
+        "found": 7
+      }
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "warnings": 0
+  }
+}

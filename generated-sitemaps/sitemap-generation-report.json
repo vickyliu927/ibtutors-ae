@@ -1,0 +1,136 @@
+{
+  "timestamp": "2025-08-13T18:00:03.654Z",
+  "totalDomains": 16,
+  "successful": 16,
+  "failed": 0,
+  "results": [
+    {
+      "domain": "singapore-tutors.sg",
+      "cloneId": "Singapore Tutors",
+      "cloneName": "Singapore Tutors",
+      "urlCount": 11,
+      "filename": "sitemap-singapore-tutors.sg.xml",
+      "success": true
+    },
+    {
+      "domain": "www.singapore-tutors.sg",
+      "cloneId": "Singapore Tutors",
+      "cloneName": "Singapore Tutors",
+      "urlCount": 11,
+      "filename": "sitemap-www.singapore-tutors.sg.xml",
+      "success": true
+    },
+    {
+      "domain": "online-tutors.ni",
+      "cloneId": "nigeria-tutors",
+      "cloneName": "Nigeria Tutors",
+      "urlCount": 11,
+      "filename": "sitemap-online-tutors.ni.xml",
+      "success": true
+    },
+    {
+      "domain": "www.online-tutors.ni",
+      "cloneId": "nigeria-tutors",
+      "cloneName": "Nigeria Tutors",
+      "urlCount": 11,
+      "filename": "sitemap-www.online-tutors.ni.xml",
+      "success": true
+    },
+    {
+      "domain": "online-tutors.it",
+      "cloneId": "italy-tutors",
+      "cloneName": "Italy Tutors",
+      "urlCount": 17,
+      "filename": "sitemap-online-tutors.it.xml",
+      "success": true
+    },
+    {
+      "domain": "www.online-tutors.it",
+      "cloneId": "italy-tutors",
+      "cloneName": "Italy Tutors",
+      "urlCount": 17,
+      "filename": "sitemap-www.online-tutors.it.xml",
+      "success": true
+    },
+    {
+      "domain": "hongkongtutors.hk",
+      "cloneId": "hong-kong-tutors",
+      "cloneName": "Hong Kong Tutors",
+      "urlCount": 11,
+      "filename": "sitemap-hongkongtutors.hk.xml",
+      "success": true
+    },
+    {
+      "domain": "www.hongkongtutors.hk",
+      "cloneId": "hong-kong-tutors",
+      "cloneName": "Hong Kong Tutors",
+      "urlCount": 11,
+      "filename": "sitemap-www.hongkongtutors.hk.xml",
+      "success": true
+    },
+    {
+      "domain": "adtutors.ae",
+      "cloneId": "abu-dhabi",
+      "cloneName": "Abu Dhabi Tutors",
+      "urlCount": 12,
+      "filename": "sitemap-adtutors.ae.xml",
+      "success": true
+    },
+    {
+      "domain": "www.adtutors.ae",
+      "cloneId": "abu-dhabi",
+      "cloneName": "Abu Dhabi Tutors",
+      "urlCount": 12,
+      "filename": "sitemap-www.adtutors.ae.xml",
+      "success": true
+    },
+    {
+      "domain": "www.onlinetutors.qa",
+      "cloneId": "qatar-tutors",
+      "cloneName": "Qatar Tutors",
+      "urlCount": 21,
+      "filename": "sitemap-www.onlinetutors.qa.xml",
+      "success": true
+    },
+    {
+      "domain": "onlinetutors.qa",
+      "cloneId": "qatar-tutors",
+      "cloneName": "Qatar Tutors",
+      "urlCount": 21,
+      "filename": "sitemap-onlinetutors.qa.xml",
+      "success": true
+    },
+    {
+      "domain": "online-tutors.de",
+      "cloneId": "germany-tutors",
+      "cloneName": "Germany Tutors",
+      "urlCount": 21,
+      "filename": "sitemap-online-tutors.de.xml",
+      "success": true
+    },
+    {
+      "domain": "www.online-tutors.de",
+      "cloneId": "germany-tutors",
+      "cloneName": "Germany Tutors",
+      "urlCount": 21,
+      "filename": "sitemap-www.online-tutors.de.xml",
+      "success": true
+    },
+    {
+      "domain": "onlinetutors.es",
+      "cloneId": "spain-tutors",
+      "cloneName": "Spain Tutors",
+      "urlCount": 21,
+      "filename": "sitemap-onlinetutors.es.xml",
+      "success": true
+    },
+    {
+      "domain": "www.onlinetutors.es",
+      "cloneId": "spain-tutors",
+      "cloneName": "Spain Tutors",
+      "urlCount": 21,
+      "filename": "sitemap-www.onlinetutors.es.xml",
+      "success": true
+    }
+  ]
+}
