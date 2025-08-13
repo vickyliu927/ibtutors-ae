@@ -15,27 +15,6 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
       try {
         const headersList = headers();
         targetCloneId = headersList.get('x-clone-id');
-
-        // Server-side fallback: resolve clone by domain if header missing
-        if (!targetCloneId) {
-          const forwardedHost = headersList.get('x-forwarded-host');
-          const host = (forwardedHost || headersList.get('host') || '').toLowerCase();
-          const normalizedHost = host.split(',')[0].trim().split(':')[0].replace(/^www\./, '');
-          if (normalizedHost) {
-            const domainQuery = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0]{
-              "cloneId": cloneId.current
-            }`;
-            const domainResult = await freshClient.fetch<{ cloneId?: string | null }>(
-              domainQuery,
-              { hostname: normalizedHost },
-              { next: { revalidate: 0 } }
-            );
-            if (domainResult?.cloneId) {
-              targetCloneId = domainResult.cloneId;
-              console.log(`[getSeoData] Resolved cloneId from domain '${normalizedHost}': ${targetCloneId}`);
-            }
-          }
-        }
       } catch (error) {
         console.log('[getSeoData] Could not access headers (client-side call)');
       }
@@ -80,6 +59,28 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
       perspective: 'published',
       token: process.env.SANITY_API_TOKEN,
     });
+
+    // Fallback: resolve clone by domain if header is still missing
+    if (!targetCloneId) {
+      const headersList = headers();
+      const forwardedHost = headersList.get('x-forwarded-host');
+      const host = (forwardedHost || headersList.get('host') || '').toLowerCase();
+      const normalizedHost = host.split(',')[0].trim().split(':')[0].replace(/^www\./, '');
+      if (normalizedHost) {
+        const domainQuery = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0]{
+          "cloneId": cloneId.current
+        }`;
+        const domainResult = await freshClient.fetch<{ cloneId?: string | null }>(
+          domainQuery,
+          { hostname: normalizedHost },
+          { next: { revalidate: 0 } }
+        );
+        if (domainResult?.cloneId) {
+          targetCloneId = domainResult.cloneId;
+          console.log(`[getSeoData] Resolved cloneId from domain '${normalizedHost}': ${targetCloneId}`);
+        }
+      }
+    }
 
     const result = await freshClient.fetch<{
       cloneSpecific: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
