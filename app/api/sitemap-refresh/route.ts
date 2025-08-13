@@ -84,7 +84,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Get all current domain mappings for response
-    const domainMappings = await client.fetch(`
+    const domainMappings = await client.fetch<Array<{
+      domains?: string[];
+      cloneId?: { current?: string };
+      cloneName?: string;
+    }>>(`
       *[_type == "clone" && isActive == true] {
         "domains": metadata.domains,
         cloneId,
@@ -92,7 +96,7 @@ export async function POST(request: NextRequest) {
       }
     `);
 
-    const allDomains = domainMappings.flatMap(clone => 
+    const allDomains = domainMappings.flatMap((clone) => 
       clone.domains?.map((domain: string) => ({
         domain,
         cloneId: clone.cloneId?.current,
