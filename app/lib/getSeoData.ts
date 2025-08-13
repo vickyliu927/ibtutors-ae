@@ -25,11 +25,10 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
             const domainQuery = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0]{
               "cloneId": cloneId.current
             }`;
-            const domainResult = await cachedFetch<{ cloneId?: string | null }>(
+            const domainResult = await freshClient.fetch<{ cloneId?: string | null }>(
               domainQuery,
               { hostname: normalizedHost },
-              { next: { revalidate: 600 } },
-              10 * 60 * 1000
+              { next: { revalidate: 0 } }
             );
             if (domainResult?.cloneId) {
               targetCloneId = domainResult.cloneId;
