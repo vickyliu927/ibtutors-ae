@@ -161,19 +161,39 @@ export async function getPagesForClone(cloneId: string | null): Promise<{
 }
 
 /**
+ * Convert domain to canonical format with www prefix
+ */
+export function getCanonicalDomain(domain: string): string {
+  // Remove any existing www prefix first
+  const cleanDomain = domain.replace(/^www\./, '');
+  
+  // Skip adding www for localhost and IP addresses
+  if (cleanDomain.includes('localhost') || cleanDomain.includes('127.0.0.1') || cleanDomain.includes('.local')) {
+    return cleanDomain;
+  }
+  
+  // Add www prefix for production domains to create canonical URLs
+  return `www.${cleanDomain}`;
+}
+
+/**
  * Generate sitemap for a specific domain
  */
 export async function generateSitemapForDomain(domain: string): Promise<MetadataRoute.Sitemap> {
-  // Determine protocol (assume https for production domains)
-  const protocol = domain.includes('localhost') || domain.includes('127.0.0.1') ? 'http' : 'https';
-  const baseUrl = `${protocol}://${domain}`;
+  // Convert to canonical domain format (with www prefix)
+  const canonicalDomain = getCanonicalDomain(domain);
   
-  // Get clone ID for this domain
+  // Determine protocol (assume https for production domains)
+  const protocol = canonicalDomain.includes('localhost') || canonicalDomain.includes('127.0.0.1') ? 'http' : 'https';
+  const baseUrl = `${protocol}://${canonicalDomain}`;
+  
+  // Get clone ID for this domain (match both www and non-www versions)
   const mappings = await getAllDomainMappings();
-  const mapping = mappings.find(m => 
-    m.domain === domain.toLowerCase() || 
-    m.domain === `www.${domain.toLowerCase()}`
-  );
+  const cleanDomain = domain.replace(/^www\./, '').toLowerCase();
+  const mapping = mappings.find(m => {
+    const mappingDomain = m.domain.replace(/^www\./, '').toLowerCase();
+    return mappingDomain === cleanDomain;
+  });
   
   const cloneId = mapping?.cloneId || null;
   
@@ -183,33 +203,33 @@ export async function generateSitemapForDomain(domain: string): Promise<Metadata
   // Get current timestamp for homepage
   const currentTimestamp = new Date().toISOString();
   
-  // Static routes
+  // Static routes with enhanced metadata
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(currentTimestamp),
-      changeFrequency: 'weekly' as const,
+      changeFrequency: 'daily' as const,  // Homepage changes more frequently
       priority: 1.0,
     },
   ];
 
-  // Create URLs for each subject page
+  // Create URLs for each subject page with enhanced metadata
   const subjectUrls: MetadataRoute.Sitemap = subjectPages.map((page) => ({
     url: joinUrl(baseUrl, page.slug.current),
     lastModified: new Date(page._updatedAt),
     changeFrequency: 'weekly' as const,
-    priority: 0.9,
+    priority: 0.8,  // Subject pages are important but less than homepage
   }));
 
-  // Create URLs for each curriculum page (short format at root)
+  // Create URLs for each curriculum page with enhanced metadata
   const curriculumUrls: MetadataRoute.Sitemap = curriculumPages.map((page) => ({
     url: joinUrl(baseUrl, page.slug.current),
     lastModified: new Date(page._updatedAt),
     changeFrequency: 'weekly' as const,
-    priority: 0.9,
+    priority: 0.8,  // Curriculum pages same priority as subject pages
   }));
 
-  console.log(`Generated sitemap for ${domain} (clone: ${cloneId || 'global'}) with ${subjectUrls.length + curriculumUrls.length} pages`);
+  console.log(`Generated sitemap for ${canonicalDomain} (clone: ${cloneId || 'global'}) with ${subjectUrls.length + curriculumUrls.length} pages`);
   
   return [...staticRoutes, ...subjectUrls, ...curriculumUrls];
 }
