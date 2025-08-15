@@ -45,8 +45,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
       sitemap: `${baseUrl}/sitemap.xml`,
-      // Optional: Add host directive for better SEO
-      host: baseUrl,
     }
   } catch (error) {
     console.error('[Robots] Error generating robots.txt:', error);
