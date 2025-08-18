@@ -563,44 +563,12 @@ export const structure = (S: StructureBuilder) =>
                       S.documentTypeListItem('contactFormContent')
                         .title('Contact Form Content'),
                       S.listItem()
-                        .title('Contact Form Submissions')
+                        .title('All Submissions')
                         .child(
-                          S.list()
-                            .title('Contact Form Submissions')
-                            .items([
-                              S.listItem()
-                                .title('All Submissions')
-                                .child(
-                                  S.documentList()
-                                    .title('All Contact Form Submissions')
-                                    .filter('_type == "contactFormSubmission"')
-                                    .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
-                                ),
-                              S.listItem()
-                                .title('Dubai Tutors Submissions')
-                                .child(
-                                  S.documentList()
-                                    .title('Dubai Tutors - Contact Form Submissions')
-                                    .filter('_type == "contactFormSubmission" && sourceWebsite == "Dubai Tutors"')
-                                    .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
-                                ),
-                              S.listItem()
-                                .title('Abu Dhabi Tutors Submissions')
-                                .child(
-                                  S.documentList()
-                                    .title('Abu Dhabi Tutors - Contact Form Submissions')
-                                    .filter('_type == "contactFormSubmission" && sourceWebsite == "Abu Dhabi Tutors"')
-                                    .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
-                                ),
-                              S.listItem()
-                                .title('Development/Staging Submissions')
-                                .child(
-                                  S.documentList()
-                                    .title('Development/Staging - Contact Form Submissions')
-                                    .filter('_type == "contactFormSubmission" && sourceWebsite == "Development/Staging"')
-                                    .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
-                                ),
-                            ])
+                          S.documentList()
+                            .title('All Contact Form Submissions')
+                            .filter('_type == "contactFormSubmission"')
+                            .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
                         ),
                     ])
                 ),

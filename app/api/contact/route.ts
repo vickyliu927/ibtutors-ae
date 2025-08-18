@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { client } from '@/sanity/lib/client';
 import { z } from 'zod';
 
 // Define validation schema for contact form
@@ -75,6 +76,20 @@ export async function POST(req: Request) {
     // Use validated data
     const { fullName, country, phone, email, details, budget } = result.data;
 
+    // Store the submission in Sanity
+    const submission = await client.create({
+      _type: 'contactFormSubmission',
+      fullName,
+      country,
+      phone,
+      email,
+      details,
+      budget,
+      submittedAt: new Date().toISOString(),
+      sourceDomain,
+      sourceWebsite,
+    });
+
     // Send email notification with encoded HTML entities
     const subject = `New Contact Form Submission - ${sourceWebsite}`;
     const text = `New contact form submission from ${sourceWebsite}:
@@ -111,7 +126,8 @@ Source Domain: ${encodeHTML(sourceDomain)}`;
     return NextResponse.json({
       success: true,
       emailSent: true,
-      message: 'Contact form submission sent successfully to vicky@tutorchase.com',
+      sanitySubmission: submission,
+      message: 'Contact form submission stored in Sanity and email sent successfully to vicky@tutorchase.com',
       emailId: emailData?.data?.id || 'unknown'
     });
   } catch (error) {
