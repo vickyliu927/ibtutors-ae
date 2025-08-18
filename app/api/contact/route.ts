@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 // Define validation schema for contact form
 const ContactFormSchema = z.object({
   fullName: z.string().min(1, "Full name is required").max(100, "Name is too long"),
@@ -91,8 +89,11 @@ Budget: ${encodeHTML(budget)}
 Source Website: ${encodeHTML(sourceWebsite)}
 Source Domain: ${encodeHTML(sourceDomain)}`;
 
+    // Initialize Resend client
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     console.log('Attempting to send email with:', {
-      from: 'IBTutors AE <noreply@ibtutorsae.com>',
+      from: 'IBTutors AE <onboarding@resend.dev>',
       to: 'vicky@tutorchase.com',
       subject,
       hasText: !!text

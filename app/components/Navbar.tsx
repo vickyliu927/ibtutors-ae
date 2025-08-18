@@ -56,12 +56,15 @@ const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
+  const [showCurriculumDropdowns, setShowCurriculumDropdowns] = useState<{[key: string]: boolean}>({});
   const [isScrolled, setIsScrolled] = useState(false);
   // Mobile submenu states
   const [mobileSubmenuView, setMobileSubmenuView] = useState<'main' | 'subjects'>('main');
 
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const curriculumDropdownRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
+  const curriculumTimeoutRefs = useRef<{[key: string]: NodeJS.Timeout | null}>({});
 
   // Helper function to generate proper domain-aware links
   const generateSubjectLink = (slug: string) => {
@@ -112,6 +115,26 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
     }, 300);
   };
 
+  const handleCurriculumMouseEnter = (curriculumSlug: string) => {
+    if (curriculumTimeoutRefs.current[curriculumSlug]) {
+      clearTimeout(curriculumTimeoutRefs.current[curriculumSlug]!);
+      curriculumTimeoutRefs.current[curriculumSlug] = null;
+    }
+    setShowCurriculumDropdowns(prev => ({
+      ...prev,
+      [curriculumSlug]: true
+    }));
+  };
+
+  const handleCurriculumMouseLeave = (curriculumSlug: string) => {
+    curriculumTimeoutRefs.current[curriculumSlug] = setTimeout(() => {
+      setShowCurriculumDropdowns(prev => ({
+        ...prev,
+        [curriculumSlug]: false
+      }));
+    }, 300);
+  };
+
 
 
   // Handle scroll for mobile background (keep original functionality)
@@ -142,6 +165,10 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
       if (subjectsTimeoutRef.current) {
         clearTimeout(subjectsTimeoutRef.current);
       }
+      // Clear all curriculum timeouts
+      Object.values(curriculumTimeoutRefs.current).forEach(timeout => {
+        if (timeout) clearTimeout(timeout);
+      });
       if (typeof window !== 'undefined') {
         window.removeEventListener('scroll', handleScroll);
         window.removeEventListener('resize', handleScroll);
@@ -197,18 +224,56 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-[32px]">
-          {/* Direct Curriculum Links */}
+        <div className="hidden md:flex items-center gap-[48px]">
+          {/* Curriculum Dropdowns */}
           {curriculums.map((curriculum) => {
             const curriculumPath = generateSubjectLink(curriculum.slug.current);
+            const curriculumSlug = curriculum.slug.current;
+            
             return (
-              <Link
+              <div
                 key={curriculum.slug.current}
-                href={curriculumPath}
-                className="text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors"
+                className="relative"
+                ref={el => { curriculumDropdownRefs.current[curriculumSlug] = el; }}
+                onMouseEnter={() => handleCurriculumMouseEnter(curriculumSlug)}
+                onMouseLeave={() => handleCurriculumMouseLeave(curriculumSlug)}
               >
-                {curriculum.curriculum}
-              </Link>
+                <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
+                  {curriculum.curriculum}
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.5 4.5L6 8L2.5 4.5"
+                      stroke="#171D23"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+
+                {showCurriculumDropdowns[curriculumSlug] && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
+                    {/* Main curriculum page link */}
+                    <Link
+                      href={curriculumPath}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
+                    >
+                      {curriculum.curriculum} Overview
+                    </Link>
+                    
+                    {/* Placeholder for future sub-pages */}
+                    <div className="px-4 py-2 text-xs text-gray-400 italic">
+                      Subject pages coming soon...
+                    </div>
+                  </div>
+                )}
+              </div>
             );
           })}
 

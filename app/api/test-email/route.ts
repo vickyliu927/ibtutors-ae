@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const testEmail = searchParams.get('email') || 'vicky@tutorchase.com';
@@ -24,6 +22,15 @@ export async function GET(request: Request) {
   try {
     console.log('Attempting to send test email...');
     
+    // Initialize Resend client within the try block
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    
+    console.log('Sending email with params:', {
+      from: 'IBTutors AE <onboarding@resend.dev>',
+      to: testEmail,
+      subject: `Test Email from IBTutors Contact System - ${new Date().toISOString()}`,
+    });
+
     const emailData = await resend.emails.send({
       from: 'IBTutors AE <onboarding@resend.dev>',
       to: testEmail,
