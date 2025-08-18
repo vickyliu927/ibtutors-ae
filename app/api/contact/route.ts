@@ -80,22 +80,44 @@ Budget: ${encodeHTML(budget)}
 Source Website: ${encodeHTML(sourceWebsite)}
 Source Domain: ${encodeHTML(sourceDomain)}`;
 
+    console.log('Attempting to send email with:', {
+      from: 'IBTutors AE <noreply@ibtutorsae.com>',
+      to: 'vicky@tutorchase.com',
+      subject,
+      hasText: !!text
+    });
+
     const emailData = await resend.emails.send({
-      from: 'IBTutors AE <noreply@ibtutorsae.com>', // Change to your verified domain
+      from: 'IBTutors AE <onboarding@resend.dev>',
       to: 'vicky@tutorchase.com',
       subject,
       text,
     });
 
+    console.log('Email send result:', emailData);
+
     return NextResponse.json({
       success: true,
       emailSent: true,
       message: 'Contact form submission sent successfully to vicky@tutorchase.com',
+      emailId: emailData?.data?.id || 'unknown'
     });
   } catch (error) {
     console.error('Error processing form submission:', error);
+    
+    // Log more detailed error information
+    if (error instanceof Error) {
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to process form submission' },
+      { 
+        error: 'Failed to process form submission',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     );
   }
