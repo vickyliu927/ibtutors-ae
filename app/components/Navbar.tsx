@@ -56,15 +56,12 @@ const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
-  const [showLevelsDropdown, setShowLevelsDropdown] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   // Mobile submenu states
-  const [mobileSubmenuView, setMobileSubmenuView] = useState<'main' | 'subjects' | 'levels'>('main');
+  const [mobileSubmenuView, setMobileSubmenuView] = useState<'main' | 'subjects'>('main');
 
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
-  const levelsDropdownRef = useRef<HTMLDivElement>(null);
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const levelsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Helper function to generate proper domain-aware links
   const generateSubjectLink = (slug: string) => {
@@ -115,19 +112,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
     }, 300);
   };
 
-  const handleLevelsMouseEnter = () => {
-    if (levelsTimeoutRef.current) {
-      clearTimeout(levelsTimeoutRef.current);
-      levelsTimeoutRef.current = null;
-    }
-    setShowLevelsDropdown(true);
-  };
 
-  const handleLevelsMouseLeave = () => {
-    levelsTimeoutRef.current = setTimeout(() => {
-      setShowLevelsDropdown(false);
-    }, 300);
-  };
 
   // Handle scroll for mobile background (keep original functionality)
   useEffect(() => {
@@ -156,9 +141,6 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
     return () => {
       if (subjectsTimeoutRef.current) {
         clearTimeout(subjectsTimeoutRef.current);
-      }
-      if (levelsTimeoutRef.current) {
-        clearTimeout(levelsTimeoutRef.current);
       }
       if (typeof window !== 'undefined') {
         window.removeEventListener('scroll', handleScroll);
@@ -215,50 +197,20 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-[44px]">
-          {/* All Levels Dropdown */}
-          <div
-            className="relative"
-            ref={levelsDropdownRef}
-            onMouseEnter={handleLevelsMouseEnter}
-            onMouseLeave={handleLevelsMouseLeave}
-          >
-            <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
-              {navbarData?.navigation?.levelsText || 'All Levels'}
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+        <div className="hidden md:flex items-center gap-[32px]">
+          {/* Direct Curriculum Links */}
+          {curriculums.map((curriculum) => {
+            const curriculumPath = generateSubjectLink(curriculum.slug.current);
+            return (
+              <Link
+                key={curriculum.slug.current}
+                href={curriculumPath}
+                className="text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors"
               >
-                <path
-                  d="M9.5 4.5L6 8L2.5 4.5"
-                  stroke="#171D23"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-
-            {showLevelsDropdown && (
-              <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
-                {curriculums.map((curriculum) => {
-                  const curriculumPath = generateSubjectLink(curriculum.slug.current);
-                  return (
-                    <Link
-                      key={curriculum.slug.current}
-                      href={curriculumPath}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      {curriculum.curriculum}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                {curriculum.curriculum}
+              </Link>
+            );
+          })}
 
           {/* All Subjects Dropdown */}
           <div 
@@ -409,31 +361,40 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
               {/* Main Menu View */}
               {mobileSubmenuView === 'main' && (
                 <div className="flex flex-col items-start w-full">
-                  {/* All Levels Button */}
+                  {/* Direct Curriculum Links */}
                   <div className="w-full">
-                    <button
-                      onClick={() => setMobileSubmenuView('levels')}
-                      className="flex w-full py-4 px-4 justify-between items-center border-t border-b bg-white"
-                      style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                    >
-                      <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
-                        {navbarData?.navigation?.levelsText || 'All Levels'}
-                      </span>
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M3.5 11L8.49886 6L3.5 1"
-                          stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                          strokeWidth="1.6"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
+                    {curriculums.map((curriculum, index) => {
+                      const curriculumPath = generateSubjectLink(curriculum.slug.current);
+                      return (
+                        <Link
+                          key={curriculum.slug.current}
+                          href={curriculumPath}
+                          onClick={() => setIsOpen(false)}
+                          className={`flex w-full py-4 px-4 justify-between items-center bg-white hover:bg-gray-50 ${
+                            index === 0 ? 'border-t border-b' : 'border-b'
+                          }`}
+                          style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                        >
+                          <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
+                            {curriculum.curriculum}
+                          </span>
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M3.5 11L8.49886 6L3.5 1"
+                              stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                              strokeWidth="1.6"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Link>
+                      );
+                    })}
                   </div>
 
                   {/* All Subjects Button */}
@@ -465,69 +426,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
                 </div>
               )}
 
-              {/* Levels Submenu View */}
-              {mobileSubmenuView === 'levels' && (
-                <div className="flex flex-col items-start w-full">
-                  {/* Back button with title */}
-                  <div className="flex items-center gap-4 py-4 px-4 w-full border-b" style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}>
-                    <button
-                      onClick={() => setMobileSubmenuView('main')}
-                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M8.5 1L3.50114 6L8.5 11"
-                          stroke="white"
-                          strokeWidth="1.6"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                    <h2 className="text-[#001A96] font-gilroy text-base font-medium leading-[140%]">
-                      {navbarData?.navigation?.levelsText || 'All Levels'}
-                    </h2>
-                  </div>
 
-                  {/* Levels list */}
-                  <div className="w-full">
-                    {/* Individual curriculum links */}
-                    {curriculums.map((curriculum) => {
-                      const curriculumPath = generateSubjectLink(curriculum.slug.current);
-                      return (
-                        <Link
-                          key={curriculum.slug.current}
-                          href={curriculumPath}
-                          onClick={() => setIsOpen(false)}
-                          className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                          style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                        >
-                          <span>{curriculum.curriculum}</span>
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M3.5 11L8.49886 6L3.5 1"
-                              stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                              strokeWidth="1.6"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
               {/* Subjects Submenu View */}
               {mobileSubmenuView === 'subjects' && (

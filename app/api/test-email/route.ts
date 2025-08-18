@@ -3,7 +3,9 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const testEmail = searchParams.get('email') || 'vicky@tutorchase.com';
   console.log('=== EMAIL TEST ENDPOINT CALLED ===');
   console.log('Timestamp:', new Date().toISOString());
   
@@ -16,15 +18,17 @@ export async function GET() {
   }
   
   console.log('RESEND_API_KEY is configured');
+  console.log('API Key starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
+  console.log('API Key length:', process.env.RESEND_API_KEY?.length);
   
   try {
     console.log('Attempting to send test email...');
     
     const emailData = await resend.emails.send({
       from: 'IBTutors AE <onboarding@resend.dev>',
-      to: 'vicky@tutorchase.com',
-      subject: 'Test Email from IBTutors Contact System',
-      text: 'This is a test email to verify the Resend integration is working correctly.',
+      to: testEmail,
+      subject: `Test Email from IBTutors Contact System - ${new Date().toISOString()}`,
+      text: `This is a test email to verify the Resend integration is working correctly.\n\nSent to: ${testEmail}\nTimestamp: ${new Date().toISOString()}`,
     });
 
     console.log('Test email sent successfully:', emailData);
