@@ -37,7 +37,13 @@ export async function GET(request: Request) {
       success: true,
       message: 'Test email sent successfully',
       emailId: emailData?.data?.id || 'unknown',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      debug: {
+        apiKeyPresent: !!process.env.RESEND_API_KEY,
+        apiKeyLength: process.env.RESEND_API_KEY?.length || 0,
+        apiKeyPrefix: process.env.RESEND_API_KEY?.substring(0, 10) || 'none',
+        emailDataReceived: !!emailData
+      }
     });
   } catch (error) {
     console.error('Error sending test email:', error);
@@ -51,7 +57,12 @@ export async function GET(request: Request) {
       { 
         error: 'Failed to send test email',
         details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        debug: {
+          apiKeyPresent: !!process.env.RESEND_API_KEY,
+          apiKeyLength: process.env.RESEND_API_KEY?.length || 0,
+          apiKeyPrefix: process.env.RESEND_API_KEY?.substring(0, 10) || 'none'
+        }
       },
       { status: 500 }
     );
