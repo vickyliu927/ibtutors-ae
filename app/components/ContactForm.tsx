@@ -106,6 +106,8 @@ const ContactForm = () => {
         budget: DOMPurify.sanitize(formData.budget.trim())
       };
 
+      console.log('Submitting contact form with data:', sanitizedData);
+      
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -114,7 +116,11 @@ const ContactForm = () => {
         body: JSON.stringify(sanitizedData),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (response.ok) {
         setStatus('success');
@@ -274,11 +280,7 @@ const ContactForm = () => {
           {contentData?.formHeader || 'Hire a tutor'}
         </h2>
             <p className="font-gilroy text-base leading-[160%] text-white max-w-4xl mx-auto" style={{ fontWeight: 200 }}>
-          {contentData?.formSubtitle || 'Please fill out the form and an academic consultant from'}{' '}
-          {contentData?.formSubtitle ? null : (
-            <span className="underline">{contentData?.companyName || 'TutorChase'}</span>
-          )}
-          {contentData?.formSubtitle ? null : ' will find a tutor for you'}
+          {contentData?.formSubtitle || 'Please fill out the form and an academic consultant from TutorChase will find a tutor for you'}
         </p>
       </div>
 

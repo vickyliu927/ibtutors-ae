@@ -37,23 +37,34 @@ function encodeHTML(str: string): string {
 }
 
 export async function POST(req: Request) {
+  console.log('=== CONTACT FORM API CALLED ===');
+  console.log('Timestamp:', new Date().toISOString());
+  console.log('Request method:', req.method);
+  console.log('Request URL:', req.url);
+  
   if (!process.env.RESEND_API_KEY) {
+    console.log('ERROR: RESEND_API_KEY is not configured');
     return NextResponse.json(
       { error: 'Resend API key is not configured' },
       { status: 500 }
     );
   }
+  
+  console.log('RESEND_API_KEY is configured:', !!process.env.RESEND_API_KEY);
 
   try {
     const formData = await req.json();
+    console.log('Form data received:', formData);
     
     // Extract domain information from request headers
     const origin = req.headers.get('origin') || req.headers.get('referer') || '';
     const sourceDomain = origin.replace(/^https?:\/\//, '').split('/')[0];
     const sourceWebsite = getWebsiteName(sourceDomain);
+    console.log('Source domain:', sourceDomain, 'Website:', sourceWebsite);
     
     // Validate form data
     const result = ContactFormSchema.safeParse(formData);
+    console.log('Validation result:', result.success ? 'PASSED' : 'FAILED');
     
     if (!result.success) {
       // Return validation errors

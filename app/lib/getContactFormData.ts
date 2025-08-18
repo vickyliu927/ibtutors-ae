@@ -38,7 +38,7 @@ export interface ContactFormData {
 // Fallback data that matches the current hardcoded values
 const FALLBACK_CONTACT_FORM_DATA: ContactFormData = {
   formHeader: 'Hire a tutor',
-  formSubtitle: 'Please fill out the form and an academic consultant from {companyName} will find a tutor for you',
+  formSubtitle: 'Please fill out the form and an academic consultant from TutorChase will find a tutor for you',
   companyName: 'TutorChase',
   formFields: {
     fullNameLabel: 'Full name *',
@@ -161,10 +161,10 @@ export async function getContactFormData(cloneId?: string | null): Promise<Conta
 
     console.log(`[getContactFormData] Resolved contact form data from: ${contactFormData.sourceInfo?.source || 'unknown'} for clone: ${targetCloneId || 'none'}`);
     
-    // Process the subtitle to replace company name placeholder
+    // Return the contact form data (no template processing needed)
     const processedData = {
       formHeader: contactFormData.formHeader,
-      formSubtitle: contactFormData.formSubtitle.replace('{companyName}', contactFormData.companyName || 'TutorChase'),
+      formSubtitle: contactFormData.formSubtitle,
       companyName: contactFormData.companyName,
       formFields: contactFormData.formFields,
       submitButtonText: contactFormData.submitButtonText,

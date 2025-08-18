@@ -16,7 +16,7 @@ async function createContactFormContent() {
     _type: 'contactFormContent',
     _id: 'contact-form-content',
     formHeader: 'Hire a tutor',
-    formSubtitle: 'Please fill out the form and an academic consultant from {companyName} will find a tutor for you',
+    formSubtitle: 'Please fill out the form and an academic consultant from TutorChase will find a tutor for you',
     companyName: 'TutorChase',
     formFields: {
       fullNameLabel: 'Full name *',
