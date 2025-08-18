@@ -93,14 +93,14 @@ Source Domain: ${encodeHTML(sourceDomain)}`;
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     console.log('Attempting to send email with:', {
-      from: 'IBTutors AE <onboarding@resend.dev>',
+      from: 'onboarding@resend.dev',
       to: 'vicky@tutorchase.com',
       subject,
       hasText: !!text
     });
 
     const emailData = await resend.emails.send({
-      from: 'IBTutors AE <onboarding@resend.dev>',
+      from: 'onboarding@resend.dev',
       to: 'vicky@tutorchase.com',
       subject,
       text,

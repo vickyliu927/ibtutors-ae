@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     });
 
     const emailData = await resend.emails.send({
-      from: 'IBTutors AE <onboarding@resend.dev>',
+      from: 'onboarding@resend.dev',
       to: testEmail,
       subject: `Test Email from IBTutors Contact System - ${new Date().toISOString()}`,
       text: `This is a test email to verify the Resend integration is working correctly.\n\nSent to: ${testEmail}\nTimestamp: ${new Date().toISOString()}`,
@@ -58,7 +58,11 @@ export async function GET(request: Request) {
     if (error instanceof Error) {
       console.error('Error name:', error.name);
       console.error('Error message:', error.message);
+      console.error('Full error object:', JSON.stringify(error, null, 2));
     }
+    
+    // Log the full error for debugging
+    console.error('Raw error:', error);
     
     return NextResponse.json(
       { 
