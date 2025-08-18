@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { client } from '@/sanity/lib/client';
 import { z } from 'zod';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -67,20 +66,6 @@ export async function POST(req: Request) {
     // Use validated data
     const { fullName, country, phone, email, details, budget } = result.data;
 
-    // Store the submission in Sanity
-    const submission = await client.create({
-      _type: 'contactFormSubmission',
-      fullName,
-      country,
-      phone,
-      email,
-      details,
-      budget,
-      submittedAt: new Date().toISOString(),
-      sourceDomain,
-      sourceWebsite,
-    });
-
     // Send email notification with encoded HTML entities
     const subject = `New Contact Form Submission - ${sourceWebsite}`;
     const text = `New contact form submission from ${sourceWebsite}:
@@ -97,15 +82,15 @@ Source Domain: ${encodeHTML(sourceDomain)}`;
 
     const emailData = await resend.emails.send({
       from: 'IBTutors AE <noreply@ibtutorsae.com>', // Change to your verified domain
-      to: process.env.NOTIFICATION_EMAIL || 'vicliu927@gmail.com',
+      to: 'vicky@tutorchase.com',
       subject,
       text,
     });
 
     return NextResponse.json({
       success: true,
-      sanitySubmission: submission,
-      emailData,
+      emailSent: true,
+      message: 'Contact form submission sent successfully to vicky@tutorchase.com',
     });
   } catch (error) {
     console.error('Error processing form submission:', error);
