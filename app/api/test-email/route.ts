@@ -1,0 +1,55 @@
+import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function GET() {
+  console.log('=== EMAIL TEST ENDPOINT CALLED ===');
+  console.log('Timestamp:', new Date().toISOString());
+  
+  if (!process.env.RESEND_API_KEY) {
+    console.log('ERROR: RESEND_API_KEY is not configured');
+    return NextResponse.json(
+      { error: 'Resend API key is not configured' },
+      { status: 500 }
+    );
+  }
+  
+  console.log('RESEND_API_KEY is configured');
+  
+  try {
+    console.log('Attempting to send test email...');
+    
+    const emailData = await resend.emails.send({
+      from: 'IBTutors AE <onboarding@resend.dev>',
+      to: 'vicky@tutorchase.com',
+      subject: 'Test Email from IBTutors Contact System',
+      text: 'This is a test email to verify the Resend integration is working correctly.',
+    });
+
+    console.log('Test email sent successfully:', emailData);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Test email sent successfully',
+      emailId: emailData?.data?.id || 'unknown',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error sending test email:', error);
+    
+    if (error instanceof Error) {
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+    }
+    
+    return NextResponse.json(
+      { 
+        error: 'Failed to send test email',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    );
+  }
+}
