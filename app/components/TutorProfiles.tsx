@@ -51,6 +51,8 @@ interface TutorProfilesProps {
   ctaText?: string;
   ctaLink?: string;
   useNewCardDesign?: boolean;
+  tutorProfileSectionPriceDescription?: string;
+  tutorProfileSectionPriceTag?: string;
 }
 
 // Maximum number of additional subjects to display before showing a "+X more" button
@@ -66,6 +68,8 @@ const TutorProfiles = ({
   ctaText,
   ctaLink,
   useNewCardDesign = false,
+  tutorProfileSectionPriceDescription,
+  tutorProfileSectionPriceTag,
 }: TutorProfilesProps) => {
   // State to track which tutors have expanded subject lists
   const [expandedSubjects, setExpandedSubjects] = useState<{
@@ -132,14 +136,33 @@ const TutorProfiles = ({
                 {sectionTitle || "Our Qualified Dubai Teachers and Examiners"}
               </h2>
             </div>
-            <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px]">
-              <span className="font-light">
-                {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
-              </span>
-              <br />
-              <span className="font-medium">
-                {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
-              </span>
+            
+            <div className="flex justify-between items-start w-full gap-6">
+              <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
+                <span className="font-light">
+                  {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
+                </span>
+                <br />
+                <span className="font-medium">
+                  {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
+                </span>
+              </div>
+              
+              {/* Price section - aligned with description */}
+              {(tutorProfileSectionPriceDescription || tutorProfileSectionPriceTag) && (
+                <div className="flex flex-col items-end text-right flex-shrink-0">
+                  {tutorProfileSectionPriceDescription && (
+                    <div className="text-lg text-[#171D23] font-gilroy mb-2">
+                      {tutorProfileSectionPriceDescription}
+                    </div>
+                  )}
+                  {tutorProfileSectionPriceTag && (
+                    <div className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-gilroy font-semibold text-lg">
+                      {tutorProfileSectionPriceTag}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           <div className="space-y-12 px-4 sm:px-6 lg:px-0">
@@ -178,14 +201,33 @@ const TutorProfiles = ({
               {sectionTitle || "Our Qualified Dubai Teachers and Examiners"}
             </h2>
           </div>
-          <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px]">
-            <span className="font-light">
-              {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
-            </span>
-            <br />
-            <span className="font-medium">
-              {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
-            </span>
+          
+          <div className="flex justify-between items-start w-full gap-6">
+            <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
+              <span className="font-light">
+                {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
+              </span>
+              <br />
+              <span className="font-medium">
+                {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
+              </span>
+            </div>
+            
+            {/* Price section - aligned with description */}
+            {(tutorProfileSectionPriceDescription || tutorProfileSectionPriceTag) && (
+              <div className="flex flex-col items-end text-right flex-shrink-0">
+                {tutorProfileSectionPriceDescription && (
+                  <div className="text-lg text-[#171D23] font-gilroy mb-2">
+                    {tutorProfileSectionPriceDescription}
+                  </div>
+                )}
+                {tutorProfileSectionPriceTag && (
+                  <div className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-gilroy font-semibold text-lg">
+                    {tutorProfileSectionPriceTag}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

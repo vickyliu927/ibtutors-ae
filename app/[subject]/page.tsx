@@ -56,6 +56,8 @@ interface SubjectPageData {
     description?: string;
     ctaLinkText?: string;
     ctaLink?: string;
+    tutorProfileSectionPriceDescription?: string;
+    tutorProfileSectionPriceTag?: string;
   };
   tutorsList: any[];
   testimonials: any[];
@@ -90,6 +92,8 @@ interface CurriculumPageData {
     description?: string;
     ctaLinkText?: string;
     ctaLink?: string;
+    tutorProfileSectionPriceDescription?: string;
+    tutorProfileSectionPriceTag?: string;
   };
   tutorsList: any[];
   testimonials: any[];
@@ -673,6 +677,8 @@ export default async function DynamicPage({
           useNewCardDesign={true}
           sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={curriculumResult.pageData.tutorsListSectionHead?.description}
+          tutorProfileSectionPriceDescription={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
+          tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
         {/* Testimonials Section */}
@@ -757,6 +763,8 @@ export default async function DynamicPage({
           useNewCardDesign={true}
           sectionTitle={subjectResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={subjectResult.pageData.tutorsListSectionHead?.description}
+          tutorProfileSectionPriceDescription={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
+          tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
         {/* Testimonials Section */}

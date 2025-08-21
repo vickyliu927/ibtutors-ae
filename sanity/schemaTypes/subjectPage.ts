@@ -94,6 +94,18 @@ const subjectPageSchema = defineType({
           type: 'url',
           description: 'URL where the link text will direct to',
         },
+        {
+          name: 'tutorProfileSectionPriceDescription',
+          title: 'Tutor Profile Section Price Description',
+          type: 'string',
+          description: 'Description text for the price section (e.g., "Rates Vary By Tutor Experience And Qualifications")',
+        },
+        {
+          name: 'tutorProfileSectionPriceTag',
+          title: 'Tutor Profile Section Price Tag',
+          type: 'string',
+          description: 'Price tag text (e.g., "From £59/hour")',
+        },
       ],
     }),
     defineField({

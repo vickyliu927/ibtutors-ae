@@ -571,6 +571,8 @@ export const tutorProfilesSectionQueries = {
     contactText,
     ctaText,
     ctaLink,
+    tutorProfileSectionPriceDescription,
+    tutorProfileSectionPriceTag,
     isActive,
     cloneReference,
     cloneSpecificData

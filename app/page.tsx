@@ -246,6 +246,8 @@ export default async function Home({
           contactText={tutorProfilesSection.contactText}
           ctaText={tutorProfilesSection.ctaText}
           ctaLink={tutorProfilesSection.ctaLink}
+          tutorProfileSectionPriceDescription={tutorProfilesSection.tutorProfileSectionPriceDescription}
+          tutorProfileSectionPriceTag={tutorProfilesSection.tutorProfileSectionPriceTag}
           useNewCardDesign={true}
         />
       ) : null}
