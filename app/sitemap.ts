@@ -1,13 +1,32 @@
 import { MetadataRoute } from 'next';
 import { client } from '@/sanity/lib/client';
+import { headers } from 'next/headers';
 
 // Set revalidation time to 1 hour
 export const revalidate = 3600;
 
+function getCurrentDomain(): string {
+  try {
+    const headersList = headers();
+    const host = headersList.get('host');
+    
+    if (host) {
+      // Determine protocol based on host
+      const protocol = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
+      return `${protocol}://${host}`;
+    }
+  } catch (error) {
+    console.log('Could not get headers, using fallback');
+  }
+  
+  // Fallback to environment variable
+  return process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae';
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Get the base URL for the current domain and ensure no trailing slash
-    const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae').replace(/\/+$/, '');
+    const baseUrl = getCurrentDomain().replace(/\/+$/, '');
     
     // Fetch all subject and curriculum page slugs from Sanity
     const subjectQuery = `*[_type == "subjectPage" && defined(slug.current)] | order(slug.current asc) {
@@ -59,14 +78,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     });
 
-    console.log(`Generated sitemap with ${pages.length} pages (${subjectPages.length} subjects, ${curriculumPages.length} curricula, ${uniquePages.size} unique pages after deduplication)`);
+    console.log(`Generated sitemap for ${baseUrl} with ${pages.length} pages (${subjectPages.length} subjects, ${curriculumPages.length} curricula, ${uniquePages.size} unique pages after deduplication)`);
     
     return pages;
   } catch (error) {
     console.error('Error generating sitemap:', error);
     
     // Fallback to minimal sitemap if there's an error
-    const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae').replace(/\/+$/, '');
+    const baseUrl = getCurrentDomain().replace(/\/+$/, '');
     return [
       {
         url: baseUrl,
