@@ -6,8 +6,8 @@ export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
-    // Get the base URL for the current domain
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae';
+    // Get the base URL for the current domain and ensure no trailing slash
+    const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae').replace(/\/+$/, '');
     
     // Fetch all subject and curriculum page slugs from Sanity
     const subjectQuery = `*[_type == "subjectPage" && defined(slug.current)] | order(slug.current asc) {
@@ -66,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error generating sitemap:', error);
     
     // Fallback to minimal sitemap if there's an error
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae';
+    const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae').replace(/\/+$/, '');
     return [
       {
         url: baseUrl,
