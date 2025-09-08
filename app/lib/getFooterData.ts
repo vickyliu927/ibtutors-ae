@@ -29,12 +29,12 @@ export async function getFooterData(cloneId?: string | null): Promise<FooterData
           const normalizedHost = host.split(',')[0].trim().split(':')[0].replace(/^www\./, '');
           if (normalizedHost) {
             // Look up clone by domain with caching (10 min)
-            const domainQuery = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0]{
+            const domainQuery = `*[_type == "clone" && isActive == true && ($hostname in metadata.domains || $wwwHostname in metadata.domains)][0]{
               "cloneId": cloneId.current
             }`;
             const domainResult = await cachedFetch<{ cloneId?: string | null }>(
               domainQuery,
-              { hostname: normalizedHost },
+              { hostname: normalizedHost, wwwHostname: `www.${normalizedHost}` },
               { next: { revalidate: 600 } },
               10 * 60 * 1000
             );

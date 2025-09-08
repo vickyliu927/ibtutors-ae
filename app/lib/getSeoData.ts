@@ -67,12 +67,12 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
       const host = (forwardedHost || headersList.get('host') || '').toLowerCase();
       const normalizedHost = host.split(',')[0].trim().split(':')[0].replace(/^www\./, '');
       if (normalizedHost) {
-        const domainQuery = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0]{
+        const domainQuery = `*[_type == "clone" && isActive == true && ($hostname in metadata.domains || $wwwHostname in metadata.domains)][0]{
           "cloneId": cloneId.current
         }`;
         const domainResult = await freshClient.fetch<{ cloneId?: string | null }>(
           domainQuery,
-          { hostname: normalizedHost },
+          { hostname: normalizedHost, wwwHostname: `www.${normalizedHost}` },
           { next: { revalidate: 0 } }
         );
         if (domainResult?.cloneId) {

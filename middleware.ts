@@ -166,13 +166,17 @@ async function findCloneByDomain(hostname: string): Promise<{ cloneId: string; c
     
     console.log(`[Middleware] Querying Sanity for domain: ${normalizedHostname}`);
     
-    const query = `*[_type == "clone" && $hostname in metadata.domains && isActive == true][0] {
+    // Match both bare and www-prefixed variants to avoid configuration mismatches
+    const query = `*[_type == "clone" && isActive == true && ($hostname in metadata.domains || $wwwHostname in metadata.domains)][0] {
       cloneId,
       cloneName,
       "domains": metadata.domains
     }`;
     
-    const params = { hostname: normalizedHostname };
+    const params = { 
+      hostname: normalizedHostname,
+      wwwHostname: normalizedHostname.startsWith('www.') ? normalizedHostname : `www.${normalizedHostname}`
+    };
     
     // Set a timeout for the Sanity request
     const timeoutPromise = new Promise<null>((_, reject) => {
