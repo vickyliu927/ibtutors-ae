@@ -1,26 +1,20 @@
 import { MetadataRoute } from 'next'
 import { headers } from 'next/headers';
+import { getCurrentDomainFromHeaders, getCanonicalDomain } from './lib/sitemapUtils'
 
-function getCurrentDomain(): string {
+function getCanonicalBaseUrl(): string {
   try {
-    const headersList = headers();
-    const host = headersList.get('host');
-    
-    if (host) {
-      // Determine protocol based on host
-      const protocol = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
-      return `${protocol}://${host}`;
-    }
-  } catch (error) {
-    console.log('Could not get headers for robots.txt, using fallback');
-  }
-  
-  // Fallback to environment variable
-  return process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae';
+    const domain = getCurrentDomainFromHeaders();
+    const canonicalHost = getCanonicalDomain(domain || '');
+    const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+    const protocol = isLocal ? 'http' : 'https';
+    if (canonicalHost) return `${protocol}://${canonicalHost}`;
+  } catch {}
+  return (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae').replace(/\/+$/, '');
 }
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = getCurrentDomain().replace(/\/+$/, '');
+  const baseUrl = getCanonicalBaseUrl().replace(/\/+$/, '');
   
   console.log(`Generated robots.txt for domain: ${baseUrl}`);
   

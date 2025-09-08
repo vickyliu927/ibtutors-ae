@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import HeroSection, { HeroData } from "./components/HeroSection";
 import AdvertBlock from "./components/AdvertBlock";
 import TutorProfiles, { TutorData } from "./components/TutorProfiles";
@@ -51,6 +52,14 @@ import CloneIndicatorBanner from "./components/CloneIndicatorBanner";
 
 // Set revalidation time to 10 minutes (600 seconds)
 export const revalidate = 600;
+
+export function generateMetadata(): Metadata {
+  return {
+    alternates: {
+      canonical: '/',
+    },
+  };
+}
 
 // Enhanced homepage data interface
 interface HomepageData {

@@ -18,7 +18,7 @@ export async function GET() {
     console.log('Calling contact API with test data...');
     
     // Make a request to our own contact API
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae';
     const response = await fetch(`${baseUrl}/api/contact`, {
       method: 'POST',
       headers: {

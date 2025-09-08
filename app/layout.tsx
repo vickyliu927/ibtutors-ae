@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import DebuggerInitializer from './components/DebuggerInitializer';
 import { getNavigationData } from './lib/getNavigationData';
 import { getSeoData } from './lib/getSeoData';
+import { getCurrentDomainFromHeaders, getCanonicalDomain } from './lib/sitemapUtils';
 
 // Load Inter font with display: swap for better performance
 const inter = Inter({ subsets: ['latin'] });
@@ -14,9 +15,17 @@ export async function generateMetadata(): Promise<Metadata> {
   // Use clone-aware SEO data that will automatically detect clone from middleware headers
   const seo = await getSeoData();
 
+  // Compute canonical base URL for this request
+  const currentDomain = getCurrentDomainFromHeaders();
+  const canonicalHost = getCanonicalDomain(currentDomain || '');
+  const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+  const protocol = isLocal ? 'http' : 'https';
+  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae');
+
   return {
     title: seo.title,
     description: seo.description,
+    metadataBase: new URL(baseUrlString),
     // Add additional metadata to optimize for performance
     viewport: 'width=device-width, initial-scale=1',
     themeColor: '#ffffff',

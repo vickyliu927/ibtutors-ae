@@ -589,6 +589,7 @@ async function getSubjectPageDataWithCloneContext(
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
   // Get clone-aware SEO data that will automatically detect clone from middleware headers
   const cloneSeoData = await getSeoData();
+  const canonicalPath = `/${params.subject}`;
   
   // First check if it's a curriculum page
   const curriculumResult = await getCurriculumPageDataWithCloneContext(params.subject);
@@ -598,6 +599,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
     return {
       title: cloneSeoData.title || curriculumResult.pageData.seo?.pageTitle || curriculumResult.pageData.title,
       description: cloneSeoData.description || curriculumResult.pageData.seo?.description || `Find expert tutors for ${curriculumResult.pageData.curriculum}.`,
+      alternates: { canonical: canonicalPath },
     };
   }
   
@@ -615,6 +617,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
   return {
     title: cloneSeoData.title || pageData.seo?.pageTitle || `${pageData.title} | IB Tutors UAE`,
     description: cloneSeoData.description || pageData.seo?.description || 'Find expert tutors for your subject.',
+    alternates: { canonical: canonicalPath },
   };
 }
 

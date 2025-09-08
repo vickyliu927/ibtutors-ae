@@ -1,32 +1,28 @@
 import { MetadataRoute } from 'next';
 import { client } from '@/sanity/lib/client';
 import { headers } from 'next/headers';
+import { getCurrentDomainFromHeaders, getCanonicalDomain, joinUrl } from './lib/sitemapUtils';
 
 // Set revalidation time to 1 hour
 export const revalidate = 3600;
 
-function getCurrentDomain(): string {
+function getCanonicalBaseUrl(): string {
   try {
-    const headersList = headers();
-    const host = headersList.get('host');
-    
-    if (host) {
-      // Determine protocol based on host
-      const protocol = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
-      return `${protocol}://${host}`;
-    }
-  } catch (error) {
-    console.log('Could not get headers, using fallback');
-  }
-  
-  // Fallback to environment variable
-  return process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae';
+    const domain = getCurrentDomainFromHeaders();
+    const canonicalHost = getCanonicalDomain(domain || '');
+    const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+    const protocol = isLocal ? 'http' : 'https';
+    if (canonicalHost) return `${protocol}://${canonicalHost}`;
+  } catch {}
+  // Fallback to env or canonical default
+  const fallback = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae';
+  return fallback.replace(/\/+$/, '');
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
-    // Get the base URL for the current domain and ensure no trailing slash
-    const baseUrl = getCurrentDomain().replace(/\/+$/, '');
+    // Get canonical base URL and ensure no trailing slash
+    const baseUrl = getCanonicalBaseUrl().replace(/\/+$/, '');
     
     // Fetch all subject and curriculum page slugs from Sanity
     const subjectQuery = `*[_type == "subjectPage" && defined(slug.current)] | order(slug.current asc) {
@@ -71,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Add unique pages to sitemap
     uniquePages.forEach((page: any) => {
       pages.push({
-        url: `${baseUrl}/${page.slug}`,
+        url: joinUrl(baseUrl, page.slug),
         lastModified: new Date(page._updatedAt),
         changeFrequency: 'weekly',
         priority: 0.8,
@@ -85,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error generating sitemap:', error);
     
     // Fallback to minimal sitemap if there's an error
-    const baseUrl = getCurrentDomain().replace(/\/+$/, '');
+    const baseUrl = getCanonicalBaseUrl().replace(/\/+$/, '');
     return [
       {
         url: baseUrl,
