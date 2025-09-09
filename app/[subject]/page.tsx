@@ -21,6 +21,7 @@ import {
 } from '../lib/clonePageUtils';
 import { subjectPageFaqQueries, navbarQueries } from '../lib/cloneQueries';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
+import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 
 // Disable static page generation and enable revalidation
 export const revalidate = 0;
@@ -591,6 +592,9 @@ export async function generateMetadata({ params }: { params: { subject: string }
   const cloneSeoData = await getSeoData();
   const canonicalPath = `/${params.subject}`;
   
+  // Resolve cloneId so we fetch clone-specific page SEO (matches page render logic)
+  const cloneId = await getCloneIdForCurrentDomain();
+  
   // Helper: extract brand from global title (last segment after '|') or fallback
   const brandFromSeo = (() => {
     const t = (cloneSeoData?.title || '').trim();
@@ -600,7 +604,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
   })();
   
   // First check if it's a curriculum page
-  const curriculumResult = await getCurriculumPageDataWithCloneContext(params.subject);
+  const curriculumResult = await getCurriculumPageDataWithCloneContext(params.subject, cloneId);
   
   if (curriculumResult.pageData) {
     // Build dynamic title/description that gracefully omit missing parts
@@ -620,7 +624,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
   }
   
   // If not, check if it's a subject page
-  const { pageData } = await getSubjectPageDataWithCloneContext(params.subject);
+  const { pageData } = await getSubjectPageDataWithCloneContext(params.subject, cloneId);
 
   if (!pageData) {
     return {
