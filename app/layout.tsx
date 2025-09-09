@@ -39,6 +39,22 @@ export default async function RootLayout({
 }) {
   // Fetch navigation data server-side with clone awareness
   const navigationData = await getNavigationData();
+  const seo = await getSeoData();
+
+  // Compute canonical base URL for structured data
+  const currentDomain = getCurrentDomainFromHeaders();
+  const canonicalHost = getCanonicalDomain(currentDomain || '');
+  const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+  const protocol = isLocal ? 'http' : 'https';
+  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae');
+
+  // Derive brand from SEO title (last segment after '|')
+  const brandFromSeo = (() => {
+    const t = (seo?.title || '').trim();
+    if (!t) return 'IB Tutors';
+    const parts = t.split('|').map(s => s.trim()).filter(Boolean);
+    return parts.length > 1 ? parts[parts.length - 1] : parts[0];
+  })();
 
   return (
     <html lang="en">
@@ -49,6 +65,28 @@ export default async function RootLayout({
         <link 
           href="https://fonts.googleapis.com/css2?family=Gilroy:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" 
           rel="stylesheet" 
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: brandFromSeo,
+              url: baseUrlString,
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: brandFromSeo,
+              url: baseUrlString,
+            }),
+          }}
         />
       </head>
       <body className={inter.className}>

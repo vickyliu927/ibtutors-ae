@@ -239,6 +239,26 @@ export default async function Home({
 
   return (
     <main className="min-h-screen">
+      {/* FAQPage JSON-LD when FAQ data exists */}
+      {faqSection && faqSection.faqReferences && faqSection.faqReferences.length > 0 ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: faqSection.faqReferences.map((faq: any) => ({
+                '@type': 'Question',
+                name: faq.question,
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: faq.answer,
+                },
+              })),
+            }),
+          }}
+        />
+      ) : null}
       {/* Hero Section */}
       {heroData && <HeroSection heroData={heroData} />}
 

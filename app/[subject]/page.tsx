@@ -607,6 +607,13 @@ export async function generateMetadata({ params }: { params: { subject: string }
   const curriculumResult = await getCurriculumPageDataWithCloneContext(params.subject, cloneId);
   
   if (curriculumResult.pageData) {
+    // BreadcrumbList JSON-LD
+    const breadcrumbItems = [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
+      { '@type': 'ListItem', position: 2, name: 'Curricula', item: '/curricula' },
+      { '@type': 'ListItem', position: 3, name: curriculumResult.pageData.curriculum || curriculumResult.pageData.title, item: canonicalPath },
+    ];
+
     // Build dynamic title/description that gracefully omit missing parts
     const curriculumName = curriculumResult.pageData.curriculum || curriculumResult.pageData.title || '';
     const dynamicTitle = [
@@ -696,6 +703,21 @@ export default async function DynamicPage({
     // Render curriculum page with clone context
     return (
       <main>
+        {/* BreadcrumbList JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
+                { '@type': 'ListItem', position: 2, name: 'Curricula', item: '/curricula' },
+                { '@type': 'ListItem', position: 3, name: curriculumResult.pageData.curriculum || curriculumResult.pageData.title, item: `/${params.subject}` },
+              ],
+            }),
+          }}
+        />
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
@@ -752,6 +774,23 @@ export default async function DynamicPage({
                     />
                   ))}
               </div>
+              {/* FAQPage JSON-LD */}
+              {curriculumResult.pageData.faqSection.faqReferences && (
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      '@context': 'https://schema.org',
+                      '@type': 'FAQPage',
+                      mainEntity: curriculumResult.pageData.faqSection.faqReferences.map((faq: any) => ({
+                        '@type': 'Question',
+                        name: faq.question,
+                        acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+                      })),
+                    }),
+                  }}
+                />
+              )}
             </div>
           </section>
         )}
@@ -778,6 +817,21 @@ export default async function DynamicPage({
     // Render subject page with clone context
     return (
       <main>
+        {/* BreadcrumbList JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
+                { '@type': 'ListItem', position: 2, name: 'Subjects', item: '/subjects' },
+                { '@type': 'ListItem', position: 3, name: subjectResult.pageData.subject || subjectResult.pageData.title, item: `/${params.subject}` },
+              ],
+            }),
+          }}
+        />
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
@@ -814,6 +868,24 @@ export default async function DynamicPage({
               subtitle: subjectResult.pageData.faqSection.subtitle
             }}
             faqs={subjectResult.pageData.faqSection.faqReferences}
+          />
+        )}
+
+        {/* FAQPage JSON-LD */}
+        {subjectResult.pageData.faqSection && subjectResult.pageData.faqSection.faqReferences && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: subjectResult.pageData.faqSection.faqReferences.map((faq: any) => ({
+                  '@type': 'Question',
+                  name: faq.question,
+                  acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+                })),
+              }),
+            }}
           />
         )}
 
