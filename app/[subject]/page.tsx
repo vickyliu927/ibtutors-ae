@@ -591,14 +591,30 @@ export async function generateMetadata({ params }: { params: { subject: string }
   const cloneSeoData = await getSeoData();
   const canonicalPath = `/${params.subject}`;
   
+  // Helper: extract brand from global title (last segment after '|') or fallback
+  const brandFromSeo = (() => {
+    const t = (cloneSeoData?.title || '').trim();
+    if (!t) return 'IB Tutors';
+    const parts = t.split('|').map(s => s.trim()).filter(Boolean);
+    return parts.length > 1 ? parts[parts.length - 1] : parts[0];
+  })();
+  
   // First check if it's a curriculum page
   const curriculumResult = await getCurriculumPageDataWithCloneContext(params.subject);
   
   if (curriculumResult.pageData) {
-    // Use clone-specific SEO settings, falling back to curriculum page SEO, then curriculum title
+    // Build dynamic title/description that gracefully omit missing parts
+    const curriculumName = curriculumResult.pageData.curriculum || curriculumResult.pageData.title || '';
+    const dynamicTitle = [
+      curriculumName ? `${curriculumName} Tutors` : '',
+      brandFromSeo,
+    ].filter(Boolean).join(' | ');
+    const dynamicDescription = `${curriculumName ? `Specialist ${curriculumName} tutoring.` : 'Specialist tutoring.'} Online or in-person. Get matched today.`;
+
+    // Prefer page-specific SEO; then dynamic template; then global fallbacks
     return {
-      title: cloneSeoData.title || curriculumResult.pageData.seo?.pageTitle || curriculumResult.pageData.title,
-      description: cloneSeoData.description || curriculumResult.pageData.seo?.description || `Find expert tutors for ${curriculumResult.pageData.curriculum}.`,
+      title: curriculumResult.pageData.seo?.pageTitle || dynamicTitle || curriculumResult.pageData.title || cloneSeoData.title,
+      description: curriculumResult.pageData.seo?.description || dynamicDescription || cloneSeoData.description || `Find expert tutors${curriculumName ? ` for ${curriculumName}` : ''}.`,
       alternates: { canonical: canonicalPath },
     };
   }
@@ -613,10 +629,18 @@ export async function generateMetadata({ params }: { params: { subject: string }
     };
   }
 
-  // Use clone-specific SEO settings, falling back to subject page SEO, then subject title
+  // Subject branch: build dynamic, omission-friendly SEO
+  const subjectName = pageData.subject || pageData.title || '';
+  const dynamicTitle = [
+    subjectName ? `${subjectName} Tutors` : '',
+    brandFromSeo,
+  ].filter(Boolean).join(' | ');
+  const dynamicDescription = `${subjectName ? `Expert ${subjectName} tutoring.` : 'Expert tutoring.'} Online or in-person. Book a free call.`;
+
+  // Prefer page-specific SEO; then dynamic template; then global fallback
   return {
-    title: cloneSeoData.title || pageData.seo?.pageTitle || `${pageData.title} | IB Tutors UAE`,
-    description: cloneSeoData.description || pageData.seo?.description || 'Find expert tutors for your subject.',
+    title: pageData.seo?.pageTitle || dynamicTitle || `${pageData.title} | ${brandFromSeo}`,
+    description: pageData.seo?.description || dynamicDescription || cloneSeoData.description || 'Find expert tutors for your subject.',
     alternates: { canonical: canonicalPath },
   };
 }

@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const canonicalHost = getCanonicalDomain(currentDomain || '');
   const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
   const protocol = isLocal ? 'http' : 'https';
-  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://dubaitutors.ae');
+  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae');
 
   return {
     title: seo.title,
