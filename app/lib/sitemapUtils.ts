@@ -126,19 +126,19 @@ export async function getPagesForClone(cloneId: string | null): Promise<{
 
   if (cloneId) {
     // Get clone-specific or global pages
-    subjectQuery = `*[_type == "subjectPage" && (
+    subjectQuery = `*[_type == "subjectPage" && isActive == true && slug.current != "gcse1" && (
       cloneReference->cloneId.current == $cloneId || 
       !defined(cloneReference)
     )] { slug, _updatedAt, cloneReference }`;
     
-    curriculumQuery = `*[_type == "curriculumPage" && (
+    curriculumQuery = `*[_type == "curriculumPage" && isActive == true && slug.current != "gcse1" && (
       cloneReference->cloneId.current == $cloneId || 
       !defined(cloneReference)
     )] { slug, _updatedAt, cloneReference }`;
   } else {
     // Get only global pages (no clone reference)
-    subjectQuery = `*[_type == "subjectPage" && !defined(cloneReference)] { slug, _updatedAt }`;
-    curriculumQuery = `*[_type == "curriculumPage" && !defined(cloneReference)] { slug, _updatedAt }`;
+    subjectQuery = `*[_type == "subjectPage" && isActive == true && slug.current != "gcse1" && !defined(cloneReference)] { slug, _updatedAt }`;
+    curriculumQuery = `*[_type == "curriculumPage" && isActive == true && slug.current != "gcse1" && !defined(cloneReference)] { slug, _updatedAt }`;
   }
 
   const [subjectPages, curriculumPages] = await Promise.all([

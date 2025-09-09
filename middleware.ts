@@ -225,6 +225,13 @@ export async function middleware(request: NextRequest) {
     }
     
     // Handle specific routes that need special treatment
+    // 301 canonical redirect for legacy/duplicate paths
+    if (pathname === '/gcse1') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/gcse';
+      return NextResponse.redirect(url, 301);
+    }
+
     if (pathname.endsWith('/sitemap.xml')) {
       const response = NextResponse.next();
       response.headers.set('Content-Type', 'application/xml; charset=utf-8');

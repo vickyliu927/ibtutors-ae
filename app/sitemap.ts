@@ -25,13 +25,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = getCanonicalBaseUrl().replace(/\/+$/, '');
     
     // Fetch all subject and curriculum page slugs from Sanity
-    const subjectQuery = `*[_type == "subjectPage" && defined(slug.current)] | order(slug.current asc) {
+    const subjectQuery = `*[_type == "subjectPage" && isActive == true && defined(slug.current) && slug.current != "gcse1"] | order(slug.current asc) {
       "slug": slug.current,
       _updatedAt,
       _id
     }`;
     
-    const curriculumQuery = `*[_type == "curriculumPage" && defined(slug.current)] | order(slug.current asc) {
+    const curriculumQuery = `*[_type == "curriculumPage" && isActive == true && defined(slug.current) && slug.current != "gcse1"] | order(slug.current asc) {
       "slug": slug.current,
       _updatedAt,
       _id
