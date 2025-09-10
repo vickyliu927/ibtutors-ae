@@ -97,7 +97,19 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
     return result;
   }
   
-  // Clone-aware query (no fallback when cloneId is present)
+  // Check if this clone has any clone-specific pages at all (subjects or curriculums)
+  const hasAnyCloneSpecific = await client.fetch<boolean>(
+    `count(*[_type in ["subjectPage","curriculumPage"] && cloneReference->cloneId.current == $cloneId && isActive == true]) > 0`,
+    { cloneId }
+  );
+
+  // If the clone has zero clone-specific pages, disable fallback entirely (return empty list)
+  if (!hasAnyCloneSpecific) {
+    console.log('[NavigationData] Clone has zero clone-specific pages. Subjects list will be empty (no fallback).');
+    return [];
+  }
+
+  // Otherwise, allow 3-tier fallback: cloneSpecific → baseline → default
   const query = `{
     "cloneSpecific": *[_type == "subjectPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
       title,
@@ -105,16 +117,40 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       slug,
       displayOrder,
       "source": "cloneSpecific"
+    },
+    "baseline": *[_type == "subjectPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
+      title,
+      subject,
+      slug,
+      displayOrder,
+      "source": "baseline"
+    },
+    "default": *[_type == "subjectPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
+      title,
+      subject,
+      slug,
+      displayOrder,
+      "source": "default"
     }
   }`;
   
   try {
     const result = await client.fetch(query, { cloneId });
     
-    // No fallback for clones: only use cloneSpecific, else return empty
-    const subjects: NavigationSubjectData[] = (result.cloneSpecific || []);
-    const source = subjects.length > 0 ? 'cloneSpecific' : 'none';
+    let subjects: NavigationSubjectData[] = [];
+    let source = 'none';
     
+    if (result.cloneSpecific && result.cloneSpecific.length > 0) {
+      subjects = result.cloneSpecific;
+      source = 'cloneSpecific';
+    } else if (result.baseline && result.baseline.length > 0) {
+      subjects = result.baseline;
+      source = 'baseline';
+    } else if (result.default && result.default.length > 0) {
+      subjects = result.default;
+      source = 'default';
+    }
+
     console.log(`[NavigationData] Fetched ${subjects.length} subject pages from ${source} for clone: ${cloneId}`);
     return subjects;
   } catch (error) {
@@ -166,7 +202,18 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
     }
   }
   
-  // Clone-aware query (no fallback when cloneId is present)
+  // Check if this clone has any clone-specific pages at all
+  const hasAnyCloneSpecific = await client.fetch<boolean>(
+    `count(*[_type in ["subjectPage","curriculumPage"] && cloneReference->cloneId.current == $cloneId && isActive == true]) > 0`,
+    { cloneId }
+  );
+
+  if (!hasAnyCloneSpecific) {
+    console.log('[NavigationData] Clone has zero clone-specific pages. Curriculums list will be empty (no fallback).');
+    return [];
+  }
+
+  // Allow 3-tier fallback when the clone actually has some pages
   const query = `{
     "cloneSpecific": *[_type == "curriculumPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
       title,
@@ -174,15 +221,40 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       slug,
       displayOrder,
       "source": "cloneSpecific"
+    },
+    "baseline": *[_type == "curriculumPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
+      title,
+      curriculum,
+      slug,
+      displayOrder,
+      "source": "baseline"
+    },
+    "default": *[_type == "curriculumPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
+      title,
+      curriculum,
+      slug,
+      displayOrder,
+      "source": "default"
     }
   }`;
   
   try {
     const result = await client.fetch(query, { cloneId });
     
-    // No fallback for clones: only use cloneSpecific, else empty
-    const curriculums: NavigationCurriculumData[] = (result.cloneSpecific || []);
-    const source = curriculums.length > 0 ? 'cloneSpecific' : 'none';
+    let curriculums: NavigationCurriculumData[] = [];
+    let source = 'none';
+    
+    if (result.cloneSpecific && result.cloneSpecific.length > 0) {
+      curriculums = result.cloneSpecific;
+      source = 'cloneSpecific';
+    } else if (result.baseline && result.baseline.length > 0) {
+      curriculums = result.baseline;
+      source = 'baseline';
+    } else if (result.default && result.default.length > 0) {
+      curriculums = result.default;
+      source = 'default';
+    }
+    
     console.log(`[NavigationData] Fetched ${curriculums.length} curriculum pages from ${source} for clone: ${cloneId}`);
     return curriculums;
   } catch (error) {
