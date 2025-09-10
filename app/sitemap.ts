@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { client } from '@/sanity/lib/client';
 import { headers } from 'next/headers';
-import { getCurrentDomainFromHeaders, getCanonicalDomain, joinUrl } from './lib/sitemapUtils';
+import { getCurrentDomainFromHeaders, getCanonicalDomain, joinUrl, getCloneIdForCurrentDomain } from './lib/sitemapUtils';
 
 // Set revalidation time to 1 hour
 export const revalidate = 3600;
@@ -24,22 +24,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Get canonical base URL and ensure no trailing slash
     const baseUrl = getCanonicalBaseUrl().replace(/\/+$/, '');
     
-    // Fetch all subject and curriculum page slugs from Sanity
-    const subjectQuery = `*[_type == "subjectPage" && isActive == true && defined(slug.current) && slug.current != "gcse1"] | order(slug.current asc) {
+    // Resolve clone for current domain
+    const cloneId = await getCloneIdForCurrentDomain();
+    const isClone = !!cloneId;
+    
+    // Fetch subject and curriculum page slugs from Sanity, clone-aware with no fallback when cloneId exists
+    const subjectQuery = isClone ? `*[_type == "subjectPage" && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
+      "slug": slug.current,
+      _updatedAt,
+      _id
+    }` : `*[_type == "subjectPage" && isActive == true && defined(slug.current) && slug.current != "gcse1" && !defined(cloneReference)] | order(slug.current asc) {
       "slug": slug.current,
       _updatedAt,
       _id
     }`;
     
-    const curriculumQuery = `*[_type == "curriculumPage" && isActive == true && defined(slug.current) && slug.current != "gcse1"] | order(slug.current asc) {
+    const curriculumQuery = isClone ? `*[_type == "curriculumPage" && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
+      "slug": slug.current,
+      _updatedAt,
+      _id
+    }` : `*[_type == "curriculumPage" && isActive == true && defined(slug.current) && slug.current != "gcse1" && !defined(cloneReference)] | order(slug.current asc) {
       "slug": slug.current,
       _updatedAt,
       _id
     }`;
     
     const [subjectPages, curriculumPages] = await Promise.all([
-      client.fetch(subjectQuery),
-      client.fetch(curriculumQuery)
+      client.fetch(subjectQuery, { cloneId }),
+      client.fetch(curriculumQuery, { cloneId })
     ]);
 
     // Start with homepage
