@@ -97,6 +97,16 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
     return result;
   }
   
+  // If this clone is marked as homepage-only in Sanity, return empty list (no fallback)
+  const homepageOnly = await client.fetch<boolean>(
+    `*[_type == "clone" && cloneId.current == $cloneId][0].homepageOnly == true`,
+    { cloneId }
+  );
+  if (homepageOnly) {
+    console.log('[NavigationData] homepageOnly=true for clone; returning empty subjects');
+    return [];
+  }
+
   // Allow 3-tier fallback: cloneSpecific → baseline → default
   const query = `{
     "cloneSpecific": *[_type == "subjectPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
@@ -190,6 +200,16 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
     }
   }
   
+  // If this clone is marked as homepage-only in Sanity, return empty list (no fallback)
+  const homepageOnly = await client.fetch<boolean>(
+    `*[_type == "clone" && cloneId.current == $cloneId][0].homepageOnly == true`,
+    { cloneId }
+  );
+  if (homepageOnly) {
+    console.log('[NavigationData] homepageOnly=true for clone; returning empty curriculums');
+    return [];
+  }
+
   // Allow 3-tier fallback: cloneSpecific → baseline → default
   const query = `{
     "cloneSpecific": *[_type == "curriculumPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {

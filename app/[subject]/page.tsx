@@ -690,6 +690,11 @@ export default async function DynamicPage({
     `Subject: ${params.subject}`
   );
 
+  // If clone is homepage-only, do not resolve subject/curriculum pages at all
+  if (cloneContext.clone?.homepageOnly) {
+    return notFound();
+  }
+
   // First check if it's a curriculum page
   const curriculumResult = await getCurriculumPageDataWithCloneContext(
     params.subject, 

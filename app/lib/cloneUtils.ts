@@ -8,6 +8,7 @@ export interface CloneData {
   cloneDescription?: string;
   isActive: boolean;
   baselineClone: boolean;
+  homepageOnly?: boolean;
   metadata: {
     targetAudience: string;
     region: string;

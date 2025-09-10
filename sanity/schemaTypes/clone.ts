@@ -59,6 +59,13 @@ export default defineType({
       initialValue: true,
     }),
     defineField({
+      name: 'homepageOnly',
+      title: 'Homepage Only (disable subject/curriculum pages)',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If enabled, this clone will not generate or fallback to subject/curriculum pages. Only the homepage will be available.'
+    }),
+    defineField({
       name: 'baselineClone',
       title: 'Baseline Clone',
       type: 'boolean',

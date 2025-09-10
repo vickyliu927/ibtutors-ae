@@ -28,8 +28,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const cloneId = await getCloneIdForCurrentDomain();
     const isClone = !!cloneId;
     
+    // If homepageOnly flag is set for this clone, skip subjects/curriculums entirely
+    const homepageOnly = isClone ? await client.fetch<boolean>(
+      `*[_type == "clone" && cloneId.current == $cloneId][0].homepageOnly == true`,
+      { cloneId }
+    ) : false;
+
     // Fetch subject and curriculum page slugs from Sanity, clone-aware with no fallback when cloneId exists
-    const subjectQuery = isClone ? `*[_type == "subjectPage" && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
+    const subjectQuery = isClone ? `*[_type == "subjectPage" && !${homepageOnly} && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
       "slug": slug.current,
       _updatedAt,
       _id
@@ -39,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       _id
     }`;
     
-    const curriculumQuery = isClone ? `*[_type == "curriculumPage" && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
+    const curriculumQuery = isClone ? `*[_type == "curriculumPage" && !${homepageOnly} && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
       "slug": slug.current,
       _updatedAt,
       _id
@@ -49,10 +55,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       _id
     }`;
     
-    const [subjectPages, curriculumPages] = await Promise.all([
-      client.fetch(subjectQuery, { cloneId }),
-      client.fetch(curriculumQuery, { cloneId })
-    ]);
+    const [subjectPages, curriculumPages] = homepageOnly && isClone
+      ? [[], []]
+      : await Promise.all([
+          client.fetch(subjectQuery, { cloneId }),
+          client.fetch(curriculumQuery, { cloneId })
+        ]);
 
     // Start with homepage
     const pages: MetadataRoute.Sitemap = [
