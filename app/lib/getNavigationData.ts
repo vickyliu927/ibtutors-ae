@@ -97,19 +97,7 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
     return result;
   }
   
-  // Check if this clone has any clone-specific pages at all (subjects or curriculums)
-  const hasAnyCloneSpecific = await client.fetch<boolean>(
-    `count(*[_type in ["subjectPage","curriculumPage"] && cloneReference->cloneId.current == $cloneId && isActive == true]) > 0`,
-    { cloneId }
-  );
-
-  // If the clone has zero clone-specific pages, disable fallback entirely (return empty list)
-  if (!hasAnyCloneSpecific) {
-    console.log('[NavigationData] Clone has zero clone-specific pages. Subjects list will be empty (no fallback).');
-    return [];
-  }
-
-  // Otherwise, allow 3-tier fallback: cloneSpecific → baseline → default
+  // Allow 3-tier fallback: cloneSpecific → baseline → default
   const query = `{
     "cloneSpecific": *[_type == "subjectPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
       title,
@@ -202,18 +190,7 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
     }
   }
   
-  // Check if this clone has any clone-specific pages at all
-  const hasAnyCloneSpecific = await client.fetch<boolean>(
-    `count(*[_type in ["subjectPage","curriculumPage"] && cloneReference->cloneId.current == $cloneId && isActive == true]) > 0`,
-    { cloneId }
-  );
-
-  if (!hasAnyCloneSpecific) {
-    console.log('[NavigationData] Clone has zero clone-specific pages. Curriculums list will be empty (no fallback).');
-    return [];
-  }
-
-  // Allow 3-tier fallback when the clone actually has some pages
+  // Allow 3-tier fallback: cloneSpecific → baseline → default
   const query = `{
     "cloneSpecific": *[_type == "curriculumPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
       title,
