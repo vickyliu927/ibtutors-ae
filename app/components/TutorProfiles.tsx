@@ -295,7 +295,7 @@ const TutorProfiles = ({
                         fill
                         className="object-cover object-center"
                         sizes="128px"
-                        priority={true}
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">
@@ -631,7 +631,7 @@ const TutorProfiles = ({
                       fill
                       className="object-cover object-center"
                       sizes="(max-width: 768px) 100vw, 225px"
-                      priority={true}
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center">

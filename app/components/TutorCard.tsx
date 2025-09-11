@@ -327,7 +327,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                   fill
                   className="object-cover object-center"
                   sizes="40vw"
-                  priority={true}
+                  loading="lazy"
                 />
               ) : (
                 <div className="w-full h-full bg-gray-100 flex items-center justify-center">
@@ -483,7 +483,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
             fill
             className="object-cover object-center"
             sizes="280px"
-            priority={true}
+            loading="lazy"
           />
         ) : (
           <Image
@@ -492,7 +492,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
             fill
             className="object-cover object-center"
             sizes="280px"
-            priority={true}
+            loading="lazy"
           />
         )}
       </div>
