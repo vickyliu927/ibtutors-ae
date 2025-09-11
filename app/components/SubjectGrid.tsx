@@ -15,30 +15,24 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
   const splitDescription = sectionData?.splitDescription || false;
   const backgroundColor = sectionData?.backgroundColor || "#f2f4fa";
 
-  // Use Sanity subjects when available, otherwise fall back to static list
-  const sanitySubjects = sectionData?.subjects?.filter((s: any) => s.enabled !== false) || [];
-  const displaySubjects = sanitySubjects.length > 0 
+  // Filter subject grid to only include subjects that actually have live pages
+  const availableSlugs = new Set((subjects || []).map((s: any) => s?.slug?.current).filter(Boolean));
+
+  // Sanity-configured subject chips (optional) → filter to those that exist as pages
+  const sanitySubjects = (sectionData?.subjects || [])
+    .filter((s: any) => s && s.enabled !== false)
+    .filter((s: any) => {
+      const slug = typeof s.slug === 'string' ? s.slug : s.slug?.current;
+      return slug ? availableSlugs.has(slug) : false;
+    });
+
+  // If the section specifies subjects and at least one exists, use them (sorted)
+  // Otherwise, build the grid from the actual subject pages fetched for this clone
+  const displaySubjects = sanitySubjects.length > 0
     ? sanitySubjects.sort((a: any, b: any) => (a.displayOrder || 100) - (b.displayOrder || 100))
-    : [
-        { name: "Maths", slug: "maths" },
-        { name: "Further Maths", slug: "further-maths" },
-        { name: "Biology", slug: "biology" },
-        { name: "Chemistry", slug: "chemistry" },
-        { name: "Physics", slug: "physics" },
-        { name: "Psychology", slug: "psychology" },
-        { name: "Computer Science", slug: "computer-science" },
-        { name: "English", slug: "english" },
-        { name: "History", slug: "history" },
-        { name: "Geography", slug: "geography" },
-        { name: "Economics", slug: "economics" },
-        { name: "Business Studies", slug: "business-studies" },
-        { name: "French", slug: "french" },
-        { name: "Spanish", slug: "spanish" },
-        { name: "German", slug: "german" },
-        { name: "Law", slug: "law" },
-        { name: "Accounting", slug: "accounting" },
-        { name: "EPQ", slug: "epq" },
-  ];
+    : (subjects || [])
+        .sort((a: any, b: any) => (a.displayOrder || 100) - (b.displayOrder || 100))
+        .map((s: any) => ({ name: s.subject || s.title, slug: s.slug.current }));
 
   // All subjects have consistent styling with hover effects and responsive padding
   const getSubjectStyle = (subject: any) => {

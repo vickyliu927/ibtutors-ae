@@ -187,13 +187,11 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
           </div>
         </div>
 
-        {/* Testimonial cards - HORIZONTAL SCROLLING LAYOUT */}
-        <div className="overflow-x-auto overflow-y-hidden pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-          <div className="flex gap-6 px-4 sm:px-0" style={{ width: 'max-content' }}>
-            {displayTestimonials.slice(0, 3).map((testimonial, index) => (
-              <TestimonialCard key={testimonial._id} testimonial={testimonial} />
-            ))}
-          </div>
+        {/* Testimonial cards - Grid layout (no horizontal scroll) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-0 place-items-center">
+          {displayTestimonials.slice(0, 3).map((testimonial) => (
+            <TestimonialCard key={testimonial._id} testimonial={testimonial} />
+          ))}
         </div>
       </div>
     </section>
