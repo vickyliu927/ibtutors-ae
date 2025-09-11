@@ -202,7 +202,7 @@ const TutorProfiles = ({
             </h2>
           </div>
           
-          <div className="flex justify-between items-start w-full gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4 md:gap-6">
             <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
               <span className="font-light">
                 {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
@@ -215,14 +215,14 @@ const TutorProfiles = ({
             
             {/* Price section - aligned with description */}
             {(tutorProfileSectionPriceDescription || tutorProfileSectionPriceTag) && (
-              <div className="flex flex-col items-end text-right flex-shrink-0">
+              <div className="flex flex-col w-full md:w-auto items-start md:items-end text-left md:text-right flex-shrink-0">
                 {tutorProfileSectionPriceDescription && (
-                  <div className="text-lg text-[#171D23] font-gilroy mb-2">
+                  <div className="text-base md:text-lg text-[#171D23] font-gilroy mb-2 break-words">
                     {tutorProfileSectionPriceDescription}
                   </div>
                 )}
                 {tutorProfileSectionPriceTag && (
-                  <div className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-gilroy font-semibold text-lg">
+                  <div className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-gilroy font-semibold text-base md:text-lg max-w-full text-center self-start md:self-end">
                     {tutorProfileSectionPriceTag}
                   </div>
                 )}
