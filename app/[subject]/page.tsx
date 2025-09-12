@@ -9,7 +9,7 @@ import SubjectHeroSection from '../components/SubjectHeroSection';
 import { Metadata } from 'next';
 import { getSeoData, SeoData } from '../lib/getSeoData';
 import { getCurriculumHeroData } from '../lib/getCurriculumHeroData';
-import { notFound } from 'next/navigation';
+import { notFound, redirect, permanentRedirect } from 'next/navigation';
 
 // Import enhanced clone-aware utilities
 import { 
@@ -77,6 +77,9 @@ interface SubjectPageData {
     pageTitle: string;
     description: string;
   };
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
+  externalRedirectPermanent?: boolean;
 }
 
 interface CurriculumPageData {
@@ -334,6 +337,9 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          externalRedirectEnabled,
+          externalRedirectUrl,
+          externalRedirectPermanent,
           testimonials[]->{
             _id,
             reviewerName,
@@ -399,6 +405,9 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          externalRedirectEnabled,
+          externalRedirectUrl,
+          externalRedirectPermanent,
           testimonials[]->{
             _id,
             reviewerName,
@@ -464,6 +473,9 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          externalRedirectEnabled,
+          externalRedirectUrl,
+          externalRedirectPermanent,
           testimonials[]->{
             _id,
             reviewerName,
@@ -811,6 +823,15 @@ export default async function DynamicPage({
   );
 
   if (subjectResult.pageData) {
+    // Check for external redirect override
+    if (subjectResult.pageData.externalRedirectEnabled && subjectResult.pageData.externalRedirectUrl) {
+      const targetUrl = subjectResult.pageData.externalRedirectUrl;
+      if (subjectResult.pageData.externalRedirectPermanent) {
+        permanentRedirect(targetUrl);
+      } else {
+        redirect(targetUrl);
+      }
+    }
     // Debug what data we're working with
     console.log(`[SubjectPageRender] Rendering subject page for: ${params.subject}`);
     console.log(`[SubjectPageRender] Clone ID: ${cloneContext.cloneId}`);
