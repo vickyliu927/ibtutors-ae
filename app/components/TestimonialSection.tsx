@@ -188,7 +188,7 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
         </div>
 
         {/* Testimonial cards - Grid layout (no horizontal scroll) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-0 place-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-6 lg:gap-8 px-4 sm:px-0 place-items-center">
           {displayTestimonials.slice(0, 3).map((testimonial) => (
             <TestimonialCard key={testimonial._id} testimonial={testimonial} />
           ))}
@@ -229,7 +229,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: TestimonialData }) => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-2xl bg-white shadow-[0px_16px_40px_0px_rgba(0,14,81,0.05)] h-[352px] w-[380px] sm:w-[420px] flex-shrink-0">
+    <div className="flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-2xl bg-white shadow-[0px_16px_40px_0px_rgba(0,14,81,0.05)] h-[352px] w-full max-w-[420px] flex-shrink-0">
       {/* Testimonial Text with overflow detection */}
       <div 
         ref={textRef}
