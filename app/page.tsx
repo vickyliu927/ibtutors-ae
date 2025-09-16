@@ -252,7 +252,14 @@ export default async function Home({
                 name: faq.question,
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: faq.answer,
+                  text: Array.isArray(faq.answer)
+                    ? faq.answer.map((block: any) => {
+                        if (block?._type === 'block' && Array.isArray(block.children)) {
+                          return block.children.map((c: any) => c.text).join('');
+                        }
+                        return '';
+                      }).join('\n')
+                    : faq.answer,
                 },
               })),
             }),

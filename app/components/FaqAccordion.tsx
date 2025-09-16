@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { PortableText } from '@portabletext/react';
 
 interface FaqAccordionProps {
   question: string;
-  answer?: string;
+  answer?: any;
 }
 
 const FaqAccordion: React.FC<FaqAccordionProps> = ({ question, answer }) => {
@@ -39,9 +40,32 @@ const FaqAccordion: React.FC<FaqAccordionProps> = ({ question, answer }) => {
         } overflow-hidden`}
       >
         <div className="px-6 py-4 bg-gray-50">
-          <p className="text-gray-600 whitespace-pre-wrap">
-            {answer || 'No answer provided.'}
-          </p>
+          <div className="text-gray-700 text-base leading-7">
+            {answer ? (
+              <PortableText
+                value={answer}
+                components={{
+                  list: {
+                    bullet: ({children}: any) => <ul className="list-disc pl-6 space-y-1">{children}</ul>,
+                    number: ({children}: any) => <ol className="list-decimal pl-6 space-y-1">{children}</ol>,
+                  },
+                  marks: {
+                    strong: ({children}: any) => <strong className="font-medium">{children}</strong>,
+                    em: ({children}: any) => <em className="italic">{children}</em>,
+                    link: ({value, children}: any) => {
+                      const href = value?.href || '#';
+                      return <a href={href} className="text-blue-700 underline" target="_blank" rel="noopener noreferrer">{children}</a>;
+                    },
+                  },
+                  block: {
+                    normal: ({children}: any) => <p className="mb-3">{children}</p>,
+                  },
+                }}
+              />
+            ) : (
+              <p className="text-gray-600">No answer provided.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

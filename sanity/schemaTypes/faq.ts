@@ -16,9 +16,34 @@ const faqSchema = defineType({
     defineField({
       name: 'answer',
       title: 'Answer',
-      type: 'text',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          lists: [
+            { title: 'Bullet', value: 'bullet' },
+            { title: 'Numbered', value: 'number' }
+          ],
+          marks: {
+            decorators: [
+              { title: 'Bold', value: 'strong' },
+              { title: 'Italic', value: 'em' },
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  { name: 'href', type: 'url', title: 'URL' }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       validation: (Rule: any) => Rule.required(),
-      description: 'The answer to the question',
+      description: 'The answer to the question (supports rich text, lists, links)',
     }),
     defineField({
       name: 'displayOrder',

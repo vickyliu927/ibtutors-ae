@@ -69,7 +69,7 @@ interface SubjectPageData {
     faqReferences: {
       _id: string;
       question: string;
-      answer: string;
+      answer: any;
       displayOrder: number;
     }[];
   };
@@ -108,7 +108,7 @@ interface CurriculumPageData {
     faqReferences: {
       _id: string;
       question: string;
-      answer: string;
+      answer: any;
       displayOrder: number;
     }[];
   };
@@ -804,7 +804,17 @@ export default async function DynamicPage({
                       mainEntity: curriculumResult.pageData.faqSection.faqReferences.map((faq: any) => ({
                         '@type': 'Question',
                         name: faq.question,
-                        acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+                        acceptedAnswer: { 
+                          '@type': 'Answer', 
+                          text: Array.isArray(faq.answer)
+                            ? faq.answer.map((block: any) => {
+                                if (block?._type === 'block' && Array.isArray(block.children)) {
+                                  return block.children.map((c: any) => c.text).join('');
+                                }
+                                return '';
+                              }).join('\n')
+                            : faq.answer 
+                        },
                       })),
                     }),
                   }}
@@ -912,7 +922,17 @@ export default async function DynamicPage({
                 mainEntity: subjectResult.pageData.faqSection.faqReferences.map((faq: any) => ({
                   '@type': 'Question',
                   name: faq.question,
-                  acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+                  acceptedAnswer: { 
+                    '@type': 'Answer', 
+                    text: Array.isArray(faq.answer)
+                      ? faq.answer.map((block: any) => {
+                          if (block?._type === 'block' && Array.isArray(block.children)) {
+                            return block.children.map((c: any) => c.text).join('');
+                          }
+                          return '';
+                        }).join('\n')
+                      : faq.answer 
+                  },
                 })),
               }),
             }}
