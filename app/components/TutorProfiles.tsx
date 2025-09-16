@@ -211,6 +211,12 @@ const TutorProfiles = ({
               <span className="font-medium">
                 {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
               </span>
+              {ctaText && ctaLink && (
+                <>
+                  <br />
+                  <Link href={ctaLink} className="text-blue-800 underline font-medium">{ctaText}</Link>
+                </>
+              )}
             </div>
             
             {/* Price section - aligned with description */}

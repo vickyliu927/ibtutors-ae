@@ -747,6 +747,8 @@ export default async function DynamicPage({
           useNewCardDesign={true}
           sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={curriculumResult.pageData.tutorsListSectionHead?.description}
+          ctaText={curriculumResult.pageData.tutorsListSectionHead?.ctaLinkText}
+          ctaLink={curriculumResult.pageData.tutorsListSectionHead?.ctaLink}
           tutorProfileSectionPriceDescription={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
@@ -874,6 +876,8 @@ export default async function DynamicPage({
           useNewCardDesign={true}
           sectionTitle={subjectResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={subjectResult.pageData.tutorsListSectionHead?.description}
+          ctaText={subjectResult.pageData.tutorsListSectionHead?.ctaLinkText}
+          ctaLink={subjectResult.pageData.tutorsListSectionHead?.ctaLink}
           tutorProfileSectionPriceDescription={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
