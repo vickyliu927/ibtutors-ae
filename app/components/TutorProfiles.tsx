@@ -214,7 +214,8 @@ const TutorProfiles = ({
               {ctaText && ctaLink && (
                 <>
                   <br />
-                  <Link href={ctaLink} className="text-blue-800 underline font-medium">{ctaText}</Link>
+                  <br />
+                  <Link href={ctaLink} className="text-[#F57C40] underline font-medium text-[20px] md:text-[20px] block">{ctaText}</Link>
                 </>
               )}
             </div>
