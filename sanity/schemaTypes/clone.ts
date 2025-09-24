@@ -66,6 +66,40 @@ export default defineType({
       description: 'If enabled, this clone will not generate or fallback to subject/curriculum pages. Only the homepage will be available.'
     }),
     defineField({
+      name: 'enableSubjectPagesOnly',
+      title: 'Enable Subject Pages Only',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If enabled, only subject pages will be available; curriculum pages are disabled.',
+      validation: Rule => Rule.custom((value, context) => {
+        const doc = context.document as any
+        if (value && doc?.homepageOnly) {
+          return 'Cannot enable this when Homepage Only is enabled.'
+        }
+        if (value && doc?.enableCurriculumPagesOnly) {
+          return 'Cannot enable both Subject Pages Only and Curriculum Pages Only.'
+        }
+        return true
+      }),
+    }),
+    defineField({
+      name: 'enableCurriculumPagesOnly',
+      title: 'Enable Curriculum Pages Only',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If enabled, only curriculum pages will be available; subject pages are disabled.',
+      validation: Rule => Rule.custom((value, context) => {
+        const doc = context.document as any
+        if (value && doc?.homepageOnly) {
+          return 'Cannot enable this when Homepage Only is enabled.'
+        }
+        if (value && doc?.enableSubjectPagesOnly) {
+          return 'Cannot enable both Curriculum Pages Only and Subject Pages Only.'
+        }
+        return true
+      }),
+    }),
+    defineField({
       name: 'baselineClone',
       title: 'Baseline Clone',
       type: 'boolean',
