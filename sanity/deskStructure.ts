@@ -136,6 +136,47 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                             ])
                         ),
 
+                      // Blog Content Group
+                      S.listItem()
+                        .title('Blog')
+                        .icon(BsBook)
+                        .child(
+                          S.list()
+                            .title(`${cloneName} - Blog`)
+                            .items([
+                              S.documentTypeListItem('blogPost')
+                                .title('Posts')
+                                .child(
+                                  S.documentList()
+                                    .title(`${cloneName} - Posts`)
+                                    .filter(isGlobalClone 
+                                      ? '_type == "blogPost" && !defined(cloneReference)'
+                                      : `_type == "blogPost" && cloneReference._ref == "${cloneId}"`
+                                    )
+                                ),
+                              S.documentTypeListItem('blogCategory')
+                                .title('Categories')
+                                .child(
+                                  S.documentList()
+                                    .title(`${cloneName} - Categories`)
+                                    .filter(isGlobalClone 
+                                      ? '_type == "blogCategory" && !defined(cloneReference)'
+                                      : `_type == "blogCategory" && cloneReference._ref == "${cloneId}"`
+                                    )
+                                ),
+                              S.documentTypeListItem('blogAuthor')
+                                .title('Authors')
+                                .child(
+                                  S.documentList()
+                                    .title(`${cloneName} - Authors`)
+                                    .filter(isGlobalClone 
+                                      ? '_type == "blogAuthor" && !defined(cloneReference)'
+                                      : `_type == "blogAuthor" && cloneReference._ref == "${cloneId}"`
+                                    )
+                                ),
+                            ])
+                        ),
+
                       // Subject Pages Content Group
                       S.listItem()
                         .title('Subject Pages Content')

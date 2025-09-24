@@ -21,6 +21,10 @@ import linkSettings from './linkSettings'
 import clone from './clone'
 import subjectHeroSection from './subjectHeroSection'
 import curriculumHeroSection from './curriculumHeroSection'
+import blockContent from './blockContent'
+import blogPost from './blogPost'
+import blogAuthor from './blogAuthor'
+import blogCategory from './blogCategory'
 
 export const schemaTypes = [
   clone,
@@ -46,4 +50,8 @@ export const schemaTypes = [
   linkSettings,
   subjectHeroSection,
   curriculumHeroSection,
+  blockContent,
+  blogPost,
+  blogAuthor,
+  blogCategory,
 ] 
