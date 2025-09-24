@@ -28,15 +28,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const cloneId = await getCloneIdForCurrentDomain();
     const isClone = !!cloneId;
     
-    // If homepageOnly flag is set for this clone, skip subjects/curriculums entirely
-    const homepageOnly = isClone ? await client.fetch<boolean>(
-      `*[_type == "clone" && cloneId.current == $cloneId][0].homepageOnly == true`,
+    // Read page availability flags from the clone
+    const flags = isClone ? await client.fetch(
+      `*[_type == "clone" && cloneId.current == $cloneId][0]{
+        "homepageOnly": homepageOnly == true,
+        "subjectOnly": enableSubjectPagesOnly == true,
+        "curriculumOnly": enableCurriculumPagesOnly == true
+      }`,
       { cloneId }
-    ) : false;
+    ) : { homepageOnly: false, subjectOnly: false, curriculumOnly: false };
 
     // Fetch subject and curriculum page slugs from Sanity
     // For clones that are not homepageOnly, include clone-specific OR baseline/global pages
-    const subjectQuery = isClone ? `*[_type == "subjectPage" && ${homepageOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
+    const subjectQuery = isClone ? `*[_type == "subjectPage" && ${flags.homepageOnly || flags.curriculumOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
       cloneReference->cloneId.current == $cloneId || 
       cloneReference->baselineClone == true || 
       !defined(cloneReference)
@@ -50,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       _id
     }`;
     
-    const curriculumQuery = isClone ? `*[_type == "curriculumPage" && ${homepageOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
+    const curriculumQuery = isClone ? `*[_type == "curriculumPage" && ${flags.homepageOnly || flags.subjectOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
       cloneReference->cloneId.current == $cloneId || 
       cloneReference->baselineClone == true || 
       !defined(cloneReference)

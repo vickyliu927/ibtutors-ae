@@ -97,13 +97,17 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
     return result;
   }
   
-  // If this clone is marked as homepage-only in Sanity, return empty list (no fallback)
-  const homepageOnly = await client.fetch<boolean>(
-    `*[_type == "clone" && cloneId.current == $cloneId][0].homepageOnly == true`,
+  // Respect clone page availability flags
+  const flags = await client.fetch(
+    `*[_type == "clone" && cloneId.current == $cloneId][0]{
+      "homepageOnly": homepageOnly == true,
+      "subjectOnly": enableSubjectPagesOnly == true,
+      "curriculumOnly": enableCurriculumPagesOnly == true
+    }`,
     { cloneId }
   );
-  if (homepageOnly) {
-    console.log('[NavigationData] homepageOnly=true for clone; returning empty subjects');
+  if (flags?.homepageOnly || flags?.curriculumOnly) {
+    console.log('[NavigationData] subjects disabled by clone flags; returning empty subjects');
     return [];
   }
 
@@ -200,13 +204,17 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
     }
   }
   
-  // If this clone is marked as homepage-only in Sanity, return empty list (no fallback)
-  const homepageOnly = await client.fetch<boolean>(
-    `*[_type == "clone" && cloneId.current == $cloneId][0].homepageOnly == true`,
+  // Respect clone page availability flags
+  const flags = await client.fetch(
+    `*[_type == "clone" && cloneId.current == $cloneId][0]{
+      "homepageOnly": homepageOnly == true,
+      "subjectOnly": enableSubjectPagesOnly == true,
+      "curriculumOnly": enableCurriculumPagesOnly == true
+    }`,
     { cloneId }
   );
-  if (homepageOnly) {
-    console.log('[NavigationData] homepageOnly=true for clone; returning empty curriculums');
+  if (flags?.homepageOnly || flags?.subjectOnly) {
+    console.log('[NavigationData] curriculums disabled by clone flags; returning empty curriculums');
     return [];
   }
 

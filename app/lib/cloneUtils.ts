@@ -9,6 +9,8 @@ export interface CloneData {
   isActive: boolean;
   baselineClone: boolean;
   homepageOnly?: boolean;
+  enableSubjectPagesOnly?: boolean;
+  enableCurriculumPagesOnly?: boolean;
   metadata: {
     targetAudience: string;
     region: string;
@@ -42,6 +44,9 @@ export async function getAllClones(): Promise<CloneData[]> {
       cloneDescription,
       isActive,
       baselineClone,
+      homepageOnly,
+      enableSubjectPagesOnly,
+      enableCurriculumPagesOnly,
       metadata,
       createdAt,
       updatedAt
