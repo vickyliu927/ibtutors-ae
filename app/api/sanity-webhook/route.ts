@@ -16,6 +16,18 @@ export async function POST(request: NextRequest) {
     // Parse the webhook body
     const body = await request.json();
     
+    // Revalidate for blog posts
+    if (body._type === 'blogPost') {
+      try {
+        revalidatePath('/blog');
+        if (body.slug?.current) {
+          revalidatePath(`/blog/${body.slug.current}`);
+        }
+      } catch (e) {
+        console.error('Blog revalidate error:', e);
+      }
+    }
+
     // Check if this is a subjectPage update that changed a slug
     if (body._type === 'subjectPage' && body.slug && body.slug.current) {
       // Handle slug change
