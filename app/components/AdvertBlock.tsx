@@ -8,6 +8,7 @@ interface AdvertBlockProps {
     subtitle?: string;
     description?: string;
     highlightText?: string;
+    highlightLink?: string;
     pricingText?: string;
     backgroundColor?: string;
     enabled?: boolean;
@@ -24,6 +25,7 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
   const subtitle = sectionData?.subtitle || "by 10,000+ students";
   const description = sectionData?.description || "We're trusted by hundreds of IB schools globally. All tutoring includes FREE access to our";
   const highlightText = sectionData?.highlightText || "IB Resources Platform";
+  const highlightLink = sectionData?.highlightLink;
   const pricingText = sectionData?.pricingText || "- normally £29/month!";
   const backgroundColor = sectionData?.backgroundColor || "#001A96";
   return (
@@ -195,10 +197,14 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
             <div className="max-w-3xl mx-auto">
               <p className="font-gilroy text-base sm:text-lg lg:text-xl leading-relaxed" style={{ fontWeight: 300 }}>
                 {description}{' '}
-                                 <span className="underline decoration-white decoration-2 underline-offset-4">
-                   {highlightText}
-                 </span>
-                 {' '}{pricingText}
+                {highlightLink ? (
+                  <a href={highlightLink} target="_blank" rel="noopener noreferrer" className="underline decoration-white decoration-2 underline-offset-4">
+                    {highlightText}
+                  </a>
+                ) : (
+                  <span className="underline decoration-white decoration-2 underline-offset-4">{highlightText}</span>
+                )}
+                {' '}{pricingText}
               </p>
             </div>
           </div>

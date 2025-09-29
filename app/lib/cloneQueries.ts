@@ -627,6 +627,7 @@ export const advertBlockSectionQueries = {
     subtitle,
     description,
     highlightText,
+    highlightLink,
     pricingText,
     backgroundColor,
     enabled,

@@ -38,6 +38,13 @@ export default defineType({
       validation: (Rule) => Rule.required().max(50).warning('Keep platform name under 50 characters'),
     }),
     defineField({
+      name: 'highlightLink',
+      title: 'Highlighted Platform URL',
+      type: 'url',
+      description: 'Optional link to open when the highlighted platform name is clicked',
+      validation: (Rule) => Rule.uri({ allowRelative: false, scheme: ['http', 'https'] }),
+    }),
+    defineField({
       name: 'pricingText',
       title: 'Pricing Text',
       type: 'string',
