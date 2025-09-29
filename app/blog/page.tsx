@@ -5,15 +5,29 @@ import BlogListing from './BlogListing';
 import { BlogPostItem } from './BlogGrid';
 import { LazyContactForm } from '../components/LazyComponents';
 import { getBlogPosts, getBlogCategories } from '../lib/getBlogData';
+import { client } from '@/sanity/lib/client';
+import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 import { urlFor } from '@/sanity/lib/image';
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: 'Blog | IB Tutors',
-  description: 'Insights, guides, tips and resources from our expert tutors.',
-  alternates: { canonical: '/blog' },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Fetch clone-aware blog page settings
+  const cloneId = await getCloneIdForCurrentDomain();
+  const query = `{
+    "cloneSpecific": *[_type == "blogPageSettings" && defined($cloneId) && cloneReference->cloneId.current == $cloneId][0]{ seoTitle, seoDescription },
+    "baseline": *[_type == "blogPageSettings" && cloneReference->baselineClone == true][0]{ seoTitle, seoDescription },
+    "default": *[_type == "blogPageSettings" && !defined(cloneReference)][0]{ seoTitle, seoDescription }
+  }`;
+  const result = await client.fetch(query, { cloneId });
+  const data = result?.cloneSpecific || result?.baseline || result?.default || null;
+
+  return {
+    title: data?.seoTitle || 'Blog | IB Tutors',
+    description: data?.seoDescription || 'Insights, guides, tips and resources from our expert tutors.',
+    alternates: { canonical: '/blog' },
+  };
+}
 
 // Placeholder posts; replace with CMS integration later
 async function getPostsFromSanity(): Promise<BlogPostItem[]> {

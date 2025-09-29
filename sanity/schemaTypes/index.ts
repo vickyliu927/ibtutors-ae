@@ -25,6 +25,7 @@ import blockContent from './blockContent'
 import blogPost from './blogPost'
 import blogAuthor from './blogAuthor'
 import blogCategory from './blogCategory'
+import blogPageSettings from './blogPageSettings'
 
 export const schemaTypes = [
   clone,
@@ -54,4 +55,5 @@ export const schemaTypes = [
   blogPost,
   blogAuthor,
   blogCategory,
+  blogPageSettings,
 ] 
