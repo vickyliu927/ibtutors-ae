@@ -144,7 +144,7 @@ export default async function BlogDetailPage({ params }: Params) {
       </section>
 
       {/* BODY WITH SIDEBARS */}
-      <article className="max-w-[1200px] mx-auto px-4 pt-24 sm:pt-28 pb-44 lg:pb-52 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_340px] gap-8 lg:gap-10 bg-white">
+      <article className="max-w-[1320px] mx-auto px-4 pt-24 sm:pt-28 pb-44 lg:pb-52 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_340px] gap-8 lg:gap-10 bg-white">
         {/* Contents sidebar */}
         <aside className="hidden lg:block">
           <div className="sticky top-28">
@@ -208,7 +208,15 @@ export default async function BlogDetailPage({ params }: Params) {
           {data.tutorAdvertBlock ? (
             <div className="rounded-2xl border border-gray-200 p-6 sticky top-28 bg-white shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
               <h3 className="text-[22px] font-semibold text-[#171D23]">{data.tutorAdvertBlock.title || 'Need help from an expert?'}</h3>
-              <div className="mt-2 text-sm text-[#565C62]">{data.tutorAdvertBlock.description || 'The world’s top online tutoring provider trusted by students, parents, and schools globally.'}</div>
+              {/* Ratings line */}
+              <div className="mt-2 flex items-center gap-2 text-[14px] text-[#171D23]">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                  <path d="M12 2l2.95 6.06L22 9.27l-5 4.87L18.9 22 12 18.56 5.1 22 7 14.14 2 9.27l7.05-1.21L12 2z"/>
+                </svg>
+                <span><span className="font-medium">4.93/5</span> based on <span className="font-medium">733 reviews</span> in</span>
+                <span className="text-[16px] leading-none">🇬🇧</span>
+              </div>
+              <div className="mt-2 text-[14px] text-[#565C62]">{data.tutorAdvertBlock.description || 'The world’s top online tutoring provider trusted by students, parents, and schools globally.'}</div>
 
               {/* Tutors list */}
               {data.tutorAdvertBlock.tutors && data.tutorAdvertBlock.tutors.length > 0 ? (
@@ -226,11 +234,11 @@ export default async function BlogDetailPage({ params }: Params) {
                           />
                         ) : null}
                       </div>
-                      <div className="min-w-0">
-                        <div className="text-lg font-semibold text-[#171D23] leading-tight truncate">{t.name || 'Expert Tutor'}</div>
-                        {t.professionalTitle ? (
-                          <div className="text-sm text-[#565C62] leading-tight line-clamp-2">{t.professionalTitle}</div>
-                        ) : null}
+                    <div className="min-w-0">
+                      <div className="text-[22px] font-semibold text-[#171D23] leading-tight truncate">{t.name || 'Expert Tutor'}</div>
+                      {t.professionalTitle ? (
+                        <div className="text-[14px] text-[#565C62] leading-tight line-clamp-2">{t.professionalTitle}</div>
+                      ) : null}
                       </div>
                     </div>
                   ))}
@@ -272,6 +280,46 @@ export default async function BlogDetailPage({ params }: Params) {
           ) : null}
         </aside>
       </article>
+
+      {/* Additional Information Block - full-width section under sidebars */}
+      {data.additionalDescription || data.additionalDescriptionTitle ? (
+        <section className="max-w-[1200px] mx-auto px-4 pb-44 lg:pb-52">
+          <div className="rounded-3xl border border-gray-200 bg-[#F7F8FD]/60 p-6 sm:p-8 lg:p-10 flex flex-col lg:flex-row items-start gap-8">
+            <div className="flex-1">
+              {data.additionalDescriptionTitle ? (
+                <h3 className="text-[22px] font-semibold text-[#171D23]">{data.additionalDescriptionTitle}</h3>
+              ) : null}
+              {data.additionalDescription ? (
+                <p className="mt-4 text-[14px] leading-[170%] text-[#171D23] font-light">{data.additionalDescription}</p>
+              ) : null}
+            </div>
+            {/* Static tutor card (hardcoded image and bio) */}
+            <div className="w-full lg:w-[420px] bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="flex items-center gap-4 p-5">
+                <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                  <Image
+                    src="/images/blog-static-tutor.jpg"
+                    alt="Featured Tutor"
+                    fill
+                    className="object-cover"
+                    sizes="96px"
+                    priority={false}
+                  />
+                  <a href="/hire-a-tutor" className="absolute bottom-0 right-0 w-9 h-9 bg-[#001A96] text-white flex items-center justify-center rounded-tl-md">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7 17L17 7M17 7H9M17 7V15" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[22px] font-semibold text-[#171D23] leading-tight">Charlie</div>
+                  <div className="text-[14px] text-[#565C62] leading-snug">Professional tutor and Cambridge University researcher</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }
