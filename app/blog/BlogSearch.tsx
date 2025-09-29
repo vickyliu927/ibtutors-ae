@@ -11,12 +11,20 @@ interface BlogSearchProps {
 }
 
 export default function BlogSearch({ value, onChange, categories = [], selectedCategory, onCategoryChange }: BlogSearchProps) {
+  const [localValue, setLocalValue] = React.useState(value);
+  React.useEffect(() => { setLocalValue(value); }, [value]);
+
+  const submit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    onChange(localValue);
+  };
+
   return (
     <div className="w-full max-w-[1440px] mx-auto px-4 py-6">
-      <div className="flex gap-3">
+      <form className="flex gap-3" onSubmit={submit}>
         <input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={localValue}
+          onChange={(e) => setLocalValue(e.target.value)}
           placeholder="Search blog posts"
           className="flex-1 h-12 px-4 rounded-[12px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#001A96]"
         />
@@ -28,18 +36,17 @@ export default function BlogSearch({ value, onChange, categories = [], selectedC
           >
             <option value="">All categories</option>
             {categories.map((c) => (
-              <option key={c.title} value={c.slug?.current || c.title}>{c.title}</option>
+              <option key={c.title} value={c.title}>{c.title}</option>
             ))}
           </select>
         ) : null}
         <button
-          type="button"
+          type="submit"
           className="h-12 px-6 rounded-[12px] bg-[#001A96] text-white text-sm font-medium"
-          onClick={() => { /* no-op submit as search is reactive */ }}
         >
           Search
         </button>
-      </div>
+      </form>
     </div>
   );
 }
