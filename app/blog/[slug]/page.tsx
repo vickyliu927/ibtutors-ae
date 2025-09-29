@@ -1,8 +1,10 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { getBlogPostBySlug } from '../../lib/getBlogData';
-import { PortableText } from 'next-sanity';
+import Image from 'next/image';
 import Link from 'next/link';
+import { PortableText } from 'next-sanity';
+import { urlFor } from '@/sanity/lib/image';
+import { getBlogPostBySlug } from '../../lib/getBlogData';
 
 export const revalidate = 60;
 
@@ -31,19 +33,142 @@ export default async function BlogDetailPage({ params }: Params) {
     );
   }
 
+  // Build table of contents from PortableText blocks (h2/h3 only)
+  const headings: { id: string; text: string; level: number }[] = [];
+  const slugify = (input: string) =>
+    input
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
+
+  // Derive ids while preserving order
+  let autoIdCounter = 0;
+  (data.body || []).forEach((block: any) => {
+    if (block?._type === 'block' && (block.style === 'h2' || block.style === 'h3')) {
+      const text = (block.children || []).map((c: any) => c.text).join('');
+      if (!text) return;
+      const base = slugify(text);
+      const id = base || `section-${++autoIdCounter}`;
+      headings.push({ id, text, level: block.style === 'h2' ? 2 : 3 });
+    }
+  });
+
+  const portableComponents = {
+    block: {
+      h2: ({ children }: { children: React.ReactNode }) => {
+        const text = String(children as any);
+        const id = slugify(text) || `section-${++autoIdCounter}`;
+        return (
+          <h2 id={id} className="scroll-mt-24 text-[24px] sm:text-[28px] font-semibold text-[#171D23] mt-10">{children}</h2>
+        );
+      },
+      h3: ({ children }: { children: React.ReactNode }) => {
+        const text = String(children as any);
+        const id = slugify(text) || `section-${++autoIdCounter}`;
+        return (
+          <h3 id={id} className="scroll-mt-24 text-[20px] sm:text-[22px] font-semibold text-[#171D23] mt-8">{children}</h3>
+        );
+      },
+    },
+    marks: {
+      link: ({ value, children }: { value: { href?: string }; children: React.ReactNode }) => {
+        const href = value?.href || '#';
+        return (
+          <a href={href} className="text-[#001A96] underline hover:opacity-80" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+            {children}
+          </a>
+        );
+      },
+    },
+  } as const;
+
   return (
     <main className="min-h-screen">
-      <article className="max-w-[1200px] mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-10">
-        <div>
-          <h1 className="text-3xl sm:text-4xl font-medium text-[#171D23]">{data.title}</h1>
-          <div className="mt-3 text-sm text-gray-500">
-            <span>{data.publishedAt ? new Date(data.publishedAt).toLocaleDateString() : ''}</span>
-            {data.readingTime ? <span> • {data.readingTime} min read</span> : null}
+      {/* HERO */}
+      <section
+        className="w-full relative"
+        style={{
+          background:
+            'linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)',
+        }}
+      >
+        <div className="max-w-[1200px] mx-auto px-4 pt-16 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-28">
+          <div className="mb-6 text-sm">
+            <Link href="/blog" className="text-[#001A96] hover:underline">Blog</Link>
+            <span className="mx-2 text-gray-400">›</span>
+            <span className="text-gray-600">Article</span>
           </div>
-          {data.intro ? <p className="mt-4 text-lg text-gray-700">{data.intro}</p> : null}
-          <div className="prose max-w-none mt-8">
-            {/* Body */}
-            <PortableText value={data.body || []} />
+          <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 items-center">
+            <div className="aspect-[16/10] w-full bg-gray-100 rounded-2xl overflow-hidden relative">
+              {data.mainImage ? (
+                <Image
+                  src={urlFor(data.mainImage).width(1200).height(750).url()}
+                  alt={data.imageAlt || data.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority={true}
+                />
+              ) : null}
+            </div>
+            <div>
+              <h1 className="text-[36px] sm:text-[44px] leading-[120%] font-medium text-[#171D23]">{data.title}</h1>
+              {data.intro ? (
+                <p className="mt-4 text-lg sm:text-xl text-[#171D23] font-light leading-[160%]">{data.intro}</p>
+              ) : null}
+              <div className="mt-6 flex items-center gap-4 text-sm text-gray-600">
+                {data.author?.avatar ? (
+                  <span className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                    <Image
+                      src={urlFor(data.author.avatar).width(80).height(80).url()}
+                      alt={data.author?.name || 'Author'}
+                      fill
+                      className="object-cover"
+                      sizes="40px"
+                    />
+                  </span>
+                ) : null}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {data.readingTime ? (
+                    <span className="text-[#171D23]">{data.readingTime} min Read</span>
+                  ) : null}
+                  {data.author?.name ? (
+                    <span className="text-[#171D23]">Written by: <span className="font-medium">{data.author.name}</span></span>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BODY WITH SIDEBARS */}
+      <article className="max-w-[1200px] mx-auto px-4 pt-24 sm:pt-28 pb-44 lg:pb-52 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_340px] gap-8 lg:gap-10 bg-white">
+        {/* Contents sidebar */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-28">
+            <h3 className="text-base font-semibold text-[#171D23] mb-3">Contents</h3>
+            <nav className="space-y-2 text-sm">
+              {headings.length === 0 ? (
+                <div className="text-gray-500">No sections</div>
+              ) : (
+                headings.map((h) => (
+                  <div key={h.id} className={h.level === 3 ? 'pl-4' : ''}>
+                    <a href={`#${h.id}`} className="text-[#001A96] hover:underline">
+                      {h.text}
+                    </a>
+                  </div>
+                ))
+              )}
+            </nav>
+          </div>
+        </aside>
+
+        {/* Main content */}
+        <div>
+          <div className="prose max-w-none mt-0 lg:pr-8">
+            <PortableText value={data.body || []} components={portableComponents as any} />
           </div>
 
           {/* Related posts */}
@@ -78,18 +203,42 @@ export default async function BlogDetailPage({ params }: Params) {
           ) : null}
         </div>
 
-        {/* Sidebar */}
+        {/* Right Sidebar */}
         <aside className="lg:pt-8">
           {data.tutorAdvertBlock ? (
-            <div className="rounded-2xl border border-gray-200 p-5">
-              {data.tutorAdvertBlock.title ? (
-                <h3 className="text-lg font-medium">{data.tutorAdvertBlock.title}</h3>
+            <div className="rounded-2xl border border-gray-200 p-6 sticky top-28 bg-white shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
+              <h3 className="text-[22px] font-semibold text-[#171D23]">{data.tutorAdvertBlock.title || 'Need help from an expert?'}</h3>
+              <div className="mt-2 text-sm text-[#565C62]">{data.tutorAdvertBlock.description || 'The world’s top online tutoring provider trusted by students, parents, and schools globally.'}</div>
+
+              {/* Tutors list */}
+              {data.tutorAdvertBlock.tutors && data.tutorAdvertBlock.tutors.length > 0 ? (
+                <div className="mt-6 space-y-6">
+                  {data.tutorAdvertBlock.tutors.map((t, idx) => (
+                    <div key={t._id || idx} className="flex items-center gap-4">
+                      <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                        {t.profilePhoto ? (
+                          <Image
+                            src={urlFor(t.profilePhoto).width(180).height(180).url()}
+                            alt={t.name || 'Tutor'}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                          />
+                        ) : null}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-lg font-semibold text-[#171D23] leading-tight truncate">{t.name || 'Expert Tutor'}</div>
+                        {t.professionalTitle ? (
+                          <div className="text-sm text-[#565C62] leading-tight line-clamp-2">{t.professionalTitle}</div>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : null}
-              {data.tutorAdvertBlock.description ? (
-                <p className="mt-2 text-sm text-gray-700">{data.tutorAdvertBlock.description}</p>
-              ) : null}
+
               {data.tutorAdvertBlock.buttonText && data.tutorAdvertBlock.buttonLink ? (
-                <a href={data.tutorAdvertBlock.buttonLink} className="mt-4 inline-block px-4 h-10 rounded-lg bg-[#001A96] text-white text-sm font-medium">
+                <a href={data.tutorAdvertBlock.buttonLink} className="mt-8 inline-flex w-full items-center justify-center h-12 rounded-full bg-[#001A96] text-white text-sm font-medium">
                   {data.tutorAdvertBlock.buttonText}
                 </a>
               ) : null}

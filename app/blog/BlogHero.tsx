@@ -16,7 +16,7 @@ export default function BlogHero({ title = 'Blog', description = 'Insights, guid
           'linear-gradient(103deg, #FFF6F3 0%, #F2F4FA 68.07%, #F6F5FE 100%)',
       }}
     >
-      <div className="max-w-[1440px] mx-auto px-4 pt-12 sm:pt-16 lg:pt-20 pb-24 sm:pb-28 lg:pb-32">
+      <div className="max-w-[1440px] mx-auto px-4 pt-24 sm:pt-32 lg:pt-36 pb-24 sm:pb-28 lg:pb-32">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-[40px] sm:text-[48px] lg:text-[56px] leading-[120%] font-medium text-[#171D23] font-gilroy">
             {title}

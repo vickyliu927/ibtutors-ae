@@ -95,7 +95,7 @@ export interface BlogPostDetail {
     description?: string;
     buttonText?: string;
     buttonLink?: string;
-    tutors?: Array<{ _id: string }>;
+    tutors?: Array<{ _id: string; name?: string; professionalTitle?: string; profilePhoto?: any }>;
   };
   resourceLinks?: Array<{ title: string; url: string }>;
   sidebarLinks?: Array<{ title: string; url: string }>;
@@ -122,7 +122,11 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPostDetail | 
     tutorCard{ tutor->{ _id }, subheading },
     relatedPosts[]->{ _id, title, slug },
     tutorAdvertBlock{
-      title, description, buttonText, buttonLink, tutors[]->{ _id }
+      title,
+      description,
+      buttonText,
+      buttonLink,
+      tutors[]->{ _id, name, professionalTitle, profilePhoto }
     },
     resourceLinks[]{ title, url },
     sidebarLinks[]{ title, url },

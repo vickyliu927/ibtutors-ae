@@ -57,7 +57,7 @@ export default function BlogGrid({ posts, searchQuery, pageSize = 15 }: BlogGrid
               ) : null}
             </div>
             <div className="p-4">
-              <div className="text-xs text-gray-500 mb-1">{post.date}</div>
+              {/* Removed timestamp per design request */}
               <h3 className="text-lg font-medium text-[#171D23] leading-snug line-clamp-2 group-hover:underline">
                 {post.title}
               </h3>
