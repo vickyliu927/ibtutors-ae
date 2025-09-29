@@ -5,6 +5,7 @@ import BlogListing from './BlogListing';
 import { BlogPostItem } from './BlogGrid';
 import { LazyContactForm } from '../components/LazyComponents';
 import { getBlogPosts, getBlogCategories } from '../lib/getBlogData';
+import { urlFor } from '@/sanity/lib/image';
 
 export const revalidate = 60;
 
@@ -21,7 +22,7 @@ async function getPostsFromSanity(): Promise<BlogPostItem[]> {
     id: p._id,
     title: p.title,
     description: p.intro,
-    imageUrl: p.mainImage ? (typeof p.mainImage === 'string' ? p.mainImage : undefined) : undefined,
+    imageUrl: p.mainImage ? (typeof p.mainImage === 'string' ? p.mainImage : urlFor(p.mainImage).width(800).height(450).url()) : undefined,
     date: p.publishedAt,
     href: `/blog/${p.slug?.current || ''}`,
     tags: (p.categories || []).map((c) => c.title),
