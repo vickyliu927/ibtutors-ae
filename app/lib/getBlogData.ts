@@ -89,7 +89,7 @@ export interface BlogPostDetail {
   additionalDescriptionTitle?: string;
   additionalDescription?: string;
   tutorCard?: { tutor?: { _id: string }, subheading?: string };
-  relatedPosts?: Array<{ _id: string; title: string; slug: { current: string } }>;
+  relatedPosts?: Array<{ _id: string; title: string; slug: { current: string }; mainImage?: any; imageAlt?: string }>;
   tutorAdvertBlock?: {
     title?: string;
     description?: string;
@@ -120,7 +120,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPostDetail | 
     additionalDescriptionTitle,
     additionalDescription,
     tutorCard{ tutor->{ _id }, subheading },
-    relatedPosts[]->{ _id, title, slug },
+    relatedPosts[]->{ _id, title, slug, mainImage, imageAlt },
     tutorAdvertBlock{
       title,
       description,

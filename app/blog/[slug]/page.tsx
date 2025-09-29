@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { PortableText } from 'next-sanity';
 import { urlFor } from '@/sanity/lib/image';
 import { getBlogPostBySlug } from '../../lib/getBlogData';
+import { LazyContactForm } from '@/app/components/LazyComponents';
 
 export const revalidate = 60;
 
@@ -144,7 +145,7 @@ export default async function BlogDetailPage({ params }: Params) {
       </section>
 
       {/* BODY WITH SIDEBARS */}
-      <article className="max-w-[1320px] mx-auto px-4 pt-24 sm:pt-28 pb-44 lg:pb-52 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_340px] gap-8 lg:gap-10 bg-white">
+      <article className="max-w-[1320px] mx-auto px-4 pt-24 sm:pt-28 pb-24 lg:pb-28 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_340px] gap-8 lg:gap-10 bg-white">
         {/* Contents sidebar */}
         <aside className="hidden lg:block">
           <div className="sticky top-28">
@@ -171,19 +172,7 @@ export default async function BlogDetailPage({ params }: Params) {
             <PortableText value={data.body || []} components={portableComponents as any} />
           </div>
 
-          {/* Related posts */}
-          {data.relatedPosts && data.relatedPosts.length > 0 ? (
-            <section className="mt-12">
-              <h2 className="text-xl font-semibold mb-4">Related Posts</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {data.relatedPosts.map((p) => (
-                  <Link key={p._id} href={`/blog/${p.slug?.current}`} className="p-4 rounded-lg border border-gray-200 hover:shadow-sm">
-                    <div className="text-[#001A96] font-medium underline">{p.title}</div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          ) : null}
+          {/* Related posts moved below in full-width section */}
 
           {/* FAQs */}
           {data.faqReferences && data.faqReferences.length > 0 ? (
@@ -283,7 +272,7 @@ export default async function BlogDetailPage({ params }: Params) {
 
       {/* Additional Information Block - full-width section under sidebars */}
       {data.additionalDescription || data.additionalDescriptionTitle ? (
-        <section className="max-w-[1200px] mx-auto px-4 pb-44 lg:pb-52">
+        <section className="max-w-[1200px] mx-auto px-4 pb-24 lg:pb-28">
           <div className="rounded-3xl border border-gray-200 bg-[#F7F8FD]/60 p-6 sm:p-8 lg:p-10 flex flex-col lg:flex-row items-start gap-8">
             <div className="flex-1">
               {data.additionalDescriptionTitle ? (
@@ -320,6 +309,37 @@ export default async function BlogDetailPage({ params }: Params) {
           </div>
         </section>
       ) : null}
+
+      {/* Related posts - after additional information section */}
+      {data.relatedPosts && data.relatedPosts.length > 0 ? (
+        <section className="max-w-[1200px] mx-auto px-4 pb-16">
+          <h2 className="text-xl font-semibold mb-4">Related Posts</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {data.relatedPosts.map((p) => (
+              <Link key={p._id} href={`/blog/${p.slug?.current}`} className="group flex items-center gap-4 p-3 rounded-2xl border border-gray-200 hover:shadow-sm bg-white overflow-hidden">
+                <div className="relative w-28 h-20 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                  {p.mainImage ? (
+                    <Image
+                      src={urlFor(p.mainImage).width(320).height(240).url()}
+                      alt={p.imageAlt || p.title}
+                      fill
+                      className="object-cover"
+                      sizes="112px"
+                    />
+                  ) : null}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[#171D23] font-semibold group-hover:underline line-clamp-2">{p.title}</div>
+                </div>
+                <div className="text-[#001A96] ml-2">→</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Contact form before footer */}
+      <LazyContactForm />
     </main>
   );
 }
