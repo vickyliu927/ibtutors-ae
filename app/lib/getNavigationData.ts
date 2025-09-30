@@ -24,6 +24,7 @@ export interface NavigationData {
   curriculums: NavigationCurriculumData[];
   navbarData: any;
   currentDomain: string;
+  hasBlog: boolean;
 }
 
 /**
@@ -49,10 +50,11 @@ export async function getNavigationData(): Promise<NavigationData> {
     const navbarPromise = fetchNavbarWithFallback(cloneId);
     
     // Execute all queries in parallel
-    const [subjects, curriculums, navbarData] = await Promise.all([
+    const [subjects, curriculums, navbarData, hasBlog] = await Promise.all([
       subjectsPromise,
       curriculumsPromise, 
-      navbarPromise
+      navbarPromise,
+      getHasBlogForClone(cloneId),
     ]);
     
     // Get current domain for link generation
@@ -64,7 +66,8 @@ export async function getNavigationData(): Promise<NavigationData> {
       subjects,
       curriculums,
       navbarData,
-      currentDomain
+      currentDomain,
+      hasBlog
     };
   } catch (error) {
     console.error('[NavigationData] Error fetching navigation data:', error);
@@ -74,9 +77,23 @@ export async function getNavigationData(): Promise<NavigationData> {
       subjects: [],
       curriculums: [],
       navbarData: null,
-      currentDomain: ''
+      currentDomain: '',
+      hasBlog: false
     };
   }
+}
+
+// Determine if a clone has blog posts (no fallback)
+async function getHasBlogForClone(cloneId: string | null): Promise<boolean> {
+  if (!cloneId) {
+    // For global site, consider blog available if any default or baseline exists
+    const q = `count(*[_type == "blogPost" && (!defined(cloneReference) || cloneReference->baselineClone == true) && isActive == true])`;
+    const count = await client.fetch<number>(q);
+    return (count || 0) > 0;
+  }
+  const q = `count(*[_type == "blogPost" && cloneReference->cloneId.current == $cloneId && isActive == true])`;
+  const count = await client.fetch<number>(q, { cloneId });
+  return (count || 0) > 0;
 }
 
 /**

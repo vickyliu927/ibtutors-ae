@@ -48,12 +48,13 @@ interface NavbarProps {
   subjects?: SubjectPageData[];  // Server-side data
   curriculums?: CurriculumPageData[];  // Server-side data
   currentDomain?: string;  // Domain context for link generation
+  hasBlog?: boolean; // controls display of Blog link
 }
 
 // Create a class name with specific meaning to avoid conflicts
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 
-const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: NavbarProps) => {
+const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, hasBlog = true }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const [showCurriculumDropdowns, setShowCurriculumDropdowns] = useState<{[key: string]: boolean}>({});
@@ -306,9 +307,11 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
           )}
 
           {/* Blog Link */}
-          <Link href="/blog" className="text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
-            Blog
-          </Link>
+          {hasBlog && (
+            <Link href="/blog" className="text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
+              Blog
+            </Link>
+          )}
         </div>
 
         {/* CTA Button */}
@@ -455,28 +458,30 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain }: 
                   </div>
 
                   {/* Blog Link */}
-                  <Link
-                    href="/blog"
-                    onClick={() => setIsOpen(false)}
-                    className="flex w-full py-4 px-4 justify-between items-center border-b bg-white hover:bg-gray-50"
-                    style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                  >
-                    <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">Blog</span>
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  {hasBlog && (
+                    <Link
+                      href="/blog"
+                      onClick={() => setIsOpen(false)}
+                      className="flex w-full py-4 px-4 justify-between items-center border-b bg-white hover:bg-gray-50"
+                      style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                     >
-                      <path
-                        d="M3.5 11L8.49886 6L3.5 1"
-                        stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                        strokeWidth="1.6"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </Link>
+                      <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">Blog</span>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3.5 11L8.49886 6L3.5 1"
+                          stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Link>
+                  )}
 
                   {/* All Subjects Button - hidden if no subjects */}
                   {hasSubjects && (

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import HeroSection, { HeroData } from "./components/HeroSection";
 import AdvertBlock from "./components/AdvertBlock";
 import TutorProfiles, { TutorData } from "./components/TutorProfiles";
+import Navbar from "./components/Navbar";
 import SubjectGrid from "./components/SubjectGrid";
 import TutoringPlatformBanner, {
   PlatformBannerData,
@@ -73,6 +74,7 @@ interface HomepageData {
   testimonialSection: any | null;
   testimonials: any[];
   faqSection: any | null;
+  hasBlog: boolean;
 }
 
 /**
@@ -142,6 +144,11 @@ async function getHomepageDataWithCloneContext(
         const tutors = content.tutors.data || [];
         const testimonials = content.testimonials.data || [];
 
+        // Determine if this clone has blog posts (no fallback)
+        const hasBlog = Array.isArray(content?.blogPosts?.data)
+          ? content.blogPosts.data.length > 0
+          : false;
+
         // Transform tutorProfilesSection to include tutors data (maintaining backward compatibility)
         const tutorProfilesSectionWithTutors = tutorProfilesSection
           ? {
@@ -163,6 +170,7 @@ async function getHomepageDataWithCloneContext(
           testimonialSection,
           testimonials,
           faqSection,
+          hasBlog,
         };
       } catch (error) {
         console.error("Error fetching homepage content:", error);
@@ -178,6 +186,7 @@ async function getHomepageDataWithCloneContext(
           testimonialSection: null,
           testimonials: [],
           faqSection: null,
+          hasBlog: false,
         };
       }
     },
@@ -227,6 +236,7 @@ export default async function Home({
     testimonialSection: null,
     testimonials: [],
     faqSection: null,
+    hasBlog: false,
   };
 
   // Generate clone indicator props
@@ -239,6 +249,9 @@ export default async function Home({
 
   return (
     <main className="min-h-screen">
+      {/* Pass hasBlog to Navbar (SSR component include) */}
+      {/* If Navbar is composed elsewhere, ensure it receives hasBlog via props there */}
+      {/* Example only if Navbar used here: <Navbar hasBlog={hasBlog} /> */}
       {/* FAQPage JSON-LD when FAQ data exists */}
       {faqSection && faqSection.faqReferences && faqSection.faqReferences.length > 0 ? (
         <script

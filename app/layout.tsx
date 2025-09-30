@@ -91,6 +91,7 @@ export default async function RootLayout({
           subjects={navigationData.subjects}
           curriculums={navigationData.curriculums}
           currentDomain={navigationData.currentDomain}
+          hasBlog={navigationData.hasBlog}
         />
         {children}
         <Footer />
