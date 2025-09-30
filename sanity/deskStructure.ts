@@ -494,6 +494,20 @@ export const structure = (S: StructureBuilder) =>
                         .title('Platform Banners'),
                       S.documentTypeListItem('testimonialSection')
                         .title('Testimonial Sections'),
+                      // Blog group under Homepage Sections
+                      S.listItem()
+                        .title('Blog')
+                        .icon(BsBook)
+                        .child(
+                          S.list()
+                            .title('Blog')
+                            .items([
+                              S.documentTypeListItem('blogPost').title('Posts'),
+                              S.documentTypeListItem('blogAuthor').title('Blog Author'),
+                              S.documentTypeListItem('blogCategory').title('Blog Category'),
+                              S.documentTypeListItem('blogPageSettings').title('Blog Page Settings'),
+                            ])
+                        ),
                       // Homepage FAQ Sections
                       S.listItem()
                         .title('FAQ Sections (Homepage)')
