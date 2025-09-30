@@ -38,39 +38,40 @@ export async function getBlogPosts(limit: number = 45): Promise<BlogListResponse
     categories[]->{ _id, title },
   }`;
 
+  // If this request is for a specific clone, DO NOT fall back
+  if (cloneId) {
+    const onlyCloneQuery = `*[_type == "blogPost" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(publishedAt desc)[0...$limit] ${fields}`;
+    const items: BlogListItem[] = await client.fetch(onlyCloneQuery, { cloneId, limit });
+    return { items: items || [], sourceInfo: 'cloneSpecific' };
+  }
+
+  // Global/baseline behaviour remains with standard fallback
   const query = `{
-    "cloneSpecific": *[_type == "blogPost" && defined($cloneId) && cloneReference->cloneId.current == $cloneId && isActive == true] | order(publishedAt desc)[0...$limit] ${fields},
     "baseline": *[_type == "blogPost" && cloneReference->baselineClone == true && isActive == true] | order(publishedAt desc)[0...$limit] ${fields},
     "default": *[_type == "blogPost" && !defined(cloneReference) && isActive == true] | order(publishedAt desc)[0...$limit] ${fields}
   }`;
 
-  const result = await client.fetch(query, { cloneId, limit });
-
-  const items: BlogListItem[] =
-    (result?.cloneSpecific && result.cloneSpecific.length > 0)
-      ? result.cloneSpecific
-      : (result?.baseline && result.baseline.length > 0)
-        ? result.baseline
-        : (result?.default || []);
-
-  const sourceInfo = (result?.cloneSpecific && result.cloneSpecific.length > 0)
-    ? 'cloneSpecific'
-    : (result?.baseline && result.baseline.length > 0)
-      ? 'baseline'
-      : 'default';
-
+  const result = await client.fetch(query, { limit });
+  const items: BlogListItem[] = (result?.baseline && result.baseline.length > 0)
+    ? result.baseline
+    : (result?.default || []);
+  const sourceInfo = (result?.baseline && result.baseline.length > 0) ? 'baseline' : 'default';
   return { items, sourceInfo };
 }
 
 export async function getBlogCategories(): Promise<{ title: string; slug?: { current: string } }[]> {
   const cloneId = await getCloneIdForCurrentDomain();
+  if (cloneId) {
+    const onlyClone = `*[_type == "blogCategory" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(title asc) { title, slug }`;
+    const items = await client.fetch(onlyClone, { cloneId });
+    return items || [];
+  }
   const query = `{
-    "cloneSpecific": *[_type == "blogCategory" && defined($cloneId) && cloneReference->cloneId.current == $cloneId && isActive == true] | order(title asc) { title, slug },
     "baseline": *[_type == "blogCategory" && cloneReference->baselineClone == true && isActive == true] | order(title asc) { title, slug },
     "default": *[_type == "blogCategory" && !defined(cloneReference) && isActive == true] | order(title asc) { title, slug }
   }`;
-  const result = await client.fetch(query, { cloneId });
-  return (result?.cloneSpecific?.length ? result.cloneSpecific : (result?.baseline?.length ? result.baseline : (result?.default || [])));
+  const result = await client.fetch(query, {});
+  return (result?.baseline?.length ? result.baseline : (result?.default || []));
 }
 
 export interface BlogPostDetail {
@@ -133,14 +134,18 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPostDetail | 
     faqReferences[]->{ _id, question, answer }
   }`;
 
-  const query = `{
-    "cloneSpecific": *[_type == "blogPost" && defined($cloneId) && cloneReference->cloneId.current == $cloneId && slug.current == $slug][0] ${fields},
+  if (cloneId) {
+    const onlyCloneQuery = `*[_type == "blogPost" && cloneReference->cloneId.current == $cloneId && slug.current == $slug][0] ${fields}`;
+    const item = await client.fetch(onlyCloneQuery, { cloneId, slug });
+    return item || null;
+  }
+
+  const fallbackQuery = `{
     "baseline": *[_type == "blogPost" && cloneReference->baselineClone == true && slug.current == $slug][0] ${fields},
     "default": *[_type == "blogPost" && !defined(cloneReference) && slug.current == $slug][0] ${fields}
   }`;
-
-  const result = await client.fetch(query, { cloneId, slug });
-  return result?.cloneSpecific || result?.baseline || result?.default || null;
+  const result = await client.fetch(fallbackQuery, { slug });
+  return result?.baseline || result?.default || null;
 }
 
 

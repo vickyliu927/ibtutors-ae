@@ -706,6 +706,11 @@ export const structure = (S: StructureBuilder) =>
             'linkSettings',
             'contactFormContent',
             'contactFormSubmission',
+            // Hide blog types from root as they are under Homepage Sections → Blog
+            'blogPost',
+            'blogAuthor',
+            'blogCategory',
+            'blogPageSettings',
           ].includes(listItem.getId() || '')
       ),
     ]) 
