@@ -22,6 +22,8 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
   const sanitySubjects = (sectionData?.subjects || [])
     .filter((s: any) => s && s.enabled !== false)
     .filter((s: any) => {
+      // If explicit URL is provided, allow it without page existence check
+      if (s.url) return true;
       const slug = typeof s.slug === 'string' ? s.slug : s.slug?.current;
       return slug ? availableSlugs.has(slug) : false;
     });
@@ -40,7 +42,11 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
   };
 
   const getSubjectHref = (subject: any) => {
-    // If it's a Sanity subject object, use the slug directly
+    // Prefer explicit URL when present
+    if (typeof subject === 'object' && subject.url) {
+      return subject.url;
+    }
+    // Backward compatibility: if a slug is present, build from it
     if (typeof subject === 'object' && subject.slug) {
       return `/${subject.slug}`;
     }

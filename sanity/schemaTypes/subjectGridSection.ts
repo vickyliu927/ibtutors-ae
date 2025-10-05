@@ -45,10 +45,10 @@ const subjectGridSectionSchema = defineType({
               validation: (Rule: any) => Rule.required(),
             },
             {
-              name: 'slug',
-              title: 'Subject Slug',
-              type: 'string',
-              description: 'URL slug for the subject page (e.g., "maths", "biology")',
+              name: 'url',
+              title: 'Subject URL',
+              type: 'url',
+              description: 'Absolute or relative URL for the subject button (e.g., "/maths" or "https://example.com/maths")',
               validation: (Rule: any) => Rule.required(),
             },
             {
@@ -70,14 +70,14 @@ const subjectGridSectionSchema = defineType({
           preview: {
             select: {
               title: 'name',
-              subtitle: 'slug',
+              subtitle: 'url',
               order: 'displayOrder',
             },
             prepare(selection: any) {
               const { title, subtitle, order } = selection;
               return {
                 title: title,
-                subtitle: `/${subtitle} (Order: ${order})`,
+                subtitle: `${subtitle || ''} (Order: ${order})`,
               };
             },
           },
