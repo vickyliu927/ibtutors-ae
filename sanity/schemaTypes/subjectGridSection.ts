@@ -99,6 +99,13 @@ const subjectGridSectionSchema = defineType({
       description: 'Enable or disable the entire subject grid section',
       initialValue: true,
     }),
+    defineField({
+      name: 'hideWhenNoSubjects',
+      title: 'Hide When No Subject Pages',
+      type: 'boolean',
+      description: 'When enabled, the Subject Grid will not render if this clone has no subject pages. Prevents fallback to default content for SEO clarity.',
+      initialValue: false,
+    }),
   ],
   preview: {
     select: {

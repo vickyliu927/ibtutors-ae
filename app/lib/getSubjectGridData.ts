@@ -15,7 +15,10 @@ export interface SubjectPageData {
   };
 }
 
-export async function getSubjectGridData(cloneId?: string | null): Promise<SubjectPageData[]> {
+export async function getSubjectGridData(
+  cloneId?: string | null,
+  options?: { cloneOnly?: boolean }
+): Promise<SubjectPageData[]> {
   try {
     // If no cloneId provided, try to get it from middleware headers
     let targetCloneId = cloneId;
@@ -88,6 +91,16 @@ export async function getSubjectGridData(cloneId?: string | null): Promise<Subje
     if (!result) {
       console.log('[getSubjectGridData] No result from query');
       return [];
+    }
+
+    // Return clone-only subjects when requested (no fallback)
+    if (options?.cloneOnly) {
+      const cloneOnlyData = (result.cloneSpecific || []).map((item) => {
+        const { sourceInfo, ...subject } = item as SubjectPageData & { sourceInfo?: any };
+        return subject;
+      });
+      console.log(`[getSubjectGridData] cloneOnly mode: ${cloneOnlyData.length} subjects for clone: ${params.cloneId || 'none'}`);
+      return cloneOnlyData;
     }
 
     // Apply 3-tier fallback resolution

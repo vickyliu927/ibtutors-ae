@@ -7,7 +7,9 @@ interface SubjectGridProps {
 }
 
 const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
-  const subjects = await getSubjectGridData();
+  // Prefer clone-only subjects when the schema asks to hide when none exist
+  const cloneOnly = sectionData?.hideWhenNoSubjects === true;
+  const subjects = await getSubjectGridData(undefined, { cloneOnly });
 
   // Use Sanity data when available, otherwise fall back to static list
   const sectionTitle = sectionData?.title || "Popular IB Subjects";
@@ -35,6 +37,11 @@ const SubjectGrid = async ({ sectionData }: SubjectGridProps) => {
     : (subjects || [])
         .sort((a: any, b: any) => (a.displayOrder || 100) - (b.displayOrder || 100))
         .map((s: any) => ({ name: s.subject || s.title, slug: s.slug.current }));
+
+  // If requested, hide the entire section when no clone-specific subjects exist and there are no configured subjects
+  if (cloneOnly && sanitySubjects.length === 0 && (subjects?.length || 0) === 0) {
+    return null;
+  }
 
   // All subjects have consistent styling with hover effects and responsive padding
   const getSubjectStyle = (subject: any) => {
