@@ -17,6 +17,11 @@ export interface NavigationCurriculumData {
     current: string;
   };
   displayOrder: number;
+  subjectPages?: {
+    subject: string;
+    slug: { current: string };
+    displayOrder: number;
+  }[];
 }
 
 export interface NavigationData {
@@ -202,7 +207,12 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       title,
       curriculum,
       slug,
-      displayOrder
+      displayOrder,
+      subjectPages[]->{
+        subject,
+        slug,
+        displayOrder
+      }
     }`;
     
     try {
@@ -242,6 +252,11 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       curriculum,
       slug,
       displayOrder,
+      subjectPages[]->{
+        subject,
+        slug,
+        displayOrder
+      },
       "source": "cloneSpecific"
     },
     "baseline": *[_type == "curriculumPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
@@ -249,6 +264,11 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       curriculum,
       slug,
       displayOrder,
+      subjectPages[]->{
+        subject,
+        slug,
+        displayOrder
+      },
       "source": "baseline"
     },
     "default": *[_type == "curriculumPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
@@ -256,6 +276,11 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       curriculum,
       slug,
       displayOrder,
+      subjectPages[]->{
+        subject,
+        slug,
+        displayOrder
+      },
       "source": "default"
     }
   }`;

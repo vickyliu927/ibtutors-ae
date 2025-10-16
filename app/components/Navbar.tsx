@@ -22,6 +22,11 @@ interface CurriculumPageData {
     current: string;
   };
   displayOrder: number;
+  subjectPages?: {
+    subject: string;
+    slug: { current: string };
+    displayOrder: number;
+  }[];
 }
 
 // Navbar data interface
@@ -253,10 +258,27 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                       {curriculum.curriculum} Overview
                     </Link>
                     
-                    {/* Placeholder for future sub-pages */}
-                    <div className="px-4 py-2 text-xs text-gray-400 italic">
-                      Subject pages coming soon...
-                    </div>
+                    {/* Curriculum-specific subject pages */}
+                    {Array.isArray(curriculum.subjectPages) && curriculum.subjectPages.length > 0 ? (
+                      <div className="mt-1 border-t border-gray-100 pt-1">
+                        {curriculum.subjectPages
+                          .slice()
+                          .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
+                          .map((sp) => (
+                            <Link
+                              key={sp.slug.current}
+                              href={generateSubjectLink(sp.slug.current)}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              {sp.subject}
+                            </Link>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="px-4 py-2 text-xs text-gray-400 italic">
+                        Subject pages coming soon...
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

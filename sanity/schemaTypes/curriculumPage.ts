@@ -114,6 +114,14 @@ const curriculumPageSchema = defineType({
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'tutor' }] }],
     }),
+
+    defineField({
+      name: 'subjectPages',
+      title: 'Subject Pages',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'subjectPage' }] }],
+      description: 'Add curriculum-specific subject pages (e.g., IB Maths, IB English) to show under this curriculum in the navbar.',
+    }),
     defineField({
       name: 'testimonials',
       title: 'Curriculum Testimonials',
