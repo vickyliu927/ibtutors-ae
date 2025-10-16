@@ -371,7 +371,8 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": $cloneId
           }
         },
-        "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]._id)] | order(displayOrder asc) {
+        // Tutors referencing this subject page
+        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]._id)] | order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -390,6 +391,26 @@ async function getSubjectPageDataWithCloneContext(
               url
             }
           },
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken
+        },
+        // Tutors directly listed on the subject page (tutorsList)
+        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+          _id,
+          name,
+          professionalTitle,
+          priceTag { enabled, badgeText },
+          experience,
+          profilePhoto,
+          specialization,
+          hireButtonLink,
+          displayOnSubjectPages,
+          displayOrder,
+          profilePDF { asset->{ url } },
           price,
           rating,
           reviewCount,
@@ -439,7 +460,7 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": cloneReference->cloneId.current
           }
         },
-        "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]._id)] | order(displayOrder asc) {
+        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]._id)] | order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -458,6 +479,25 @@ async function getSubjectPageDataWithCloneContext(
               url
             }
           },
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken
+        },
+        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+          _id,
+          name,
+          professionalTitle,
+          priceTag { enabled, badgeText },
+          experience,
+          profilePhoto,
+          specialization,
+          hireButtonLink,
+          displayOnSubjectPages,
+          displayOrder,
+          profilePDF { asset->{ url } },
           price,
           rating,
           reviewCount,
@@ -507,7 +547,7 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": null
           }
         },
-        "tutors": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]._id)] | order(displayOrder asc) {
+        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]._id)] | order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -532,6 +572,25 @@ async function getSubjectPageDataWithCloneContext(
           activeStudents,
           totalLessons,
           languagesSpoken
+        },
+        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+          _id,
+          name,
+          professionalTitle,
+          priceTag { enabled, badgeText },
+          experience,
+          profilePhoto,
+          specialization,
+          hireButtonLink,
+          displayOnSubjectPages,
+          displayOrder,
+          profilePDF { asset->{ url } },
+          price,
+          rating,
+          reviewCount,
+          activeStudents,
+          totalLessons,
+          languagesSpoken
         }
       },
       "testimonialSection": *[_type == "testimonialSection"][0]
@@ -545,7 +604,7 @@ async function getSubjectPageDataWithCloneContext(
     ]);
 
     // Resolve using 3-tier fallback: cloneSpecific → baseline → default
-    let resolvedData: { subjectPage: any; tutors: any[] } | null = null;
+    let resolvedData: { subjectPage: any; tutorsRef?: any[]; tutorsInline?: any[] } | null = null;
     let resolvedSource = 'none';
     
     if (fallbackResult.cloneSpecific?.subjectPage) {
@@ -567,9 +626,15 @@ async function getSubjectPageDataWithCloneContext(
       return { pageData: null, heroData: null, testimonialSection: null, navbarData: null, type: null };
     }
 
+    // Merge tutors from inline list and reference-based query, removing duplicates by _id
+    const mergedTutorsMap: Record<string, any> = {};
+    (resolvedData.tutorsInline || []).forEach((t: any) => { if (t?._id) mergedTutorsMap[t._id] = t; });
+    (resolvedData.tutorsRef || []).forEach((t: any) => { if (t?._id) mergedTutorsMap[t._id] = { ...mergedTutorsMap[t._id], ...t }; });
+    const mergedTutors = Object.values(mergedTutorsMap).sort((a: any, b: any) => (a.displayOrder || 100) - (b.displayOrder || 100));
+
     const pageData: SubjectPageData = {
       ...resolvedData.subjectPage,
-      tutorsList: resolvedData.tutors || [],
+      tutorsList: mergedTutors,
       faqSection: faqSectionResult?.data || resolvedData.subjectPage.faqSection,
     };
 
