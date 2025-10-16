@@ -84,6 +84,18 @@ const TutorProfiles = ({
     }));
   };
 
+  // Render helper: convert '*' markers into explicit line breaks
+  const renderWithLineBreakMarkers = (text: string) => {
+    if (!text) return null;
+    const parts = text.split('*').map((p) => p.trim()).filter(Boolean);
+    return parts.map((part, idx) => (
+      <React.Fragment key={idx}>
+        {idx > 0 && <br />}
+        {part}
+      </React.Fragment>
+    ));
+  };
+
   // Function to process subtitle text with bold formatting
   const processSubtitleText = (text: string) => {
     if (!text) return [];
@@ -140,12 +152,16 @@ const TutorProfiles = ({
             <div className="flex justify-between items-start w-full gap-6">
               <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
                 <span className="font-light">
-                  {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
+                  {renderWithLineBreakMarkers(description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour.")}
                 </span>
-                <br />
-                <span className="font-medium">
-                  {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
-                </span>
+                {contactText && (
+                  <>
+                    <br />
+                    <span className="font-medium">
+                      {contactText}
+                    </span>
+                  </>
+                )}
               </div>
               
               {/* Price section - aligned with description */}
@@ -205,12 +221,16 @@ const TutorProfiles = ({
           <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4 md:gap-6">
             <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
               <span className="font-light">
-                {description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour."}
+                {renderWithLineBreakMarkers(description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour.")}
               </span>
-              <br />
-              <span className="font-medium">
-                {contactText || "Contact us with your requirements and budget and we'll find the perfect tutor for you!"}
-              </span>
+              {contactText && (
+                <>
+                  <br />
+                  <span className="font-medium">
+                    {contactText}
+                  </span>
+                </>
+              )}
               {ctaText && ctaLink && (
                 <>
                   <br />
