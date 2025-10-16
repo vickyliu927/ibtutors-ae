@@ -24,6 +24,11 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
     }
   }, [serverHeroData]); // Only depend on serverHeroData, not subjectSlug
 
+  // Compute whether to force a line break based on combined title length
+  const firstPartText = heroData?.title?.firstPart || '#1 Rated ';
+  const secondPartText = heroData?.title?.secondPart || 'Online IB Tutors';
+  const shouldForceLineBreak = (firstPartText.length + secondPartText.length) >= 40;
+
   return (
     <div
       className={`relative w-full min-h-[500px] md:min-h-[200px] md:h-auto overflow-hidden md:overflow-visible ${className}`}
@@ -39,8 +44,9 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
         <div className="flex md:hidden flex-col justify-start items-start gap-6 text-left px-4 w-full">
           {/* Title - Mobile */}
           <h1 className="text-[48px] font-semibold leading-[100%] font-gilroy" style={{ fontWeight: 600 }}>
-            <span className="text-[#1D1D35]">{heroData?.title?.firstPart || '#1 Rated '}</span>
-            <span className="text-primary">{heroData?.title?.secondPart || 'Online IB Maths Tutors'}</span>
+            <span className="text-[#1D1D35]">{firstPartText}</span>
+            {shouldForceLineBreak && <br />}
+            <span className="text-primary">{secondPartText || 'Online IB Maths Tutors'}</span>
           </h1>
 
           {/* Subtitle - Mobile */}
@@ -95,8 +101,9 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
 
           {/* Title - Desktop */}
           <h1 className="text-[28px] sm:text-[40px] lg:text-[56px] font-semibold leading-[110%] font-gilroy" style={{ fontWeight: 600 }}>
-            <span className="text-[#1D1D35]">{heroData?.title?.firstPart || '#1 Rated '}</span>
-            <span className="text-primary">{heroData?.title?.secondPart || 'Online IB Tutors'}</span>
+            <span className="text-[#1D1D35]">{firstPartText}</span>
+            {shouldForceLineBreak && <br />}
+            <span className="text-primary">{secondPartText || 'Online IB Tutors'}</span>
           </h1>
 
           {/* Subtitle - Desktop */}
