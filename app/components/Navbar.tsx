@@ -255,7 +255,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                       href={curriculumPath}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
                     >
-                      {curriculum.curriculum} Overview
+                      {curriculum.curriculum} Tutors
                     </Link>
                     
                     {/* Curriculum-specific subject pages */}
