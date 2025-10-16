@@ -83,15 +83,20 @@ const TutorProfiles = ({
       [tutorId]: !prev[tutorId],
     }));
   };
-
-  // Render helper: convert '*' markers into explicit line breaks
-  const renderWithLineBreakMarkers = (text: string) => {
-    if (!text) return null;
-    const parts = text.split('*').map((p) => p.trim()).filter(Boolean);
-    return parts.map((part, idx) => (
-      <React.Fragment key={idx}>
-        {idx > 0 && <br />}
-        {part}
+  
+  // Render helper: use '*' to toggle bold and preserve line breaks from Sanity
+  const renderFormattedText = (text: string) => {
+    const lines = processSubtitleText(text || '');
+    return lines.map((segments, lineIdx) => (
+      <React.Fragment key={lineIdx}>
+        {segments.map((seg, idx) =>
+          seg.bold ? (
+            <strong key={idx}>{seg.text}</strong>
+          ) : (
+            <React.Fragment key={idx}>{seg.text}</React.Fragment>
+          ),
+        )}
+        {lineIdx < lines.length - 1 && <br />}
       </React.Fragment>
     ));
   };
@@ -151,15 +156,14 @@ const TutorProfiles = ({
             
             <div className="flex justify-between items-start w-full gap-6">
               <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
-                <span className="font-light">
-                  {renderWithLineBreakMarkers(description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour.")}
-                </span>
+                {renderFormattedText(
+                  description ||
+                    "We have a team of expert online tutors at prices ranging from AED 140-390/hour."
+                )}
                 {contactText && (
                   <>
                     <br />
-                    <span className="font-medium">
-                      {contactText}
-                    </span>
+                    <span className="font-medium">{contactText}</span>
                   </>
                 )}
               </div>
@@ -220,15 +224,14 @@ const TutorProfiles = ({
           
           <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4 md:gap-6">
             <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
-              <span className="font-light">
-                {renderWithLineBreakMarkers(description || "We have a team of expert online tutors at prices ranging from AED 140-390/hour.")}
-              </span>
+              {renderFormattedText(
+                description ||
+                  "We have a team of expert online tutors at prices ranging from AED 140-390/hour."
+              )}
               {contactText && (
                 <>
                   <br />
-                  <span className="font-medium">
-                    {contactText}
-                  </span>
+                  <span className="font-medium">{contactText}</span>
                 </>
               )}
               {ctaText && ctaLink && (
