@@ -86,19 +86,29 @@ const TutorProfiles = ({
   
   // Render helper: use '*' to toggle bold and preserve line breaks from Sanity
   const renderFormattedText = (text: string) => {
-    const lines = processSubtitleText(text || '');
-    return lines.map((segments, lineIdx) => (
-      <React.Fragment key={lineIdx}>
-        {segments.map((seg, idx) =>
-          seg.bold ? (
-            <strong key={idx}>{seg.text}</strong>
-          ) : (
-            <React.Fragment key={idx}>{seg.text}</React.Fragment>
-          ),
-        )}
-        {lineIdx < lines.length - 1 && <br />}
-      </React.Fragment>
-    ));
+    if (!text) return null;
+    // Split into paragraphs on empty lines; treat single newlines as spaces
+    const paragraphs = text.split(/\r?\n\s*\r?\n+/);
+    return paragraphs.map((para, pIdx) => {
+      const normalized = para.replace(/\r?\n/g, ' ');
+      const lines = processSubtitleText(normalized || ''); // returns a single line segments array
+      return (
+        <React.Fragment key={pIdx}>
+          {lines.map((segments, lineIdx) => (
+            <React.Fragment key={lineIdx}>
+              {segments.map((seg, idx) =>
+                seg.bold ? (
+                  <strong key={idx}>{seg.text}</strong>
+                ) : (
+                  <React.Fragment key={idx}>{seg.text}</React.Fragment>
+                ),
+              )}
+            </React.Fragment>
+          ))}
+          {pIdx < paragraphs.length - 1 && <br />}
+        </React.Fragment>
+      );
+    });
   };
 
   // Function to process subtitle text with bold formatting
