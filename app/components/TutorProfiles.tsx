@@ -89,7 +89,14 @@ const TutorProfiles = ({
   const protectPhrases = (text: string) => {
     if (!text) return text;
     // Keep 'ranging from' together to avoid a break after 'ranging'
-    return text.replace(/ranging\s+from/gi, (match) => match.replace(/\s+/, "\u00A0"));
+    let out = text.replace(/ranging\s+from/gi, (match) => match.replace(/\s+/, "\u00A0"));
+    // Prevent breaks inside numeric ranges like 50–160 by using a non-breaking hyphen
+    out = out.replace(/(\d)\s*[–—-]\s*(\d)/g, (_, a: string, b: string) => `${a}\u2011${b}`);
+    // Keep amount and unit together around slashes: 160/hour => 160 / hour
+    out = out.replace(/(\d)\s*\/\s*(hour|hr|h)/gi, (_, d: string, unit: string) => `${d}\u00A0/\u00A0${unit}`);
+    // Keep currency and amount together: C$50 => C$ 50 (covers $, £, €, AED, SGD, USD, GBP, C$)
+    out = out.replace(/(C\$|AED|USD|GBP|SGD|EUR|€|£|\$)\s*(\d)/g, (_, cur: string, d: string) => `${cur}\u00A0${d}`);
+    return out;
   };
   const renderFormattedText = (text: string) => {
     if (!text) return null;

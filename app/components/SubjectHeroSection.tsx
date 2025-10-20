@@ -50,7 +50,7 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
           </h1>
 
           {/* Subtitle - Mobile */}
-          <div className="w-full text-left text-[20px] leading-[140%] font-gilroy text-textDark" style={{ fontWeight: 200 }}>
+          <div className="w-full text-left text-[20px] leading-[140%] font-gilroy text-textDark" style={{ fontWeight: 200, whiteSpace: 'pre-line' }}>
             {heroData?.subtitle || 'Study with IB examiners and qualified teachers. Recommended by 98% of IB maths students in United Kingdom and globally!'}
           </div>
 
@@ -107,7 +107,7 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
           </h1>
 
           {/* Subtitle - Desktop */}
-          <div className="w-full max-w-[600px] text-center text-[14px] sm:text-[16px] lg:text-[18px] leading-[140%] font-gilroy text-textDark" style={{ fontWeight: 200 }}>
+          <div className="w-full max-w-[600px] text-center text-[14px] sm:text-[16px] lg:text-[18px] leading-[140%] font-gilroy text-textDark" style={{ fontWeight: 200, whiteSpace: 'pre-line' }}>
             {heroData?.subtitle || 'Study with IB examiners and qualified teachers. Recommended by 98% of IB students in United Kingdom and globally!'}
           </div>
         </div>
