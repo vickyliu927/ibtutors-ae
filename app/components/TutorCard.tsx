@@ -564,13 +564,13 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                 </clipPath>
               </defs>
             </svg>
-              <div className="flex-1 text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ fontSize: "16px", fontWeight: 400 }}>
+              <div className="flex-1 text-[#171D23] font-gilroy font-medium leading-[120%]" style={{ fontSize: "16px", fontWeight: 400, whiteSpace: 'pre-line' }}>
                 {tutor.professionalTitle || "IB Maths Tutor | University of Amsterdam"}
               </div>
           </div>
 
           {/* Description */}
-            <div className="self-stretch text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 300 }}>
+            <div className="self-stretch text-[#171D23] font-gilroy font-light leading-[140%]" style={{ fontSize: "16px", fontWeight: 300, whiteSpace: 'pre-line' }}>
             {tutor.experience}
           </div>
         </div>

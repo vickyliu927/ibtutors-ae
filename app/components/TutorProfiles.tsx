@@ -96,8 +96,9 @@ const TutorProfiles = ({
     // Split into paragraphs on empty lines; treat single newlines as spaces
     const paragraphs = text.split(/\r?\n\s*\r?\n+/);
     return paragraphs.map((para, pIdx) => {
-      const normalized = protectPhrases(para.replace(/\r?\n/g, ' '));
-      const lines = processSubtitleText(normalized || ''); // returns a single line segments array
+      // Preserve single line breaks within a paragraph
+      const normalized = protectPhrases(para);
+      const lines = processSubtitleText(normalized || '');
       return (
         <React.Fragment key={pIdx}>
           {lines.map((segments, lineIdx) => (
@@ -109,6 +110,7 @@ const TutorProfiles = ({
                   <React.Fragment key={idx}>{seg.text}</React.Fragment>
                 ),
               )}
+              {lineIdx < lines.length - 1 && <br />}
             </React.Fragment>
           ))}
           {pIdx < paragraphs.length - 1 && <br />}
@@ -171,7 +173,7 @@ const TutorProfiles = ({
             </div>
             
             <div className="flex justify-between items-start w-full gap-6">
-              <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
+              <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1" style={{ whiteSpace: 'pre-line' }}>
                 {renderFormattedText(
                   description ||
                     "We have a team of expert online tutors at prices ranging from AED 140-390/hour."
