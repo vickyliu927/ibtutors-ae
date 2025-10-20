@@ -85,12 +85,18 @@ const TutorProfiles = ({
   };
   
   // Render helper: use '*' to toggle bold and preserve line breaks from Sanity
+  // Also protects against unwanted line breaks for common phrases
+  const protectPhrases = (text: string) => {
+    if (!text) return text;
+    // Keep 'ranging from' together to avoid a break after 'ranging'
+    return text.replace(/ranging\s+from/gi, (match) => match.replace(/\s+/, "\u00A0"));
+  };
   const renderFormattedText = (text: string) => {
     if (!text) return null;
     // Split into paragraphs on empty lines; treat single newlines as spaces
     const paragraphs = text.split(/\r?\n\s*\r?\n+/);
     return paragraphs.map((para, pIdx) => {
-      const normalized = para.replace(/\r?\n/g, ' ');
+      const normalized = protectPhrases(para.replace(/\r?\n/g, ' '));
       const lines = processSubtitleText(normalized || ''); // returns a single line segments array
       return (
         <React.Fragment key={pIdx}>
