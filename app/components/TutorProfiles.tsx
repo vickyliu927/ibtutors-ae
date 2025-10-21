@@ -173,7 +173,7 @@ const TutorProfiles = ({
           {/* Header section matching Figma design */}
           <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
             <div className="flex flex-col items-start gap-3">
-              <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
+              <div className="text-lg font-normal leading-[160%] text-[#F57C40] font-gilroy">
                 {trustedByText || "Trusted by 15,000+ students across Dubai and globally."}
               </div>
               <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
@@ -183,10 +183,12 @@ const TutorProfiles = ({
             
             <div className="flex justify-between items-start w-full gap-6">
               <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1" style={{ whiteSpace: 'pre-line' }}>
-                {renderFormattedText(
-                  description ||
-                    "We have a team of expert online tutors at prices ranging from AED 140-390/hour."
-                )}
+                <span className="md:whitespace-nowrap" style={{ whiteSpace: 'normal' }}>
+                  {renderFormattedText(
+                    description ||
+                      "We have a team of expert online tutors at prices ranging from AED 140-390/hour."
+                  )}
+                </span>
                 {contactText && (
                   <>
                     <br />
@@ -241,7 +243,7 @@ const TutorProfiles = ({
         {/* Header section matching Figma design */}
         <div className="flex flex-col items-start gap-6 mb-8 px-4 sm:px-6 lg:px-0">
           <div className="flex flex-col items-start gap-3">
-            <div className="text-lg font-normal leading-[160%] uppercase text-[#F57C40] font-gilroy">
+            <div className="text-lg font-normal leading-[160%] text-[#F57C40] font-gilroy">
               {trustedByText || "Trusted by 15,000+ students across Dubai and globally."}
             </div>
             <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
@@ -251,10 +253,12 @@ const TutorProfiles = ({
           
           <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4 md:gap-6">
             <div className="text-lg leading-[150%] text-[#171D23] font-gilroy max-w-[820px] flex-1">
-              {renderFormattedText(
-                description ||
-                  "We have a team of expert online tutors at prices ranging from AED 140-390/hour."
-              )}
+              <span className="md:whitespace-nowrap" style={{ whiteSpace: 'normal' }}>
+                {renderFormattedText(
+                  description ||
+                    "We have a team of expert online tutors at prices ranging from AED 140-390/hour."
+                )}
+              </span>
               {contactText && (
                 <>
                   <br />
