@@ -90,6 +90,8 @@ const TutorProfiles = ({
     if (!text) return text;
     // Keep 'ranging from' together to avoid a break after 'ranging'
     let out = text.replace(/ranging\s+from/gi, (match) => match.replace(/\s+/, "\u00A0"));
+    // Ensure 'from' sticks to the amount/currency: 'from C$' or 'from 50' => 'from C$' / 'from 50'
+    out = out.replace(/from\s+(?=(C\$|AED|USD|GBP|SGD|EUR|€|£|\$|\d))/gi, 'from\u00A0');
     // Prevent breaks inside numeric ranges like 50–160 by using a non-breaking hyphen
     out = out.replace(/(\d)\s*[–—-]\s*(\d)/g, (_, a: string, b: string) => `${a}\u2011${b}`);
     // Keep amount and unit together around slashes: 160/hour => 160 / hour

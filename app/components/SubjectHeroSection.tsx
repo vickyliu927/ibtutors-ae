@@ -24,9 +24,10 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
     }
   }, [serverHeroData]); // Only depend on serverHeroData, not subjectSlug
 
-  // Title parts (no forced line breaks)
+  // Compute whether to force a line break based on combined title length
   const firstPartText = heroData?.title?.firstPart || '#1 Rated ';
   const secondPartText = heroData?.title?.secondPart || 'Online IB Tutors';
+  const shouldForceLineBreak = (firstPartText.length + secondPartText.length) >= 40;
 
   return (
     <div
@@ -44,6 +45,7 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
           {/* Title - Mobile */}
           <h1 className="text-[48px] font-semibold leading-[100%] font-gilroy" style={{ fontWeight: 600 }}>
             <span className="text-[#1D1D35]">{firstPartText}</span>
+            {shouldForceLineBreak && <br />}
             <span className="text-primary">{secondPartText || 'Online IB Maths Tutors'}</span>
           </h1>
 
@@ -100,6 +102,7 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
           {/* Title - Desktop */}
           <h1 className="text-[28px] sm:text-[40px] lg:text-[56px] font-semibold leading-[110%] font-gilroy" style={{ fontWeight: 600 }}>
             <span className="text-[#1D1D35]">{firstPartText}</span>
+            {shouldForceLineBreak && <br />}
             <span className="text-primary">{secondPartText || 'Online IB Tutors'}</span>
           </h1>
 
