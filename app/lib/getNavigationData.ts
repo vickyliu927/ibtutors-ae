@@ -17,6 +17,9 @@ export interface NavigationCurriculumData {
     current: string;
   };
   displayOrder: number;
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
+  externalRedirectPermanent?: boolean;
   subjectPages?: {
     subject: string;
     slug: { current: string };
@@ -208,6 +211,9 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       curriculum,
       slug,
       displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl,
+      externalRedirectPermanent,
       subjectPages[]->{
         subject,
         slug,
@@ -252,6 +258,9 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       curriculum,
       slug,
       displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl,
+      externalRedirectPermanent,
       subjectPages[]->{
         subject,
         slug,
@@ -264,6 +273,9 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       curriculum,
       slug,
       displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl,
+      externalRedirectPermanent,
       subjectPages[]->{
         subject,
         slug,
@@ -276,6 +288,9 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       curriculum,
       slug,
       displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl,
+      externalRedirectPermanent,
       subjectPages[]->{
         subject,
         slug,

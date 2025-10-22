@@ -90,6 +90,9 @@ interface CurriculumPageData {
     highlightedWords?: string[];
     description: string;
   };
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
+  externalRedirectPermanent?: boolean;
   tutorsListSectionHead?: {
     smallTextBeforeTitle?: string;
     sectionTitle?: string;
@@ -134,6 +137,9 @@ async function getCurriculumPageDataWithCloneContext(
         title,
         curriculum,
         slug,
+        externalRedirectEnabled,
+        externalRedirectUrl,
+        externalRedirectPermanent,
         firstSection,
         tutorsListSectionHead,
         tutorsList[] -> {
@@ -180,6 +186,9 @@ async function getCurriculumPageDataWithCloneContext(
         title,
         curriculum,
         slug,
+        externalRedirectEnabled,
+        externalRedirectUrl,
+        externalRedirectPermanent,
         firstSection,
         tutorsListSectionHead,
         tutorsList[] -> {
@@ -226,6 +235,9 @@ async function getCurriculumPageDataWithCloneContext(
         title,
         curriculum,
         slug,
+        externalRedirectEnabled,
+        externalRedirectUrl,
+        externalRedirectPermanent,
         firstSection,
         tutorsListSectionHead,
         tutorsList[] -> {
@@ -781,6 +793,16 @@ export default async function DynamicPage({
   );
   
   if (curriculumResult.pageData) {
+    // If curriculum has external redirect configured, perform it
+    if (curriculumResult.pageData.externalRedirectEnabled && curriculumResult.pageData.externalRedirectUrl) {
+      const targetUrl = curriculumResult.pageData.externalRedirectUrl;
+      if (curriculumResult.pageData.externalRedirectPermanent) {
+        permanentRedirect(targetUrl);
+      } else {
+        redirect(targetUrl);
+      }
+    }
+
     // Fetch curriculum-specific hero data with clone context
     const curriculumHeroData = await getCurriculumHeroData(params.subject, cloneContext.cloneId);
     
