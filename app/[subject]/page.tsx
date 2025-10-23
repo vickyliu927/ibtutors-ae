@@ -28,19 +28,26 @@ export const revalidate = 0;
 
 // Generate static params for common subjects at build time
 export async function generateStaticParams() {
-  // Get all subject and curriculum slugs
-  const subjectQuery = `*[_type == "subjectPage"].slug.current`;
-  const curriculumQuery = `*[_type == "curriculumPage"].slug.current`;
-  
-  const subjectSlugs = await client.fetch<string[]>(subjectQuery);
-  const curriculumSlugs = await client.fetch<string[]>(curriculumQuery);
-  
-  // Combine both types of slugs
-  const allSlugs = [...subjectSlugs, ...curriculumSlugs];
-  
-  return allSlugs.map((subject) => ({
-    subject,
-  }));
+  try {
+    // Only include defined string slugs to avoid build-time errors
+    const subjectQuery = `*[_type == "subjectPage" && defined(slug.current)].slug.current`;
+    const curriculumQuery = `*[_type == "curriculumPage" && defined(slug.current)].slug.current`;
+
+    const [subjectSlugsRaw, curriculumSlugsRaw] = await Promise.all([
+      client.fetch<any[]>(subjectQuery),
+      client.fetch<any[]>(curriculumQuery),
+    ]);
+
+    const isString = (v: any): v is string => typeof v === 'string' && v.trim().length > 0;
+    const subjectSlugs = (subjectSlugsRaw || []).filter(isString);
+    const curriculumSlugs = (curriculumSlugsRaw || []).filter(isString);
+
+    const allSlugs = [...subjectSlugs, ...curriculumSlugs];
+    return allSlugs.map((slug) => ({ subject: slug }));
+  } catch (e) {
+    // On any failure, return no pre-rendered paths (dynamic at runtime)
+    return [] as { subject: string }[];
+  }
 }
 
 interface SubjectPageData {
