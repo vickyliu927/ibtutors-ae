@@ -374,7 +374,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
                         <div className="flex">
                           {/* Groups column */}
-                          <div className="w-56">
+                          <div className="w-max">
                             {groups.map((group, gi) => (
                               <div
                                 key={`${group.title}-${gi}`}
@@ -404,8 +404,8 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                           </div>
 
                           {/* Items column */}
-                          <div className="w-56 border-l" style={{ borderColor: '#F3F4F6' }}>
-                            {activeItems.length === 0 ? null : (
+                          {activeItems.length > 0 && (
+                            <div className="w-56 border-l" style={{ borderColor: '#F3F4F6' }}>
                               <div>
                                 {activeItems.map(item => (
                                   item?.externalRedirectEnabled && item?.externalRedirectUrl ? (
@@ -427,8 +427,8 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                                   ) : null
                                 ))}
                               </div>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

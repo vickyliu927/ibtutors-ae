@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { PortableText } from "@portabletext/react";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,6 +49,7 @@ interface TutorProfilesProps {
   trustedByText?: string;
   description?: string;
   contactText?: string;
+  ctaRichText?: any[];
   ctaText?: string;
   ctaLink?: string;
   useNewCardDesign?: boolean;
@@ -65,6 +67,7 @@ const TutorProfiles = ({
   trustedByText = "",
   description = "",
   contactText = "",
+  ctaRichText,
   ctaText,
   ctaLink,
   useNewCardDesign = false,
@@ -265,13 +268,33 @@ const TutorProfiles = ({
                   <span className="font-medium">{contactText}</span>
                 </>
               )}
-              {ctaText && ctaLink && (
+              {Array.isArray(ctaRichText) && ctaRichText.length > 0 ? (
+                <>
+                  <br />
+                  <br />
+                  <div className="text-[#F57C40] font-medium text-[20px] md:text-[20px]">
+                    <PortableText
+                      value={ctaRichText}
+                      components={{
+                        marks: {
+                          link: ({ children, value }) => (
+                            <a href={value?.href} className="underline" target="_blank" rel="noopener noreferrer">{children}</a>
+                          ),
+                        },
+                        block: {
+                          normal: ({ children }) => <p className="!m-0">{children}</p>,
+                        },
+                      }}
+                    />
+                  </div>
+                </>
+              ) : ctaText && ctaLink ? (
                 <>
                   <br />
                   <br />
                   <Link href={ctaLink} className="text-[#F57C40] underline font-medium text-[20px] md:text-[20px] block">{ctaText}</Link>
                 </>
-              )}
+              ) : null}
             </div>
             
             {/* Price section - aligned with description */}

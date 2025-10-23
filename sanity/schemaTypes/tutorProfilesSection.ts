@@ -41,6 +41,12 @@ const tutorProfilesSectionSchema = defineType({
       description: 'Legacy field for subtitle - consider using description and contactText instead',
     }),
     defineField({
+      name: 'ctaRichText',
+      title: 'Call-to-Action Rich Text',
+      type: 'blockContent',
+      description: 'Optional rich text CTA supporting inline links for multiple phrases. If set, it will be used instead of CTA Text/URL.',
+    }),
+    defineField({
       name: 'ctaText',
       title: 'Call-to-Action Text',
       type: 'string',

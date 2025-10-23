@@ -569,6 +569,7 @@ export const tutorProfilesSectionQueries = {
     trustedByText,
     description,
     contactText,
+    ctaRichText,
     ctaText,
     ctaLink,
     tutorProfileSectionPriceDescription,

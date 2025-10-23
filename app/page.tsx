@@ -280,6 +280,7 @@ export default async function Home({
           trustedByText={tutorProfilesSection.trustedByText}
           description={tutorProfilesSection.description}
           contactText={tutorProfilesSection.contactText}
+          ctaRichText={tutorProfilesSection.ctaRichText}
           ctaText={tutorProfilesSection.ctaText}
           ctaLink={tutorProfilesSection.ctaLink}
           tutorProfileSectionPriceDescription={tutorProfilesSection.tutorProfileSectionPriceDescription}
