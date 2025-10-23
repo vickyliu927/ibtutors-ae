@@ -29,6 +29,8 @@ interface CurriculumPageData {
     subject: string;
     slug: { current: string };
     displayOrder: number;
+    externalRedirectEnabled?: boolean;
+    externalRedirectUrl?: string;
   }[];
 }
 
@@ -285,13 +287,23 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                           .slice()
                           .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
                           .map((sp) => (
-                            <Link
-                              key={sp.slug.current}
-                              href={generateSubjectLink(sp.slug.current)}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              {sp.subject}
-                            </Link>
+                            sp.externalRedirectEnabled && sp.externalRedirectUrl ? (
+                              <ExternalLink
+                                key={`${sp.subject}-external`}
+                                href={sp.externalRedirectUrl}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                {sp.subject}
+                              </ExternalLink>
+                            ) : sp.slug?.current ? (
+                              <Link
+                                key={sp.slug.current}
+                                href={generateSubjectLink(sp.slug.current)}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                {sp.subject}
+                              </Link>
+                            ) : null
                           ))}
                       </div>
                     ) : (
