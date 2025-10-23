@@ -48,16 +48,20 @@ export async function isUniqueAcrossClones(slug: string, context: any) {
  * Enhanced slug field definition with clone-aware validation
  */
 export function createCloneAwareSlugField(options: any = {}) {
+  const { validation, hidden, readOnly, ...slugOptions } = options || {};
   return defineField({
     name: 'slug',
     title: 'Slug',
     type: 'slug',
-    validation: Rule => Rule.required(),
+    // Preserve custom validation if provided; otherwise default to required
+    validation: validation || ((Rule: any) => Rule.required()),
+    hidden,
+    readOnly,
     options: {
-      source: options.source || 'title',
-      maxLength: options.maxLength || 96,
+      source: slugOptions.source || 'title',
+      maxLength: slugOptions.maxLength || 96,
       isUnique: isUniqueAcrossClones,
-      ...options,
+      ...slugOptions,
     },
   })
 }
@@ -187,7 +191,11 @@ export function addCloneSupport(schema: any) {
     if (field.type === 'slug') {
       return createCloneAwareSlugField({
         ...field.options,
-        source: field.options?.source || field.name === 'slug' ? 'title' : field.name,
+        // Preserve top-level properties like validation/hidden/readOnly
+        validation: field.validation,
+        hidden: field.hidden,
+        readOnly: field.readOnly,
+        source: (field.options?.source) || (field.name === 'slug' ? 'title' : field.name),
       })
     }
     return field

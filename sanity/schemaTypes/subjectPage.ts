@@ -24,7 +24,7 @@ const subjectPageSchema = defineType({
       title: 'External Redirect URL',
       type: 'url',
       description: 'Destination to redirect visitors to when redirect is enabled',
-      hidden: ({ parent }) => !parent?.externalRedirectEnabled,
+      hidden: ({ document }) => !(document as any)?.externalRedirectEnabled,
       validation: Rule => Rule.uri({ allowRelative: false, scheme: ['http', 'https'] }).error('Valid URL required when redirect is enabled'),
     }),
     defineField({
@@ -32,7 +32,7 @@ const subjectPageSchema = defineType({
       title: 'Permanent Redirect (308)',
       type: 'boolean',
       description: 'If checked, use a permanent redirect (308). Otherwise a temporary redirect (307) is used.',
-      hidden: ({ parent }) => !parent?.externalRedirectEnabled,
+      hidden: ({ document }) => !(document as any)?.externalRedirectEnabled,
       initialValue: false,
     }),
     defineField({
