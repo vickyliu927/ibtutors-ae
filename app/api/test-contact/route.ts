@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Protect this test endpoint via env flag and optional secret
+  if (process.env.ENABLE_TEST_ENDPOINTS !== 'true') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+  const url = new URL(request.url);
+  const providedSecret = url.searchParams.get('secret') || request.headers.get('x-test-secret');
+  if (process.env.TEST_ENDPOINT_SECRET && providedSecret !== process.env.TEST_ENDPOINT_SECRET) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
   console.log('=== TEST CONTACT API CALLED ===');
   console.log('Timestamp:', new Date().toISOString());
   

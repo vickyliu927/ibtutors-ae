@@ -41,6 +41,15 @@ export async function POST(req: Request) {
   console.log('Request method:', req.method);
   console.log('Request URL:', req.url);
   
+  // Kill-switch to disable outbound emails without code changes
+  const emailSendingEnabled = process.env.ENABLE_CONTACT_EMAILS !== 'false';
+  
+  // Basic allowlist for permitted origins
+  const allowedOrigins = (process.env.ALLOWED_CONTACT_ORIGINS || 'https://www.dubaitutors.ae,https://dubaitutors.ae')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  
   if (!process.env.RESEND_API_KEY) {
     console.log('ERROR: RESEND_API_KEY is not configured');
     return NextResponse.json(
@@ -60,6 +69,12 @@ export async function POST(req: Request) {
     const sourceDomain = origin.replace(/^https?:\/\//, '').split('/')[0];
     const sourceWebsite = getWebsiteName(sourceDomain);
     console.log('Source domain:', sourceDomain, 'Website:', sourceWebsite);
+    
+    // If origin header exists but is not allowlisted, skip sending emails
+    const originIsAllowed = !origin || allowedOrigins.some((o) => origin.startsWith(o));
+    if (!originIsAllowed) {
+      console.warn('Blocked contact submission from disallowed origin:', origin);
+    }
     
     // Validate form data
     const result = ContactFormSchema.safeParse(formData);
@@ -104,31 +119,36 @@ Budget: ${encodeHTML(budget)}
 Source Website: ${encodeHTML(sourceWebsite)}
 Source Domain: ${encodeHTML(sourceDomain)}`;
 
-    // Initialize Resend client
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    let emailData: unknown = null;
+    if (emailSendingEnabled && originIsAllowed) {
+      // Initialize Resend client
+      const resend = new Resend(process.env.RESEND_API_KEY);
 
-    console.log('Attempting to send email with:', {
-      from: 'onboarding@resend.dev',
-      to: 'vicky@tutorchase.com',
-      subject,
-      hasText: !!text
-    });
+      console.log('Attempting to send email with:', {
+        from: 'onboarding@resend.dev',
+        to: 'vicky@tutorchase.com',
+        subject,
+        hasText: !!text
+      });
 
-    const emailData = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'vicky@tutorchase.com',
-      subject,
-      text,
-    });
+      emailData = await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: 'vicky@tutorchase.com',
+        subject,
+        text,
+      });
 
-    console.log('Email send result:', emailData);
+      console.log('Email send result:', emailData);
+    } else {
+      console.log('Email sending skipped. Enabled:', emailSendingEnabled, 'Origin allowed:', originIsAllowed);
+    }
 
     return NextResponse.json({
       success: true,
-      emailSent: true,
+      emailSent: !!emailData,
       sanitySubmission: submission,
-      message: 'Contact form submission stored in Sanity and email sent successfully to vicky@tutorchase.com',
-      emailId: emailData?.data?.id || 'unknown'
+      message: emailData ? 'Contact form submission stored and email sent' : 'Contact form submission stored (email skipped)',
+      emailId: (emailData as any)?.data?.id || 'skipped'
     });
   } catch (error) {
     console.error('Error processing form submission:', error);

@@ -2,6 +2,15 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 export async function GET(request: Request) {
+  // Protect this test endpoint via env flag and optional secret
+  if (process.env.ENABLE_TEST_ENDPOINTS !== 'true') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+  const url = new URL(request.url);
+  const providedSecret = url.searchParams.get('secret') || request.headers.get('x-test-secret');
+  if (process.env.TEST_ENDPOINT_SECRET && providedSecret !== process.env.TEST_ENDPOINT_SECRET) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
   const { searchParams } = new URL(request.url);
   const testEmail = searchParams.get('email') || 'vicky@tutorchase.com';
   console.log('=== EMAIL TEST ENDPOINT CALLED ===');
