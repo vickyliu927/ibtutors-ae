@@ -18,7 +18,7 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
-import { subjectPageFaqQueries, navbarQueries } from '../lib/cloneQueries';
+import { navbarQueries } from '../lib/cloneQueries';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 
@@ -58,6 +58,7 @@ interface SubjectPageData {
     description: string;
   };
   tutorsListSectionHead?: {
+    trustedByText?: string;
     smallTextBeforeTitle?: string;
     sectionTitle?: string;
     description?: string;
@@ -101,6 +102,7 @@ interface CurriculumPageData {
   externalRedirectUrl?: string;
   externalRedirectPermanent?: boolean;
   tutorsListSectionHead?: {
+    trustedByText?: string;
     smallTextBeforeTitle?: string;
     sectionTitle?: string;
     description?: string;
@@ -368,7 +370,19 @@ async function getSubjectPageDataWithCloneContext(
             rating,
             order
           },
-          faqSection,
+          faqSection-> {
+            _id,
+            title,
+            subtitle,
+            pageType,
+            subjectPage-> { slug },
+            faqReferences[]-> {
+              _id,
+              question,
+              answer,
+              displayOrder
+            }
+          },
           seo,
           "sourceInfo": {
             "source": "cloneSpecific",
@@ -457,7 +471,19 @@ async function getSubjectPageDataWithCloneContext(
             rating,
             order
           },
-          faqSection,
+          faqSection-> {
+            _id,
+            title,
+            subtitle,
+            pageType,
+            subjectPage-> { slug },
+            faqReferences[]-> {
+              _id,
+              question,
+              answer,
+              displayOrder
+            }
+          },
           seo,
           "sourceInfo": {
             "source": "baseline",
@@ -544,7 +570,19 @@ async function getSubjectPageDataWithCloneContext(
             rating,
             order
           },
-          faqSection,
+          faqSection-> {
+            _id,
+            title,
+            subtitle,
+            pageType,
+            subjectPage-> { slug },
+            faqReferences[]-> {
+              _id,
+              question,
+              answer,
+              displayOrder
+            }
+          },
           seo,
           "sourceInfo": {
             "source": "default",
@@ -617,9 +655,8 @@ async function getSubjectPageDataWithCloneContext(
     }`;
 
     // Use server-side caching with Next.js and fetch clone-aware FAQ and navbar
-    const [fallbackResult, faqSectionResult, navbarResult] = await Promise.all([
+    const [fallbackResult, navbarResult] = await Promise.all([
       client.fetch(query, { subject, cloneId: cloneId || 'none' }, { next: { revalidate: 300 } }),
-      subjectPageFaqQueries.fetch(cloneId || 'global', subject),
       navbarQueries.fetch(cloneId || 'global')
     ]);
 
@@ -653,16 +690,9 @@ async function getSubjectPageDataWithCloneContext(
     const mergedTutors = Object.values(mergedTutorsMap).sort((a: any, b: any) => (a.displayOrder || 100) - (b.displayOrder || 100));
 
     // Only accept FAQ data that truly belongs to this subject page
-    const faqData = faqSectionResult?.data;
+    const faqData = resolvedData.subjectPage?.faqSection;
     const isSubjectFaqForThisPage = Boolean(
-      faqData &&
-      faqData.pageType === 'subject' &&
-      (
-        // either explicitly linked to this subject page
-        faqData.subjectPage?.slug?.current === subject ||
-        // or no subject linkage (we now avoid general fallback elsewhere, but keep guard defensive)
-        false
-      )
+      faqData && faqData.pageType === 'subject' && faqData.subjectPage?.slug?.current === subject
     );
 
     const pageData: SubjectPageData = {
@@ -855,6 +885,7 @@ export default async function DynamicPage({
         <TutorProfiles 
           tutors={curriculumResult.pageData.tutorsList} 
           useNewCardDesign={true}
+          trustedByText={curriculumResult.pageData.tutorsListSectionHead?.trustedByText}
           sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={curriculumResult.pageData.tutorsListSectionHead?.description}
           ctaRichText={curriculumResult.pageData.tutorsListSectionHead?.ctaRichText}
@@ -986,6 +1017,7 @@ export default async function DynamicPage({
         <TutorProfiles 
           tutors={subjectResult.pageData.tutorsList} 
           useNewCardDesign={true}
+          trustedByText={subjectResult.pageData.tutorsListSectionHead?.trustedByText}
           sectionTitle={subjectResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={subjectResult.pageData.tutorsListSectionHead?.description}
           ctaRichText={subjectResult.pageData.tutorsListSectionHead?.ctaRichText}

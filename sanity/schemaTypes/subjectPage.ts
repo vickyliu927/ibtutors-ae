@@ -93,6 +93,12 @@ const subjectPageSchema = defineType({
       type: 'object',
       fields: [
         {
+          name: 'trustedByText',
+          title: 'Trusted By Text (optional)',
+          type: 'string',
+          description: 'Orange text shown above the main title for the tutors section on this subject page (e.g., "Trusted by 15,000+ students across the world"). Leave empty to use the global default.'
+        },
+        {
           name: 'smallTextBeforeTitle',
           title: 'Small text before title',
           type: 'string',
