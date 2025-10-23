@@ -4,10 +4,12 @@ import { getCurrentClone } from './cloneUtils';
 export interface NavigationSubjectData {
   title: string;
   subject: string;
-  slug: {
+  slug?: {
     current: string;
   };
   displayOrder: number;
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
 }
 
 export interface NavigationCurriculumData {
@@ -116,7 +118,9 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       title,
       subject,
       slug,
-      displayOrder
+      displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl
     }`;
     
     const result = await client.fetch<NavigationSubjectData[]>(query);
@@ -145,6 +149,8 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       subject,
       slug,
       displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl,
       "source": "cloneSpecific"
     },
     "baseline": *[_type == "subjectPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
@@ -152,6 +158,8 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       subject,
       slug,
       displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl,
       "source": "baseline"
     },
     "default": *[_type == "subjectPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
@@ -159,6 +167,8 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       subject,
       slug,
       displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl,
       "source": "default"
     }
   }`;

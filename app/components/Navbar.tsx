@@ -9,10 +9,12 @@ import ExternalLink from './ui/ExternalLink';
 interface SubjectPageData {
   title: string;
   subject: string;
-  slug: {
+  slug?: {
     current: string;
   };
   displayOrder: number;
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
 }
 
 interface CurriculumPageData {
@@ -347,13 +349,19 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
               {showSubjectsDropdown && (
                 <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
                   {subjects.map((subject) => (
-                    <Link
-                      key={subject.slug.current}
-                      href={generateSubjectLink(subject.slug.current)}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      {subject.subject}
-                    </Link>
+                    subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
+                      <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        {subject.subject}
+                      </ExternalLink>
+                    ) : subject.slug?.current ? (
+                      <Link
+                        key={subject.slug.current}
+                        href={generateSubjectLink(subject.slug.current)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        {subject.subject}
+                      </Link>
+                    ) : null
                   ))}
                 </div>
               )}
@@ -634,8 +642,8 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                 {(() => {
                   const groups = navbarData?.navigation?.subjectsMenuGroups || [];
                   const groupedSlugs = new Set<string>();
-                  groups.forEach(g => (g.items || []).forEach(item => groupedSlugs.add(item.slug.current)));
-                  const ungrouped = subjects.filter(s => !groupedSlugs.has(s.slug.current));
+                  groups.forEach(g => (g.items || []).forEach(item => item?.slug?.current && groupedSlugs.add(item.slug.current)));
+                  const ungrouped = subjects.filter(s => s?.slug?.current && !groupedSlugs.has(s.slug.current));
 
                   const hasAnyGroups = Array.isArray(groups) && groups.some(g => Array.isArray(g.items) && g.items.length > 0);
 
@@ -654,29 +662,27 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                               .slice()
                               .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
                               .map(item => (
-                                <Link
-                                  key={item.slug.current}
-                                  href={generateSubjectLink(item.slug.current)}
-                                  onClick={() => setIsOpen(false)}
-                                  className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                                  style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                                >
-                                  <span>{item.subject}</span>
-                                  <svg
-                                    width="12"
-                                    height="12"
-                                    viewBox="0 0 12 12"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
+                                item?.externalRedirectEnabled && item?.externalRedirectUrl ? (
+                                  <ExternalLink
+                                    key={`${item.subject}-external`}
+                                    href={item.externalRedirectUrl}
+                                    onClick={() => setIsOpen(false)}
+                                    className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                                    style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                                   >
-                                    <path
-                                      d="M3.5 11L8.49886 6L3.5 1"
-                                      stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                                      strokeWidth="1.6"
-                                      strokeLinejoin="round"
-                                    />
-                                  </svg>
-                                </Link>
+                                    <span>{item.subject}</span>
+                                  </ExternalLink>
+                                ) : item?.slug?.current ? (
+                                  <Link
+                                    key={item.slug.current}
+                                    href={generateSubjectLink(item.slug.current)}
+                                    onClick={() => setIsOpen(false)}
+                                    className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                                    style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                                  >
+                                    <span>{item.subject}</span>
+                                  </Link>
+                                ) : null
                               ))}
                           </div>
                         ))}
@@ -690,29 +696,27 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                               Other Subjects
                             </div>
                             {ungrouped.map(subject => (
-                              <Link
-                                key={subject.slug.current}
-                                href={generateSubjectLink(subject.slug.current)}
-                                onClick={() => setIsOpen(false)}
-                                className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                                style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                              >
-                                <span>{subject.subject}</span>
-                                <svg
-                                  width="12"
-                                  height="12"
-                                  viewBox="0 0 12 12"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
+                              subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
+                                <ExternalLink
+                                  key={`${subject.subject}-external`}
+                                  href={subject.externalRedirectUrl}
+                                  onClick={() => setIsOpen(false)}
+                                  className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                                  style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                                 >
-                                  <path
-                                    d="M3.5 11L8.49886 6L3.5 1"
-                                    stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                                    strokeWidth="1.6"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </Link>
+                                  <span>{subject.subject}</span>
+                                </ExternalLink>
+                              ) : subject?.slug?.current ? (
+                                <Link
+                                  key={subject.slug.current}
+                                  href={generateSubjectLink(subject.slug.current)}
+                                  onClick={() => setIsOpen(false)}
+                                  className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                                  style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                                >
+                                  <span>{subject.subject}</span>
+                                </Link>
+                              ) : null
                             ))}
                           </div>
                         )}
@@ -724,29 +728,27 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   return (
                     <div>
                       {subjects.map((subject) => (
-                        <Link
-                          key={subject.slug.current}
-                          href={generateSubjectLink(subject.slug.current)}
-                          onClick={() => setIsOpen(false)}
-                          className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                          style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                        >
-                          <span>{subject.subject}</span>
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
+                          <ExternalLink
+                            key={`${subject.subject}-external`}
+                            href={subject.externalRedirectUrl}
+                            onClick={() => setIsOpen(false)}
+                            className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                            style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                           >
-                            <path
-                              d="M3.5 11L8.49886 6L3.5 1"
-                              stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                              strokeWidth="1.6"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </Link>
+                            <span>{subject.subject}</span>
+                          </ExternalLink>
+                        ) : subject?.slug?.current ? (
+                          <Link
+                            key={subject.slug.current}
+                            href={generateSubjectLink(subject.slug.current)}
+                            onClick={() => setIsOpen(false)}
+                            className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                            style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                          >
+                            <span>{subject.subject}</span>
+                          </Link>
+                        ) : null
                       ))}
                     </div>
                   );
