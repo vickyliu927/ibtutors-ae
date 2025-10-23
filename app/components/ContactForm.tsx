@@ -123,17 +123,9 @@ const ContactForm = () => {
       console.log('Response data:', data);
 
       if (response.ok) {
-        setStatus('success');
-        setMessage(contentData?.successModal.title || 'Thank you! Your request has been submitted.');
-        setFormData({
-          fullName: '',
-          country: '',
-          phone: '',
-          email: '',
-          details: '',
-          budget: '',
-        });
-        setErrors({});
+        // Redirect to dedicated success page for tracking
+        router.push('/submission/success');
+        return;
       } else {
         setStatus('error');
 
