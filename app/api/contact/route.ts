@@ -45,7 +45,7 @@ async function getAllCloneDomains(): Promise<string[]> {
   }
   try {
     const query = `*[_type == "clone" && isActive == true]{
-      "domains": cloneSettings.domains[]
+      "domains": metadata.domains[]
     }`;
     const res: Array<{ domains?: string[] }> = await client.fetch(query, {}, { cache: 'no-store' } as any);
     const domains = Array.from(new Set((res || []).flatMap(r => r.domains || []).filter(Boolean)));
