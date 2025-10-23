@@ -151,7 +151,17 @@ async function getCurriculumPageDataWithCloneContext(
         externalRedirectUrl,
         externalRedirectPermanent,
         firstSection,
-        tutorsListSectionHead,
+        tutorsListSectionHead{
+          trustedByText,
+          smallTextBeforeTitle,
+          sectionTitle,
+          description,
+          ctaRichText,
+          ctaLinkText,
+          ctaLink,
+          tutorProfileSectionPriceDescription,
+          tutorProfileSectionPriceTag
+        },
         tutorsList[] -> {
           _id,
           name,
@@ -200,7 +210,17 @@ async function getCurriculumPageDataWithCloneContext(
         externalRedirectUrl,
         externalRedirectPermanent,
         firstSection,
-        tutorsListSectionHead,
+        tutorsListSectionHead{
+          trustedByText,
+          smallTextBeforeTitle,
+          sectionTitle,
+          description,
+          ctaRichText,
+          ctaLinkText,
+          ctaLink,
+          tutorProfileSectionPriceDescription,
+          tutorProfileSectionPriceTag
+        },
         tutorsList[] -> {
           _id,
           name,
@@ -249,7 +269,17 @@ async function getCurriculumPageDataWithCloneContext(
         externalRedirectUrl,
         externalRedirectPermanent,
         firstSection,
-        tutorsListSectionHead,
+        tutorsListSectionHead{
+          trustedByText,
+          smallTextBeforeTitle,
+          sectionTitle,
+          description,
+          ctaRichText,
+          ctaLinkText,
+          ctaLink,
+          tutorProfileSectionPriceDescription,
+          tutorProfileSectionPriceTag
+        },
         tutorsList[] -> {
           _id,
           name,
