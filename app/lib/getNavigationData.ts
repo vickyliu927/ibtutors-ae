@@ -337,7 +337,20 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logo,
       logoAlt,
       logoLink,
-      navigation,
+      navigation{
+        levelsText,
+        subjectsText,
+        allLevelsPageLink,
+        allSubjectsPageLink,
+        subjectsMenuGroups[]{
+          title,
+          items[]->{
+            subject,
+            slug,
+            displayOrder
+          }
+        }
+      },
       buttonText,
       buttonLink,
       mobileMenu
@@ -354,7 +367,20 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logo,
       logoAlt,
       logoLink,
-      navigation,
+      navigation{
+        levelsText,
+        subjectsText,
+        allLevelsPageLink,
+        allSubjectsPageLink,
+        subjectsMenuGroups[]{
+          title,
+          items[]->{
+            subject,
+            slug,
+            displayOrder
+          }
+        }
+      },
       buttonText,
       buttonLink,
       mobileMenu,
@@ -367,7 +393,20 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logo,
       logoAlt,
       logoLink,
-      navigation,
+      navigation{
+        levelsText,
+        subjectsText,
+        allLevelsPageLink,
+        allSubjectsPageLink,
+        subjectsMenuGroups[]{
+          title,
+          items[]->{
+            subject,
+            slug,
+            displayOrder
+          }
+        }
+      },
       buttonText,
       buttonLink,
       mobileMenu,
@@ -380,7 +419,20 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logo,
       logoAlt,
       logoLink,
-      navigation,
+      navigation{
+        levelsText,
+        subjectsText,
+        allLevelsPageLink,
+        allSubjectsPageLink,
+        subjectsMenuGroups[]{
+          title,
+          items[]->{
+            subject,
+            slug,
+            displayOrder
+          }
+        }
+      },
       buttonText,
       buttonLink,
       mobileMenu,

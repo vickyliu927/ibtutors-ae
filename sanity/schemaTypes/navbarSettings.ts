@@ -54,6 +54,36 @@ const navbarSettingsSchema = defineType({
               description: 'URL for the "All Subjects" overview page',
               initialValue: '/subjects',
             },
+            defineField({
+              name: 'subjectsMenuGroups',
+              title: 'Subjects Menu Groups',
+              description: 'Organize the All Subjects dropdown into groups. Each group can contain selected subject pages.',
+              type: 'array',
+              of: [
+                {
+                  type: 'object',
+                  name: 'subjectsMenuGroup',
+                  title: 'Subjects Group',
+                  fields: [
+                    defineField({
+                      name: 'title',
+                      title: 'Group Title',
+                      type: 'string',
+                      validation: Rule => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'items',
+                      title: 'Subject Pages',
+                      type: 'array',
+                      of: [
+                        { type: 'reference', to: [{ type: 'subjectPage' }] }
+                      ],
+                      description: 'Select which subject pages appear under this group (drag to reorder).',
+                    })
+                  ]
+                }
+              ]
+            }),
       ],
       validation: Rule => Rule.required(),
     }),

@@ -41,6 +41,14 @@ interface NavbarData {
     subjectsText: string;
     allLevelsPageLink?: string;
     allSubjectsPageLink?: string;
+    subjectsMenuGroups?: {
+      title: string;
+      items?: {
+        subject: string;
+        slug: { current: string };
+        displayOrder: number;
+      }[];
+    }[];
   };
   mobileMenu?: {
     closeButtonColor?: string;
@@ -609,35 +617,129 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                     </h2>
                   </div>
                   
-                  {/* Subjects list */}
-                  <div className="w-full">
-                    {/* Individual subject links */}
-                    {subjects.map((subject) => (
-                      <Link
-                        key={subject.slug.current}
-                        href={generateSubjectLink(subject.slug.current)}
-                        onClick={() => setIsOpen(false)}
-                        className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                        style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                      >
-                        <span>{subject.subject}</span>
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+              {/* Subjects list */}
+              <div className="w-full">
+                {(() => {
+                  const groups = navbarData?.navigation?.subjectsMenuGroups || [];
+                  const groupedSlugs = new Set<string>();
+                  groups.forEach(g => (g.items || []).forEach(item => groupedSlugs.add(item.slug.current)));
+                  const ungrouped = subjects.filter(s => !groupedSlugs.has(s.slug.current));
+
+                  const hasAnyGroups = Array.isArray(groups) && groups.some(g => Array.isArray(g.items) && g.items.length > 0);
+
+                  if (hasAnyGroups) {
+                    return (
+                      <div>
+                        {groups.map((group, gi) => (
+                          <div key={`${group.title}-${gi}`}>
+                            <div
+                              className="py-3 px-4 text-[#001A96] font-gilroy text-sm font-medium uppercase tracking-wide bg-gray-50"
+                              style={{ borderTop: '1px solid', borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                            >
+                              {group.title}
+                            </div>
+                            {(group.items || [])
+                              .slice()
+                              .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
+                              .map(item => (
+                                <Link
+                                  key={item.slug.current}
+                                  href={generateSubjectLink(item.slug.current)}
+                                  onClick={() => setIsOpen(false)}
+                                  className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                                  style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                                >
+                                  <span>{item.subject}</span>
+                                  <svg
+                                    width="12"
+                                    height="12"
+                                    viewBox="0 0 12 12"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M3.5 11L8.49886 6L3.5 1"
+                                      stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                                      strokeWidth="1.6"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                </Link>
+                              ))}
+                          </div>
+                        ))}
+
+                        {ungrouped.length > 0 && (
+                          <div>
+                            <div
+                              className="py-3 px-4 text-[#001A96] font-gilroy text-sm font-medium uppercase tracking-wide bg-gray-50"
+                              style={{ borderTop: '1px solid', borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                            >
+                              Other Subjects
+                            </div>
+                            {ungrouped.map(subject => (
+                              <Link
+                                key={subject.slug.current}
+                                href={generateSubjectLink(subject.slug.current)}
+                                onClick={() => setIsOpen(false)}
+                                className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                                style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                              >
+                                <span>{subject.subject}</span>
+                                <svg
+                                  width="12"
+                                  height="12"
+                                  viewBox="0 0 12 12"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M3.5 11L8.49886 6L3.5 1"
+                                    stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                                    strokeWidth="1.6"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  // Fallback to flat list when no groups configured
+                  return (
+                    <div>
+                      {subjects.map((subject) => (
+                        <Link
+                          key={subject.slug.current}
+                          href={generateSubjectLink(subject.slug.current)}
+                          onClick={() => setIsOpen(false)}
+                          className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                          style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                         >
-                          <path
-                            d="M3.5 11L8.49886 6L3.5 1"
-                            stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                            strokeWidth="1.6"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </Link>
-                    ))}
-                  </div>
+                          <span>{subject.subject}</span>
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M3.5 11L8.49886 6L3.5 1"
+                              stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                              strokeWidth="1.6"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Link>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </div>
                 </div>
               )}
 
