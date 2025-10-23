@@ -15,6 +15,15 @@ export default async function SubmissionSuccessPage() {
       <section className="py-16 flex justify-center items-center bg-gray-50 min-h-[70vh]">
         <div className="bg-white shadow-[0px_40px_60px_0px_rgba(0,14,81,0.05)] max-w-[800px] w-full mx-4">
           <div className="flex flex-col items-center gap-10 py-10 px-8 md:px-20">
+            {/* Success Icon (orange tick) */}
+            <div className="flex items-center justify-center">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#FFF1E8] flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-7 h-7 md:w-8 md:h-8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 12l4 4 10-10" stroke="#F59A5B" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+            </div>
+
             {/* Headlines */}
             <div className="flex flex-col items-center gap-2">
               <h1 className="font-gilroy text-2xl md:text-4xl font-normal leading-[140%] text-textDark text-center">
