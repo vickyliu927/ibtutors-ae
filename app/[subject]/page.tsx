@@ -177,7 +177,7 @@ async function getCurriculumPageDataWithCloneContext(
         faqSection -> {
           title,
           subtitle,
-          faqs[] -> {
+          faqReferences[] -> {
             _id,
             question,
             answer
@@ -226,7 +226,7 @@ async function getCurriculumPageDataWithCloneContext(
         faqSection -> {
           title,
           subtitle,
-          faqs[] -> {
+          faqReferences[] -> {
             _id,
             question,
             answer
@@ -275,7 +275,7 @@ async function getCurriculumPageDataWithCloneContext(
         faqSection -> {
           title,
           subtitle,
-          faqs[] -> {
+          faqReferences[] -> {
             _id,
             question,
             answer

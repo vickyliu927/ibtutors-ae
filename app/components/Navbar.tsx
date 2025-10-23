@@ -47,6 +47,14 @@ interface NavbarData {
     allSubjectsPageLink?: string;
     subjectsMenuGroups?: {
       title: string;
+      linkTarget?: {
+        _type?: string;
+        subject?: string;
+        curriculum?: string;
+        slug?: { current: string };
+        externalRedirectEnabled?: boolean;
+        externalRedirectUrl?: string;
+      };
       items?: {
         subject: string;
         slug: { current: string };
@@ -81,6 +89,8 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
   const [showCurriculumDropdowns, setShowCurriculumDropdowns] = useState<{[key: string]: boolean}>({});
   const [isScrolled, setIsScrolled] = useState(false);
+  // Desktop All Subjects group hover state
+  const [activeSubjectsGroupIndex, setActiveSubjectsGroupIndex] = useState<number | null>(null);
   // Mobile submenu states
   const [mobileSubmenuView, setMobileSubmenuView] = useState<'main' | 'subjects'>('main');
   const hasSubjects = Array.isArray(subjects) && subjects.length > 0;
@@ -353,40 +363,74 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   const groups = navbarData?.navigation?.subjectsMenuGroups || [];
                   const hasAnyGroups = Array.isArray(groups) && groups.some(g => Array.isArray(g.items) && g.items.length > 0);
                   if (hasAnyGroups) {
+                    const activeItems =
+                      activeSubjectsGroupIndex !== null && groups[activeSubjectsGroupIndex]
+                        ? (groups[activeSubjectsGroupIndex].items || [])
+                            .slice()
+                            .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
+                        : [];
+
                     return (
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
-                        <div className="grid grid-cols-2 gap-1 w-80">
-                          {groups.map((group, gi) => (
-                            <div key={`${group.title}-${gi}`} className="col-span-2">
-                              <div className="px-4 py-2 text-[11px] uppercase tracking-wide text-[#001A96] bg-gray-50">
-                                {group.title}
-                              </div>
-                              <div>
-                                {(group.items || [])
-                                  .slice()
-                                  .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
-                                  .map(item => (
-                                    item?.externalRedirectEnabled && item?.externalRedirectUrl ? (
-                                      <ExternalLink
-                                        key={`${item.subject}-external`}
-                                        href={item.externalRedirectUrl}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                      >
-                                        {item.subject}
+                        <div className="flex">
+                          {/* Groups column */}
+                          <div className="w-56">
+                            {groups.map((group, gi) => (
+                              <div
+                                key={`${group.title}-${gi}`}
+                                onMouseEnter={() => setActiveSubjectsGroupIndex(gi)}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-default"
+                              >
+                                {(() => {
+                                  const target = (group as any)?.linkTarget;
+                                  if (target?.externalRedirectEnabled && target?.externalRedirectUrl) {
+                                    return (
+                                      <ExternalLink href={target.externalRedirectUrl} className="block">
+                                        {group.title}
                                       </ExternalLink>
-                                    ) : item?.slug?.current ? (
-                                      <Link
-                                        key={item.slug.current}
-                                        href={generateSubjectLink(item.slug.current)}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                      >
-                                        {item.subject}
+                                    );
+                                  }
+                                  if (target?.slug?.current) {
+                                    return (
+                                      <Link href={generateSubjectLink(target.slug.current)} className="block">
+                                        {group.title}
                                       </Link>
-                                    ) : null
-                                  ))}
+                                    );
+                                  }
+                                  return <span>{group.title}</span>;
+                                })()}
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
+
+                          {/* Items column */}
+                          <div className="w-56 border-l" style={{ borderColor: '#F3F4F6' }}>
+                            {activeItems.length === 0 ? (
+                              <div className="px-4 py-2 text-xs text-gray-400">Hover a group to view subjects</div>
+                            ) : (
+                              <div>
+                                {activeItems.map(item => (
+                                  item?.externalRedirectEnabled && item?.externalRedirectUrl ? (
+                                    <ExternalLink
+                                      key={`${item.subject}-external`}
+                                      href={item.externalRedirectUrl}
+                                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                      {item.subject}
+                                    </ExternalLink>
+                                  ) : item?.slug?.current ? (
+                                    <Link
+                                      key={item.slug.current}
+                                      href={generateSubjectLink(item.slug.current)}
+                                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                      {item.subject}
+                                    </Link>
+                                  ) : null
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     );

@@ -70,6 +70,17 @@ const tutorSchema = defineType({
           validation: (Rule: any) => Rule.required(),
           options: {
             list: [
+              // General Subjects
+              'Maths',
+              'English',
+              'Biology',
+              'Chemistry',
+              'Physics',
+              'Business',
+              'Economics',
+              'History',
+              'Geography',
+              'Psychology',
               // IB Subjects
               'IB',
               'IB Maths',
@@ -260,6 +271,17 @@ const tutorSchema = defineType({
           of: [{type: 'string'}],
           options: {
             list: [
+              // General Subjects
+              'Maths',
+              'English',
+              'Biology',
+              'Chemistry',
+              'Physics',
+              'Business',
+              'Economics',
+              'History',
+              'Geography',
+              'Psychology',
               // IB Subjects
               'IB',
               'IB Maths',

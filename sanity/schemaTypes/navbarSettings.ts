@@ -72,6 +72,14 @@ const navbarSettingsSchema = defineType({
                       validation: Rule => Rule.required(),
                     }),
                     defineField({
+                      name: 'linkTarget',
+                      title: 'Group Link Target',
+                      description: 'Optional. Where to navigate when clicking the group name (subject or curriculum page).',
+                      type: 'reference',
+                      to: [{ type: 'subjectPage' }, { type: 'curriculumPage' }],
+                      options: { disableNew: true },
+                    }),
+                    defineField({
                       name: 'items',
                       title: 'Subject Pages',
                       type: 'array',
