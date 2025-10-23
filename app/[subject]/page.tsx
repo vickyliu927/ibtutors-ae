@@ -650,10 +650,23 @@ async function getSubjectPageDataWithCloneContext(
     (resolvedData.tutorsRef || []).forEach((t: any) => { if (t?._id) mergedTutorsMap[t._id] = { ...mergedTutorsMap[t._id], ...t }; });
     const mergedTutors = Object.values(mergedTutorsMap).sort((a: any, b: any) => (a.displayOrder || 100) - (b.displayOrder || 100));
 
+    // Only accept FAQ data that truly belongs to this subject page
+    const faqData = faqSectionResult?.data;
+    const isSubjectFaqForThisPage = Boolean(
+      faqData &&
+      faqData.pageType === 'subject' &&
+      (
+        // either explicitly linked to this subject page
+        faqData.subjectPage?.slug?.current === subject ||
+        // or no subject linkage (we now avoid general fallback elsewhere, but keep guard defensive)
+        false
+      )
+    );
+
     const pageData: SubjectPageData = {
       ...resolvedData.subjectPage,
       tutorsList: mergedTutors,
-      faqSection: faqSectionResult?.data || resolvedData.subjectPage.faqSection,
+      faqSection: isSubjectFaqForThisPage ? faqData : null,
     };
 
     // Resolve hero data using same fallback logic

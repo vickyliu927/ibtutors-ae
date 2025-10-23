@@ -51,12 +51,14 @@ const tutorProfilesSectionSchema = defineType({
       title: 'Call-to-Action Text',
       type: 'string',
       description: 'Text that will be displayed as a link (e.g., "View all our Maths tutors on TutorChase, the world\'s top tutoring provider")',
+      hidden: ({ parent }) => Array.isArray(parent?.ctaRichText) && parent.ctaRichText.length > 0,
     }),
     defineField({
       name: 'ctaLink',
       title: 'Call-to-Action Link URL',
       type: 'url',
       description: 'URL where the link text will direct to',
+      hidden: ({ parent }) => Array.isArray(parent?.ctaRichText) && parent.ctaRichText.length > 0,
     }),
     defineField({
       name: 'tutorProfileSectionPriceDescription',
