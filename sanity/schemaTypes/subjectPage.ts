@@ -53,12 +53,9 @@ const subjectPageSchema = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      validation: Rule => Rule.custom((slug, context) => {
-        const redirectOn = Boolean((context as any)?.document?.externalRedirectEnabled);
-        if (redirectOn) return true; // optional when redirecting externally
-        return slug && slug.current ? true : 'Slug is required unless external redirect is enabled';
-      }),
-      hidden: ({ document }) => Boolean((document as any)?.externalRedirectEnabled),
+      // Make slug optional; disable field when redirect is enabled
+      validation: Rule => Rule.custom(() => true),
+      readOnly: ({ document }) => Boolean((document as any)?.externalRedirectEnabled),
       options: {
         source: 'title',
         maxLength: 96,
