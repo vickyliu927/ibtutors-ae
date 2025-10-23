@@ -906,6 +906,9 @@ export default async function DynamicPage({
           />
         )}
 
+        {/* Spacer to prevent footer negative margin from overlapping the last section */}
+        <div className="h-32" aria-hidden />
+
       </main>
     );
   }

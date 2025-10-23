@@ -705,33 +705,8 @@ export const subjectPageFaqQueries = {
       `;
       
       const subjectSpecificResult = await client.fetch(globalSubjectSpecificQuery);
-      
-      if (subjectSpecificResult) {
-        return { data: subjectSpecificResult, source: 'default' };
-      }
-      
-      // Fall back to general global subject FAQs
-      const globalGeneralQuery = `
-        *[_type == "faq_section" && pageType == "subject" && !defined(subjectPage) && !defined(cloneReference)][0] {
-          _id,
-          title,
-          subtitle,
-          pageType,
-          faqReferences[]-> {
-            _id,
-            question,
-            answer,
-            displayOrder
-          }
-        }
-      `;
-      
-      const generalResult = await client.fetch(globalGeneralQuery);
-      
-      return { 
-        data: generalResult || null, 
-        source: generalResult ? 'default' : null 
-      };
+      // Do NOT fall back to general subject FAQs; keep sections separate
+      return { data: subjectSpecificResult || null, source: subjectSpecificResult ? 'default' : null };
     }
     
     // For clone-specific content, use the existing logic
@@ -740,10 +715,8 @@ export const subjectPageFaqQueries = {
     if (subjectSpecificResult.data) {
       return subjectSpecificResult;
     }
-    
-    // Otherwise, fall back to general subject FAQs for this clone
-    const generalSubjectResult = await faqSectionQueries.fetch(cloneId, 'subject');
-    return generalSubjectResult;
+    // Do NOT fall back to general subject FAQs for clone; return null
+    return { data: null, source: null };
   }
 };
 
