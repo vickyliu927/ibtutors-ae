@@ -662,17 +662,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                               .slice()
                               .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
                               .map(item => (
-                                item?.externalRedirectEnabled && item?.externalRedirectUrl ? (
-                                  <ExternalLink
-                                    key={`${item.subject}-external`}
-                                    href={item.externalRedirectUrl}
-                                    onClick={() => setIsOpen(false)}
-                                    className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                                    style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                                  >
-                                    <span>{item.subject}</span>
-                                  </ExternalLink>
-                                ) : item?.slug?.current ? (
+                                item?.slug?.current ? (
                                   <Link
                                     key={item.slug.current}
                                     href={generateSubjectLink(item.slug.current)}
