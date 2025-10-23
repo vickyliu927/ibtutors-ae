@@ -118,6 +118,12 @@ const curriculumPageSchema = defineType({
           title: 'Description',
           type: 'text',
         },
+        defineField({
+          name: 'ctaRichText',
+          title: 'Call-to-Action Rich Text',
+          description: 'Optional rich text CTA supporting inline links for multiple phrases. If set, it will be used instead of CTA Text/URL.',
+          type: 'blockContent',
+        }),
         {
           name: 'ctaLinkText',
           title: 'Call-to-Action Link Text',

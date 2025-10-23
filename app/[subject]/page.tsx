@@ -61,6 +61,7 @@ interface SubjectPageData {
     smallTextBeforeTitle?: string;
     sectionTitle?: string;
     description?: string;
+    ctaRichText?: any[];
     ctaLinkText?: string;
     ctaLink?: string;
     tutorProfileSectionPriceDescription?: string;
@@ -103,6 +104,7 @@ interface CurriculumPageData {
     smallTextBeforeTitle?: string;
     sectionTitle?: string;
     description?: string;
+    ctaRichText?: any[];
     ctaLinkText?: string;
     ctaLink?: string;
     tutorProfileSectionPriceDescription?: string;
@@ -855,6 +857,7 @@ export default async function DynamicPage({
           useNewCardDesign={true}
           sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={curriculumResult.pageData.tutorsListSectionHead?.description}
+          ctaRichText={curriculumResult.pageData.tutorsListSectionHead?.ctaRichText}
           ctaText={curriculumResult.pageData.tutorsListSectionHead?.ctaLinkText}
           ctaLink={curriculumResult.pageData.tutorsListSectionHead?.ctaLink}
           tutorProfileSectionPriceDescription={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
@@ -985,6 +988,7 @@ export default async function DynamicPage({
           useNewCardDesign={true}
           sectionTitle={subjectResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={subjectResult.pageData.tutorsListSectionHead?.description}
+          ctaRichText={subjectResult.pageData.tutorsListSectionHead?.ctaRichText}
           ctaText={subjectResult.pageData.tutorsListSectionHead?.ctaLinkText}
           ctaLink={subjectResult.pageData.tutorsListSectionHead?.ctaLink}
           tutorProfileSectionPriceDescription={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
