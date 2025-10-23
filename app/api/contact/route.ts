@@ -35,6 +35,29 @@ function encodeHTML(str: string): string {
     .replace(/'/g, '&#39;');
 }
 
+// In-memory cache for clone domains
+let cachedCloneDomains: { values: string[]; expiresAt: number } | null = null;
+
+async function getAllCloneDomains(): Promise<string[]> {
+  const now = Date.now();
+  if (cachedCloneDomains && cachedCloneDomains.expiresAt > now) {
+    return cachedCloneDomains.values;
+  }
+  try {
+    const query = `*[_type == "clone" && isActive == true]{
+      "domains": cloneSettings.domains[]
+    }`;
+    const res: Array<{ domains?: string[] }> = await client.fetch(query, {}, { cache: 'no-store' } as any);
+    const domains = Array.from(new Set((res || []).flatMap(r => r.domains || []).filter(Boolean)));
+    // Cache for 5 minutes
+    cachedCloneDomains = { values: domains, expiresAt: now + 5 * 60 * 1000 };
+    return domains;
+  } catch (e) {
+    console.error('Failed to fetch clone domains from Sanity:', e);
+    return [];
+  }
+}
+
 export async function POST(req: Request) {
   console.log('=== CONTACT FORM API CALLED ===');
   console.log('Timestamp:', new Date().toISOString());
@@ -44,11 +67,19 @@ export async function POST(req: Request) {
   // Kill-switch to disable outbound emails without code changes
   const emailSendingEnabled = process.env.ENABLE_CONTACT_EMAILS !== 'false';
   
-  // Basic allowlist for permitted origins
-  const allowedOrigins = (process.env.ALLOWED_CONTACT_ORIGINS || 'https://www.dubaitutors.ae,https://dubaitutors.ae')
+  // Build allowlist from env and Sanity clone domains (cached briefly)
+  const staticAllowed = (process.env.ALLOWED_CONTACT_ORIGINS || 'https://www.dubaitutors.ae,https://dubaitutors.ae')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
+  
+  // Simple in-memory cache (module scope variables live across requests in serverless when warm)
+  const domains = await getAllCloneDomains();
+  const dynamicAllowed = domains.flatMap((d) => [
+    `https://${d}`,
+    `https://www.${d}`
+  ]);
+  const allowedOrigins = Array.from(new Set([...staticAllowed, ...dynamicAllowed]));
   
   if (!process.env.RESEND_API_KEY) {
     console.log('ERROR: RESEND_API_KEY is not configured');
