@@ -51,6 +51,8 @@ interface NavbarData {
         subject: string;
         slug: { current: string };
         displayOrder: number;
+        externalRedirectEnabled?: boolean;
+        externalRedirectUrl?: string;
       }[];
     }[];
   };
@@ -347,23 +349,70 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
               </button>
               
               {showSubjectsDropdown && (
-                <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
-                  {subjects.map((subject) => (
-                    subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
-                      <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        {subject.subject}
-                      </ExternalLink>
-                    ) : subject.slug?.current ? (
-                      <Link
-                        key={subject.slug.current}
-                        href={generateSubjectLink(subject.slug.current)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        {subject.subject}
-                      </Link>
-                    ) : null
-                  ))}
-                </div>
+                (() => {
+                  const groups = navbarData?.navigation?.subjectsMenuGroups || [];
+                  const hasAnyGroups = Array.isArray(groups) && groups.some(g => Array.isArray(g.items) && g.items.length > 0);
+                  if (hasAnyGroups) {
+                    return (
+                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
+                        <div className="grid grid-cols-2 gap-1 w-80">
+                          {groups.map((group, gi) => (
+                            <div key={`${group.title}-${gi}`} className="col-span-2">
+                              <div className="px-4 py-2 text-[11px] uppercase tracking-wide text-[#001A96] bg-gray-50">
+                                {group.title}
+                              </div>
+                              <div>
+                                {(group.items || [])
+                                  .slice()
+                                  .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
+                                  .map(item => (
+                                    item?.externalRedirectEnabled && item?.externalRedirectUrl ? (
+                                      <ExternalLink
+                                        key={`${item.subject}-external`}
+                                        href={item.externalRedirectUrl}
+                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                      >
+                                        {item.subject}
+                                      </ExternalLink>
+                                    ) : item?.slug?.current ? (
+                                      <Link
+                                        key={item.slug.current}
+                                        href={generateSubjectLink(item.slug.current)}
+                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                      >
+                                        {item.subject}
+                                      </Link>
+                                    ) : null
+                                  ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // Fallback to legacy flat list when no groups
+                  return (
+                    <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
+                      {subjects.map((subject) => (
+                        subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
+                          <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            {subject.subject}
+                          </ExternalLink>
+                        ) : subject.slug?.current ? (
+                          <Link
+                            key={subject.slug.current}
+                            href={generateSubjectLink(subject.slug.current)}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {subject.subject}
+                          </Link>
+                        ) : null
+                      ))}
+                    </div>
+                  );
+                })()
               )}
             </div>
           )}
@@ -677,39 +726,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                           </div>
                         ))}
 
-                        {ungrouped.length > 0 && (
-                          <div>
-                            <div
-                              className="py-3 px-4 text-[#001A96] font-gilroy text-sm font-medium uppercase tracking-wide bg-gray-50"
-                              style={{ borderTop: '1px solid', borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                            >
-                              Other Subjects
-                            </div>
-                            {ungrouped.map(subject => (
-                              subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
-                                <ExternalLink
-                                  key={`${subject.subject}-external`}
-                                  href={subject.externalRedirectUrl}
-                                  onClick={() => setIsOpen(false)}
-                                  className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                                  style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                                >
-                                  <span>{subject.subject}</span>
-                                </ExternalLink>
-                              ) : subject?.slug?.current ? (
-                                <Link
-                                  key={subject.slug.current}
-                                  href={generateSubjectLink(subject.slug.current)}
-                                  onClick={() => setIsOpen(false)}
-                                  className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                                  style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                                >
-                                  <span>{subject.subject}</span>
-                                </Link>
-                              ) : null
-                            ))}
-                          </div>
-                        )}
+                        {/* When groups exist, do not render ungrouped items to keep groups authoritative */}
                       </div>
                     );
                   }
