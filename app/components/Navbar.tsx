@@ -405,9 +405,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
 
                           {/* Items column */}
                           <div className="w-56 border-l" style={{ borderColor: '#F3F4F6' }}>
-                            {activeItems.length === 0 ? (
-                              <div className="px-4 py-2 text-xs text-gray-400">Hover a group to view subjects</div>
-                            ) : (
+                            {activeItems.length === 0 ? null : (
                               <div>
                                 {activeItems.map(item => (
                                   item?.externalRedirectEnabled && item?.externalRedirectUrl ? (

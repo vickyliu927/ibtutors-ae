@@ -72,6 +72,7 @@ const tutorSchema = defineType({
             list: [
               // General Subjects
               'Maths',
+              'Math',
               'English',
               'Biology',
               'Chemistry',
@@ -273,6 +274,7 @@ const tutorSchema = defineType({
             list: [
               // General Subjects
               'Maths',
+              'Math',
               'English',
               'Biology',
               'Chemistry',

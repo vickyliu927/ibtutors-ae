@@ -4,7 +4,6 @@ import ContactForm from '../components/ContactForm';
 import TutorProfiles from '../components/TutorProfiles';
 import TestimonialSection, { TestimonialSectionData } from '../components/TestimonialSection';
 import FAQSection from '../components/FAQSection';
-import FaqAccordion from '../components/FaqAccordion';
 import SubjectHeroSection from '../components/SubjectHeroSection';
 import { Metadata } from 'next';
 import { getSeoData, SeoData } from '../lib/getSeoData';
@@ -866,58 +865,45 @@ export default async function DynamicPage({
         {/* Contact Form */}
         <ContactForm />
 
-        {/* FAQ Section */}
-        {curriculumResult.pageData.faqSection && (
-          <section className="py-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                  {curriculumResult.pageData.faqSection.title}
-                </h2>
-                <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-                  {curriculumResult.pageData.faqSection.subtitle}
-                </p>
-              </div>
+        {/* FAQ Section - use shared component for consistent UI */}
+        {curriculumResult.pageData.faqSection &&
+         curriculumResult.pageData.faqSection.faqReferences &&
+         curriculumResult.pageData.faqSection.faqReferences.length > 0 && (
+          <FAQSection
+            sectionData={{
+              title: curriculumResult.pageData.faqSection.title,
+              subtitle: curriculumResult.pageData.faqSection.subtitle,
+            }}
+            faqs={curriculumResult.pageData.faqSection.faqReferences}
+          />
+        )}
 
-              <div className="max-w-3xl mx-auto">
-                {curriculumResult.pageData.faqSection.faqReferences &&
-                  curriculumResult.pageData.faqSection.faqReferences.map((faq: any) => (
-                    <FaqAccordion 
-                      key={faq._id} 
-                      question={faq.question} 
-                      answer={faq.answer} 
-                    />
-                  ))}
-              </div>
-              {/* FAQPage JSON-LD */}
-              {curriculumResult.pageData.faqSection.faqReferences && (
-                <script
-                  type="application/ld+json"
-                  dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                      '@context': 'https://schema.org',
-                      '@type': 'FAQPage',
-                      mainEntity: curriculumResult.pageData.faqSection.faqReferences.map((faq: any) => ({
-                        '@type': 'Question',
-                        name: faq.question,
-                        acceptedAnswer: { 
-                          '@type': 'Answer', 
-                          text: Array.isArray(faq.answer)
-                            ? faq.answer.map((block: any) => {
-                                if (block?._type === 'block' && Array.isArray(block.children)) {
-                                  return block.children.map((c: any) => c.text).join('');
-                                }
-                                return '';
-                              }).join('\n')
-                            : faq.answer 
-                        },
-                      })),
-                    }),
-                  }}
-                />
-              )}
-            </div>
-          </section>
+        {/* FAQPage JSON-LD */}
+        {curriculumResult.pageData.faqSection && curriculumResult.pageData.faqSection.faqReferences && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: curriculumResult.pageData.faqSection.faqReferences.map((faq: any) => ({
+                  '@type': 'Question',
+                  name: faq.question,
+                  acceptedAnswer: { 
+                    '@type': 'Answer', 
+                    text: Array.isArray(faq.answer)
+                      ? faq.answer.map((block: any) => {
+                          if (block?._type === 'block' && Array.isArray(block.children)) {
+                            return block.children.map((c: any) => c.text).join('');
+                          }
+                          return '';
+                        }).join('\n')
+                      : faq.answer 
+                  },
+                })),
+              }),
+            }}
+          />
         )}
 
       </main>
