@@ -12,7 +12,7 @@ export default async function SubmissionSuccessPage() {
 
   return (
     <main>
-      <section className="py-16 flex justify-center items-center bg-gray-50 min-h-[70vh]">
+      <section className="py-24 md:py-32 flex justify-center items-center bg-gray-50 min-h-screen">
         <div className="bg-white shadow-[0px_40px_60px_0px_rgba(0,14,81,0.05)] max-w-[800px] w-full mx-4">
           <div className="flex flex-col items-center gap-10 py-10 px-8 md:px-20">
             {/* Success Icon (orange tick) */}
