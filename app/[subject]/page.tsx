@@ -999,16 +999,23 @@ export default async function DynamicPage({
           />
         )}
 
-        {/* FAQ Section - Optional */}
-        {subjectResult.pageData.faqSection && subjectResult.pageData.faqSection.faqReferences && subjectResult.pageData.faqSection.faqReferences.length > 0 && (
-          <FAQSection 
-            sectionData={{
-              title: subjectResult.pageData.faqSection.title,
-              subtitle: subjectResult.pageData.faqSection.subtitle
-            }}
-            faqs={subjectResult.pageData.faqSection.faqReferences}
-          />
-        )}
+        {/* FAQ Section - Optional (strict subject-only guard) */}
+        {(() => {
+          const faq = subjectResult.pageData.faqSection as any;
+          const shouldRender = Boolean(
+            faq &&
+            faq.pageType === 'subject' &&
+            faq.subjectPage?.slug?.current === params.subject &&
+            Array.isArray(faq.faqReferences) &&
+            faq.faqReferences.length > 0
+          );
+          return shouldRender ? (
+            <FAQSection
+              sectionData={{ title: faq.title, subtitle: faq.subtitle }}
+              faqs={faq.faqReferences}
+            />
+          ) : null;
+        })()}
 
         {/* FAQPage JSON-LD */}
         {subjectResult.pageData.faqSection && subjectResult.pageData.faqSection.faqReferences && (
