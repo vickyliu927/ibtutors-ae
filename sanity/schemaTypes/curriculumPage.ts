@@ -30,7 +30,12 @@ const curriculumPageSchema = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      validation: Rule => Rule.required(),
+      validation: Rule => Rule.custom((slug, context) => {
+        // Require slug only when external redirect is NOT enabled
+        const redirectOn = Boolean((context as any)?.document?.externalRedirectEnabled);
+        if (redirectOn) return true;
+        return slug && slug.current ? true : 'Slug is required unless external redirect is enabled';
+      }),
       options: {
         source: 'title',
         maxLength: 96,
@@ -68,7 +73,11 @@ const curriculumPageSchema = defineType({
           name: 'title',
           title: 'Title',
           type: 'string',
-          validation: Rule => Rule.required(),
+          validation: Rule => Rule.custom((value, context) => {
+            const redirectOn = Boolean((context as any)?.document?.externalRedirectEnabled);
+            if (redirectOn) return true; // optional when redirecting externally
+            return value ? true : 'Title is required unless external redirect is enabled';
+          }),
         },
         {
           name: 'highlightedWords',
@@ -81,7 +90,11 @@ const curriculumPageSchema = defineType({
           name: 'description',
           title: 'Description',
           type: 'text',
-          validation: Rule => Rule.required(),
+          validation: Rule => Rule.custom((value, context) => {
+            const redirectOn = Boolean((context as any)?.document?.externalRedirectEnabled);
+            if (redirectOn) return true; // optional when redirecting externally
+            return value ? true : 'Description is required unless external redirect is enabled';
+          }),
         },
       ],
     }),
