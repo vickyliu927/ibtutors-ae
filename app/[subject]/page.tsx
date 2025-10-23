@@ -18,7 +18,7 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
-import { navbarQueries } from '../lib/cloneQueries';
+import { navbarQueries, tutorProfilesSectionQueries } from '../lib/cloneQueries';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 
@@ -852,6 +852,10 @@ export default async function DynamicPage({
     `Subject: ${params.subject}`
   );
 
+  // Fetch global/clone-specific Tutor Profiles section to use its Trusted By text as fallback
+  const tutorProfilesSectionResult = await tutorProfilesSectionQueries.fetch(cloneContext.cloneId || 'global');
+  const globalTrustedByText = tutorProfilesSectionResult?.data?.trustedByText as string | undefined;
+
   // Generate clone indicator props
   const cloneIndicatorProps = getCloneIndicatorData(
     cloneContext,
@@ -915,7 +919,7 @@ export default async function DynamicPage({
         <TutorProfiles 
           tutors={curriculumResult.pageData.tutorsList} 
           useNewCardDesign={true}
-          trustedByText={curriculumResult.pageData.tutorsListSectionHead?.trustedByText}
+          trustedByText={curriculumResult.pageData.tutorsListSectionHead?.trustedByText ?? globalTrustedByText}
           sectionTitle={curriculumResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={curriculumResult.pageData.tutorsListSectionHead?.description}
           ctaRichText={curriculumResult.pageData.tutorsListSectionHead?.ctaRichText}
@@ -1047,7 +1051,7 @@ export default async function DynamicPage({
         <TutorProfiles 
           tutors={subjectResult.pageData.tutorsList} 
           useNewCardDesign={true}
-          trustedByText={subjectResult.pageData.tutorsListSectionHead?.trustedByText}
+          trustedByText={subjectResult.pageData.tutorsListSectionHead?.trustedByText ?? globalTrustedByText}
           sectionTitle={subjectResult.pageData.tutorsListSectionHead?.sectionTitle}
           description={subjectResult.pageData.tutorsListSectionHead?.description}
           ctaRichText={subjectResult.pageData.tutorsListSectionHead?.ctaRichText}
