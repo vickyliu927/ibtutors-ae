@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { CloneData, getCloneById, getBaselineClone, getCompleteCloneData, CompleteCloneData } from './cloneUtils';
+import { CloneData, getCloneById, getBaselineClone, getCompleteCloneData, CompleteCloneData, getCurrentClone } from './cloneUtils';
 
 // ============================================================================
 // CLONE DETECTION AND PARAMETER HANDLING
@@ -41,6 +41,10 @@ export async function getCloneIdFromRequest(searchParams?: URLSearchParams): Pro
  */
 export async function getCloneFromId(cloneId: string | null): Promise<CloneData | null> {
   if (!cloneId) {
+    // When no explicit clone ID is provided (e.g., missing header),
+    // resolve clone using domain-based detection before falling back to baseline.
+    const detected = await getCurrentClone();
+    if (detected) return detected;
     return await getBaselineClone();
   }
 
