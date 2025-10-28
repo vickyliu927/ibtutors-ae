@@ -36,7 +36,7 @@ export function buildFallbackQuery(
   `;
 
   return `{
-    "cloneSpecific": *[_type == "${contentType}" && cloneReference->cloneId.current == "${cloneId}" && isActive == true${baseFilter}][0] {
+    "cloneSpecific": *[_type == "${contentType}" && cloneReference->cloneId.current == "${cloneId}" && (!defined(isActive) || isActive == true)${baseFilter}][0] {
       ${fields},
       "sourceInfo": {
         "source": "cloneSpecific",
@@ -44,7 +44,7 @@ export function buildFallbackQuery(
         "isBaseline": cloneReference->baselineClone
       }
     },
-    "baseline": *[_type == "${contentType}" && cloneReference->baselineClone == true && isActive == true${baseFilter}][0] {
+    "baseline": *[_type == "${contentType}" && cloneReference->baselineClone == true && (!defined(isActive) || isActive == true)${baseFilter}][0] {
       ${fields},
       "sourceInfo": {
         "source": "baseline",
@@ -52,7 +52,7 @@ export function buildFallbackQuery(
         "isBaseline": true
       }
     },
-    "default": *[_type == "${contentType}" && !defined(cloneReference) && isActive == true${baseFilter}][0] {
+    "default": *[_type == "${contentType}" && !defined(cloneReference) && (!defined(isActive) || isActive == true)${baseFilter}][0] {
       ${fields},
       "sourceInfo": {
         "source": "default",

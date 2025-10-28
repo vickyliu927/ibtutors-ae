@@ -32,7 +32,7 @@ import {
   getCloneIndicatorData,
 } from "./lib/clonePageUtils";
 import { getHomepageContentForCurrentDomain } from "./lib/cloneContentManager";
-import { cloneQueryUtils } from "./lib/cloneQueries";
+import { cloneQueryUtils, homepageQueries } from "./lib/cloneQueries";
 import CloneIndicatorBanner from "./components/CloneIndicatorBanner";
 
 /**
@@ -88,8 +88,11 @@ async function getHomepageDataWithCloneContext(
       try {
         console.log("Fetching homepage content with clone context...");
 
-        // Fetch all homepage content with clone-aware fallback hierarchy
-        const content = await getHomepageContentForCurrentDomain();
+        // Prefer the detected cloneId from headers/URL if available;
+        // fall back to domain-based manager otherwise.
+        const content = cloneId
+          ? await homepageQueries.fetchAll(cloneId)
+          : await getHomepageContentForCurrentDomain();
 
         // Extract data from ContentResult objects and apply customizations
         const heroData = content.hero.data
@@ -290,7 +293,7 @@ export default async function Home({
       ) : null}
 
       {/* Trusted Institutions Banner - Now positioned after TutorProfiles */}
-      {trustedInstitutionsBanner?.enabled &&
+      {trustedInstitutionsBanner?.enabled !== false &&
       trustedInstitutionsBanner.institutions?.length > 0 ? (
         <TrustedInstitutionsBanner
           title={trustedInstitutionsBanner.title}
