@@ -15,6 +15,13 @@ interface TrustedInstitutionsBannerProps {
   institutions?: Institution[];
   backgroundColor?: string;
   carouselSpeed?: number;
+  // Optional on-page debug controls
+  showDebug?: boolean;
+  debug?: {
+    source?: string | null;
+    cloneId?: string | undefined;
+    count?: number;
+  };
 }
 
 const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
@@ -23,6 +30,8 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
   institutions = [],
   backgroundColor = '#ffffff',
   carouselSpeed = 5,
+  showDebug = false,
+  debug,
 }) => {
   // If there are no institutions, don't render anything
   if (!institutions || institutions.length === 0) {
@@ -93,6 +102,12 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+          {showDebug && (
+            <div className="mt-2 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded px-2 py-1 inline-block">
+              <span className="font-medium">TrustedInstitutions debug:</span>{' '}
+              source={debug?.source || 'unknown'}; cloneId={debug?.cloneId || 'none'}; count={debug?.count ?? count}
             </div>
           )}
         </div>

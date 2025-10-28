@@ -330,6 +330,21 @@ export interface PlatformBannerContent {
   cloneSpecificData?: any;
 }
 
+export interface TrustedInstitutionsContent {
+  _id: string;
+  title?: string;
+  subtitle?: string;
+  institutions?: Array<{
+    name: string;
+    logo: any;
+    displayOrder?: number;
+  }>;
+  backgroundColor?: string;
+  carouselSpeed?: number;
+  enabled?: boolean;
+  cloneSpecificData?: any;
+}
+
 export interface HighlightsContent {
   _id: string;
   highlights: Array<{
@@ -362,6 +377,7 @@ export interface CompleteCloneData {
   tutors: FallbackResult<TutorContent[]>;
   testimonials: FallbackResult<TestimonialContent[]>;
   platformBanner: FallbackResult<PlatformBannerContent>;
+  trustedInstitutions?: FallbackResult<TrustedInstitutionsContent>;
   highlights: FallbackResult<HighlightsContent>;
   faqSection: FallbackResult<FaqSectionContent>;
   cloneMetadata: {
@@ -790,6 +806,35 @@ export async function getPlatformBannerForClone(cloneId: string): Promise<Fallba
 }
 
 /**
+ * Get trusted institutions banner for a specific clone
+ */
+export async function getTrustedInstitutionsForClone(cloneId: string): Promise<FallbackResult<TrustedInstitutionsContent>> {
+  const fields = `
+    _id,
+    title,
+    subtitle,
+    institutions,
+    backgroundColor,
+    carouselSpeed,
+    enabled,
+    cloneSpecificData
+  `;
+
+  const query = buildContentQuery('trustedInstitutionsBanner', cloneId, fields);
+  const result = await safeQuery<RawFallbackData<TrustedInstitutionsContent>>(query);
+
+  if (!result) {
+    return {
+      data: null,
+      source: null,
+      error: 'Failed to fetch trusted institutions banner content',
+    };
+  }
+
+  return resolveFallbackWithInfo(result, cloneId);
+}
+
+/**
  * Get highlights for a specific clone
  */
 export async function getHighlightsForClone(cloneId: string): Promise<FallbackResult<HighlightsContent>> {
@@ -897,6 +942,7 @@ export async function getCompleteCloneData(cloneId?: string): Promise<CompleteCl
       tutors,
       testimonials,
       platformBanner,
+      trustedInstitutions,
       highlights,
       faqSection,
     ] = await Promise.all([
@@ -907,6 +953,7 @@ export async function getCompleteCloneData(cloneId?: string): Promise<CompleteCl
       getTutorsForClone(targetCloneId, true), // Homepage tutors only
       getTestimonialsForClone(targetCloneId),
       getPlatformBannerForClone(targetCloneId),
+      getTrustedInstitutionsForClone(targetCloneId),
       getHighlightsForClone(targetCloneId),
       getFaqSectionForClone(targetCloneId),
     ]);
@@ -919,6 +966,7 @@ export async function getCompleteCloneData(cloneId?: string): Promise<CompleteCl
       tutors,
       testimonials,
       platformBanner,
+      trustedInstitutions,
       highlights,
       faqSection,
       cloneMetadata: {

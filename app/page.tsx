@@ -301,6 +301,12 @@ export default async function Home({
           institutions={trustedInstitutionsBanner.institutions}
           backgroundColor={trustedInstitutionsBanner.backgroundColor}
           carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
+          showDebug={urlSearchParams.get('debug') === '1'}
+          debug={{
+            source: cloneData?.trustedInstitutions?.source || null,
+            cloneId: cloneContext?.cloneId || cloneData?.cloneMetadata?.cloneId,
+            count: trustedInstitutionsBanner.institutions?.length,
+          }}
         />
       ) : null}
 
