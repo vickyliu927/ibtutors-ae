@@ -285,7 +285,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                     return (
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
                         <div className="flex">
-                          {/* Groups column */}
+                          {/* Groups only (nested items hidden) */}
                           <div className="w-max">
                             {groups.map((group, gi) => (
                               <div
@@ -314,33 +314,6 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                               </div>
                             ))}
                           </div>
-
-                          {/* Items column */}
-                          {activeItems.length > 0 && (
-                            <div className="w-56 border-l" style={{ borderColor: '#F3F4F6' }}>
-                              <div>
-                                {activeItems.map(item => (
-                                  item?.externalRedirectEnabled && item?.externalRedirectUrl ? (
-                                    <ExternalLink
-                                      key={`${item.subject}-external`}
-                                      href={item.externalRedirectUrl}
-                                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    >
-                                      {item.subject}
-                                    </ExternalLink>
-                                  ) : item?.slug?.current ? (
-                                    <Link
-                                      key={item.slug.current}
-                                      href={generateSubjectLink(item.slug.current)}
-                                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    >
-                                      {item.subject}
-                                    </Link>
-                                  ) : null
-                                ))}
-                              </div>
-                            </div>
-                          )}
                         </div>
                       </div>
                     );
@@ -747,28 +720,29 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                               className="py-3 px-4 text-[#001A96] font-gilroy text-sm font-medium uppercase tracking-wide bg-gray-50"
                               style={{ borderTop: '1px solid', borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                             >
-                              {group.title}
+                              {(() => {
+                                const target = (group as any)?.linkTarget;
+                                if (target?.externalRedirectEnabled && target?.externalRedirectUrl) {
+                                  return (
+                                    <ExternalLink href={target.externalRedirectUrl} className="block">
+                                      {group.title}
+                                    </ExternalLink>
+                                  );
+                                }
+                                if (target?.slug?.current) {
+                                  return (
+                                    <Link href={generateSubjectLink(target.slug.current)} className="block" onClick={() => setIsOpen(false)}>
+                                      {group.title}
+                                    </Link>
+                                  );
+                                }
+                                return <span>{group.title}</span>;
+                              })()}
                             </div>
-                            {(group.items || [])
-                              .slice()
-                              .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
-                              .map(item => (
-                                item?.slug?.current ? (
-                                  <Link
-                                    key={item.slug.current}
-                                    href={generateSubjectLink(item.slug.current)}
-                                    onClick={() => setIsOpen(false)}
-                                    className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                                    style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                                  >
-                                    <span>{item.subject}</span>
-                                  </Link>
-                                ) : null
-                              ))}
                           </div>
                         ))}
 
-                        {/* When groups exist, do not render ungrouped items to keep groups authoritative */}
+                        {/* When groups exist, nested items are intentionally hidden */}
                       </div>
                     );
                   }
