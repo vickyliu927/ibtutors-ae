@@ -243,94 +243,6 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-[48px]">
-          {/* Curriculum Dropdowns */}
-          {curriculums.map((curriculum) => {
-            const curriculumPath = generateSubjectLink(curriculum.slug.current);
-            const curriculumSlug = curriculum.slug.current;
-            
-            return (
-              <div
-                key={curriculum.slug.current}
-                className="relative"
-                ref={el => { curriculumDropdownRefs.current[curriculumSlug] = el; }}
-                onMouseEnter={() => handleCurriculumMouseEnter(curriculumSlug)}
-                onMouseLeave={() => handleCurriculumMouseLeave(curriculumSlug)}
-              >
-                <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
-                  {curriculum.curriculum}
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.5 4.5L6 8L2.5 4.5"
-                      stroke="#171D23"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-
-                {showCurriculumDropdowns[curriculumSlug] && (
-                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
-                    {/* Main curriculum page link */}
-                    {curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (
-                      <ExternalLink
-                        href={curriculum.externalRedirectUrl}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
-                      >
-                        {curriculum.curriculum} Tutors
-                      </ExternalLink>
-                    ) : (
-                      <Link
-                        href={curriculumPath}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
-                      >
-                        {curriculum.curriculum} Tutors
-                      </Link>
-                    )}
-                    
-                    {/* Curriculum-specific subject pages */}
-                    {Array.isArray(curriculum.subjectPages) && curriculum.subjectPages.length > 0 ? (
-                      <div className="mt-1 border-t border-gray-100 pt-1">
-                        {curriculum.subjectPages
-                          .slice()
-                          .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
-                          .map((sp) => (
-                            sp.externalRedirectEnabled && sp.externalRedirectUrl ? (
-                              <ExternalLink
-                                key={`${sp.subject}-external`}
-                                href={sp.externalRedirectUrl}
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              >
-                                {sp.subject}
-                              </ExternalLink>
-                            ) : sp.slug?.current ? (
-                              <Link
-                                key={sp.slug.current}
-                                href={generateSubjectLink(sp.slug.current)}
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              >
-                                {sp.subject}
-                              </Link>
-                            ) : null
-                          ))}
-                      </div>
-                    ) : (
-                      <div className="px-4 py-2 text-xs text-gray-400 italic">
-                        Subject pages coming soon...
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
           {/* All Subjects Dropdown - hidden if no subjects */}
           {hasSubjects && (
             <div 
@@ -459,6 +371,94 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
             </div>
           )}
 
+          {/* Curriculum Dropdowns */}
+          {curriculums.map((curriculum) => {
+            const curriculumPath = generateSubjectLink(curriculum.slug.current);
+            const curriculumSlug = curriculum.slug.current;
+            
+            return (
+              <div
+                key={curriculum.slug.current}
+                className="relative"
+                ref={el => { curriculumDropdownRefs.current[curriculumSlug] = el; }}
+                onMouseEnter={() => handleCurriculumMouseEnter(curriculumSlug)}
+                onMouseLeave={() => handleCurriculumMouseLeave(curriculumSlug)}
+              >
+                <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
+                  {curriculum.curriculum}
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.5 4.5L6 8L2.5 4.5"
+                      stroke="#171D23"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+
+                {showCurriculumDropdowns[curriculumSlug] && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
+                    {/* Main curriculum page link */}
+                    {curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (
+                      <ExternalLink
+                        href={curriculum.externalRedirectUrl}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
+                      >
+                        {curriculum.curriculum} Tutors
+                      </ExternalLink>
+                    ) : (
+                      <Link
+                        href={curriculumPath}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
+                      >
+                        {curriculum.curriculum} Tutors
+                      </Link>
+                    )}
+                    
+                    {/* Curriculum-specific subject pages */}
+                    {Array.isArray(curriculum.subjectPages) && curriculum.subjectPages.length > 0 ? (
+                      <div className="mt-1 border-t border-gray-100 pt-1">
+                        {curriculum.subjectPages
+                          .slice()
+                          .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
+                          .map((sp) => (
+                            sp.externalRedirectEnabled && sp.externalRedirectUrl ? (
+                              <ExternalLink
+                                key={`${sp.subject}-external`}
+                                href={sp.externalRedirectUrl}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                {sp.subject}
+                              </ExternalLink>
+                            ) : sp.slug?.current ? (
+                              <Link
+                                key={sp.slug.current}
+                                href={generateSubjectLink(sp.slug.current)}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                {sp.subject}
+                              </Link>
+                            ) : null
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="px-4 py-2 text-xs text-gray-400 italic">
+                        Subject pages coming soon...
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
           {/* Blog Link */}
           {hasBlog && (
             <Link href="/blog" className="text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
@@ -574,6 +574,35 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
               {/* Main Menu View */}
               {mobileSubmenuView === 'main' && (
                 <div className="flex flex-col items-start w-full">
+                  {/* All Subjects Button - hidden if no subjects */}
+                  {hasSubjects && (
+                    <div className="w-full">
+                      <button
+                        onClick={() => setMobileSubmenuView('subjects')}
+                        className="flex w-full py-4 px-4 justify-between items-center border-b bg-white"
+                        style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                      >
+                        <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
+                          {navbarData?.navigation?.subjectsText || 'All Subjects'}
+                        </span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3.5 11L8.49886 6L3.5 1"
+                            stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                            strokeWidth="1.6"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+
                   {/* Direct Curriculum Links */}
                   <div className="w-full">
                     {curriculums.map((curriculum, index) => {
@@ -664,35 +693,6 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                         />
                       </svg>
                     </Link>
-                  )}
-
-                  {/* All Subjects Button - hidden if no subjects */}
-                  {hasSubjects && (
-                    <div className="w-full">
-                      <button
-                        onClick={() => setMobileSubmenuView('subjects')}
-                        className="flex w-full py-4 px-4 justify-between items-center border-b bg-white"
-                        style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                      >
-                        <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
-                          {navbarData?.navigation?.subjectsText || 'All Subjects'}
-                        </span>
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M3.5 11L8.49886 6L3.5 1"
-                            stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                            strokeWidth="1.6"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                    </div>
                   )}
                 </div>
               )}

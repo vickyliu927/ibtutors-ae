@@ -192,6 +192,13 @@ const curriculumPageSchema = defineType({
       description: 'If enabled, an Advert Block component will appear immediately after the Tutor Profiles section.'
     }),
     defineField({
+      name: 'showTrustedInstitutionsAfterTutors',
+      title: 'Show Trusted Institutions after Tutor Profiles',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If enabled, the Trusted Institutions banner will appear immediately after the Tutor Profiles section (before Advert Block and Platform Banner).'
+    }),
+    defineField({
       name: 'showPlatformBannerAfterTutors',
       title: 'Show Platform Banner after Tutor Profiles',
       type: 'boolean',

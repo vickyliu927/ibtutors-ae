@@ -20,7 +20,8 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
-import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, cloneQueryUtils } from '../lib/cloneQueries';
+import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, trustedInstitutionsQueries, cloneQueryUtils } from '../lib/cloneQueries';
+import TrustedInstitutionsBanner from '../components/TrustedInstitutionsBanner';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 
@@ -91,6 +92,7 @@ interface SubjectPageData {
   externalRedirectUrl?: string;
   externalRedirectPermanent?: boolean;
   showAdvertBlockAfterTutors?: boolean;
+  showTrustedInstitutionsAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
@@ -134,6 +136,7 @@ interface CurriculumPageData {
     description: string;
   };
   showAdvertBlockAfterTutors?: boolean;
+  showTrustedInstitutionsAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
@@ -168,6 +171,7 @@ async function getCurriculumPageDataWithCloneContext(
           tutorProfileSectionPriceDescription,
           tutorProfileSectionPriceTag
         },
+        showTrustedInstitutionsAfterTutors,
         showAdvertBlockAfterTutors,
         showPlatformBannerAfterTutors,
         tutorsList[] -> {
@@ -229,6 +233,7 @@ async function getCurriculumPageDataWithCloneContext(
           tutorProfileSectionPriceDescription,
           tutorProfileSectionPriceTag
         },
+        showTrustedInstitutionsAfterTutors,
         showAdvertBlockAfterTutors,
         showPlatformBannerAfterTutors,
         tutorsList[] -> {
@@ -290,6 +295,7 @@ async function getCurriculumPageDataWithCloneContext(
           tutorProfileSectionPriceDescription,
           tutorProfileSectionPriceTag
         },
+        showTrustedInstitutionsAfterTutors,
         showAdvertBlockAfterTutors,
         showPlatformBannerAfterTutors,
         tutorsList[] -> {
@@ -401,6 +407,7 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
           showPlatformBannerAfterTutors,
           externalRedirectEnabled,
@@ -504,6 +511,7 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
           showPlatformBannerAfterTutors,
           externalRedirectEnabled,
@@ -605,6 +613,7 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
           showPlatformBannerAfterTutors,
           externalRedirectEnabled,
@@ -887,6 +896,12 @@ export default async function DynamicPage({
     ? cloneQueryUtils.getContentWithCustomizations(platformBannerContent)
     : null;
 
+  // Fetch Trusted Institutions banner
+  const trustedInstitutionsContent = await trustedInstitutionsQueries.fetch(cloneContext.cloneId || 'global');
+  const trustedInstitutionsBanner = trustedInstitutionsContent?.data
+    ? cloneQueryUtils.getContentWithCustomizations(trustedInstitutionsContent)
+    : null;
+
   // Generate clone indicator props
   const cloneIndicatorProps = getCloneIndicatorData(
     cloneContext,
@@ -959,6 +974,20 @@ export default async function DynamicPage({
           tutorProfileSectionPriceDescription={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
+
+        {/* Trusted Institutions Banner (before Advert Block) */}
+        {curriculumResult.pageData.showTrustedInstitutionsAfterTutors &&
+         trustedInstitutionsBanner?.enabled !== false &&
+         Array.isArray(trustedInstitutionsBanner?.institutions) &&
+         trustedInstitutionsBanner.institutions.length > 0 ? (
+          <TrustedInstitutionsBanner
+            title={trustedInstitutionsBanner.title}
+            subtitle={trustedInstitutionsBanner.subtitle}
+            institutions={trustedInstitutionsBanner.institutions}
+            backgroundColor={trustedInstitutionsBanner.backgroundColor}
+            carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
+          />
+        ) : null}
 
         {/* Advert Block and Platform Banner (in that order) after Tutor Profiles */}
         {curriculumResult.pageData.showAdvertBlockAfterTutors && advertBlockSection?.enabled !== false ? (
@@ -1099,6 +1128,20 @@ export default async function DynamicPage({
           tutorProfileSectionPriceDescription={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
+
+        {/* Trusted Institutions Banner (before Advert Block) */}
+        {subjectResult.pageData.showTrustedInstitutionsAfterTutors &&
+         trustedInstitutionsBanner?.enabled !== false &&
+         Array.isArray(trustedInstitutionsBanner?.institutions) &&
+         trustedInstitutionsBanner.institutions.length > 0 ? (
+          <TrustedInstitutionsBanner
+            title={trustedInstitutionsBanner.title}
+            subtitle={trustedInstitutionsBanner.subtitle}
+            institutions={trustedInstitutionsBanner.institutions}
+            backgroundColor={trustedInstitutionsBanner.backgroundColor}
+            carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
+          />
+        ) : null}
 
         {/* Advert Block and Platform Banner (in that order) after Tutor Profiles */}
         {subjectResult.pageData.showAdvertBlockAfterTutors && advertBlockSection?.enabled !== false ? (
