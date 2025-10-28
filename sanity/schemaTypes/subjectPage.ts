@@ -166,6 +166,20 @@ const subjectPageSchema = defineType({
       description: 'Optional: Add a FAQ section to this subject page',
     }),
     defineField({
+      name: 'showAdvertBlockAfterTutors',
+      title: 'Show Advert Block after Tutor Profiles',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If enabled, an Advert Block component will appear immediately after the Tutor Profiles section.'
+    }),
+    defineField({
+      name: 'showPlatformBannerAfterTutors',
+      title: 'Show Platform Banner after Tutor Profiles',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If enabled, a Platform Banner will appear after Tutor Profiles (and after Advert Block if both are enabled).'
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'object',

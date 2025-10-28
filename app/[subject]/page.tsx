@@ -2,6 +2,8 @@ import React from 'react';
 import { client } from '@/sanity/lib/client';
 import ContactForm from '../components/ContactForm';
 import TutorProfiles from '../components/TutorProfiles';
+import AdvertBlock from '../components/AdvertBlock';
+import TutoringPlatformBanner, { PlatformBannerData } from '../components/TutoringPlatformBanner';
 import TestimonialSection, { TestimonialSectionData } from '../components/TestimonialSection';
 import FAQSection from '../components/FAQSection';
 import SubjectHeroSection from '../components/SubjectHeroSection';
@@ -18,7 +20,7 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
-import { navbarQueries, tutorProfilesSectionQueries } from '../lib/cloneQueries';
+import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, cloneQueryUtils } from '../lib/cloneQueries';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 
@@ -88,6 +90,8 @@ interface SubjectPageData {
   externalRedirectEnabled?: boolean;
   externalRedirectUrl?: string;
   externalRedirectPermanent?: boolean;
+  showAdvertBlockAfterTutors?: boolean;
+  showPlatformBannerAfterTutors?: boolean;
 }
 
 interface CurriculumPageData {
@@ -129,6 +133,8 @@ interface CurriculumPageData {
     pageTitle: string;
     description: string;
   };
+  showAdvertBlockAfterTutors?: boolean;
+  showPlatformBannerAfterTutors?: boolean;
 }
 
 /**
@@ -162,6 +168,8 @@ async function getCurriculumPageDataWithCloneContext(
           tutorProfileSectionPriceDescription,
           tutorProfileSectionPriceTag
         },
+        showAdvertBlockAfterTutors,
+        showPlatformBannerAfterTutors,
         tutorsList[] -> {
           _id,
           name,
@@ -221,6 +229,8 @@ async function getCurriculumPageDataWithCloneContext(
           tutorProfileSectionPriceDescription,
           tutorProfileSectionPriceTag
         },
+        showAdvertBlockAfterTutors,
+        showPlatformBannerAfterTutors,
         tutorsList[] -> {
           _id,
           name,
@@ -280,6 +290,8 @@ async function getCurriculumPageDataWithCloneContext(
           tutorProfileSectionPriceDescription,
           tutorProfileSectionPriceTag
         },
+        showAdvertBlockAfterTutors,
+        showPlatformBannerAfterTutors,
         tutorsList[] -> {
           _id,
           name,
@@ -389,6 +401,8 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          showAdvertBlockAfterTutors,
+          showPlatformBannerAfterTutors,
           externalRedirectEnabled,
           externalRedirectUrl,
           externalRedirectPermanent,
@@ -490,6 +504,8 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          showAdvertBlockAfterTutors,
+          showPlatformBannerAfterTutors,
           externalRedirectEnabled,
           externalRedirectUrl,
           externalRedirectPermanent,
@@ -589,6 +605,8 @@ async function getSubjectPageDataWithCloneContext(
           title,
           firstSection,
           tutorsListSectionHead,
+          showAdvertBlockAfterTutors,
+          showPlatformBannerAfterTutors,
           externalRedirectEnabled,
           externalRedirectUrl,
           externalRedirectPermanent,
@@ -856,6 +874,19 @@ export default async function DynamicPage({
   const tutorProfilesSectionResult = await tutorProfilesSectionQueries.fetch(cloneContext.cloneId || 'global');
   const globalTrustedByText = tutorProfilesSectionResult?.data?.trustedByText as string | undefined;
 
+  // Fetch Advert Block and Platform Banner content for this clone
+  const [advertBlockContent, platformBannerContent] = await Promise.all([
+    advertBlockSectionQueries.fetch(cloneContext.cloneId || 'global'),
+    platformBannerQueries.fetch(cloneContext.cloneId || 'global'),
+  ]);
+
+  const advertBlockSection = advertBlockContent?.data
+    ? cloneQueryUtils.getContentWithCustomizations(advertBlockContent)
+    : null;
+  const platformBanner = platformBannerContent?.data
+    ? cloneQueryUtils.getContentWithCustomizations(platformBannerContent)
+    : null;
+
   // Generate clone indicator props
   const cloneIndicatorProps = getCloneIndicatorData(
     cloneContext,
@@ -928,6 +959,14 @@ export default async function DynamicPage({
           tutorProfileSectionPriceDescription={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
+
+        {/* Advert Block and Platform Banner (in that order) after Tutor Profiles */}
+        {curriculumResult.pageData.showAdvertBlockAfterTutors && advertBlockSection?.enabled !== false ? (
+          <AdvertBlock sectionData={advertBlockSection} />
+        ) : null}
+        {curriculumResult.pageData.showPlatformBannerAfterTutors ? (
+          <TutoringPlatformBanner data={platformBanner as PlatformBannerData} />
+        ) : null}
 
         {/* Testimonials Section */}
         {curriculumResult.pageData.testimonials && curriculumResult.testimonialSection && (
@@ -1060,6 +1099,14 @@ export default async function DynamicPage({
           tutorProfileSectionPriceDescription={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
+
+        {/* Advert Block and Platform Banner (in that order) after Tutor Profiles */}
+        {subjectResult.pageData.showAdvertBlockAfterTutors && advertBlockSection?.enabled !== false ? (
+          <AdvertBlock sectionData={advertBlockSection} />
+        ) : null}
+        {subjectResult.pageData.showPlatformBannerAfterTutors ? (
+          <TutoringPlatformBanner data={platformBanner as PlatformBannerData} />
+        ) : null}
 
         {/* Testimonials Section */}
         {subjectResult.pageData.testimonials && subjectResult.testimonialSection && (
