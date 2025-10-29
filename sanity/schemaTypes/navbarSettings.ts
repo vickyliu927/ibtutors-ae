@@ -95,16 +95,33 @@ const navbarSettingsSchema = defineType({
             defineField({
               name: 'navOrder',
               title: 'Desktop Navigation Order',
-              description: 'Order of items in the desktop navbar (left of CTA).',
+              description: 'Drag to reorder items (left to right order before the CTA).',
               type: 'array',
-              of: [{ type: 'string' }],
-              options: {
-                list: [
-                  { title: 'All Subjects', value: 'allSubjects' },
-                  { title: 'Curriculums', value: 'curriculums' },
-                  { title: 'Blog', value: 'blog' },
-                ]
-              }
+              of: [
+                defineField({
+                  type: 'object',
+                  name: 'navItem',
+                  title: 'Nav Item',
+                  fields: [
+                    defineField({
+                      name: 'key',
+                      title: 'Item',
+                      type: 'string',
+                      options: {
+                        list: [
+                          { title: 'All Subjects', value: 'allSubjects' },
+                          { title: 'Curriculums', value: 'curriculums' },
+                          { title: 'Blog', value: 'blog' },
+                        ]
+                      },
+                      validation: Rule => Rule.required(),
+                    })
+                  ],
+                  preview: {
+                    select: { title: 'key' }
+                  }
+                })
+              ],
             }),
       ],
       validation: Rule => Rule.required(),
@@ -114,20 +131,35 @@ const navbarSettingsSchema = defineType({
       title: 'Mobile Menu Settings',
       type: 'object',
       fields: [
-        {
+        defineField({
           name: 'mobileNavOrder',
           title: 'Mobile Navigation Order',
-          description: 'Order of items in the mobile main menu.',
+          description: 'Drag to reorder items in the mobile menu.',
           type: 'array',
-          of: [{ type: 'string' }],
-          options: {
-            list: [
-              { title: 'All Subjects', value: 'allSubjects' },
-              { title: 'Curriculums', value: 'curriculums' },
-              { title: 'Blog', value: 'blog' },
-            ]
-          }
-        },
+          of: [
+            defineField({
+              type: 'object',
+              name: 'mobileNavItem',
+              title: 'Mobile Nav Item',
+              fields: [
+                defineField({
+                  name: 'key',
+                  title: 'Item',
+                  type: 'string',
+                  options: {
+                    list: [
+                      { title: 'All Subjects', value: 'allSubjects' },
+                      { title: 'Curriculums', value: 'curriculums' },
+                      { title: 'Blog', value: 'blog' },
+                    ]
+                  },
+                  validation: Rule => Rule.required(),
+                })
+              ],
+              preview: { select: { title: 'key' } }
+            })
+          ]
+        }),
         {
           name: 'closeButtonColor',
           title: 'Close Button Color',

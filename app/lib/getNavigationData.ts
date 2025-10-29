@@ -362,7 +362,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
-        navOrder,
+        navOrder[]{ key },
         subjectsMenuGroups[]{
           title,
           linkTarget->{
@@ -384,7 +384,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder }
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ key } }
     }`;
     
     const result = await client.fetch(query);
@@ -403,7 +403,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
-        navOrder,
+        navOrder[]{ key },
         subjectsMenuGroups[]{
           title,
           linkTarget->{
@@ -425,7 +425,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder },
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ key } },
       "sourceInfo": {
         "source": "cloneSpecific",
         "cloneId": $cloneId
@@ -461,7 +461,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder },
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ key } },
       "sourceInfo": {
         "source": "baseline",
         "cloneId": cloneReference->cloneId.current
@@ -476,7 +476,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
-        navOrder,
+        navOrder[]{ key },
         subjectsMenuGroups[]{
           title,
           items[]->{

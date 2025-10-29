@@ -200,9 +200,15 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
   };
 
   // Desktop navigation order from Sanity (fallback to default)
-  const desktopNavOrder: string[] = Array.isArray((navbarData as any)?.navigation?.navOrder) && (navbarData as any).navigation.navOrder.length
-    ? (navbarData as any).navigation.navOrder
-    : ['allSubjects', 'curriculums', 'blog'];
+  const normalizeOrder = (raw: any, fallback: string[]) => {
+    if (!Array.isArray(raw)) return fallback;
+    const items = raw
+      .map((item: any) => (typeof item === 'string' ? item : item?.key))
+      .filter((v: any) => typeof v === 'string');
+    return items.length ? items : fallback;
+  };
+
+  const desktopNavOrder: string[] = normalizeOrder((navbarData as any)?.navigation?.navOrder, ['allSubjects', 'curriculums', 'blog']);
 
   const getDesktopOrder = (key: 'allSubjects' | 'curriculums' | 'blog') => {
     const idx = desktopNavOrder.indexOf(key);
@@ -210,9 +216,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
   };
 
   // Mobile navigation order from Sanity (fallback to default)
-  const mobileNavOrder: string[] = Array.isArray((navbarData as any)?.mobileMenu?.mobileNavOrder) && (navbarData as any).mobileMenu.mobileNavOrder.length
-    ? (navbarData as any).mobileMenu.mobileNavOrder
-    : ['allSubjects', 'curriculums', 'blog'];
+  const mobileNavOrder: string[] = normalizeOrder((navbarData as any)?.mobileMenu?.mobileNavOrder, ['allSubjects', 'curriculums', 'blog']);
 
   const getMobileOrder = (key: 'allSubjects' | 'curriculums' | 'blog') => {
     const idx = mobileNavOrder.indexOf(key);
