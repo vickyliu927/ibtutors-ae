@@ -68,6 +68,7 @@ interface NavbarData {
     closeButtonColor?: string;
     dropdownArrowColor?: string;
     borderColor?: string;
+    mobileNavOrder?: string[];
   };
   buttonText: string;
   buttonLink: string;
@@ -198,6 +199,26 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     return url && (url.startsWith('http://') || url.startsWith('https://'));
   };
 
+  // Desktop navigation order from Sanity (fallback to default)
+  const desktopNavOrder: string[] = Array.isArray((navbarData as any)?.navigation?.navOrder) && (navbarData as any).navigation.navOrder.length
+    ? (navbarData as any).navigation.navOrder
+    : ['allSubjects', 'curriculums', 'blog'];
+
+  const getDesktopOrder = (key: 'allSubjects' | 'curriculums' | 'blog') => {
+    const idx = desktopNavOrder.indexOf(key);
+    return idx >= 0 ? idx : 999;
+  };
+
+  // Mobile navigation order from Sanity (fallback to default)
+  const mobileNavOrder: string[] = Array.isArray((navbarData as any)?.mobileMenu?.mobileNavOrder) && (navbarData as any).mobileMenu.mobileNavOrder.length
+    ? (navbarData as any).mobileMenu.mobileNavOrder
+    : ['allSubjects', 'curriculums', 'blog'];
+
+  const getMobileOrder = (key: 'allSubjects' | 'curriculums' | 'blog') => {
+    const idx = mobileNavOrder.indexOf(key);
+    return idx >= 0 ? idx : 999;
+  };
+
   return (
     <nav
       className={`${isScrolled ? 'fixed' : 'absolute'} md:absolute top-0 left-0 right-0 z-30 w-full transition-all duration-300 ${
@@ -250,6 +271,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
               ref={subjectsDropdownRef}
               onMouseEnter={handleSubjectsMouseEnter}
               onMouseLeave={handleSubjectsMouseLeave}
+              style={{ order: getDesktopOrder('allSubjects') }}
             >
               <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
                 {navbarData?.navigation?.subjectsText || 'All Subjects'}
@@ -356,6 +378,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                 ref={el => { curriculumDropdownRefs.current[curriculumSlug] = el; }}
                 onMouseEnter={() => handleCurriculumMouseEnter(curriculumSlug)}
                 onMouseLeave={() => handleCurriculumMouseLeave(curriculumSlug)}
+                style={{ order: getDesktopOrder('curriculums') }}
               >
                 <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
                   {curriculum.curriculum}
@@ -434,7 +457,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
 
           {/* Blog Link */}
           {hasBlog && (
-            <Link href="/blog" className="text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
+            <Link href="/blog" className="text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors" style={{ order: getDesktopOrder('blog') }}>
               Blog
             </Link>
           )}
@@ -549,7 +572,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                 <div className="flex flex-col items-start w-full">
                   {/* All Subjects Button - hidden if no subjects */}
                   {hasSubjects && (
-                    <div className="w-full">
+                    <div className="w-full" style={{ order: getMobileOrder('allSubjects') }}>
                       <button
                         onClick={() => setMobileSubmenuView('subjects')}
                         className="flex w-full py-4 px-4 justify-between items-center border-b bg-white"
@@ -577,7 +600,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   )}
 
                   {/* Direct Curriculum Links */}
-                  <div className="w-full">
+                  <div className="w-full" style={{ order: getMobileOrder('curriculums') }}>
                     {curriculums.map((curriculum, index) => {
                       const curriculumPath = generateSubjectLink(curriculum.slug.current);
                       return (
@@ -648,7 +671,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                       href="/blog"
                       onClick={() => setIsOpen(false)}
                       className="flex w-full py-4 px-4 justify-between items-center border-b bg-white hover:bg-gray-50"
-                      style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                      style={{ order: getMobileOrder('blog'), borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                     >
                       <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">Blog</span>
                       <svg

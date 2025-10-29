@@ -362,6 +362,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
+        navOrder,
         subjectsMenuGroups[]{
           title,
           linkTarget->{
@@ -383,7 +384,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder }
     }`;
     
     const result = await client.fetch(query);
@@ -402,6 +403,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
+        navOrder,
         subjectsMenuGroups[]{
           title,
           linkTarget->{
@@ -423,7 +425,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu,
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder },
       "sourceInfo": {
         "source": "cloneSpecific",
         "cloneId": $cloneId
@@ -459,7 +461,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu,
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder },
       "sourceInfo": {
         "source": "baseline",
         "cloneId": cloneReference->cloneId.current
@@ -474,6 +476,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
+        navOrder,
         subjectsMenuGroups[]{
           title,
           items[]->{

@@ -92,6 +92,20 @@ const navbarSettingsSchema = defineType({
                 }
               ]
             }),
+            defineField({
+              name: 'navOrder',
+              title: 'Desktop Navigation Order',
+              description: 'Order of items in the desktop navbar (left of CTA).',
+              type: 'array',
+              of: [{ type: 'string' }],
+              options: {
+                list: [
+                  { title: 'All Subjects', value: 'allSubjects' },
+                  { title: 'Curriculums', value: 'curriculums' },
+                  { title: 'Blog', value: 'blog' },
+                ]
+              }
+            }),
       ],
       validation: Rule => Rule.required(),
     }),
@@ -100,6 +114,20 @@ const navbarSettingsSchema = defineType({
       title: 'Mobile Menu Settings',
       type: 'object',
       fields: [
+        {
+          name: 'mobileNavOrder',
+          title: 'Mobile Navigation Order',
+          description: 'Order of items in the mobile main menu.',
+          type: 'array',
+          of: [{ type: 'string' }],
+          options: {
+            list: [
+              { title: 'All Subjects', value: 'allSubjects' },
+              { title: 'Curriculums', value: 'curriculums' },
+              { title: 'Blog', value: 'blog' },
+            ]
+          }
+        },
         {
           name: 'closeButtonColor',
           title: 'Close Button Color',
