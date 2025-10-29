@@ -247,3 +247,50 @@ export const getCurriculumPageUrl = async (curriculumNameOrId: string, hash?: st
 
   return hash ? `/${slug}#${hash}` : `/${slug}`;
 }; 
+
+/**
+ * Build URL for combined curriculum + subject route: `/{curriculum}/{subject}`
+ */
+export const getCurriculumSubjectUrl = async (
+  curriculumNameOrId: string,
+  subjectNameOrId: string,
+  hash?: string
+): Promise<string> => {
+  const [curriculumPath, subjectPath] = await Promise.all([
+    getCurriculumPageUrl(curriculumNameOrId),
+    getSubjectPageUrl(subjectNameOrId),
+  ]);
+
+  const curriculumSlug = curriculumPath.replace(/^\//, '').split('#')[0];
+  const subjectSlug = subjectPath.replace(/^\//, '').split('#')[0];
+  const base = `/${curriculumSlug}/${subjectSlug}`;
+  return hash ? `${base}#${hash}` : base;
+};
+
+/**
+ * Build URL for location + subject: `/{location}/{subject}`
+ */
+export const getLocationSubjectPageUrl = async (
+  locationSlug: string,
+  subjectNameOrId: string,
+  hash?: string
+): Promise<string> => {
+  const subjectPath = await getSubjectPageUrl(subjectNameOrId);
+  const subjectSlug = subjectPath.replace(/^\//, '').split('#')[0];
+  const base = `/${locationSlug}/${subjectSlug}`;
+  return hash ? `${base}#${hash}` : base;
+};
+
+/**
+ * Build URL for location + curriculum: `/{location}/{curriculum}`
+ */
+export const getLocationCurriculumPageUrl = async (
+  locationSlug: string,
+  curriculumNameOrId: string,
+  hash?: string
+): Promise<string> => {
+  const curriculumPath = await getCurriculumPageUrl(curriculumNameOrId);
+  const curriculumSlug = curriculumPath.replace(/^\//, '').split('#')[0];
+  const base = `/${locationSlug}/${curriculumSlug}`;
+  return hash ? `${base}#${hash}` : base;
+};

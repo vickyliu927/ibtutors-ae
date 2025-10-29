@@ -59,6 +59,64 @@ function cleanupCache(): void {
   }
 }
 
+// ==========================================================================
+// LOCATION-BASED CLONE LOOKUP (PATH PREFIX)
+// ==========================================================================
+
+interface LocationCacheEntry {
+  cloneId: string;
+  cloneName?: string;
+  timestamp: number;
+}
+
+const locationCache = new Map<string, LocationCacheEntry>();
+const LOCATION_TTL = 10 * 60 * 1000; // 10 minutes
+
+function getCachedLocation(slug: string): LocationCacheEntry | null {
+  const key = slug.toLowerCase();
+  const entry = locationCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > LOCATION_TTL) {
+    locationCache.delete(key);
+    return null;
+  }
+  return entry;
+}
+
+function setCachedLocation(slug: string, value: LocationCacheEntry): void {
+  const key = slug.toLowerCase();
+  locationCache.set(key, { ...value, timestamp: Date.now() });
+}
+
+async function findCloneByLocationSlug(slug: string): Promise<{ cloneId: string; cloneName?: string } | null> {
+  try {
+    const cached = getCachedLocation(slug);
+    if (cached) {
+      return { cloneId: cached.cloneId, cloneName: cached.cloneName };
+    }
+
+    const normalized = slug.toLowerCase();
+    // Try by cloneId or by slugified cloneName
+    const query = `*[_type == "clone" && isActive == true && (
+      cloneId.current == $slug ||
+      lower(cloneName) == $name ||
+      lower(replace(cloneName, /\s+/ , '-')) == $slug
+    )][0]{ cloneId, cloneName }`;
+
+    const result: any = await client.fetch(query, { slug: normalized, name: normalized });
+
+    if (result?.cloneId?.current) {
+      setCachedLocation(normalized, { cloneId: result.cloneId.current, cloneName: result.cloneName, timestamp: Date.now() });
+      return { cloneId: result.cloneId.current, cloneName: result.cloneName };
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`[Middleware] Error finding clone by location slug '${slug}':`, error);
+    return null;
+  }
+}
+
 /**
  * Get cached domain lookup result
  */
@@ -245,6 +303,37 @@ export async function middleware(request: NextRequest) {
       return response;
     }
     
+    // ========================================================================
+    // LOCATION PREFIX HANDLING: /{location}/{subject|curriculum}
+    // If the first path segment matches a known clone/location, set clone headers
+    // and rewrite to strip the location prefix so existing routes handle the rest.
+    // ========================================================================
+    const rawSegments = pathname.split('/').filter(Boolean);
+    if (rawSegments.length >= 1) {
+      const locationSlug = rawSegments[0];
+      // Only consider if path isn't already under reserved namespaces
+      const reserved = ['api', '_next', 'studio'];
+      if (!reserved.includes(locationSlug)) {
+        const cloneFromLocation = await findCloneByLocationSlug(locationSlug);
+        if (cloneFromLocation?.cloneId) {
+          const requestHeaders = new Headers(request.headers);
+          requestHeaders.set('x-clone-id', cloneFromLocation.cloneId);
+          requestHeaders.set('x-clone-name', cloneFromLocation.cloneName || 'unknown');
+          requestHeaders.set('x-clone-source', 'path-location');
+
+          const url = request.nextUrl.clone();
+          const restPath = rawSegments.slice(1).join('/');
+          url.pathname = `/${restPath}` || '/';
+
+          console.log(`[Middleware] Location prefix detected: '${locationSlug}' → clone '${cloneFromLocation.cloneId}'. Rewriting to '${url.pathname}'.`);
+
+          return NextResponse.rewrite(url, {
+            request: { headers: requestHeaders },
+          });
+        }
+      }
+    }
+
     // ========================================================================
     // DOMAIN-TO-CLONE RESOLUTION
     // ========================================================================
