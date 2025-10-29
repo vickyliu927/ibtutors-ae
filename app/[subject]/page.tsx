@@ -44,7 +44,8 @@ export async function generateStaticParams() {
     const subjectSlugs = (subjectSlugsRaw || []).filter(isString);
     const curriculumSlugs = (curriculumSlugsRaw || []).filter(isString);
 
-    const allSlugs = [...subjectSlugs, ...curriculumSlugs];
+    // Filter out any slugs that contain '/' because `[subject]` is a single-segment route.
+    const allSlugs = [...subjectSlugs, ...curriculumSlugs].filter((s) => !s.includes('/'));
     return allSlugs.map((slug) => ({ subject: slug }));
   } catch (e) {
     // On any failure, return no pre-rendered paths (dynamic at runtime)
