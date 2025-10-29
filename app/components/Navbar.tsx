@@ -208,6 +208,18 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     return items.length ? items : fallback;
   };
 
+  const extractCurriculumSlug = (key: string) => {
+    return typeof key === 'string' && key.startsWith('curriculum:') ? key.slice('curriculum:'.length) : null;
+  };
+  const buildOrderMap = (keys: string[]) => {
+    const map: Record<string, number> = {};
+    keys.forEach((k, idx) => {
+      const slug = extractCurriculumSlug(k);
+      if (slug) map[slug] = idx;
+    });
+    return map;
+  };
+
   const desktopNavOrder: string[] = normalizeOrder((navbarData as any)?.navigation?.navOrder, ['allSubjects', 'curriculums', 'blog']);
 
   const getDesktopOrder = (key: 'allSubjects' | 'curriculums' | 'blog') => {
@@ -222,6 +234,9 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     const idx = mobileNavOrder.indexOf(key);
     return idx >= 0 ? idx : 999;
   };
+
+  const desktopCurriculumOrderMap = buildOrderMap(desktopNavOrder);
+  const mobileCurriculumOrderMap = buildOrderMap(mobileNavOrder);
 
   return (
     <nav
@@ -382,7 +397,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                 ref={el => { curriculumDropdownRefs.current[curriculumSlug] = el; }}
                 onMouseEnter={() => handleCurriculumMouseEnter(curriculumSlug)}
                 onMouseLeave={() => handleCurriculumMouseLeave(curriculumSlug)}
-                style={{ order: getDesktopOrder('curriculums') }}
+                style={{ order: desktopCurriculumOrderMap[curriculumSlug] ?? 500 + (curriculums.findIndex(c => c.slug.current === curriculumSlug)) }}
               >
                 <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy hover:text-[#001A96] transition-colors">
                   {curriculum.curriculum}
@@ -605,7 +620,15 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
 
                   {/* Direct Curriculum Links */}
                   <div className="w-full" style={{ order: getMobileOrder('curriculums') }}>
-                    {curriculums.map((curriculum, index) => {
+                    {[...curriculums]
+                      .sort((a, b) => {
+                        const ai = mobileCurriculumOrderMap[a.slug.current];
+                        const bi = mobileCurriculumOrderMap[b.slug.current];
+                        const av = ai !== undefined ? ai : 1000 + (a.displayOrder || 100);
+                        const bv = bi !== undefined ? bi : 1000 + (b.displayOrder || 100);
+                        return av - bv;
+                      })
+                      .map((curriculum, index) => {
                       const curriculumPath = generateSubjectLink(curriculum.slug.current);
                       return (
                         curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (

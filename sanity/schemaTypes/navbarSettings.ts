@@ -108,12 +108,31 @@ const navbarSettingsSchema = defineType({
                       title: 'Item',
                       type: 'string',
                       options: {
-                        list: [
-                          { title: 'All Subjects', value: 'allSubjects' },
-                          { title: 'Curriculums', value: 'curriculums' },
-                          { title: 'Blog', value: 'blog' },
-                        ]
-                      },
+                        list: async (context: any) => {
+                          try {
+                            const client = context.getClient({ apiVersion: '2024-05-01' });
+                            const results = await client.fetch(`*[_type == "curriculumPage" && isActive == true]{
+                              title,
+                              curriculum,
+                              "slug": slug.current
+                            } | order(displayOrder asc)`);
+                            const curriculumOptions = (results || []).map((c: any) => ({
+                              title: c.title || c.curriculum,
+                              value: `curriculum:${c.slug}`
+                            }));
+                            return [
+                              { title: 'All Subjects', value: 'allSubjects' },
+                              ...curriculumOptions,
+                              { title: 'Blog', value: 'blog' },
+                            ];
+                          } catch (e) {
+                            return [
+                              { title: 'All Subjects', value: 'allSubjects' },
+                              { title: 'Blog', value: 'blog' },
+                            ];
+                          }
+                        }
+                      } as any,
                       validation: Rule => Rule.required(),
                     })
                   ],
@@ -147,12 +166,31 @@ const navbarSettingsSchema = defineType({
                   title: 'Item',
                   type: 'string',
                   options: {
-                    list: [
-                      { title: 'All Subjects', value: 'allSubjects' },
-                      { title: 'Curriculums', value: 'curriculums' },
-                      { title: 'Blog', value: 'blog' },
-                    ]
-                  },
+                    list: async (context: any) => {
+                      try {
+                        const client = context.getClient({ apiVersion: '2024-05-01' });
+                        const results = await client.fetch(`*[_type == "curriculumPage" && isActive == true]{
+                          title,
+                          curriculum,
+                          "slug": slug.current
+                        } | order(displayOrder asc)`);
+                        const curriculumOptions = (results || []).map((c: any) => ({
+                          title: c.title || c.curriculum,
+                          value: `curriculum:${c.slug}`
+                        }));
+                        return [
+                          { title: 'All Subjects', value: 'allSubjects' },
+                          ...curriculumOptions,
+                          { title: 'Blog', value: 'blog' },
+                        ];
+                      } catch (e) {
+                        return [
+                          { title: 'All Subjects', value: 'allSubjects' },
+                          { title: 'Blog', value: 'blog' },
+                        ];
+                      }
+                    }
+                  } as any,
                   validation: Rule => Rule.required(),
                 })
               ],
