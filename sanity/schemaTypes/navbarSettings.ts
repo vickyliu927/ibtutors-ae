@@ -104,40 +104,29 @@ const navbarSettingsSchema = defineType({
                   title: 'Nav Item',
                   fields: [
                     defineField({
-                      name: 'key',
-                      title: 'Item',
+                      name: 'itemType',
+                      title: 'Item Type',
                       type: 'string',
-                      options: {
-                        list: async (context: any) => {
-                          try {
-                            const client = context.getClient({ apiVersion: '2024-05-01' });
-                            const results = await client.fetch(`*[_type == "curriculumPage" && isActive == true]{
-                              title,
-                              curriculum,
-                              "slug": slug.current
-                            } | order(displayOrder asc)`);
-                            const curriculumOptions = (results || []).map((c: any) => ({
-                              title: c.title || c.curriculum,
-                              value: `curriculum:${c.slug}`
-                            }));
-                            return [
-                              { title: 'All Subjects', value: 'allSubjects' },
-                              ...curriculumOptions,
-                              { title: 'Blog', value: 'blog' },
-                            ];
-                          } catch (e) {
-                            return [
-                              { title: 'All Subjects', value: 'allSubjects' },
-                              { title: 'Blog', value: 'blog' },
-                            ];
-                          }
-                        }
-                      } as any,
+                      options: { list: [
+                        { title: 'All Subjects', value: 'allSubjects' },
+                        { title: 'Curriculum', value: 'curriculum' },
+                        { title: 'Blog', value: 'blog' },
+                      ] },
                       validation: Rule => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'curriculumTarget',
+                      title: 'Curriculum Page',
+                      type: 'reference',
+                      to: [{ type: 'curriculumPage' }],
+                      options: { disableNew: true },
+                      hidden: ({ parent }) => parent?.itemType !== 'curriculum',
+                      validation: Rule => Rule.custom((val, ctx) => (ctx.parent as any)?.itemType === 'curriculum' ? (val ? true : 'Select a curriculum page') : true)
                     })
                   ],
                   preview: {
-                    select: { title: 'key' }
+                    select: { itemType: 'itemType', title: 'curriculumTarget.title' },
+                    prepare: (sel: any) => sel.itemType === 'curriculum' ? { title: sel.title || 'Curriculum' } : { title: sel.itemType }
                   }
                 })
               ],
@@ -162,39 +151,27 @@ const navbarSettingsSchema = defineType({
               title: 'Mobile Nav Item',
               fields: [
                 defineField({
-                  name: 'key',
-                  title: 'Item',
+                  name: 'itemType',
+                  title: 'Item Type',
                   type: 'string',
-                  options: {
-                    list: async (context: any) => {
-                      try {
-                        const client = context.getClient({ apiVersion: '2024-05-01' });
-                        const results = await client.fetch(`*[_type == "curriculumPage" && isActive == true]{
-                          title,
-                          curriculum,
-                          "slug": slug.current
-                        } | order(displayOrder asc)`);
-                        const curriculumOptions = (results || []).map((c: any) => ({
-                          title: c.title || c.curriculum,
-                          value: `curriculum:${c.slug}`
-                        }));
-                        return [
-                          { title: 'All Subjects', value: 'allSubjects' },
-                          ...curriculumOptions,
-                          { title: 'Blog', value: 'blog' },
-                        ];
-                      } catch (e) {
-                        return [
-                          { title: 'All Subjects', value: 'allSubjects' },
-                          { title: 'Blog', value: 'blog' },
-                        ];
-                      }
-                    }
-                  } as any,
+                  options: { list: [
+                    { title: 'All Subjects', value: 'allSubjects' },
+                    { title: 'Curriculum', value: 'curriculum' },
+                    { title: 'Blog', value: 'blog' },
+                  ] },
                   validation: Rule => Rule.required(),
+                }),
+                defineField({
+                  name: 'curriculumTarget',
+                  title: 'Curriculum Page',
+                  type: 'reference',
+                  to: [{ type: 'curriculumPage' }],
+                  options: { disableNew: true },
+                  hidden: ({ parent }) => parent?.itemType !== 'curriculum',
+                  validation: Rule => Rule.custom((val, ctx) => (ctx.parent as any)?.itemType === 'curriculum' ? (val ? true : 'Select a curriculum page') : true)
                 })
               ],
-              preview: { select: { title: 'key' } }
+              preview: { select: { itemType: 'itemType', title: 'curriculumTarget.title' }, prepare: (sel: any) => sel.itemType === 'curriculum' ? { title: sel.title || 'Curriculum' } : { title: sel.itemType } }
             })
           ]
         }),

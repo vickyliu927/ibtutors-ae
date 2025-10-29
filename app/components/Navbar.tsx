@@ -203,7 +203,16 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
   const normalizeOrder = (raw: any, fallback: string[]) => {
     if (!Array.isArray(raw)) return fallback;
     const items = raw
-      .map((item: any) => (typeof item === 'string' ? item : item?.key))
+      .map((item: any) => {
+        if (typeof item === 'string') return item;
+        if (item?.key) return item.key;
+        if (item?.itemType === 'curriculum') {
+          const slug = item?.curriculumTarget?.slug?.current || item?.curriculumTarget?.slug;
+          return slug ? `curriculum:${slug}` : undefined;
+        }
+        if (item?.itemType === 'allSubjects' || item?.itemType === 'blog') return item.itemType;
+        return undefined;
+      })
       .filter((v: any) => typeof v === 'string');
     return items.length ? items : fallback;
   };

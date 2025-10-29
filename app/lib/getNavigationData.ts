@@ -362,7 +362,14 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
-        navOrder[]{ key },
+        navOrder[]{
+          itemType,
+          curriculumTarget->{
+            title,
+            curriculum,
+            slug
+          }
+        },
         subjectsMenuGroups[]{
           title,
           linkTarget->{
@@ -384,7 +391,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ key } }
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ itemType, curriculumTarget->{ title, curriculum, slug } } }
     }`;
     
     const result = await client.fetch(query);
@@ -403,7 +410,14 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
-        navOrder[]{ key },
+        navOrder[]{
+          itemType,
+          curriculumTarget->{
+            title,
+            curriculum,
+            slug
+          }
+        },
         subjectsMenuGroups[]{
           title,
           linkTarget->{
@@ -425,7 +439,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ key } },
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ itemType, curriculumTarget->{ title, curriculum, slug } } },
       "sourceInfo": {
         "source": "cloneSpecific",
         "cloneId": $cloneId
@@ -476,7 +490,14 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         subjectsText,
         allLevelsPageLink,
         allSubjectsPageLink,
-        navOrder[]{ key },
+        navOrder[]{
+          itemType,
+          curriculumTarget->{
+            title,
+            curriculum,
+            slug
+          }
+        },
         subjectsMenuGroups[]{
           title,
           items[]->{
@@ -488,7 +509,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       },
       buttonText,
       buttonLink,
-      mobileMenu,
+      mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ itemType, curriculumTarget->{ title, curriculum, slug } } },
       "sourceInfo": {
         "source": "default",
         "cloneId": null
