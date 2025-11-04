@@ -73,7 +73,7 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
         const domainResult = await freshClient.fetch<{ cloneId?: string | null }>(
           domainQuery,
           { hostname: normalizedHost, wwwHostname: `www.${normalizedHost}` },
-          { next: { revalidate: 0 } }
+          { next: { revalidate: 300 } }
         );
         if (domainResult?.cloneId) {
           targetCloneId = domainResult.cloneId;
@@ -86,7 +86,7 @@ export async function getSeoData(cloneId?: string | null): Promise<SeoData> {
       cloneSpecific: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
       baseline: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
       default: (SeoData & { sourceInfo?: { source: string; cloneId: string } }) | null;
-    }>(query, params, { next: { revalidate: 0 } });
+    }>(query, params, { next: { revalidate: 300 } });
 
     if (!result) {
       return getDefaultSeoData();

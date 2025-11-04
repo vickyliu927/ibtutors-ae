@@ -100,11 +100,11 @@ async function getHasBlogForClone(cloneId: string | null): Promise<boolean> {
   if (!cloneId) {
     // For global site, consider blog available if any default or baseline exists
     const q = `count(*[_type == "blogPost" && (!defined(cloneReference) || cloneReference->baselineClone == true) && isActive == true])`;
-    const count = await client.fetch<number>(q);
+    const count = await client.fetch<number>(q, {}, { next: { revalidate: 300 } });
     return (count || 0) > 0;
   }
   const q = `count(*[_type == "blogPost" && cloneReference->cloneId.current == $cloneId && isActive == true])`;
-  const count = await client.fetch<number>(q, { cloneId });
+  const count = await client.fetch<number>(q, { cloneId }, { next: { revalidate: 300 } });
   return (count || 0) > 0;
 }
 
@@ -123,7 +123,7 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       externalRedirectUrl
     }`;
     
-    const result = await client.fetch<NavigationSubjectData[]>(query);
+    const result = await client.fetch<NavigationSubjectData[]>(query, {}, { next: { revalidate: 300 } });
     console.log(`[NavigationData] Fetched ${result.length} default subject pages`);
     return result;
   }
@@ -135,7 +135,8 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       "subjectOnly": enableSubjectPagesOnly == true,
       "curriculumOnly": enableCurriculumPagesOnly == true
     }`,
-    { cloneId }
+    { cloneId },
+    { next: { revalidate: 300 } }
   );
   if (flags?.homepageOnly || flags?.curriculumOnly) {
     console.log('[NavigationData] subjects disabled by clone flags; returning empty subjects');
@@ -174,7 +175,7 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
   }`;
   
   try {
-    const result = await client.fetch(query, { cloneId });
+    const result = await client.fetch(query, { cloneId }, { next: { revalidate: 300 } });
     
     let subjects: NavigationSubjectData[] = [];
     let source = 'none';
@@ -203,7 +204,7 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
       displayOrder
     }`;
     
-    const fallbackResult = await client.fetch<NavigationSubjectData[]>(fallbackQuery);
+    const fallbackResult = await client.fetch<NavigationSubjectData[]>(fallbackQuery, {}, { next: { revalidate: 300 } });
     console.log(`[NavigationData] Using fallback: ${fallbackResult.length} default subject pages`);
     return fallbackResult;
   }
@@ -236,7 +237,7 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
     }`;
     
     try {
-      const result = await client.fetch<NavigationCurriculumData[]>(query);
+      const result = await client.fetch<NavigationCurriculumData[]>(query, {}, { next: { revalidate: 300 } });
       console.log(`[NavigationData] Fetched ${result.length} default curriculum pages`);
       
       if (!result || result.length === 0) {
@@ -258,7 +259,8 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
       "subjectOnly": enableSubjectPagesOnly == true,
       "curriculumOnly": enableCurriculumPagesOnly == true
     }`,
-    { cloneId }
+    { cloneId },
+    { next: { revalidate: 300 } }
   );
   if (flags?.homepageOnly || flags?.subjectOnly) {
     console.log('[NavigationData] curriculums disabled by clone flags; returning empty curriculums');
@@ -321,7 +323,7 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
   }`;
   
   try {
-    const result = await client.fetch(query, { cloneId });
+    const result = await client.fetch(query, { cloneId }, { next: { revalidate: 300 } });
     
     let curriculums: NavigationCurriculumData[] = [];
     let source = 'none';
@@ -394,7 +396,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       mobileMenu{ closeButtonColor, dropdownArrowColor, borderColor, mobileNavOrder[]{ itemType, curriculumTarget->{ title, curriculum, slug } } }
     }`;
     
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     console.log(`[NavigationData] Default navbar result:`, result ? 'Found' : 'Not found');
     return result;
   }
@@ -518,7 +520,7 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
   }`;
   
   try {
-    const result = await client.fetch(query, { cloneId });
+    const result = await client.fetch(query, { cloneId }, { next: { revalidate: 300 } });
     
     console.log(`[NavigationData] Navbar query results:`, {
       cloneSpecific: result.cloneSpecific ? 'Found' : 'Not found',

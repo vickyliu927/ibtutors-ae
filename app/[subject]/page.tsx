@@ -25,8 +25,8 @@ import TrustedInstitutionsBanner from '../components/TrustedInstitutionsBanner';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 
-// Disable static page generation and enable revalidation
-export const revalidate = 0;
+// Enable caching of data fetches (route remains dynamic due to headers usage)
+export const revalidate = 300;
 
 // Generate static params for common subjects at build time
 export async function generateStaticParams() {
@@ -353,8 +353,8 @@ async function getCurriculumPageDataWithCloneContext(
     `;
 
     const [fallbackResult, testimonialSection, navbarResult] = await Promise.all([
-      client.fetch(query, { subject, cloneId: cloneId || 'none' }),
-      client.fetch(testimonialsQuery),
+      client.fetch(query, { subject, cloneId: cloneId || 'none' }, { next: { revalidate: 300 } }),
+      client.fetch(testimonialsQuery, {}, { next: { revalidate: 300 } }),
       navbarQueries.fetch(cloneId || 'global')
     ]);
     

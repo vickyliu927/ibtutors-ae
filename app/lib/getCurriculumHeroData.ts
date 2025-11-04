@@ -102,8 +102,8 @@ export async function getCurriculumHeroData(curriculumSlug?: string, cloneId?: s
     }>(
       query,
       params,
-      { next: { revalidate: 0 } }, // always revalidate for freshest hero content
-      1000 // 1 second TTL to effectively bypass in-memory cache
+      { next: { revalidate: 300 } },
+      undefined
     );
 
     if (!result) {

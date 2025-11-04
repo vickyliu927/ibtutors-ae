@@ -128,7 +128,7 @@ export const heroQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = heroQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -152,7 +152,7 @@ export const seoQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = seoQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -182,7 +182,7 @@ export const footerQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = footerQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -309,7 +309,7 @@ export const tutorQueries = {
       }
     }`;
 
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     
     // For arrays, return the first non-empty array with highest priority
     if (result.cloneSpecific && result.cloneSpecific.length > 0) {
@@ -383,7 +383,7 @@ export const testimonialQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any[]>> {
     const query = testimonialQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
 
     if (result.cloneSpecific && result.cloneSpecific.length > 0) {
       return { data: result.cloneSpecific, source: 'cloneSpecific', cloneId };
@@ -420,7 +420,7 @@ export const platformBannerQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = platformBannerQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -448,7 +448,7 @@ export const navbarQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = navbarQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -476,7 +476,7 @@ export const testimonialSectionQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = testimonialSectionQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -527,7 +527,7 @@ export const faqSectionQueries = {
 
   async fetch(cloneId: string, pageType: string = 'homepage', subjectSlug?: string): Promise<ContentResult<any>> {
     const query = faqSectionQueries.buildQuery(cloneId, pageType, subjectSlug);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -550,7 +550,7 @@ export const highlightsQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = highlightsQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -582,7 +582,7 @@ export const tutorProfilesSectionQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = tutorProfilesSectionQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -610,7 +610,7 @@ export const subjectGridSectionQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = subjectGridSectionQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -642,7 +642,7 @@ export const advertBlockSectionQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = advertBlockSectionQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -670,7 +670,7 @@ export const trustedInstitutionsQueries = {
 
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = trustedInstitutionsQueries.buildQuery(cloneId);
-    const result = await client.fetch(query);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     return resolveContent(result);
   }
 };
@@ -704,7 +704,7 @@ export const subjectPageFaqQueries = {
         }
       `;
       
-      const subjectSpecificResult = await client.fetch(globalSubjectSpecificQuery);
+      const subjectSpecificResult = await client.fetch(globalSubjectSpecificQuery, {}, { next: { revalidate: 300 } });
       // Do NOT fall back to general subject FAQs; keep sections separate
       return { data: subjectSpecificResult || null, source: subjectSpecificResult ? 'default' : null };
     }
