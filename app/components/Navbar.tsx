@@ -400,7 +400,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
 
                   // Fallback to legacy flat list when no groups
                   return (
-                    <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
+                    <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
                       {filteredSubjects.map((subject) => (
                         subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
                           <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
