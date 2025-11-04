@@ -228,6 +228,48 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     });
   }, [subjects, curriculums]);
 
+  // Order subjects according to Subjects Menu Groups order (if configured in Sanity)
+  const orderedSubjects = useMemo(() => {
+    const base = filteredSubjects.slice();
+    const groups = (navbarData as any)?.navigation?.subjectsMenuGroups || [];
+    if (!Array.isArray(base) || base.length === 0 || !Array.isArray(groups) || groups.length === 0) {
+      return base;
+    }
+
+    const normalizeTitle = (t: string | undefined) => (t || '')
+      .replace(/\btutors\b/i, '')
+      .trim()
+      .toLowerCase();
+
+    // Build ordering maps from group definitions
+    const slugOrderMap: Record<string, number> = {};
+    const titleOrderMap: Record<string, number> = {};
+    groups.forEach((g: any, index: number) => {
+      const slug = g?.linkTarget?.slug?.current || g?.linkTarget?.slug;
+      if (typeof slug === 'string' && slug) slugOrderMap[slug] = index;
+      const t = normalizeTitle(g?.title);
+      if (t) titleOrderMap[t] = index;
+    });
+
+    // Compute stable sort keys for each subject
+    const withKeys = base.map(s => {
+      const subjectTitle = normalizeTitle((s as any)?.subject || (s as any)?.title);
+      const slug = (s as any)?.slug?.current || (s as any)?.slug;
+      const bySlug = typeof slug === 'string' ? slugOrderMap[slug] : undefined;
+      const byTitle = titleOrderMap[subjectTitle];
+      const orderIdx = bySlug ?? byTitle ?? (10000 + ((s as any)?.displayOrder || 100));
+      return { s, orderIdx, tieBreak: ((s as any)?.displayOrder || 100), name: subjectTitle };
+    });
+
+    withKeys.sort((a, b) => {
+      if (a.orderIdx !== b.orderIdx) return a.orderIdx - b.orderIdx;
+      if (a.tieBreak !== b.tieBreak) return a.tieBreak - b.tieBreak;
+      return a.name.localeCompare(b.name);
+    });
+
+    return withKeys.map(w => w.s) as SubjectPageData[];
+  }, [filteredSubjects, navbarData]);
+
   // Desktop navigation order from Sanity (fallback to default)
   const normalizeOrder = (raw: any, fallback: string[]) => {
     if (!Array.isArray(raw)) return fallback;
@@ -401,7 +443,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   // Fallback to legacy flat list when no groups
                   return (
                     <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
-                      {filteredSubjects.map((subject) => (
+                      {orderedSubjects.map((subject) => (
                         subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
                           <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
                             {subject.subject}
@@ -838,7 +880,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   // Fallback to flat list when no groups configured
                   return (
                     <div>
-                      {filteredSubjects.map((subject) => (
+                      {orderedSubjects.map((subject) => (
                         subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
                           <ExternalLink
                             key={`${subject.subject}-external`}
