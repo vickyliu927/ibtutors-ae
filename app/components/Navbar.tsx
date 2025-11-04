@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
@@ -199,6 +199,35 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     return url && (url.startsWith('http://') || url.startsWith('https://'));
   };
 
+  // Compute a filtered list of subject pages that excludes curriculum-specific subject pages
+  const filteredSubjects = useMemo(() => {
+    if (!Array.isArray(subjects) || subjects.length === 0) return [] as SubjectPageData[];
+    const curriculumNames = (curriculums || []).map(c => (c?.curriculum || '').trim()).filter(Boolean);
+    const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^[-]+|[-]+$/g, '');
+    const curriculumSlugPrefixes = new Set(curriculumNames.map(n => toSlug(n) + '-'));
+
+    return subjects.filter(s => {
+      const name = (s?.subject || s?.title || '').trim();
+      const lowerName = name.toLowerCase();
+      const slug = (s?.slug?.current || '').toLowerCase();
+
+      // Exclude if subject name starts with any curriculum name followed by space/colon
+      for (const curriculumName of curriculumNames) {
+        const cn = curriculumName.toLowerCase();
+        if (lowerName.startsWith(cn + ' ') || lowerName.startsWith(cn + ':')) {
+          return false;
+        }
+      }
+
+      // Exclude if slug starts with a curriculum slug prefix (e.g., 'qce-')
+      for (const prefix of Array.from(curriculumSlugPrefixes)) {
+        if (slug.startsWith(prefix)) return false;
+      }
+
+      return true;
+    });
+  }, [subjects, curriculums]);
+
   // Desktop navigation order from Sanity (fallback to default)
   const normalizeOrder = (raw: any, fallback: string[]) => {
     if (!Array.isArray(raw)) return fallback;
@@ -372,7 +401,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   // Fallback to legacy flat list when no groups
                   return (
                     <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-2 gap-1">
-                      {subjects.map((subject) => (
+                      {filteredSubjects.map((subject) => (
                         subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
                           <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             {subject.subject}
@@ -809,7 +838,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   // Fallback to flat list when no groups configured
                   return (
                     <div>
-                      {subjects.map((subject) => (
+                      {filteredSubjects.map((subject) => (
                         subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
                           <ExternalLink
                             key={`${subject.subject}-external`}
