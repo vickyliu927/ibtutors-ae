@@ -502,6 +502,14 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
         },
         subjectsMenuGroups[]{
           title,
+          linkTarget->{
+            _type,
+            subject,
+            curriculum,
+            slug,
+            externalRedirectEnabled,
+            externalRedirectUrl
+          },
           items[]->{
             subject,
             slug,
