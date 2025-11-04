@@ -403,14 +403,14 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                     <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
                       {filteredSubjects.map((subject) => (
                         subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
-                          <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
                             {subject.subject}
                           </ExternalLink>
                         ) : subject.slug?.current ? (
                           <Link
                             key={subject.slug.current}
                             href={generateSubjectLink(subject.slug.current)}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            className="block px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap"
                           >
                             {subject.subject}
                           </Link>
