@@ -18,7 +18,7 @@ const tutorProfilesSectionSchema = defineType({
       title: 'Main Section Title',
       type: 'string',
       description: 'Main title of the section (e.g., "Our Qualified Dubai Teachers and Examiners")',
-      validation: (Rule) => Rule.required(),
+      // Title is optional; when left blank, the UI will hide the heading entirely
     }),
     defineField({
       name: 'description',

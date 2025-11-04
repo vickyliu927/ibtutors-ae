@@ -179,9 +179,11 @@ const TutorProfiles = ({
               <div className="text-lg font-normal leading-[160%] text-[#F57C40] font-gilroy">
                 {trustedByText || "Trusted by 15,000+ students across Dubai and globally."}
               </div>
-              <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
-                {sectionTitle || "Our Qualified Dubai Teachers and Examiners"}
-              </h2>
+              {sectionTitle ? (
+                <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
+                  {sectionTitle}
+                </h2>
+              ) : null}
             </div>
             
             <div className="flex justify-between items-start w-full gap-6">
@@ -249,9 +251,11 @@ const TutorProfiles = ({
             <div className="text-lg font-normal leading-[160%] text-[#F57C40] font-gilroy">
               {trustedByText || "Trusted by 15,000+ students across Dubai and globally."}
             </div>
-            <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
-              {sectionTitle || "Our Qualified Dubai Teachers and Examiners"}
-            </h2>
+            {sectionTitle ? (
+              <h2 className="text-[36px] font-medium leading-[140%] text-[#171D23] font-gilroy">
+                {sectionTitle}
+              </h2>
+            ) : null}
           </div>
           
           <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4 md:gap-6">
