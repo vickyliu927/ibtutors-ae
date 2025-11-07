@@ -23,7 +23,7 @@ import {
 import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, trustedInstitutionsQueries, cloneQueryUtils } from '../lib/cloneQueries';
 import TrustedInstitutionsBanner from '../components/TrustedInstitutionsBanner';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
-import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
+import { getCloneIdForCurrentDomain, getCurrentDomainFromHeaders, getCanonicalDomain } from '../lib/sitemapUtils';
 
 // Enable caching of data fetches (route remains dynamic due to headers usage)
 export const revalidate = 300;
@@ -789,6 +789,13 @@ export async function generateMetadata({ params }: { params: { subject: string }
   // Get clone-aware SEO data that will automatically detect clone from middleware headers
   const cloneSeoData = await getSeoData();
   const canonicalPath = `/${params.subject}`;
+  // Compute absolute canonical URL (domain/subject)
+  const currentDomain = getCurrentDomainFromHeaders();
+  const canonicalHost = getCanonicalDomain(currentDomain || '');
+  const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+  const protocol = isLocal ? 'http' : 'https';
+  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae');
+  const canonicalUrl = new URL(canonicalPath, baseUrlString).toString();
   
   // Resolve cloneId so we fetch clone-specific page SEO (matches page render logic)
   const cloneId = await getCloneIdForCurrentDomain();
@@ -824,7 +831,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
     return {
       title: curriculumResult.pageData.seo?.pageTitle || dynamicTitle || curriculumResult.pageData.title || cloneSeoData.title,
       description: curriculumResult.pageData.seo?.description || dynamicDescription || cloneSeoData.description || `Find expert tutors${curriculumName ? ` for ${curriculumName}` : ''}.`,
-      alternates: { canonical: canonicalPath },
+      alternates: { canonical: canonicalUrl },
     };
   }
   
@@ -850,7 +857,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
   return {
     title: pageData.seo?.pageTitle || dynamicTitle || `${pageData.title} | ${brandFromSeo}`,
     description: pageData.seo?.description || dynamicDescription || cloneSeoData.description || 'Find expert tutors for your subject.',
-    alternates: { canonical: canonicalPath },
+    alternates: { canonical: canonicalUrl },
   };
 }
 
@@ -861,6 +868,12 @@ export default async function DynamicPage({
   params: { subject: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  // Compute absolute base URL for JSON-LD (domain/*)
+  const currentDomain = getCurrentDomainFromHeaders();
+  const canonicalHost = getCanonicalDomain(currentDomain || '');
+  const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+  const protocol = isLocal ? 'http' : 'https';
+  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae');
   // Convert searchParams to URLSearchParams for clone detection
   const urlSearchParams = new URLSearchParams();
   Object.entries(searchParams || {}).forEach(([key, value]) => {
@@ -949,9 +962,9 @@ export default async function DynamicPage({
               '@context': 'https://schema.org',
               '@type': 'BreadcrumbList',
               itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
-                { '@type': 'ListItem', position: 2, name: 'Curricula', item: '/curricula' },
-                { '@type': 'ListItem', position: 3, name: curriculumResult.pageData.curriculum || curriculumResult.pageData.title, item: `/${params.subject}` },
+                { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrlString}/` },
+                { '@type': 'ListItem', position: 2, name: 'Curricula', item: `${baseUrlString}/curricula` },
+                { '@type': 'ListItem', position: 3, name: curriculumResult.pageData.curriculum || curriculumResult.pageData.title, item: `${baseUrlString}/${params.subject}` },
               ],
             }),
           }}
@@ -1099,9 +1112,9 @@ export default async function DynamicPage({
               '@context': 'https://schema.org',
               '@type': 'BreadcrumbList',
               itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
-                { '@type': 'ListItem', position: 2, name: 'Subjects', item: '/subjects' },
-                { '@type': 'ListItem', position: 3, name: subjectResult.pageData.subject || subjectResult.pageData.title, item: `/${params.subject}` },
+                { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrlString}/` },
+                { '@type': 'ListItem', position: 2, name: 'Subjects', item: `${baseUrlString}/subjects` },
+                { '@type': 'ListItem', position: 3, name: subjectResult.pageData.subject || subjectResult.pageData.title, item: `${baseUrlString}/${params.subject}` },
               ],
             }),
           }}
