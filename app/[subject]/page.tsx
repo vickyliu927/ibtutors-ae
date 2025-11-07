@@ -929,10 +929,8 @@ export default async function DynamicPage({
     return notFound();
   }
 
-  // If curriculum pages are disabled for this clone, skip curriculum resolution
-  const disableCurriculum = cloneContext.clone?.enableSubjectPagesOnly === true;
-  // First check if it's a curriculum page
-  const curriculumResult = disableCurriculum ? { pageData: null } as any : await getCurriculumPageDataWithCloneContext(
+  // First check if it's a curriculum page (always try; do not block by flags)
+  const curriculumResult = await getCurriculumPageDataWithCloneContext(
     params.subject, 
     cloneContext.cloneId
   );
@@ -1076,9 +1074,8 @@ export default async function DynamicPage({
     );
   }
   
-  // If not a curriculum page, and subject pages are allowed, check if it's a subject page
-  const disableSubject = cloneContext.clone?.enableCurriculumPagesOnly === true;
-  const subjectResult = disableSubject ? { pageData: null } as any : await getSubjectPageDataWithCloneContext(
+  // If not a curriculum page, check if it's a subject page (always try; do not block by flags)
+  const subjectResult = await getSubjectPageDataWithCloneContext(
     params.subject,
     cloneContext.cloneId
   );

@@ -104,6 +104,42 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
   // Helper function to generate proper domain-aware links
   const generateSubjectLink = (slug: string) => `/${slug}`;
 
+  // Normalize potentially malformed external URLs coming from CMS
+  const isLikelyValidExternal = (url: string): boolean => {
+    try {
+      const u = new URL(url);
+      // Consider valid only if hostname contains a dot (real domain)
+      return Boolean(u.protocol.startsWith('http')) && u.hostname.includes('.');
+    } catch {
+      return false;
+    }
+  };
+
+  // Resolve a CMS-provided redirect URL to a safe href
+  const resolveSafeHref = (maybeUrl: string | undefined, fallbackSlug?: string): { href: string; external: boolean } => {
+    if (!maybeUrl) {
+      return { href: fallbackSlug ? generateSubjectLink(fallbackSlug) : '/', external: false };
+    }
+    // If it is a clearly valid external URL (has protocol and a dot in hostname), pass through
+    if (isLikelyValidExternal(maybeUrl)) {
+      return { href: maybeUrl, external: true };
+    }
+    // Handle scheme-based but host-without-dot (e.g., https://economics/)
+    if (/^https?:\/\//i.test(maybeUrl)) {
+      try {
+        const u = new URL(maybeUrl);
+        const path = u.pathname && u.pathname !== '/' ? u.pathname.replace(/^\/+/, '/') : '';
+        const internalPath = `/${u.hostname}${path}`.replace(/\/+/, '/');
+        return { href: internalPath, external: false };
+      } catch {
+        // fall through to below
+      }
+    }
+    // Treat as internal path or slug
+    const clean = maybeUrl.startsWith('/') ? maybeUrl : `/${maybeUrl}`;
+    return { href: clean, external: false };
+  };
+
   // Add global style when component mounts
   useEffect(() => {
     const style = document.createElement('style');
@@ -417,10 +453,15 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                                 {(() => {
                                   const target = (group as any)?.linkTarget;
                                   if (target?.externalRedirectEnabled && target?.externalRedirectUrl) {
-                                    return (
-                                      <ExternalLink href={target.externalRedirectUrl} className="block">
+                                    const safe = resolveSafeHref(target.externalRedirectUrl, target?.slug?.current);
+                                    return safe.external ? (
+                                      <ExternalLink href={safe.href} className="block">
                                         {group.title}
                                       </ExternalLink>
+                                    ) : (
+                                      <Link href={safe.href} className="block">
+                                        {group.title}
+                                      </Link>
                                     );
                                   }
                                   if (target?.slug?.current) {
@@ -444,11 +485,18 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   return (
                     <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
                       {orderedSubjects.map((subject) => (
-                        subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
-                          <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
-                            {subject.subject}
-                          </ExternalLink>
-                        ) : subject.slug?.current ? (
+                        subject.externalRedirectEnabled && subject.externalRedirectUrl ? (() => {
+                          const safe = resolveSafeHref(subject.externalRedirectUrl, subject.slug?.current);
+                          return safe.external ? (
+                            <ExternalLink key={`${subject.subject}-external`} href={safe.href} className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
+                              {subject.subject}
+                            </ExternalLink>
+                          ) : (
+                            <Link key={`${subject.subject}-internal`} href={safe.href} className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
+                              {subject.subject}
+                            </Link>
+                          );
+                        })() : subject.slug?.current ? (
                           <Link
                             key={subject.slug.current}
                             href={generateSubjectLink(subject.slug.current)}
@@ -501,14 +549,24 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                 {showCurriculumDropdowns[curriculumSlug] && (
                   <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
                     {/* Main curriculum page link */}
-                    {curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (
-                      <ExternalLink
-                        href={curriculum.externalRedirectUrl}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
-                      >
-                        {curriculum.curriculum} Tutors
-                      </ExternalLink>
-                    ) : (
+                    {curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (() => {
+                      const safe = resolveSafeHref(curriculum.externalRedirectUrl, curriculum.slug?.current);
+                      return safe.external ? (
+                        <ExternalLink
+                          href={safe.href}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
+                        >
+                          {curriculum.curriculum} Tutors
+                        </ExternalLink>
+                      ) : (
+                        <Link
+                          href={safe.href}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
+                        >
+                          {curriculum.curriculum} Tutors
+                        </Link>
+                      );
+                    })() : (
                       <Link
                         href={curriculumPath}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
@@ -524,15 +582,26 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                           .slice()
                           .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
                           .map((sp) => (
-                            sp.externalRedirectEnabled && sp.externalRedirectUrl ? (
-                              <ExternalLink
-                                key={`${sp.subject}-external`}
-                                href={sp.externalRedirectUrl}
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              >
-                                {sp.subject}
-                              </ExternalLink>
-                            ) : sp.slug?.current ? (
+                            sp.externalRedirectEnabled && sp.externalRedirectUrl ? (() => {
+                              const safe = resolveSafeHref(sp.externalRedirectUrl, sp.slug?.current);
+                              return safe.external ? (
+                                <ExternalLink
+                                  key={`${sp.subject}-external`}
+                                  href={safe.href}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                  {sp.subject}
+                                </ExternalLink>
+                              ) : (
+                                <Link
+                                  key={`${sp.subject}-internal`}
+                                  href={safe.href}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                  {sp.subject}
+                                </Link>
+                              );
+                            })() : sp.slug?.current ? (
                               <Link
                                 key={sp.slug.current}
                                 href={generateSubjectLink(sp.slug.current)}
@@ -711,35 +780,66 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                       .map((curriculum, index) => {
                       const curriculumPath = generateSubjectLink(curriculum.slug.current);
                       return (
-                        curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (
-                          <ExternalLink
-                            key={curriculum.slug.current}
-                            href={curriculum.externalRedirectUrl}
-                            className={`flex w-full py-4 px-4 justify-between items-center bg-white hover:bg-gray-50 ${
-                              index === 0 ? 'border-t border-b' : 'border-b'
-                            }`}
-                            onClick={() => setIsOpen(false)}
-                            style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                          >
-                            <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
-                              {curriculum.curriculum}
-                            </span>
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 12 12"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                        curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (() => {
+                          const safe = resolveSafeHref(curriculum.externalRedirectUrl, curriculum.slug?.current);
+                          return safe.external ? (
+                            <ExternalLink
+                              key={curriculum.slug.current}
+                              href={safe.href}
+                              className={`flex w-full py-4 px-4 justify-between items-center bg-white hover:bg-gray-50 ${
+                                index === 0 ? 'border-t border-b' : 'border-b'
+                              }`}
+                              onClick={() => setIsOpen(false)}
+                              style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                             >
-                              <path
-                                d="M3.5 11L8.49886 6L3.5 1"
-                                stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
-                                strokeWidth="1.6"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </ExternalLink>
-                        ) : (
+                              <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
+                                {curriculum.curriculum}
+                              </span>
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 12 12"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M3.5 11L8.49886 6L3.5 1"
+                                  stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                                  strokeWidth="1.6"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </ExternalLink>
+                          ) : (
+                            <Link
+                              key={curriculum.slug.current}
+                              href={safe.href}
+                              onClick={() => setIsOpen(false)}
+                              className={`flex w-full py-4 px-4 justify-between items-center bg-white hover:bg-gray-50 ${
+                                index === 0 ? 'border-t border-b' : 'border-b'
+                              }`}
+                              style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                            >
+                              <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
+                                {curriculum.curriculum}
+                              </span>
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 12 12"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M3.5 11L8.49886 6L3.5 1"
+                                  stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                                  strokeWidth="1.6"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </Link>
+                          );
+                        })() : (
                           <Link
                             key={curriculum.slug.current}
                             href={curriculumPath}
@@ -881,17 +981,30 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   return (
                     <div>
                       {orderedSubjects.map((subject) => (
-                        subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
-                          <ExternalLink
-                            key={`${subject.subject}-external`}
-                            href={subject.externalRedirectUrl}
-                            onClick={() => setIsOpen(false)}
-                            className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
-                            style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
-                          >
-                            <span>{subject.subject}</span>
-                          </ExternalLink>
-                        ) : subject?.slug?.current ? (
+                        subject.externalRedirectEnabled && subject.externalRedirectUrl ? (() => {
+                          const safe = resolveSafeHref(subject.externalRedirectUrl, subject.slug?.current);
+                          return safe.external ? (
+                            <ExternalLink
+                              key={`${subject.subject}-external`}
+                              href={safe.href}
+                              onClick={() => setIsOpen(false)}
+                              className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                              style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                            >
+                              <span>{subject.subject}</span>
+                            </ExternalLink>
+                          ) : (
+                            <Link
+                              key={`${subject.subject}-internal`}
+                              href={safe.href}
+                              onClick={() => setIsOpen(false)}
+                              className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                              style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                            >
+                              <span>{subject.subject}</span>
+                            </Link>
+                          );
+                        })() : subject?.slug?.current ? (
                           <Link
                             key={subject.slug.current}
                             href={generateSubjectLink(subject.slug.current)}
