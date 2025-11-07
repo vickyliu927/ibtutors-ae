@@ -154,7 +154,7 @@ async function getCurriculumPageDataWithCloneContext(
     // Clone-aware curriculum page query with 3-tier fallback
     const query = `{
       "cloneSpecific": *[_type == "curriculumPage" && (
-        slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
       ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0] {
         title,
         curriculum,
@@ -218,7 +218,7 @@ async function getCurriculumPageDataWithCloneContext(
         }
       },
       "baseline": *[_type == "curriculumPage" && (
-        slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
       ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0] {
         title,
         curriculum,
@@ -282,7 +282,7 @@ async function getCurriculumPageDataWithCloneContext(
         }
       },
       "default": *[_type == "curriculumPage" && (
-        slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
       ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0] {
         title,
         curriculum,
@@ -409,7 +409,7 @@ async function getSubjectPageDataWithCloneContext(
     const query = `{
       "cloneSpecific": {
         "subjectPage": *[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0]{
           _id,
           subject,
@@ -450,7 +450,7 @@ async function getSubjectPageDataWithCloneContext(
           }
         },
         "heroData": *[_type == "subjectHeroSection" && (
-          subjectPage->slug.current == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
+          subjectPage->slug.current == $subject || replace(subjectPage->slug.current, "^/", "") == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->cloneId.current == $cloneId][0]{
           rating {
             score,
@@ -469,7 +469,7 @@ async function getSubjectPageDataWithCloneContext(
         },
         // Tutors referencing this subject page
         "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0]._id)] | order(displayOrder asc) {
           _id,
           name,
@@ -498,7 +498,7 @@ async function getSubjectPageDataWithCloneContext(
         },
         // Tutors directly listed on the subject page (tutorsList)
         "tutorsInline": *[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0].tutorsList[]->| order(displayOrder asc) {
           _id,
           name,
@@ -521,7 +521,7 @@ async function getSubjectPageDataWithCloneContext(
       },
       "baseline": {
         "subjectPage": *[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0]{
           _id,
           subject,
@@ -562,7 +562,7 @@ async function getSubjectPageDataWithCloneContext(
           }
         },
         "heroData": *[_type == "subjectHeroSection" && (
-          subjectPage->slug.current == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
+          subjectPage->slug.current == $subject || replace(subjectPage->slug.current, "^/", "") == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->baselineClone == true][0]{
           rating {
             score,
@@ -580,7 +580,7 @@ async function getSubjectPageDataWithCloneContext(
           }
         },
         "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0]._id)] | order(displayOrder asc) {
           _id,
           name,
@@ -608,7 +608,7 @@ async function getSubjectPageDataWithCloneContext(
           languagesSpoken
         },
         "tutorsInline": *[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0].tutorsList[]->| order(displayOrder asc) {
           _id,
           name,
@@ -631,7 +631,7 @@ async function getSubjectPageDataWithCloneContext(
       },
       "default": {
         "subjectPage": *[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0]{
           _id,
           subject,
@@ -672,7 +672,7 @@ async function getSubjectPageDataWithCloneContext(
           }
         },
         "heroData": *[_type == "subjectHeroSection" && (
-          subjectPage->slug.current == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
+          subjectPage->slug.current == $subject || replace(subjectPage->slug.current, "^/", "") == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
         ) && !defined(cloneReference)][0]{
           rating {
             score,
@@ -690,7 +690,7 @@ async function getSubjectPageDataWithCloneContext(
           }
         },
         "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0]._id)] | order(displayOrder asc) {
           _id,
           name,
@@ -718,7 +718,7 @@ async function getSubjectPageDataWithCloneContext(
           languagesSpoken
         },
         "tutorsInline": *[_type == "subjectPage" && (
-          slug.current == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
         ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0].tutorsList[]->| order(displayOrder asc) {
           _id,
           name,
