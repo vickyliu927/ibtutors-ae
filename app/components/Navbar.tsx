@@ -362,40 +362,81 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     >
       <div className="flex w-full max-w-[1440px] mx-auto px-[16px] py-[24px] justify-between items-center">
         {/* Logo */}
-        <Link href={navbarData?.logoLink || "/"} className="flex items-center">
-          {navbarData?.logo ? (
-            <Image
-              src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
-              alt="Company Logo"
-              width={188}
-              height={41}
-              className="object-contain"
-              sizes="188px"
-            />
+        {(() => {
+          const safe = resolveSafeHref(navbarData?.logoLink || "/");
+          return safe.external ? (
+            <ExternalLink href={safe.href} className="flex items-center">
+              {navbarData?.logo ? (
+                <Image
+                  src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
+                  alt="Company Logo"
+                  width={188}
+                  height={41}
+                  className="object-contain"
+                  sizes="188px"
+                />
+              ) : (
+                <div className="relative w-[188px] h-[41px]">
+                  <Image
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
+                    alt="TutorChase Logo"
+                    width={149}
+                    height={18}
+                    className="absolute left-[39px] top-[3px]"
+                  />
+                  <Image
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
+                    alt="Logo Icon"
+                    width={32}
+                    height={41}
+                    className="absolute left-0 top-0"
+                  />
+                  <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
+                    <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
+                      Dubai Tutors
+                    </span>
+                  </div>
+                </div>
+              )}
+            </ExternalLink>
           ) : (
-            <div className="relative w-[188px] h-[41px]">
-              <Image
-                src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
-                alt="TutorChase Logo"
-                width={149}
-                height={18}
-                className="absolute left-[39px] top-[3px]"
-              />
-              <Image
-                src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
-                alt="Logo Icon"
-                width={32}
-                height={41}
-                className="absolute left-0 top-0"
-              />
-              <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
-                <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
-                  Dubai Tutors
-                </span>
-              </div>
-            </div>
-          )}
-        </Link>
+            <Link href={safe.href} className="flex items-center">
+              {navbarData?.logo ? (
+                <Image
+                  src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
+                  alt="Company Logo"
+                  width={188}
+                  height={41}
+                  className="object-contain"
+                  sizes="188px"
+                />
+              ) : (
+                <div className="relative w-[188px] h-[41px]">
+                  <Image
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
+                    alt="TutorChase Logo"
+                    width={149}
+                    height={18}
+                    className="absolute left-[39px] top-[3px]"
+                  />
+                  <Image
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
+                    alt="Logo Icon"
+                    width={32}
+                    height={41}
+                    className="absolute left-0 top-0"
+                  />
+                  <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
+                    <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
+                      Dubai Tutors
+                    </span>
+                  </div>
+                </div>
+              )}
+            </Link>
+          );
+        })()}
+        
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-[48px]">
@@ -632,12 +673,25 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
         </div>
 
         {/* CTA Button */}
-        <Link
-          href={navbarData?.buttonLink || "#contact-form"}
-          className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-        >
-          {navbarData?.buttonText || 'Hire a tutor'}
-        </Link>
+        {(() => {
+          const safe = resolveSafeHref(navbarData?.buttonLink || "#contact-form");
+          return safe.external ? (
+            <ExternalLink
+              href={safe.href}
+              className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
+            >
+              {navbarData?.buttonText || 'Hire a tutor'}
+            </ExternalLink>
+          ) : (
+            <Link
+              href={safe.href}
+              className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
+            >
+              {navbarData?.buttonText || 'Hire a tutor'}
+            </Link>
+          );
+        })()}
+
 
         {/* Mobile Menu Button */}
         <button
@@ -667,40 +721,80 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
             {/* Mobile Header */}
             <div className="flex w-full max-w-[1440px] mx-auto px-[16px] py-[24px] justify-between items-center">
               {/* Logo - Same as main header */}
-              <Link href={navbarData?.logoLink || "/"} className="flex items-center">
-                {navbarData?.logo ? (
-                  <Image
-                    src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
-                    alt="Company Logo"
-                    width={188}
-                    height={41}
-                    className="object-contain"
-                    sizes="188px"
-                  />
+              {(() => {
+                const safe = resolveSafeHref(navbarData?.logoLink || "/");
+                return safe.external ? (
+                  <ExternalLink href={safe.href} className="flex items-center">
+                    {navbarData?.logo ? (
+                      <Image
+                        src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
+                        alt="Company Logo"
+                        width={188}
+                        height={41}
+                        className="object-contain"
+                        sizes="188px"
+                      />
+                    ) : (
+                      <div className="relative w-[188px] h-[41px]">
+                        <Image
+                          src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
+                          alt="TutorChase Logo"
+                          width={149}
+                          height={18}
+                          className="absolute left-[39px] top-[3px]"
+                        />
+                        <Image
+                          src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
+                          alt="Logo Icon"
+                          width={32}
+                          height={41}
+                          className="absolute left-0 top-0"
+                        />
+                        <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
+                          <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
+                            Dubai Tutors
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </ExternalLink>
                 ) : (
-                  <div className="relative w-[188px] h-[41px]">
-                    <Image
-                      src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
-                      alt="TutorChase Logo"
-                      width={149}
-                      height={18}
-                      className="absolute left-[39px] top-[3px]"
-                    />
-                    <Image
-                      src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
-                      alt="Logo Icon"
-                      width={32}
-                      height={41}
-                      className="absolute left-0 top-0"
-                    />
-                    <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
-                      <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
-                        Dubai Tutors
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </Link>
+                  <Link href={safe.href} className="flex items-center">
+                    {navbarData?.logo ? (
+                      <Image
+                        src={urlFor(navbarData.logo).width(376).height(82).quality(95).url()}
+                        alt="Company Logo"
+                        width={188}
+                        height={41}
+                        className="object-contain"
+                        sizes="188px"
+                      />
+                    ) : (
+                      <div className="relative w-[188px] h-[41px]">
+                        <Image
+                          src="https://api.builder.io/api/v1/image/assets/TEMP/2bd75eea4781d78fa262562983b8251170bea168?width=297"
+                          alt="TutorChase Logo"
+                          width={149}
+                          height={18}
+                          className="absolute left-[39px] top-[3px]"
+                        />
+                        <Image
+                          src="https://api.builder.io/api/v1/image/assets/TEMP/92785eb93ccb208978e339aa7f50908bac820333?width=64"
+                          alt="Logo Icon"
+                          width={32}
+                          height={41}
+                          className="absolute left-0 top-0"
+                        />
+                        <div className="absolute left-[41px] top-[25px] w-[75px] h-[13px]">
+                          <span className="text-[#0D2854] text-[10px] italic font-medium leading-[100%] font-gilroy">
+                            Dubai Tutors
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </Link>
+                );
+              })()}
 
               {/* Close Button */}
               <button
@@ -953,10 +1047,15 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                               {(() => {
                                 const target = (group as any)?.linkTarget;
                                 if (target?.externalRedirectEnabled && target?.externalRedirectUrl) {
-                                  return (
-                                    <ExternalLink href={target.externalRedirectUrl} className="block">
+                                  const safe = resolveSafeHref(target.externalRedirectUrl, target?.slug?.current);
+                                  return safe.external ? (
+                                    <ExternalLink href={safe.href} className="block">
                                       {group.title}
                                     </ExternalLink>
+                                  ) : (
+                                    <Link href={safe.href} className="block" onClick={() => setIsOpen(false)}>
+                                      {group.title}
+                                    </Link>
                                   );
                                 }
                                 if (target?.slug?.current) {
@@ -1025,13 +1124,26 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
 
               {/* Hire a tutor Button */}
               <div className="flex w-full flex-col justify-center items-start gap-3">
-                <Link
-                  href={navbarData?.buttonLink || "#contact-form"}
-                  onClick={() => setIsOpen(false)}
-                  className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
-                >
-                  {navbarData?.buttonText || 'Hire a tutor'}
-                </Link>
+                {(() => {
+                  const safe = resolveSafeHref(navbarData?.buttonLink || "#contact-form");
+                  return safe.external ? (
+                    <ExternalLink
+                      href={safe.href}
+                      onClick={() => setIsOpen(false)}
+                      className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
+                    >
+                      {navbarData?.buttonText || 'Hire a tutor'}
+                    </ExternalLink>
+                  ) : (
+                    <Link
+                      href={safe.href}
+                      onClick={() => setIsOpen(false)}
+                      className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
+                    >
+                      {navbarData?.buttonText || 'Hire a tutor'}
+                    </Link>
+                  );
+                })()}
               </div>
             </div>
           </div>
