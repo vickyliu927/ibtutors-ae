@@ -35,4 +35,5 @@ export default defineConfig({
     ],
     allowCredentials: true,
   }
-}) 
+})
+// redeploy: no-op change to trigger Studio rebuild
