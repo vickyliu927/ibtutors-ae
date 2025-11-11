@@ -362,7 +362,7 @@ export const structure = (S: StructureBuilder) =>
           S.list()
             .title('Content by Website Clone')
             .items([
-              // Dubai Tutors (Global/Baseline Content)
+              // Global/Baseline Content (Dubai Tutors)
               S.listItem()
                 .title('Dubai Tutors')
                 .icon(FiGlobe)
@@ -371,89 +371,26 @@ export const structure = (S: StructureBuilder) =>
                     .title('Dubai Tutors Content')
                     .items(createCloneContentCategories(S, {
                       cloneName: 'Dubai Tutors',
-                      cloneReference: null // Global content
+                      cloneReference: null
                     }))
                 ),
-              
-              // Abu Dhabi Tutors  
+              // Dynamic list of active clones
               S.listItem()
-                .title('Abu Dhabi Tutors')
+                .title('Other Clones')
                 .icon(FiGlobe)
                 .child(
-                  S.list()
-                    .title('Abu Dhabi Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Abu Dhabi Tutors',
-                      cloneReference: '9aab910c-dd46-48e9-a44f-594906d32ca7' // Actual Abu Dhabi Tutors document ID
-                    }))
+                  S.documentTypeList('clone')
+                    .title('Website Clones')
+                    .filter('_type == \"clone\" && isActive == true')
+                    .child((cloneDocumentId) =>
+                      S.list()
+                        .title('Clone Content')
+                        .items(createCloneContentCategories(S, {
+                          cloneName: 'Website Clone',
+                          cloneReference: cloneDocumentId
+                        }))
+                    )
                 ),
-
-              // Singapore Tutors
-              S.listItem()
-                .title('Singapore Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Singapore Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Singapore Tutors',
-                      cloneReference: '4c395ebb-26a8-48a5-a83c-4f5d4e078587' // Actual Singapore Tutors document ID
-                    }))
-                ),
-
-              // Germany Tutors
-              S.listItem()
-                .title('Germany Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Germany Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Germany Tutors',
-                      cloneReference: 'c6952c71-7f8e-43b5-9a73-03686371e8cc'
-                    }))
-                ),
-
-              // Italy Tutors
-              S.listItem()
-                .title('Italy Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Italy Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Italy Tutors',
-                      cloneReference: '86b1da5e-639b-43c5-8b64-063a71f0d575'
-                    }))
-                ),
-
-              // Qatar Tutors
-              S.listItem()
-                .title('Qatar Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Qatar Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Qatar Tutors',
-                      cloneReference: 'c04bc280-7316-4ebb-b992-91166ea5c826'
-                    }))
-                ),
-
-              // Spain Tutors
-              S.listItem()
-                .title('Spain Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Spain Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Spain Tutors',
-                      cloneReference: 'db2574dd-3841-41a3-976e-c6df0fe6cfda'
-                    }))
-                ),
-
-              // Add more clones here as needed...
             ])
         ),
 
