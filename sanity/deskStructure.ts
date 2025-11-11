@@ -30,6 +30,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "navbarSettings" && !defined(cloneReference)'
                     : `_type == "navbarSettings" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('navbarSettings-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('hero')
                                 .title('Hero Sections')
@@ -40,6 +43,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "hero" && !defined(cloneReference)'
                     : `_type == "hero" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('hero-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('highlightsSection')
                                 .title('Highlights Sections')
@@ -50,6 +56,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "highlightsSection" && !defined(cloneReference)'
                     : `_type == "highlightsSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('highlightsSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('tutorProfilesSection')
                                 .title('Tutor Profile Sections')
@@ -60,6 +69,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "tutorProfilesSection" && !defined(cloneReference)'
                     : `_type == "tutorProfilesSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('tutorProfilesSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('trustedInstitutionsBanner')
                                 .title('Trusted Institutions Banners')
@@ -70,6 +82,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "trustedInstitutionsBanner" && !defined(cloneReference)'
                     : `_type == "trustedInstitutionsBanner" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('trustedInstitutionsBanner-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('subjectGridSection')
                                 .title('Subject Grid Sections')
@@ -80,6 +95,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "subjectGridSection" && !defined(cloneReference)'
                     : `_type == "subjectGridSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('subjectGridSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('advertBlockSection')
                                 .title('Advert Block Sections')
@@ -90,6 +108,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "advertBlockSection" && !defined(cloneReference)'
                     : `_type == "advertBlockSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('advertBlockSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('platformBanner')
                                 .title('Platform Banners')
@@ -100,6 +121,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "platformBanner" && !defined(cloneReference)'
                     : `_type == "platformBanner" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('platformBanner-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('testimonialSection')
                                 .title('Testimonial Sections')
@@ -110,6 +134,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "testimonialSection" && !defined(cloneReference)'
                     : `_type == "testimonialSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('testimonialSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.listItem()
                                 .title('FAQ Sections (Homepage)')
@@ -121,6 +148,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "faq_section" && !defined(cloneReference) && (pageType == "homepage" || !defined(pageType))'
                     : `_type == "faq_section" && cloneReference._ref == "${cloneId}" && (pageType == "homepage" || !defined(pageType))`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('faq_section-by-clone', { cloneId, pageType: 'homepage' })]
+                                    )
                                     .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
                                 ),
                               S.documentTypeListItem('footerSection')
@@ -132,6 +162,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "footerSection" && !defined(cloneReference)'
                     : `_type == "footerSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('footerSection-by-clone', { cloneId })]
+                                    )
                                 ),
                             ])
                         ),
@@ -153,6 +186,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                                       ? '_type == "blogPost" && !defined(cloneReference)'
                                       : `_type == "blogPost" && cloneReference._ref == "${cloneId}"`
                                     )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('blogPost-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('blogCategory')
                                 .title('Categories')
@@ -163,6 +199,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                                       ? '_type == "blogCategory" && !defined(cloneReference)'
                                       : `_type == "blogCategory" && cloneReference._ref == "${cloneId}"`
                                     )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('blogCategory-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('blogAuthor')
                                 .title('Authors')
@@ -172,6 +211,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                                     .filter(isGlobalClone 
                                       ? '_type == "blogAuthor" && !defined(cloneReference)'
                                       : `_type == "blogAuthor" && cloneReference._ref == "${cloneId}"`
+                                    )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('blogAuthor-by-clone', { cloneId })]
                                     )
                                 ),
                             ])
@@ -310,7 +352,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Tutors`)
                   .filter(isGlobalClone 
                     ? '_type == "tutor" && !defined(cloneReference)'
-                    : `_type == "tutor" && cloneReference._ref == "${clone._id}"`
+                    : `_type == "tutor" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('testimonial')
@@ -362,98 +404,39 @@ export const structure = (S: StructureBuilder) =>
           S.list()
             .title('Content by Website Clone')
             .items([
-              // Dubai Tutors (Global/Baseline Content)
+              // Global/Baseline Content (no clone reference)
               S.listItem()
                 .title('Dubai Tutors')
                 .icon(FiGlobe)
                 .child(
                   S.list()
                     .title('Dubai Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Dubai Tutors',
-                      cloneReference: null // Global content
-                    }))
+                    .items(
+                      createCloneContentCategories(S, {
+                        cloneName: 'Dubai Tutors',
+                        cloneReference: null
+                      })
+                    )
                 ),
-              
-              // Abu Dhabi Tutors  
+              // Dynamic list of active clones; selecting one opens its scoped categories
               S.listItem()
-                .title('Abu Dhabi Tutors')
+                .title('Other Clones')
                 .icon(FiGlobe)
                 .child(
-                  S.list()
-                    .title('Abu Dhabi Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Abu Dhabi Tutors',
-                      cloneReference: '9aab910c-dd46-48e9-a44f-594906d32ca7' // Actual Abu Dhabi Tutors document ID
-                    }))
+                  S.documentTypeList('clone')
+                    .title('Website Clones')
+                    .filter('_type == "clone" && isActive == true')
+                    .child((cloneDocumentId) =>
+                      S.list()
+                        .title('Clone Content')
+                        .items(
+                          createCloneContentCategories(S, {
+                            cloneName: 'Website Clone',
+                            cloneReference: cloneDocumentId
+                          })
+                        )
+                    )
                 ),
-
-              // Singapore Tutors
-              S.listItem()
-                .title('Singapore Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Singapore Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Singapore Tutors',
-                      cloneReference: '4c395ebb-26a8-48a5-a83c-4f5d4e078587' // Actual Singapore Tutors document ID
-                    }))
-                ),
-
-              // Germany Tutors
-              S.listItem()
-                .title('Germany Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Germany Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Germany Tutors',
-                      cloneReference: 'c6952c71-7f8e-43b5-9a73-03686371e8cc'
-                    }))
-                ),
-
-              // Italy Tutors
-              S.listItem()
-                .title('Italy Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Italy Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Italy Tutors',
-                      cloneReference: '86b1da5e-639b-43c5-8b64-063a71f0d575'
-                    }))
-                ),
-
-              // Qatar Tutors
-              S.listItem()
-                .title('Qatar Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Qatar Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Qatar Tutors',
-                      cloneReference: 'c04bc280-7316-4ebb-b992-91166ea5c826'
-                    }))
-                ),
-
-              // Spain Tutors
-              S.listItem()
-                .title('Spain Tutors')
-                .icon(FiGlobe)
-                .child(
-                  S.list()
-                    .title('Spain Tutors Content')
-                    .items(createCloneContentCategories(S, {
-                      cloneName: 'Spain Tutors',
-                      cloneReference: 'db2574dd-3841-41a3-976e-c6df0fe6cfda'
-                    }))
-                ),
-
-              // Add more clones here as needed...
             ])
         ),
 

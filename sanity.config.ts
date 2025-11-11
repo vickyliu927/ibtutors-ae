@@ -30,6 +30,71 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+    templates: (prev) => {
+      const typesNeedingCloneRef = [
+        'navbarSettings',
+        'hero',
+        'highlightsSection',
+        'tutorProfilesSection',
+        'trustedInstitutionsBanner',
+        'subjectGridSection',
+        'advertBlockSection',
+        'platformBanner',
+        'testimonialSection',
+        'footerSection',
+        'blogPost',
+        'blogCategory',
+        'blogAuthor',
+        'subjectHeroSection',
+        'subjectPage',
+        'curriculumHeroSection',
+        'curriculumPage',
+        'contactFormContent',
+        'tutor',
+        'testimonial',
+        'faq',
+      ]
+
+      const cloneTemplates = typesNeedingCloneRef.map((schemaType) => ({
+        id: `${schemaType}-by-clone`,
+        title: `${schemaType} (by clone)`,
+        schemaType,
+        parameters: [{ name: 'cloneId', type: 'string' }],
+        value: (params: { cloneId?: string }) =>
+          params?.cloneId
+            ? {
+                cloneReference: {
+                  _type: 'reference',
+                  _ref: params.cloneId,
+                },
+              }
+            : {},
+      }))
+
+      // faq_section needs an extra pageType parameter
+      const faqSectionTemplate = {
+        id: 'faq_section-by-clone',
+        title: 'FAQ Section (by clone)',
+        schemaType: 'faq_section',
+        parameters: [
+          { name: 'cloneId', type: 'string' },
+          { name: 'pageType', type: 'string' },
+        ],
+        value: (params: { cloneId?: string; pageType?: string }) => ({
+          ...(params?.cloneId
+            ? {
+                cloneReference: {
+                  _type: 'reference',
+                  _ref: params.cloneId,
+                },
+              }
+            : {}),
+          ...(params?.pageType ? { pageType: params.pageType } : {}),
+        }),
+      }
+
+      return prev.concat([...cloneTemplates, faqSectionTemplate])
+    },
   },
 
   cors: {
