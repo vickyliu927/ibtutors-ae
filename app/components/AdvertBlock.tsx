@@ -26,7 +26,7 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
   const description = sectionData?.description || "We're trusted by hundreds of IB schools globally. All tutoring includes FREE access to our";
   const highlightText = sectionData?.highlightText || "IB Resources Platform";
   const highlightLink = sectionData?.highlightLink;
-  const pricingText = sectionData?.pricingText || "- normally £29/month!";
+  const pricingText = (sectionData?.pricingText || '').trim();
   const backgroundColor = sectionData?.backgroundColor || "#001A96";
   return (
     <section className={`relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 ${className}`}>
@@ -204,7 +204,7 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
                 ) : (
                   <span className="underline decoration-white decoration-2 underline-offset-4">{highlightText}</span>
                 )}
-                {' '}{pricingText}
+                {pricingText ? <> {pricingText}</> : null}
               </p>
             </div>
           </div>

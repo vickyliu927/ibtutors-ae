@@ -404,37 +404,33 @@ export const structure = (S: StructureBuilder) =>
           S.list()
             .title('Content by Website Clone')
             .items([
-              // Global/Baseline Content (no clone reference)
+              // Global/Baseline Content (Dubai Tutors)
               S.listItem()
                 .title('Dubai Tutors')
                 .icon(FiGlobe)
                 .child(
                   S.list()
                     .title('Dubai Tutors Content')
-                    .items(
-                      createCloneContentCategories(S, {
-                        cloneName: 'Dubai Tutors',
-                        cloneReference: null
-                      })
-                    )
+                    .items(createCloneContentCategories(S, {
+                      cloneName: 'Dubai Tutors',
+                      cloneReference: null
+                    }))
                 ),
-              // Dynamic list of active clones; selecting one opens its scoped categories
+              // Dynamic list of active clones
               S.listItem()
                 .title('Other Clones')
                 .icon(FiGlobe)
                 .child(
                   S.documentTypeList('clone')
                     .title('Website Clones')
-                    .filter('_type == "clone" && isActive == true')
+                    .filter('_type == \"clone\" && isActive == true')
                     .child((cloneDocumentId) =>
                       S.list()
                         .title('Clone Content')
-                        .items(
-                          createCloneContentCategories(S, {
-                            cloneName: 'Website Clone',
-                            cloneReference: cloneDocumentId
-                          })
-                        )
+                        .items(createCloneContentCategories(S, {
+                          cloneName: 'Website Clone',
+                          cloneReference: cloneDocumentId
+                        }))
                     )
                 ),
             ])

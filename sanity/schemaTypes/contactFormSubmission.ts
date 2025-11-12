@@ -60,6 +60,18 @@ export default defineType({
       type: 'string',
       description: 'Friendly name of the website (e.g., "Dubai Tutors", "Abu Dhabi Tutors")',
     }),
+    defineField({
+      name: 'sourcePath',
+      title: 'Source Path',
+      type: 'string',
+      description: 'The path/slug from which the form was submitted (e.g., /maths)',
+    }),
+    defineField({
+      name: 'sourceUrl',
+      title: 'Source URL',
+      type: 'url',
+      description: 'Full URL of the page (e.g., https://tutorchase.com/maths)',
+    }),
   ],
   preview: {
     select: {

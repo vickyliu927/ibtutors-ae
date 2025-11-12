@@ -71,7 +71,6 @@ export default defineConfig({
             : {},
       }))
 
-      // faq_section needs an extra pageType parameter
       const faqSectionTemplate = {
         id: 'faq_section-by-clone',
         title: 'FAQ Section (by clone)',

@@ -37,7 +37,7 @@ const subjectPageSchema = defineType({
     }),
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Title (internal reference)',
       type: 'string',
       validation: Rule => Rule.required(),
     }),
