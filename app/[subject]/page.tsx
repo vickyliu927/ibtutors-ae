@@ -954,10 +954,8 @@ export default async function DynamicPage({
     `Subject: ${params.subject}`
   );
 
-  // If clone flags disable this route, block accordingly
-  if (cloneContext.clone?.homepageOnly) {
-    return notFound();
-  }
+  // Allow subject/curriculum routes even if clone is marked homepage-only,
+  // since some environments incorrectly set this flag.
 
   // First check if it's a curriculum page (always try; do not block by flags)
   const curriculumResult = await getCurriculumPageDataWithCloneContext(
