@@ -96,9 +96,26 @@ export async function POST(req: Request) {
     console.log('Form data received:', formData);
     
     // Extract domain information from request headers
-    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const referer = req.headers.get('referer') || '';
+    const origin = req.headers.get('origin') || referer || '';
     const sourceDomain = origin.replace(/^https?:\/\//, '').split('/')[0];
     const sourceWebsite = getWebsiteName(sourceDomain);
+    let sourcePath = '/';
+    let sourceUrl = '';
+    try {
+      if (referer) {
+        const refUrl = new URL(referer);
+        sourcePath = refUrl.pathname || '/';
+        sourceUrl = refUrl.href;
+      } else if (origin) {
+        const o = new URL(origin.startsWith('http') ? origin : `https://${origin}`);
+        sourcePath = '/';
+        sourceUrl = o.href;
+      }
+    } catch {
+      sourcePath = '/';
+      sourceUrl = origin || '';
+    }
     console.log('Source domain:', sourceDomain, 'Website:', sourceWebsite);
     
     // If origin header exists but is not allowlisted, skip sending emails
@@ -134,6 +151,8 @@ export async function POST(req: Request) {
       submittedAt: new Date().toISOString(),
       sourceDomain,
       sourceWebsite,
+      sourcePath,
+      sourceUrl,
     });
 
     // Send email notification with encoded HTML entities
@@ -148,7 +167,9 @@ Details: ${encodeHTML(details)}
 Budget: ${encodeHTML(budget)}
 
 Source Website: ${encodeHTML(sourceWebsite)}
-Source Domain: ${encodeHTML(sourceDomain)}`;
+Source Domain: ${encodeHTML(sourceDomain)}
+Source Path: ${encodeHTML(sourcePath)}
+Source URL: ${encodeHTML(sourceUrl)}`;
 
     let emailData: unknown = null;
     if (emailSendingEnabled && originIsAllowed) {
