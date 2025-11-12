@@ -30,6 +30,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "navbarSettings" && !defined(cloneReference)'
                     : `_type == "navbarSettings" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('navbarSettings-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('hero')
                                 .title('Hero Sections')
@@ -40,6 +43,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "hero" && !defined(cloneReference)'
                     : `_type == "hero" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('hero-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('highlightsSection')
                                 .title('Highlights Sections')
@@ -50,6 +56,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "highlightsSection" && !defined(cloneReference)'
                     : `_type == "highlightsSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('highlightsSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('tutorProfilesSection')
                                 .title('Tutor Profile Sections')
@@ -60,6 +69,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "tutorProfilesSection" && !defined(cloneReference)'
                     : `_type == "tutorProfilesSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('tutorProfilesSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('trustedInstitutionsBanner')
                                 .title('Trusted Institutions Banners')
@@ -70,6 +82,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "trustedInstitutionsBanner" && !defined(cloneReference)'
                     : `_type == "trustedInstitutionsBanner" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('trustedInstitutionsBanner-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('subjectGridSection')
                                 .title('Subject Grid Sections')
@@ -80,6 +95,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "subjectGridSection" && !defined(cloneReference)'
                     : `_type == "subjectGridSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('subjectGridSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('advertBlockSection')
                                 .title('Advert Block Sections')
@@ -90,6 +108,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "advertBlockSection" && !defined(cloneReference)'
                     : `_type == "advertBlockSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('advertBlockSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('platformBanner')
                                 .title('Platform Banners')
@@ -100,6 +121,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "platformBanner" && !defined(cloneReference)'
                     : `_type == "platformBanner" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('platformBanner-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('testimonialSection')
                                 .title('Testimonial Sections')
@@ -110,6 +134,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "testimonialSection" && !defined(cloneReference)'
                     : `_type == "testimonialSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('testimonialSection-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.listItem()
                                 .title('FAQ Sections (Homepage)')
@@ -121,6 +148,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "faq_section" && !defined(cloneReference) && (pageType == "homepage" || !defined(pageType))'
                     : `_type == "faq_section" && cloneReference._ref == "${cloneId}" && (pageType == "homepage" || !defined(pageType))`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('faq_section-by-clone', { cloneId, pageType: 'homepage' })]
+                                    )
                                     .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
                                 ),
                               S.documentTypeListItem('footerSection')
@@ -132,6 +162,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "footerSection" && !defined(cloneReference)'
                     : `_type == "footerSection" && cloneReference._ref == "${cloneId}"`
                   )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('footerSection-by-clone', { cloneId })]
+                                    )
                                 ),
                             ])
                         ),
@@ -153,6 +186,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                                       ? '_type == "blogPost" && !defined(cloneReference)'
                                       : `_type == "blogPost" && cloneReference._ref == "${cloneId}"`
                                     )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('blogPost-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('blogCategory')
                                 .title('Categories')
@@ -163,6 +199,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                                       ? '_type == "blogCategory" && !defined(cloneReference)'
                                       : `_type == "blogCategory" && cloneReference._ref == "${cloneId}"`
                                     )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('blogCategory-by-clone', { cloneId })]
+                                    )
                                 ),
                               S.documentTypeListItem('blogAuthor')
                                 .title('Authors')
@@ -172,6 +211,9 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                                     .filter(isGlobalClone 
                                       ? '_type == "blogAuthor" && !defined(cloneReference)'
                                       : `_type == "blogAuthor" && cloneReference._ref == "${cloneId}"`
+                                    )
+                                    .initialValueTemplates(
+                                      isGlobalClone ? [] : [S.initialValueTemplateItem('blogAuthor-by-clone', { cloneId })]
                                     )
                                 ),
                             ])
@@ -310,7 +352,7 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .title(`${cloneName} - Tutors`)
                   .filter(isGlobalClone 
                     ? '_type == "tutor" && !defined(cloneReference)'
-                    : `_type == "tutor" && cloneReference._ref == "${clone._id}"`
+                    : `_type == "tutor" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
                               S.documentTypeListItem('testimonial')

@@ -23,7 +23,7 @@ import {
 import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, trustedInstitutionsQueries, cloneQueryUtils } from '../lib/cloneQueries';
 import TrustedInstitutionsBanner from '../components/TrustedInstitutionsBanner';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
-import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
+import { getCloneIdForCurrentDomain, getCurrentDomainFromHeaders, getCanonicalDomain } from '../lib/sitemapUtils';
 
 // Enable caching of data fetches (route remains dynamic due to headers usage)
 export const revalidate = 300;
@@ -153,7 +153,9 @@ async function getCurriculumPageDataWithCloneContext(
     
     // Clone-aware curriculum page query with 3-tier fallback
     const query = `{
-      "cloneSpecific": *[_type == "curriculumPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0] {
+      "cloneSpecific": *[_type == "curriculumPage" && (
+        slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+      ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0] {
         title,
         curriculum,
         slug,
@@ -215,7 +217,9 @@ async function getCurriculumPageDataWithCloneContext(
           "cloneId": $cloneId
         }
       },
-      "baseline": *[_type == "curriculumPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0] {
+      "baseline": *[_type == "curriculumPage" && (
+        slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+      ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0] {
         title,
         curriculum,
         slug,
@@ -277,7 +281,9 @@ async function getCurriculumPageDataWithCloneContext(
           "cloneId": cloneReference->cloneId.current
         }
       },
-      "default": *[_type == "curriculumPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0] {
+      "default": *[_type == "curriculumPage" && (
+        slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+      ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0] {
         title,
         curriculum,
         slug,
@@ -402,7 +408,9 @@ async function getSubjectPageDataWithCloneContext(
     // Enhanced clone-aware query with 3-tier fallback
     const query = `{
       "cloneSpecific": {
-        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]{
+        "subjectPage": *[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0]{
           _id,
           subject,
           title,
@@ -441,7 +449,9 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": $cloneId
           }
         },
-        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && cloneReference->cloneId.current == $cloneId][0]{
+        "heroData": *[_type == "subjectHeroSection" && (
+          subjectPage->slug.current == $subject || replace(subjectPage->slug.current, "^/", "") == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->cloneId.current == $cloneId][0]{
           rating {
             score,
             basedOnText,
@@ -458,7 +468,9 @@ async function getSubjectPageDataWithCloneContext(
           }
         },
         // Tutors referencing this subject page
-        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]._id)] | order(displayOrder asc) {
+        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0]._id)] | order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -485,7 +497,9 @@ async function getSubjectPageDataWithCloneContext(
           languagesSpoken
         },
         // Tutors directly listed on the subject page (tutorsList)
-        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+        "tutorsInline": *[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->cloneId.current == $cloneId && (isActive == true || !defined(isActive))][0].tutorsList[]->| order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -506,7 +520,9 @@ async function getSubjectPageDataWithCloneContext(
         }
       },
       "baseline": {
-        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]{
+        "subjectPage": *[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0]{
           _id,
           subject,
           title,
@@ -545,7 +561,9 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": cloneReference->cloneId.current
           }
         },
-        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && cloneReference->baselineClone == true][0]{
+        "heroData": *[_type == "subjectHeroSection" && (
+          subjectPage->slug.current == $subject || replace(subjectPage->slug.current, "^/", "") == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->baselineClone == true][0]{
           rating {
             score,
             basedOnText,
@@ -561,7 +579,9 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": cloneReference->cloneId.current
           }
         },
-        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]._id)] | order(displayOrder asc) {
+        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0]._id)] | order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -587,7 +607,9 @@ async function getSubjectPageDataWithCloneContext(
           totalLessons,
           languagesSpoken
         },
-        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+        "tutorsInline": *[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && cloneReference->baselineClone == true && (isActive == true || !defined(isActive))][0].tutorsList[]->| order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -608,7 +630,9 @@ async function getSubjectPageDataWithCloneContext(
         }
       },
       "default": {
-        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]{
+        "subjectPage": *[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0]{
           _id,
           subject,
           title,
@@ -647,7 +671,9 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": null
           }
         },
-        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && !defined(cloneReference)][0]{
+        "heroData": *[_type == "subjectHeroSection" && (
+          subjectPage->slug.current == $subject || replace(subjectPage->slug.current, "^/", "") == $subject || lower(subjectPage->subject) == lower($subject) || lower(replace(subjectPage->subject, /\s+/, '-')) == lower($subject)
+        ) && !defined(cloneReference)][0]{
           rating {
             score,
             basedOnText,
@@ -663,7 +689,9 @@ async function getSubjectPageDataWithCloneContext(
             "cloneId": null
           }
         },
-        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]._id)] | order(displayOrder asc) {
+        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0]._id)] | order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -689,7 +717,9 @@ async function getSubjectPageDataWithCloneContext(
           totalLessons,
           languagesSpoken
         },
-        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+        "tutorsInline": *[_type == "subjectPage" && (
+          slug.current == $subject || replace(slug.current, "^/", "") == $subject || lower(subject) == lower($subject) || lower(replace(subject, /\s+/, '-')) == lower($subject)
+        ) && !defined(cloneReference) && (isActive == true || !defined(isActive))][0].tutorsList[]->| order(displayOrder asc) {
           _id,
           name,
           professionalTitle,
@@ -789,6 +819,13 @@ export async function generateMetadata({ params }: { params: { subject: string }
   // Get clone-aware SEO data that will automatically detect clone from middleware headers
   const cloneSeoData = await getSeoData();
   const canonicalPath = `/${params.subject}`;
+  // Compute absolute canonical URL (domain/subject)
+  const currentDomain = getCurrentDomainFromHeaders();
+  const canonicalHost = getCanonicalDomain(currentDomain || '');
+  const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+  const protocol = isLocal ? 'http' : 'https';
+  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae');
+  const canonicalUrl = new URL(canonicalPath, baseUrlString).toString();
   
   // Resolve cloneId so we fetch clone-specific page SEO (matches page render logic)
   const cloneId = await getCloneIdForCurrentDomain();
@@ -824,7 +861,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
     return {
       title: curriculumResult.pageData.seo?.pageTitle || dynamicTitle || curriculumResult.pageData.title || cloneSeoData.title,
       description: curriculumResult.pageData.seo?.description || dynamicDescription || cloneSeoData.description || `Find expert tutors${curriculumName ? ` for ${curriculumName}` : ''}.`,
-      alternates: { canonical: canonicalPath },
+      alternates: { canonical: canonicalUrl },
     };
   }
   
@@ -850,7 +887,7 @@ export async function generateMetadata({ params }: { params: { subject: string }
   return {
     title: pageData.seo?.pageTitle || dynamicTitle || `${pageData.title} | ${brandFromSeo}`,
     description: pageData.seo?.description || dynamicDescription || cloneSeoData.description || 'Find expert tutors for your subject.',
-    alternates: { canonical: canonicalPath },
+    alternates: { canonical: canonicalUrl },
   };
 }
 
@@ -861,6 +898,12 @@ export default async function DynamicPage({
   params: { subject: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  // Compute absolute base URL for JSON-LD (domain/*)
+  const currentDomain = getCurrentDomainFromHeaders();
+  const canonicalHost = getCanonicalDomain(currentDomain || '');
+  const isLocal = canonicalHost.includes('localhost') || canonicalHost.includes('127.0.0.1') || canonicalHost.includes('.local');
+  const protocol = isLocal ? 'http' : 'https';
+  const baseUrlString = canonicalHost ? `${protocol}://${canonicalHost}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dubaitutors.ae');
   // Convert searchParams to URLSearchParams for clone detection
   const urlSearchParams = new URLSearchParams();
   Object.entries(searchParams || {}).forEach(([key, value]) => {
@@ -916,10 +959,8 @@ export default async function DynamicPage({
     return notFound();
   }
 
-  // If curriculum pages are disabled for this clone, skip curriculum resolution
-  const disableCurriculum = cloneContext.clone?.enableSubjectPagesOnly === true;
-  // First check if it's a curriculum page
-  const curriculumResult = disableCurriculum ? { pageData: null } as any : await getCurriculumPageDataWithCloneContext(
+  // First check if it's a curriculum page (always try; do not block by flags)
+  const curriculumResult = await getCurriculumPageDataWithCloneContext(
     params.subject, 
     cloneContext.cloneId
   );
@@ -949,9 +990,9 @@ export default async function DynamicPage({
               '@context': 'https://schema.org',
               '@type': 'BreadcrumbList',
               itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
-                { '@type': 'ListItem', position: 2, name: 'Curricula', item: '/curricula' },
-                { '@type': 'ListItem', position: 3, name: curriculumResult.pageData.curriculum || curriculumResult.pageData.title, item: `/${params.subject}` },
+                { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrlString}/` },
+                { '@type': 'ListItem', position: 2, name: 'Curricula', item: `${baseUrlString}/curricula` },
+                { '@type': 'ListItem', position: 3, name: curriculumResult.pageData.curriculum || curriculumResult.pageData.title, item: `${baseUrlString}/${params.subject}` },
               ],
             }),
           }}
@@ -1063,9 +1104,8 @@ export default async function DynamicPage({
     );
   }
   
-  // If not a curriculum page, and subject pages are allowed, check if it's a subject page
-  const disableSubject = cloneContext.clone?.enableCurriculumPagesOnly === true;
-  const subjectResult = disableSubject ? { pageData: null } as any : await getSubjectPageDataWithCloneContext(
+  // If not a curriculum page, check if it's a subject page (always try; do not block by flags)
+  const subjectResult = await getSubjectPageDataWithCloneContext(
     params.subject,
     cloneContext.cloneId
   );
@@ -1099,9 +1139,9 @@ export default async function DynamicPage({
               '@context': 'https://schema.org',
               '@type': 'BreadcrumbList',
               itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
-                { '@type': 'ListItem', position: 2, name: 'Subjects', item: '/subjects' },
-                { '@type': 'ListItem', position: 3, name: subjectResult.pageData.subject || subjectResult.pageData.title, item: `/${params.subject}` },
+                { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrlString}/` },
+                { '@type': 'ListItem', position: 2, name: 'Subjects', item: `${baseUrlString}/subjects` },
+                { '@type': 'ListItem', position: 3, name: subjectResult.pageData.subject || subjectResult.pageData.title, item: `${baseUrlString}/${params.subject}` },
               ],
             }),
           }}

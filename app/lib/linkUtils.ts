@@ -20,6 +20,18 @@ export async function getLinkSettings(): Promise<LinkSettings> {
   }
 
   try {
+    // On the browser, call our server proxy to avoid CORS/token issues
+    if (typeof window !== 'undefined') {
+      const res = await fetch('/api/link-settings', { cache: 'no-store' });
+      if (res.ok) {
+        const settings = await res.json();
+        cachedLinkSettings = settings;
+        lastFetchTime = now;
+        return settings;
+      }
+    }
+
+    // On the server, fetch directly from Sanity
     const settings = await client.fetch<LinkSettings>(`
       *[_type == "linkSettings" && !(_id in path("drafts.**"))][0]{
         "defaultNofollow": defaultNofollow,
