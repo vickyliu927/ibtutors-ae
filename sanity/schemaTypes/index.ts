@@ -21,6 +21,7 @@ import linkSettings from './linkSettings'
 import clone from './clone'
 import subjectHeroSection from './subjectHeroSection'
 import curriculumHeroSection from './curriculumHeroSection'
+import locationHeroSection from './locationHeroSection'
 import blockContent from './blockContent'
 import blogPost from './blogPost'
 import blogAuthor from './blogAuthor'
@@ -52,6 +53,7 @@ export const schemaTypes = [
   linkSettings,
   subjectHeroSection,
   curriculumHeroSection,
+  locationHeroSection,
   blockContent,
   blogPost,
   blogAuthor,

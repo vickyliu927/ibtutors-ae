@@ -28,6 +28,7 @@ const faqSectionSchema = defineType({
           { title: 'Homepage', value: 'homepage' },
           { title: 'Subject Pages', value: 'subject' },
           { title: 'Curriculum Pages', value: 'curriculum' },
+          { title: 'Location Pages', value: 'location' },
           { title: 'General/Shared', value: 'general' },
         ],
         layout: 'radio',
@@ -58,6 +59,25 @@ const faqSectionSchema = defineType({
       },
     }),
     defineField({
+      name: 'locationPage',
+      title: 'Location Page',
+      type: 'reference',
+      to: [{ type: 'locationPage' }],
+      description: 'Select a specific location page this FAQ section is for. Leave empty for general location FAQs that apply to all locations.',
+      hidden: ({ document }: any) => document?.pageType !== 'location',
+      options: {
+        filter: ({ document }: any) => {
+          if (document?.cloneReference?._ref) {
+            return {
+              filter: 'cloneReference._ref == $cloneId || !defined(cloneReference)',
+              params: { cloneId: document.cloneReference._ref }
+            };
+          }
+          return {};
+        },
+      },
+    }),
+    defineField({
       name: 'faqReferences',
       title: 'FAQs',
       type: 'array',
@@ -73,21 +93,32 @@ const faqSectionSchema = defineType({
       pageType: 'pageType',
       subjectPageTitle: 'subjectPage.title',
       subjectPageSubject: 'subjectPage.subject',
+      locationPageLocation: 'locationPage.location',
     },
-    prepare({ title = '', subtitle = '', pageType = '', subjectPageTitle = '', subjectPageSubject = '' }: Record<string, string>) {
+    prepare(selection: any) {
+      const {
+        title = '',
+        subtitle = '',
+        pageType = '',
+        subjectPageTitle = '',
+        subjectPageSubject = '',
+        locationPageLocation = '',
+      } = selection || {};
       const pageTypeLabels: Record<string, string> = {
         homepage: '🏠 Homepage',
         subject: '📚 Subject Pages',
         curriculum: '🎓 Curriculum Pages',
+        location: '📍 Location Pages',
         general: '🌐 General/Shared',
       };
 
-      const pageTypeLabel = pageTypeLabels[pageType] || '❓ Unknown';
+      const pageTypeLabel = pageTypeLabels[pageType as string] || '❓ Unknown';
       const subjectLabel = subjectPageTitle ? ` → ${subjectPageTitle}` : (subjectPageSubject ? ` → ${subjectPageSubject}` : '');
+      const locationLabel = locationPageLocation ? ` → ${locationPageLocation}` : '';
       
       return {
         title: `${title}`,
-        subtitle: `${pageTypeLabel}${subjectLabel}${subtitle ? ` • ${subtitle}` : ''}`,
+        subtitle: `${pageTypeLabel}${subjectLabel || locationLabel}${subtitle ? ` • ${subtitle}` : ''}`,
       }
     },
   },

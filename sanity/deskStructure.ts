@@ -231,6 +231,16 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                           S.list()
             .title(`${cloneName} - Location Page Sections`)
                             .items([
+                              S.documentTypeListItem('locationHeroSection')
+                                .title('Location Hero Sections')
+                                .child(
+                                  S.documentList()
+                  .title(`${cloneName} - Location Hero Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "locationHeroSection" && !defined(cloneReference)'
+                    : `_type == "locationHeroSection" && cloneReference._ref == "${cloneId}"`
+                  )
+                                ),
                               S.documentTypeListItem('locationPage')
                                 .title('Location Page Settings')
                                 .child(
@@ -240,6 +250,18 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     ? '_type == "locationPage" && !defined(cloneReference)'
                     : `_type == "locationPage" && cloneReference._ref == "${cloneId}"`
                   )
+                                ),
+                              S.listItem()
+                                .title('FAQ Sections (Location Pages)')
+                                .icon(BsQuestionCircle)
+                                .child(
+                                  S.documentList()
+                  .title(`${cloneName} - Location FAQ Sections`)
+                  .filter(isGlobalClone 
+                    ? '_type == "faq_section" && !defined(cloneReference) && pageType == "location"'
+                    : `_type == "faq_section" && cloneReference._ref == "${cloneId}" && pageType == "location"`
+                  )
+                                    .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
                                 ),
                             ])
                         ),
@@ -546,9 +568,21 @@ export const structure = (S: StructureBuilder) =>
                   S.list()
                     .title('Location Page Sections')
                     .items([
+                      S.documentTypeListItem('locationHeroSection')
+                        .title('Location Hero Sections')
+                        .icon(BiHome),
                       S.documentTypeListItem('locationPage')
                         .title('Location Page Settings')
                         .icon(BsBook),
+                      S.listItem()
+                        .title('FAQ Sections (Location Pages)')
+                        .icon(BsQuestionCircle)
+                        .child(
+                          S.documentList()
+                            .title('Location Pages FAQ Sections')
+                            .filter('_type == "faq_section" && pageType == "location"')
+                            .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
+                        ),
                     ])
                 ),
 
@@ -673,6 +707,7 @@ export const structure = (S: StructureBuilder) =>
             'subjectHeroSection',
             'curriculumPage',
             'curriculumHeroSection',
+            'locationHeroSection',
             'locationPage',
             'seoSettings',
             'navbarSettings',
