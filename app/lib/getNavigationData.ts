@@ -459,24 +459,6 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
             slug
           }
         },
-        subjectsMenuGroups[]{
-          title,
-          linkTarget->{
-            _type,
-            subject,
-            curriculum,
-            slug,
-            externalRedirectEnabled,
-            externalRedirectUrl
-          },
-          items[]->{
-            subject,
-            slug,
-            displayOrder,
-            externalRedirectEnabled,
-            externalRedirectUrl
-          }
-        }
       },
       buttonText,
       buttonLink,
@@ -503,24 +485,6 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
             slug
           }
         },
-        subjectsMenuGroups[]{
-          title,
-          linkTarget->{
-            _type,
-            subject,
-            curriculum,
-            slug,
-            externalRedirectEnabled,
-            externalRedirectUrl
-          },
-          items[]->{
-            subject,
-            slug,
-            displayOrder,
-            externalRedirectEnabled,
-            externalRedirectUrl
-          }
-        }
       },
       buttonText,
       buttonLink,
@@ -535,22 +499,12 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logoAlt,
       logoLink,
       navigation{
-        subjectsMenuGroups[]{
-          title,
-          linkTarget->{
-            _type,
-            subject,
+        navOrder[]{
+          itemType,
+          curriculumTarget->{
+            title,
             curriculum,
-            slug,
-            externalRedirectEnabled,
-            externalRedirectUrl
-          },
-          items[]->{
-            subject,
-            slug,
-            displayOrder,
-            externalRedirectEnabled,
-            externalRedirectUrl
+            slug
           }
         }
       },
@@ -575,22 +529,6 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
             slug
           }
         },
-        subjectsMenuGroups[]{
-          title,
-          linkTarget->{
-            _type,
-            subject,
-            curriculum,
-            slug,
-            externalRedirectEnabled,
-            externalRedirectUrl
-          },
-          items[]->{
-            subject,
-            slug,
-            displayOrder
-          }
-        }
       },
       buttonText,
       buttonLink,

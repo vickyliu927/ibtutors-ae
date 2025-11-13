@@ -23,51 +23,13 @@ const navbarSettingsSchema = defineType({
     }),
     defineField({
       name: 'navigation',
-      title: 'Navigation Labels',
+      title: 'Navigation',
           type: 'object',
           fields: [
             defineField({
-              name: 'subjectsMenuGroups',
-              title: 'Subjects Menu Groups',
-              description: 'Organize the All Subjects dropdown into groups. Each group can contain selected subject pages.',
-              type: 'array',
-              of: [
-                {
-                  type: 'object',
-                  name: 'subjectsMenuGroup',
-                  title: 'Subjects Group',
-                  fields: [
-                    defineField({
-                      name: 'title',
-                      title: 'Group Title',
-                      type: 'string',
-                      validation: Rule => Rule.required(),
-                    }),
-                    defineField({
-                      name: 'linkTarget',
-                      title: 'Group Link Target',
-                      description: 'Optional. Where to navigate when clicking the group name (subject or curriculum page).',
-                      type: 'reference',
-                      to: [{ type: 'subjectPage' }, { type: 'curriculumPage' }],
-                      options: { disableNew: true },
-                    }),
-                    defineField({
-                      name: 'items',
-                      title: 'Subject Pages',
-                      type: 'array',
-                      of: [
-                        { type: 'reference', to: [{ type: 'subjectPage' }] }
-                      ],
-                      description: 'Select which subject pages appear under this group (drag to reorder).',
-                    })
-                  ]
-                }
-              ]
-            }),
-            defineField({
               name: 'navOrder',
-              title: 'Desktop Navigation Order',
-              description: 'Drag to reorder items (left to right order before the CTA).',
+              title: 'Navigation Order',
+              description: 'Drag to reorder: All Subjects, All Locations, selected Curriculum pages, and Blog.',
               type: 'array',
               of: [
                 defineField({
@@ -81,6 +43,7 @@ const navbarSettingsSchema = defineType({
                       type: 'string',
                       options: { list: [
                         { title: 'All Subjects', value: 'allSubjects' },
+                        { title: 'All Locations', value: 'locations' },
                         { title: 'Curriculum', value: 'curriculum' },
                         { title: 'Blog', value: 'blog' },
                       ] },
@@ -114,7 +77,7 @@ const navbarSettingsSchema = defineType({
         defineField({
           name: 'mobileNavOrder',
           title: 'Mobile Navigation Order',
-          description: 'Drag to reorder items in the mobile menu.',
+          description: 'Drag to reorder: All Subjects, All Locations, selected Curriculum pages, and Blog.',
           type: 'array',
           of: [
             defineField({
@@ -128,6 +91,7 @@ const navbarSettingsSchema = defineType({
                   type: 'string',
                   options: { list: [
                     { title: 'All Subjects', value: 'allSubjects' },
+                    { title: 'All Locations', value: 'locations' },
                     { title: 'Curriculum', value: 'curriculum' },
                     { title: 'Blog', value: 'blog' },
                   ] },
