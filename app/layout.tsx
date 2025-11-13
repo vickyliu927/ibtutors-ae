@@ -104,6 +104,7 @@ export default async function RootLayout({
           navbarData={navigationData.navbarData}
           subjects={navigationData.subjects}
           curriculums={navigationData.curriculums}
+          locations={navigationData.locations}
           currentDomain={navigationData.currentDomain}
           hasBlog={navigationData.hasBlog}
         />

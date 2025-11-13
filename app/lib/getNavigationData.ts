@@ -31,9 +31,21 @@ export interface NavigationCurriculumData {
   }[];
 }
 
+export interface NavigationLocationData {
+  title: string;
+  location: string;
+  slug: {
+    current: string;
+  };
+  displayOrder: number;
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
+}
+
 export interface NavigationData {
   subjects: NavigationSubjectData[];
   curriculums: NavigationCurriculumData[];
+  locations: NavigationLocationData[];
   navbarData: any;
   currentDomain: string;
   hasBlog: boolean;
@@ -57,14 +69,17 @@ export async function getNavigationData(): Promise<NavigationData> {
     
     // Fetch curriculums with clone-aware fallback  
     const curriculumsPromise = fetchCurriculumsWithFallback(cloneId);
+    // Fetch locations with clone-aware fallback
+    const locationsPromise = fetchLocationsWithFallback(cloneId);
     
     // Fetch navbar data with clone-aware fallback
     const navbarPromise = fetchNavbarWithFallback(cloneId);
     
     // Execute all queries in parallel
-    const [subjects, curriculums, navbarData, hasBlog] = await Promise.all([
+    const [subjects, curriculums, locations, navbarData, hasBlog] = await Promise.all([
       subjectsPromise,
       curriculumsPromise, 
+      locationsPromise,
       navbarPromise,
       getHasBlogForClone(cloneId),
     ]);
@@ -72,11 +87,12 @@ export async function getNavigationData(): Promise<NavigationData> {
     // Get current domain for link generation
     const currentDomain = getCurrentDomain();
     
-    console.log(`[NavigationData] Fetched ${subjects.length} subjects, ${curriculums.length} curriculums for clone: ${cloneId || 'global'}`);
+    console.log(`[NavigationData] Fetched ${subjects.length} subjects, ${curriculums.length} curriculums, ${locations.length} locations for clone: ${cloneId || 'global'}`);
     
     return {
       subjects,
       curriculums,
+      locations,
       navbarData,
       currentDomain,
       hasBlog
@@ -88,6 +104,7 @@ export async function getNavigationData(): Promise<NavigationData> {
     return {
       subjects: [],
       curriculums: [],
+      locations: [],
       navbarData: null,
       currentDomain: '',
       hasBlog: false
@@ -344,6 +361,57 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
   } catch (error) {
     console.error(`[NavigationData] Error fetching curriculums for clone ${cloneId}:`, error);
     return FALLBACK_CURRICULUM_PAGES;
+  }
+}
+
+/**
+ * Fetch locations with 3-tier fallback
+ */
+async function fetchLocationsWithFallback(cloneId: string | null): Promise<NavigationLocationData[]> {
+  if (!cloneId) {
+    // Global site: only default docs (no clone fallback)
+    const query = `*[_type == "locationPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
+      title,
+      location,
+      slug,
+      displayOrder,
+      externalRedirectEnabled,
+      externalRedirectUrl
+    }`;
+    const result = await client.fetch<NavigationLocationData[]>(query, {}, { next: { revalidate: 300 } });
+    console.log(`[NavigationData] Fetched ${result.length} default location pages`);
+    return result;
+  }
+
+  // Clone site: only clone-specific docs (no baseline/default fallback)
+  const flags = await client.fetch(
+    `*[_type == "clone" && cloneId.current == $cloneId][0]{
+      "homepageOnly": homepageOnly == true
+    }`,
+    { cloneId },
+    { next: { revalidate: 300 } }
+  );
+  if (flags?.homepageOnly) {
+    console.log('[NavigationData] locations disabled by clone flags; returning empty locations');
+    return [];
+  }
+
+  const query = `*[_type == "locationPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
+    title,
+    location,
+    slug,
+    displayOrder,
+    externalRedirectEnabled,
+    externalRedirectUrl
+  }`;
+
+  try {
+    const result = await client.fetch<NavigationLocationData[]>(query, { cloneId }, { next: { revalidate: 300 } });
+    console.log(`[NavigationData] Fetched ${result.length} clone-specific location pages for clone: ${cloneId}`);
+    return result;
+  } catch (error) {
+    console.error(`[NavigationData] Error fetching locations for clone ${cloneId}:`, error);
+    return [];
   }
 }
 

@@ -36,6 +36,17 @@ interface CurriculumPageData {
   }[];
 }
 
+interface LocationPageData {
+  title: string;
+  location: string;
+  slug: {
+    current: string;
+  };
+  displayOrder: number;
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
+}
+
 // Navbar data interface
 interface NavbarData {
   logo: any;
@@ -78,6 +89,7 @@ interface NavbarProps {
   navbarData?: NavbarData | null;
   subjects?: SubjectPageData[];  // Server-side data
   curriculums?: CurriculumPageData[];  // Server-side data
+  locations?: LocationPageData[]; // Server-side data
   currentDomain?: string;  // Domain context for link generation
   hasBlog?: boolean; // controls display of Blog link
 }
@@ -85,24 +97,29 @@ interface NavbarProps {
 // Create a class name with specific meaning to avoid conflicts
 const MOBILE_ONLY_CLASS = 'mobile-menu-button';
 
-const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, hasBlog = true }: NavbarProps) => {
+const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], currentDomain, hasBlog = true }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSubjectsDropdown, setShowSubjectsDropdown] = useState(false);
+  const [showLocationsDropdown, setShowLocationsDropdown] = useState(false);
   const [showCurriculumDropdowns, setShowCurriculumDropdowns] = useState<{[key: string]: boolean}>({});
   const [isScrolled, setIsScrolled] = useState(false);
   // Desktop All Subjects group hover state
   const [activeSubjectsGroupIndex, setActiveSubjectsGroupIndex] = useState<number | null>(null);
   // Mobile submenu states
-  const [mobileSubmenuView, setMobileSubmenuView] = useState<'main' | 'subjects'>('main');
+  const [mobileSubmenuView, setMobileSubmenuView] = useState<'main' | 'subjects' | 'locations'>('main');
   const hasSubjects = Array.isArray(subjects) && subjects.length > 0;
+  const hasLocations = Array.isArray(locations) && locations.length > 0;
 
   const subjectsDropdownRef = useRef<HTMLDivElement>(null);
+  const locationsDropdownRef = useRef<HTMLDivElement>(null);
   const subjectsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const locationsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const curriculumDropdownRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
   const curriculumTimeoutRefs = useRef<{[key: string]: NodeJS.Timeout | null}>({});
 
   // Helper function to generate proper domain-aware links
   const generateSubjectLink = (slug: string) => `/${slug}`;
+  const generateLocationLink = (slug: string) => `/${slug}`;
 
   // Add global style when component mounts
   useEffect(() => {
@@ -131,6 +148,20 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
   const handleSubjectsMouseLeave = () => {
     subjectsTimeoutRef.current = setTimeout(() => {
       setShowSubjectsDropdown(false);
+    }, 300);
+  };
+
+  const handleLocationsMouseEnter = () => {
+    if (locationsTimeoutRef.current) {
+      clearTimeout(locationsTimeoutRef.current);
+      locationsTimeoutRef.current = null;
+    }
+    setShowLocationsDropdown(true);
+  };
+
+  const handleLocationsMouseLeave = () => {
+    locationsTimeoutRef.current = setTimeout(() => {
+      setShowLocationsDropdown(false);
     }, 300);
   };
 
@@ -183,6 +214,9 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     return () => {
       if (subjectsTimeoutRef.current) {
         clearTimeout(subjectsTimeoutRef.current);
+      }
+      if (locationsTimeoutRef.current) {
+        clearTimeout(locationsTimeoutRef.current);
       }
       // Clear all curriculum timeouts
       Object.values(curriculumTimeoutRefs.current).forEach(timeout => {
@@ -300,17 +334,17 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
     return map;
   };
 
-  const desktopNavOrder: string[] = normalizeOrder((navbarData as any)?.navigation?.navOrder, ['allSubjects', 'curriculums', 'blog']);
+  const desktopNavOrder: string[] = normalizeOrder((navbarData as any)?.navigation?.navOrder, ['allSubjects', 'locations', 'curriculums', 'blog']);
 
-  const getDesktopOrder = (key: 'allSubjects' | 'curriculums' | 'blog') => {
+  const getDesktopOrder = (key: 'allSubjects' | 'locations' | 'curriculums' | 'blog') => {
     const idx = desktopNavOrder.indexOf(key);
     return idx >= 0 ? idx : 999;
   };
 
   // Mobile navigation order from Sanity (fallback to default)
-  const mobileNavOrder: string[] = normalizeOrder((navbarData as any)?.mobileMenu?.mobileNavOrder, ['allSubjects', 'curriculums', 'blog']);
+  const mobileNavOrder: string[] = normalizeOrder((navbarData as any)?.mobileMenu?.mobileNavOrder, ['allSubjects', 'locations', 'curriculums', 'blog']);
 
-  const getMobileOrder = (key: 'allSubjects' | 'curriculums' | 'blog') => {
+  const getMobileOrder = (key: 'allSubjects' | 'locations' | 'curriculums' | 'blog') => {
     const idx = mobileNavOrder.indexOf(key);
     return idx >= 0 ? idx : 999;
   };
@@ -461,6 +495,59 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                     </div>
                   );
                 })()
+              )}
+            </div>
+          )}
+
+          {/* Locations Dropdown - hidden if no locations */}
+          {hasLocations && (
+            <div 
+              className="relative"
+              ref={locationsDropdownRef}
+              onMouseEnter={handleLocationsMouseEnter}
+              onMouseLeave={handleLocationsMouseLeave}
+              style={{ order: getDesktopOrder('locations') }}
+            >
+              <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
+                Locations
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.5 4.5L6 8L2.5 4.5"
+                    stroke="#171D23"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              
+              {showLocationsDropdown && (
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
+                  {[...locations]
+                    .slice()
+                    .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
+                    .map((loc) => (
+                    loc.externalRedirectEnabled && loc.externalRedirectUrl ? (
+                      <ExternalLink key={`${loc.location}-external`} href={loc.externalRedirectUrl} className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
+                        {loc.location || loc.title}
+                      </ExternalLink>
+                    ) : loc.slug?.current ? (
+                      <Link
+                        key={loc.slug.current}
+                        href={generateLocationLink(loc.slug.current)}
+                        className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap"
+                      >
+                        {loc.location || loc.title}
+                      </Link>
+                    ) : null
+                  ))}
+                </div>
               )}
             </div>
           )}
@@ -698,6 +785,35 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                     </div>
                   )}
 
+                  {/* Locations Button - hidden if no locations */}
+                  {hasLocations && (
+                    <div className="w-full" style={{ order: getMobileOrder('locations') }}>
+                      <button
+                        onClick={() => setMobileSubmenuView('locations')}
+                        className="flex w-full py-4 px-4 justify-between items-center border-b bg-white"
+                        style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                      >
+                        <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
+                          Locations
+                        </span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3.5 11L8.49886 6L3.5 1"
+                            stroke={navbarData?.mobileMenu?.dropdownArrowColor || '#001A96'}
+                            strokeWidth="1.6"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+
                   {/* Direct Curriculum Links */}
                   <div className="w-full" style={{ order: getMobileOrder('curriculums') }}>
                     {[...curriculums]
@@ -907,6 +1023,67 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], currentDomain, ha
                   );
                 })()}
               </div>
+                </div>
+              )}
+
+              {/* Locations Submenu View - hidden if no locations */}
+              {mobileSubmenuView === 'locations' && hasLocations && (
+                <div className="flex flex-col items-start w-full">
+                  {/* Back button with title */}
+                  <div className="flex items-center gap-4 py-4 px-4 w-full border-b" style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}>
+                    <button
+                      onClick={() => setMobileSubmenuView('main')}
+                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 1L3.50114 6L8.5 11"
+                          stroke="white"
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <h2 className="text-[#001A96] font-gilroy text-base font-medium leading-[140%]">
+                      Locations
+                    </h2>
+                  </div>
+
+                  {/* Locations list */}
+                  <div className="w-full">
+                    {[...locations]
+                      .slice()
+                      .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
+                      .map((loc) => (
+                      loc.externalRedirectEnabled && loc.externalRedirectUrl ? (
+                        <ExternalLink
+                          key={`${loc.location}-external`}
+                          href={loc.externalRedirectUrl}
+                          onClick={() => setIsOpen(false)}
+                          className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                          style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                        >
+                          <span>{loc.location || loc.title}</span>
+                        </ExternalLink>
+                      ) : loc?.slug?.current ? (
+                        <Link
+                          key={loc.slug.current}
+                          href={generateLocationLink(loc.slug.current)}
+                          onClick={() => setIsOpen(false)}
+                          className="flex py-4 px-4 justify-between items-center text-[#171D23] font-gilroy text-base leading-[140%] border-b hover:bg-gray-50"
+                          style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
+                        >
+                          <span>{loc.location || loc.title}</span>
+                        </Link>
+                      ) : null
+                    ))}
+                  </div>
                 </div>
               )}
 

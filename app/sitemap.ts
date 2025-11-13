@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { cloneId }
     ) : { homepageOnly: false, subjectOnly: false, curriculumOnly: false };
 
-    // Fetch subject and curriculum page slugs from Sanity
+    // Fetch subject, curriculum, and location page slugs from Sanity
     // For clones that are not homepageOnly, include clone-specific OR baseline/global pages
     const subjectQuery = isClone ? `*[_type == "subjectPage" && ${flags.homepageOnly || flags.curriculumOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
       cloneReference->cloneId.current == $cloneId || 
@@ -67,10 +67,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       _updatedAt,
       _id
     }`;
+    const locationQuery = isClone ? `*[_type == "locationPage" && ${flags.homepageOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
+      "slug": slug.current,
+      _updatedAt,
+      _id
+    }` : `*[_type == "locationPage" && isActive == true && defined(slug.current) && slug.current != "gcse1" && !defined(cloneReference)] | order(slug.current asc) {
+      "slug": slug.current,
+      _updatedAt,
+      _id
+    }`;
     
-    const [subjectPages, curriculumPages] = await Promise.all([
+    const [subjectPages, curriculumPages, locationPages] = await Promise.all([
       client.fetch(subjectQuery, { cloneId }),
-      client.fetch(curriculumQuery, { cloneId })
+      client.fetch(curriculumQuery, { cloneId }),
+      client.fetch(locationQuery, { cloneId })
     ]);
 
     // Start with homepage
@@ -84,7 +94,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
     // Combine all pages and remove duplicates by slug
-    const allPages = [...subjectPages, ...curriculumPages];
+    const allPages = [...subjectPages, ...curriculumPages, ...locationPages];
     const uniquePages = new Map();
     
     // Keep only the latest version of each slug
@@ -105,7 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     });
 
-    console.log(`Generated sitemap for ${baseUrl} with ${pages.length} pages (${subjectPages.length} subjects, ${curriculumPages.length} curricula, ${uniquePages.size} unique pages after deduplication)`);
+    console.log(`Generated sitemap for ${baseUrl} with ${pages.length} pages (${subjectPages.length} subjects, ${curriculumPages.length} curricula, ${locationPages.length} locations, ${uniquePages.size} unique pages after deduplication)`);
     
     return pages;
   } catch (error) {

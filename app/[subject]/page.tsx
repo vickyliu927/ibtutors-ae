@@ -34,18 +34,21 @@ export async function generateStaticParams() {
     // Only include defined string slugs to avoid build-time errors
     const subjectQuery = `*[_type == "subjectPage" && defined(slug.current)].slug.current`;
     const curriculumQuery = `*[_type == "curriculumPage" && defined(slug.current)].slug.current`;
+    const locationQuery = `*[_type == "locationPage" && defined(slug.current)].slug.current`;
 
-    const [subjectSlugsRaw, curriculumSlugsRaw] = await Promise.all([
+    const [subjectSlugsRaw, curriculumSlugsRaw, locationSlugsRaw] = await Promise.all([
       client.fetch<any[]>(subjectQuery),
       client.fetch<any[]>(curriculumQuery),
+      client.fetch<any[]>(locationQuery),
     ]);
 
     const isString = (v: any): v is string => typeof v === 'string' && v.trim().length > 0;
     const subjectSlugs = (subjectSlugsRaw || []).filter(isString);
     const curriculumSlugs = (curriculumSlugsRaw || []).filter(isString);
+    const locationSlugs = (locationSlugsRaw || []).filter(isString);
 
     // Filter out any slugs that contain '/' because `[subject]` is a single-segment route.
-    const allSlugs = [...subjectSlugs, ...curriculumSlugs].filter((s) => !s.includes('/'));
+    const allSlugs = [...subjectSlugs, ...curriculumSlugs, ...locationSlugs].filter((s) => !s.includes('/'));
     return allSlugs.map((slug) => ({ subject: slug }));
   } catch (e) {
     // On any failure, return no pre-rendered paths (dynamic at runtime)
@@ -136,6 +139,50 @@ interface CurriculumPageData {
     pageTitle: string;
     description: string;
   };
+  showAdvertBlockAfterTutors?: boolean;
+  showTrustedInstitutionsAfterTutors?: boolean;
+  showPlatformBannerAfterTutors?: boolean;
+}
+
+interface LocationPageData {
+  location: string;
+  title: string;
+  firstSection: {
+    title: string;
+    highlightedWords?: string[];
+    description: string;
+  };
+  tutorsListSectionHead?: {
+    trustedByText?: string;
+    smallTextBeforeTitle?: string;
+    sectionTitle?: string;
+    description?: string;
+    ctaRichText?: any[];
+    ctaLinkText?: string;
+    ctaLink?: string;
+    tutorProfileSectionPriceDescription?: string;
+    tutorProfileSectionPriceTag?: string;
+  };
+  tutorsList: any[];
+  testimonials: any[];
+  faqSection?: {
+    _id: string;
+    title: string;
+    subtitle?: string;
+    faqReferences: {
+      _id: string;
+      question: string;
+      answer: any;
+      displayOrder: number;
+    }[];
+  };
+  seo: {
+    pageTitle: string;
+    description: string;
+  };
+  externalRedirectEnabled?: boolean;
+  externalRedirectUrl?: string;
+  externalRedirectPermanent?: boolean;
   showAdvertBlockAfterTutors?: boolean;
   showTrustedInstitutionsAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
@@ -785,6 +832,161 @@ async function getSubjectPageDataWithCloneContext(
   }
 }
 
+/**
+ * Enhanced clone-aware location page data fetcher
+ */
+async function getLocationPageDataWithCloneContext(
+  slug: string,
+  cloneId: string | null = null
+): Promise<{ pageData: LocationPageData | null; testimonialSection: any | null; navbarData: any | null; type: string | null }> {
+  try {
+    console.log(`[LocationPage] Fetching data for slug: ${slug}, clone: ${cloneId || 'none'}`);
+    
+    // Strict resolution: clones require clone-specific doc; global requires default doc.
+    const query = cloneId
+      ? `{
+          "page": *[_type == "locationPage" && slug.current == $slug && cloneReference->cloneId.current == $cloneId && isActive == true][0]{
+            title,
+            location,
+            slug,
+            externalRedirectEnabled,
+            externalRedirectUrl,
+            externalRedirectPermanent,
+            firstSection,
+            tutorsListSectionHead{
+              trustedByText,
+              smallTextBeforeTitle,
+              sectionTitle,
+              description,
+              ctaRichText,
+              ctaLinkText,
+              ctaLink,
+              tutorProfileSectionPriceDescription,
+              tutorProfileSectionPriceTag
+            },
+            showTrustedInstitutionsAfterTutors,
+            showAdvertBlockAfterTutors,
+            showPlatformBannerAfterTutors,
+            tutorsList[] -> {
+              _id,
+              name,
+              slug,
+              profilePhoto,
+              professionalTitle,
+              experience,
+              specialization,
+              hireButtonLink,
+              price,
+              rating,
+              reviewCount,
+              activeStudents,
+              totalLessons,
+              languagesSpoken,
+              profilePDF
+            },
+            testimonials[] -> {
+              _id,
+              reviewerName,
+              reviewerType,
+              testimonialText,
+              rating,
+              order
+            },
+            faqSection -> {
+              title,
+              subtitle,
+              faqReferences[] -> {
+                _id,
+                question,
+                answer
+              }
+            },
+            seo
+          },
+          "testimonialSection": *[_type == "testimonialSection"][0]
+        }`
+      : `{
+          "page": *[_type == "locationPage" && slug.current == $slug && !defined(cloneReference) && isActive == true][0]{
+            title,
+            location,
+            slug,
+            externalRedirectEnabled,
+            externalRedirectUrl,
+            externalRedirectPermanent,
+            firstSection,
+            tutorsListSectionHead{
+              trustedByText,
+              smallTextBeforeTitle,
+              sectionTitle,
+              description,
+              ctaRichText,
+              ctaLinkText,
+              ctaLink,
+              tutorProfileSectionPriceDescription,
+              tutorProfileSectionPriceTag
+            },
+            showTrustedInstitutionsAfterTutors,
+            showAdvertBlockAfterTutors,
+            showPlatformBannerAfterTutors,
+            tutorsList[] -> {
+              _id,
+              name,
+              slug,
+              profilePhoto,
+              professionalTitle,
+              experience,
+              specialization,
+              hireButtonLink,
+              price,
+              rating,
+              reviewCount,
+              activeStudents,
+              totalLessons,
+              languagesSpoken,
+              profilePDF
+            },
+            testimonials[] -> {
+              _id,
+              reviewerName,
+              reviewerType,
+              testimonialText,
+              rating,
+              order
+            },
+            faqSection -> {
+              title,
+              subtitle,
+              faqReferences[] -> {
+                _id,
+                question,
+                answer
+              }
+            },
+            seo
+          },
+          "testimonialSection": *[_type == "testimonialSection"][0]
+        }`;
+
+    const [result, navbarResult] = await Promise.all([
+      client.fetch(query, { slug, cloneId: cloneId || 'none' }, { next: { revalidate: 300 } }),
+      navbarQueries.fetch(cloneId || 'global')
+    ]);
+    
+    const pageData: LocationPageData | null = result?.page || null;
+    
+    if (!pageData) {
+      console.log(`[LocationPage] No location page found for slug: ${slug}, clone: ${cloneId || 'none'}`);
+      return { pageData: null, testimonialSection: null, navbarData: null, type: null };
+    }
+    
+    console.log(`[LocationPage] Successfully fetched location page data for: ${slug}`);
+    return { pageData, testimonialSection: result.testimonialSection, navbarData: navbarResult?.data || null, type: 'location' };
+  } catch (error) {
+    console.error(`[LocationPage] Error fetching location page for ${slug}:`, error);
+    return { pageData: null, testimonialSection: null, navbarData: null, type: null };
+  }
+}
+
 export async function generateMetadata({ params }: { params: { subject: string } }): Promise<Metadata> {
   // Get clone-aware SEO data that will automatically detect clone from middleware headers
   const cloneSeoData = await getSeoData();
@@ -832,9 +1034,25 @@ export async function generateMetadata({ params }: { params: { subject: string }
   const { pageData } = await getSubjectPageDataWithCloneContext(params.subject, cloneId);
 
   if (!pageData) {
+    // Try location page as a sibling level
+    const cloneId = await getCloneIdForCurrentDomain();
+    const locationResult = await getLocationPageDataWithCloneContext(params.subject, cloneId);
+    if (!locationResult.pageData) {
+      return {
+        title: 'Page Not Found',
+        description: 'The requested page could not be found.',
+      };
+    }
+    const locationName = locationResult.pageData.location || locationResult.pageData.title || '';
+    const dynamicTitle = [
+      locationName ? `${locationName} Tutors` : '',
+      brandFromSeo,
+    ].filter(Boolean).join(' | ');
+    const dynamicDescription = `${locationName ? `Expert ${locationName} tutoring.` : 'Expert tutoring.'} Online or in-person. Book a free call.`;
     return {
-      title: 'Page Not Found',
-      description: 'The requested page could not be found.',
+      title: locationResult.pageData.seo?.pageTitle || dynamicTitle || `${locationResult.pageData.title} | ${brandFromSeo}`,
+      description: locationResult.pageData.seo?.description || dynamicDescription || cloneSeoData.description || 'Find expert tutors in your location.',
+      alternates: { canonical: canonicalPath },
     };
   }
 
@@ -1187,6 +1405,138 @@ export default async function DynamicPage({
                 '@context': 'https://schema.org',
                 '@type': 'FAQPage',
                 mainEntity: subjectResult.pageData.faqSection.faqReferences.map((faq: any) => ({
+                  '@type': 'Question',
+                  name: faq.question,
+                  acceptedAnswer: { 
+                    '@type': 'Answer', 
+                    text: Array.isArray(faq.answer)
+                      ? faq.answer.map((block: any) => {
+                          if (block?._type === 'block' && Array.isArray(block.children)) {
+                            return block.children.map((c: any) => c.text).join('');
+                          }
+                          return '';
+                        }).join('\n')
+                      : faq.answer 
+                  },
+                })),
+              }),
+            }}
+          />
+        )}
+
+        <ContactForm />
+      </main>
+    );
+  }
+
+  // If not a subject page, try a location page at the same level
+  const locationResult = await getLocationPageDataWithCloneContext(
+    params.subject,
+    cloneContext.cloneId
+  );
+  if (locationResult.pageData) {
+    // Check for external redirect override
+    if (locationResult.pageData.externalRedirectEnabled && locationResult.pageData.externalRedirectUrl) {
+      const targetUrl = locationResult.pageData.externalRedirectUrl;
+      if (locationResult.pageData.externalRedirectPermanent) {
+        permanentRedirect(targetUrl);
+      } else {
+        redirect(targetUrl);
+      }
+    }
+    return (
+      <main>
+        {/* BreadcrumbList JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
+                { '@type': 'ListItem', position: 2, name: 'Locations', item: '/locations' },
+                { '@type': 'ListItem', position: 3, name: locationResult.pageData.location || locationResult.pageData.title, item: `/${params.subject}` },
+              ],
+            }),
+          }}
+        />
+        {/* Enhanced Clone Debug Panel - Development Only */}
+        <CloneIndicatorBanner {...cloneIndicatorProps} />
+        
+        {/* Reuse Subject Hero Section with optional hero data (may be null) */}
+        <SubjectHeroSection 
+          subjectSlug={params.subject} 
+          heroData={null}
+          key={`hero-${cloneContext.cloneId}-${params.subject}-location`}
+        />
+
+        {/* Tutors Section */}
+        <TutorProfiles 
+          tutors={locationResult.pageData.tutorsList} 
+          useNewCardDesign={true}
+          trustedByText={locationResult.pageData.tutorsListSectionHead?.trustedByText ?? globalTrustedByText}
+          sectionTitle={locationResult.pageData.tutorsListSectionHead?.sectionTitle}
+          description={locationResult.pageData.tutorsListSectionHead?.description}
+          ctaRichText={locationResult.pageData.tutorsListSectionHead?.ctaRichText}
+          ctaText={locationResult.pageData.tutorsListSectionHead?.ctaLinkText}
+          ctaLink={locationResult.pageData.tutorsListSectionHead?.ctaLink}
+          tutorProfileSectionPriceDescription={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
+          tutorProfileSectionPriceTag={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
+        />
+
+        {/* Trusted Institutions Banner (before Advert Block) */}
+        {locationResult.pageData.showTrustedInstitutionsAfterTutors &&
+         trustedInstitutionsBanner?.enabled !== false &&
+         Array.isArray(trustedInstitutionsBanner?.institutions) &&
+         trustedInstitutionsBanner.institutions.length > 0 ? (
+          <TrustedInstitutionsBanner
+            title={trustedInstitutionsBanner.title}
+            subtitle={trustedInstitutionsBanner.subtitle}
+            institutions={trustedInstitutionsBanner.institutions}
+            backgroundColor={trustedInstitutionsBanner.backgroundColor}
+            carouselSpeed={trustedInstitutionsBanner.carouselSpeed}
+          />
+        ) : null}
+
+        {/* Advert Block and Platform Banner (in that order) after Tutor Profiles */}
+        {locationResult.pageData.showAdvertBlockAfterTutors && advertBlockSection?.enabled !== false ? (
+          <AdvertBlock sectionData={advertBlockSection} />
+        ) : null}
+        {locationResult.pageData.showPlatformBannerAfterTutors ? (
+          <TutoringPlatformBanner data={platformBanner as PlatformBannerData} />
+        ) : null}
+
+        {/* Testimonials Section */}
+        {locationResult.pageData.testimonials && locationResult.testimonialSection && (
+          <TestimonialSection 
+            sectionData={locationResult.testimonialSection} 
+            testimonials={locationResult.pageData.testimonials} 
+          />
+        )}
+
+        {/* FAQ Section - Optional */}
+        {locationResult.pageData.faqSection &&
+         locationResult.pageData.faqSection.faqReferences &&
+         locationResult.pageData.faqSection.faqReferences.length > 0 && (
+          <FAQSection
+            sectionData={{
+              title: locationResult.pageData.faqSection.title,
+              subtitle: locationResult.pageData.faqSection.subtitle,
+            }}
+            faqs={locationResult.pageData.faqSection.faqReferences}
+          />
+        )}
+
+        {/* FAQPage JSON-LD */}
+        {locationResult.pageData.faqSection && locationResult.pageData.faqSection.faqReferences && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: locationResult.pageData.faqSection.faqReferences.map((faq: any) => ({
                   '@type': 'Question',
                   name: faq.question,
                   acceptedAnswer: { 
