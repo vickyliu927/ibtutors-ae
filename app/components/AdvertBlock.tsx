@@ -24,10 +24,53 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
   const title = sectionData?.title || "Voted #1 for IB";
   const subtitle = sectionData?.subtitle || "by 10,000+ students";
   const description = sectionData?.description || "We're trusted by hundreds of IB schools globally. All tutoring includes FREE access to our";
-  const highlightText = sectionData?.highlightText || "IB Resources Platform";
+  const highlightText = (sectionData?.highlightText || '').trim();
   const highlightLink = sectionData?.highlightLink;
-  const pricingText = sectionData?.pricingText || "- normally £29/month!";
+  const pricingText = (sectionData?.pricingText || '').trim();
   const backgroundColor = sectionData?.backgroundColor || "#001A96";
+  
+  // Render description with highlighted platform name underlined (and linked if URL provided)
+  const renderDescriptionWithHighlight = (text: string, toHighlight?: string, href?: string) => {
+    const content = text || '';
+    const target = (toHighlight || '').trim();
+    if (!content || !target) {
+      return content;
+    }
+    // Escape regex special chars in the highlight text
+    const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(escapeRegExp(target), 'g');
+    const parts = content.split(pattern);
+    // If no match, return original content
+    if (parts.length === 1) {
+      return content;
+    }
+    const nodes: React.ReactNode[] = [];
+    for (let i = 0; i < parts.length; i++) {
+      nodes.push(parts[i]);
+      if (i < parts.length - 1) {
+        const highlightedNode = href ? (
+          <a
+            key={`hl-${i}`}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-white decoration-2 underline-offset-4"
+          >
+            {target}
+          </a>
+        ) : (
+          <span
+            key={`hl-${i}`}
+            className="underline decoration-white decoration-2 underline-offset-4"
+          >
+            {target}
+          </span>
+        );
+        nodes.push(highlightedNode);
+      }
+    }
+    return nodes;
+  };
   return (
     <section className={`relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 ${className}`}>
       {/* Container with 20% narrower width (960px instead of 1200px) */}
@@ -196,15 +239,8 @@ const AdvertBlock: React.FC<AdvertBlockProps> = ({
             {/* Description with highlighted text */}
             <div className="max-w-3xl mx-auto">
               <p className="font-gilroy text-base sm:text-lg lg:text-xl leading-relaxed" style={{ fontWeight: 300 }}>
-                {description}{' '}
-                {highlightLink ? (
-                  <a href={highlightLink} target="_blank" rel="noopener noreferrer" className="underline decoration-white decoration-2 underline-offset-4">
-                    {highlightText}
-                  </a>
-                ) : (
-                  <span className="underline decoration-white decoration-2 underline-offset-4">{highlightText}</span>
-                )}
-                {' '}{pricingText}
+                {renderDescriptionWithHighlight(description || '', highlightText, highlightLink)}
+                {pricingText ? <> {pricingText}</> : null}
               </p>
             </div>
           </div>
