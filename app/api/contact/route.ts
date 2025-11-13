@@ -173,8 +173,8 @@ export async function POST(req: Request) {
 
     // Send email notification with encoded HTML entities
     // Only append site name if it's known; avoid "- Unknown Website" suffix
-    const subjectSuffix = sourceWebsite && sourceWebsite !== 'Unknown Website' ? ` - ${sourceWebsite}` : '';
-    const subject = `New Contact Form Submission${subject-suffix}`;
+    const subjectLenient = sourceWebsite && sourceWebsite !== 'Unknown Website' ? ` - ${sourceWebsite}` : '';
+    const subject = `New Contact Form Submission${subjectLenient}`;
     const text = `New contact form submission from ${sourceWebsite}:
 
 Name: ${encodeHTML(fullName)}
