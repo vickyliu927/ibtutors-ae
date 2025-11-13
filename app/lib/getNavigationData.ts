@@ -451,10 +451,6 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logoAlt,
       logoLink,
       navigation{
-        levelsText,
-        subjectsText,
-        allLevelsPageLink,
-        allSubjectsPageLink,
         navOrder[]{
           itemType,
           curriculumTarget->{
@@ -499,10 +495,6 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logoAlt,
       logoLink,
       navigation{
-        levelsText,
-        subjectsText,
-        allLevelsPageLink,
-        allSubjectsPageLink,
         navOrder[]{
           itemType,
           curriculumTarget->{
@@ -543,10 +535,6 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logoAlt,
       logoLink,
       navigation{
-        levelsText,
-        subjectsText,
-        allLevelsPageLink,
-        allSubjectsPageLink,
         subjectsMenuGroups[]{
           title,
           linkTarget->{
@@ -579,10 +567,6 @@ async function fetchNavbarWithFallback(cloneId: string | null): Promise<any> {
       logoAlt,
       logoLink,
       navigation{
-        levelsText,
-        subjectsText,
-        allLevelsPageLink,
-        allSubjectsPageLink,
         navOrder[]{
           itemType,
           curriculumTarget->{

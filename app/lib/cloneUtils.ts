@@ -272,10 +272,7 @@ export interface NavbarContent {
   logo: any;
   logoLink: string;
   navigation: {
-    levelsText: string;
-    subjectsText: string;
-    allLevelsPageLink?: string;
-    allSubjectsPageLink?: string;
+    // subjectsMenuGroups and other nav structures (labels are hardcoded in UI)
   };
   mobileMenu?: {
     closeButtonColor?: string;

@@ -52,10 +52,6 @@ interface NavbarData {
   logo: any;
   logoLink: string;
   navigation: {
-    levelsText: string;
-    subjectsText: string;
-    allLevelsPageLink?: string;
-    allSubjectsPageLink?: string;
     subjectsMenuGroups?: {
       title: string;
       linkTarget?: {
@@ -407,7 +403,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
               style={{ order: getDesktopOrder('allSubjects') }}
             >
               <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
-                {navbarData?.navigation?.subjectsText || 'All Subjects'}
+                All Subjects
                 <svg
                   width="12"
                   height="12"
@@ -764,9 +760,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
                         className="flex w-full py-4 px-4 justify-between items-center border-b bg-white"
                         style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                       >
-                        <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
-                          {navbarData?.navigation?.subjectsText || 'All Subjects'}
-                        </span>
+                        <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">All Subjects</span>
                         <svg
                           width="12"
                           height="12"

@@ -26,34 +26,6 @@ const navbarSettingsSchema = defineType({
       title: 'Navigation Labels',
           type: 'object',
           fields: [
-            {
-          name: 'levelsText',
-          title: 'Levels Dropdown Text',
-              type: 'string',
-          description: 'Text for the levels dropdown (e.g., "All Levels")',
-              validation: Rule => Rule.required(),
-            },
-            {
-          name: 'subjectsText',
-          title: 'Subjects Dropdown Text',
-              type: 'string',
-          description: 'Text for the subjects dropdown (e.g., "All Subjects")',
-              validation: Rule => Rule.required(),
-            },
-            {
-              name: 'allLevelsPageLink',
-              title: 'All Levels Page Link',
-              type: 'string',
-              description: 'URL for the "All Levels" overview page',
-              initialValue: '/levels',
-            },
-            {
-              name: 'allSubjectsPageLink', 
-              title: 'All Subjects Page Link',
-              type: 'string',
-              description: 'URL for the "All Subjects" overview page',
-              initialValue: '/subjects',
-            },
             defineField({
               name: 'subjectsMenuGroups',
               title: 'Subjects Menu Groups',
