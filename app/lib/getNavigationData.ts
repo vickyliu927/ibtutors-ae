@@ -365,11 +365,11 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
 }
 
 /**
- * Fetch locations with 3-tier fallback
+ * Fetch locations with 3-tier fallback (cloneSpecific → baseline → default)
  */
 async function fetchLocationsWithFallback(cloneId: string | null): Promise<NavigationLocationData[]> {
+  // Global site (no clone): fetch default locations
   if (!cloneId) {
-    // Global site: only default docs (no clone fallback)
     const query = `*[_type == "locationPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
       title,
       location,
@@ -383,7 +383,7 @@ async function fetchLocationsWithFallback(cloneId: string | null): Promise<Navig
     return result;
   }
 
-  // Clone site: only clone-specific docs (no baseline/default fallback)
+  // Respect clone flags
   const flags = await client.fetch(
     `*[_type == "clone" && cloneId.current == $cloneId][0]{
       "homepageOnly": homepageOnly == true
@@ -396,22 +396,45 @@ async function fetchLocationsWithFallback(cloneId: string | null): Promise<Navig
     return [];
   }
 
-  const query = `*[_type == "locationPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
-    title,
-    location,
-    slug,
-    displayOrder,
-    externalRedirectEnabled,
-    externalRedirectUrl
+  const query = `{
+    "cloneSpecific": *[_type == "locationPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
+      title, location, slug, displayOrder, externalRedirectEnabled, externalRedirectUrl
+    },
+    "baseline": *[_type == "locationPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
+      title, location, slug, displayOrder, externalRedirectEnabled, externalRedirectUrl
+    },
+    "default": *[_type == "locationPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
+      title, location, slug, displayOrder, externalRedirectEnabled, externalRedirectUrl
+    }
   }`;
 
   try {
-    const result = await client.fetch<NavigationLocationData[]>(query, { cloneId }, { next: { revalidate: 300 } });
-    console.log(`[NavigationData] Fetched ${result.length} clone-specific location pages for clone: ${cloneId}`);
-    return result;
+    const result = await client.fetch(query, { cloneId }, { next: { revalidate: 300 } });
+    let locations: NavigationLocationData[] = [];
+    let source = 'none';
+
+    if (Array.isArray(result.cloneSpecific) && result.cloneSpecific.length > 0) {
+      locations = result.cloneSpecific;
+      source = 'cloneSpecific';
+    } else if (Array.isArray(result.baseline) && result.baseline.length > 0) {
+      locations = result.baseline;
+      source = 'baseline';
+    } else if (Array.isArray(result.default) && result.default.length > 0) {
+      locations = result.default;
+      source = 'default';
+    }
+
+    console.log(`[NavigationData] Fetched ${locations.length} location pages from ${source} for clone: ${cloneId}`);
+    return locations;
   } catch (error) {
     console.error(`[NavigationData] Error fetching locations for clone ${cloneId}:`, error);
-    return [];
+    // fallback to default (safe)
+    const fallbackQuery = `*[_type == "locationPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
+      title, location, slug, displayOrder
+    }`;
+    const fallback = await client.fetch<NavigationLocationData[]>(fallbackQuery, {}, { next: { revalidate: 300 } });
+    console.log(`[NavigationData] Using fallback: ${fallback.length} default location pages`);
+    return fallback;
   }
 }
 

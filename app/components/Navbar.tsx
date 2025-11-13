@@ -509,7 +509,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
               style={{ order: getDesktopOrder('locations') }}
             >
               <button className="flex items-center gap-[8px] text-[#171D23] text-[16px] font-medium leading-[140%] font-gilroy">
-                Locations
+                All Locations
                 <svg
                   width="12"
                   height="12"
@@ -794,7 +794,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
                         style={{ borderColor: navbarData?.mobileMenu?.borderColor || '#F7F7FC' }}
                       >
                         <span className="text-[#171D23] font-gilroy text-base font-normal leading-[140%]">
-                          Locations
+                          All Locations
                         </span>
                         <svg
                           width="12"
@@ -1051,7 +1051,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
                       </svg>
                     </button>
                     <h2 className="text-[#001A96] font-gilroy text-base font-medium leading-[140%]">
-                      Locations
+                      All Locations
                     </h2>
                   </div>
 

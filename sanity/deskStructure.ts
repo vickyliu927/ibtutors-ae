@@ -223,6 +223,27 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                             ])
                         ),
 
+                      // Location Pages Content Group
+                      S.listItem()
+                        .title('Location Pages Content')
+                        .icon(BsBook)
+                        .child(
+                          S.list()
+            .title(`${cloneName} - Location Page Sections`)
+                            .items([
+                              S.documentTypeListItem('locationPage')
+                                .title('Location Page Settings')
+                                .child(
+                                  S.documentList()
+                  .title(`${cloneName} - Location Page Settings`)
+                  .filter(isGlobalClone 
+                    ? '_type == "locationPage" && !defined(cloneReference)'
+                    : `_type == "locationPage" && cloneReference._ref == "${cloneId}"`
+                  )
+                                ),
+                            ])
+                        ),
+
                       // Curriculum Pages Content Group
                       S.listItem()
                         .title('Curriculum Pages Content')
@@ -517,6 +538,20 @@ export const structure = (S: StructureBuilder) =>
                     ])
                 ),
 
+              // Location Pages Content Group
+              S.listItem()
+                .title('Location Pages Content')
+                .icon(BsBook)
+                .child(
+                  S.list()
+                    .title('Location Page Sections')
+                    .items([
+                      S.documentTypeListItem('locationPage')
+                        .title('Location Page Settings')
+                        .icon(BsBook),
+                    ])
+                ),
+
               // Curriculum Pages Content Group
               S.listItem()
                 .title('Curriculum Pages Content')
@@ -638,6 +673,7 @@ export const structure = (S: StructureBuilder) =>
             'subjectHeroSection',
             'curriculumPage',
             'curriculumHeroSection',
+            'locationPage',
             'seoSettings',
             'navbarSettings',
             'linkSettings',
