@@ -645,13 +645,15 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
           )}
         </div>
 
-        {/* CTA Button */}
-        <Link
-          href={navbarData?.buttonLink || "#contact-form"}
-          className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-        >
-          {navbarData?.buttonText || 'Hire a tutor'}
-        </Link>
+        {/* CTA Button - shown only if a link is provided */}
+        {navbarData?.buttonLink && (
+          <Link
+            href={navbarData.buttonLink}
+            className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
+          >
+            {navbarData?.buttonText || 'Hire a tutor'}
+          </Link>
+        )}
 
         {/* Mobile Menu Button */}
         <button
@@ -1082,15 +1084,17 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
               )}
 
               {/* Hire a tutor Button */}
-              <div className="flex w-full flex-col justify-center items-start gap-3">
-                <Link
-                  href={navbarData?.buttonLink || "#contact-form"}
-                  onClick={() => setIsOpen(false)}
-                  className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
-                >
-                  {navbarData?.buttonText || 'Hire a tutor'}
-                </Link>
-              </div>
+              {navbarData?.buttonLink && (
+                <div className="flex w-full flex-col justify-center items-start gap-3">
+                  <Link
+                    href={navbarData.buttonLink}
+                    onClick={() => setIsOpen(false)}
+                    className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
+                  >
+                    {navbarData?.buttonText || 'Hire a tutor'}
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}

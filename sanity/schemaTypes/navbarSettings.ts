@@ -181,9 +181,9 @@ const navbarSettingsSchema = defineType({
       name: 'buttonLink',
       title: 'CTA Button Link',
               type: 'string',
-              validation: Rule => Rule.required(),
-      description: 'URL the CTA button should link to',
-      initialValue: '#contact-form',
+      // Optional: when empty, CTA button will be hidden in the navbar
+      description: 'Optional URL for the CTA button. Leave empty to hide the button.',
+      initialValue: undefined,
     }),
 
           ],

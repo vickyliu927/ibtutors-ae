@@ -280,7 +280,7 @@ export interface NavbarContent {
     borderColor?: string;
   };
   buttonText: string;
-  buttonLink: string;
+  buttonLink?: string;
   cloneSpecificData?: any;
 }
 
