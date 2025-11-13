@@ -939,7 +939,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
                       </svg>
                     </button>
                     <h2 className="text-[#001A96] font-gilroy text-base font-medium leading-[140%]">
-                      {navbarData?.navigation?.subjectsText || 'All Subjects'}
+                      All Subjects
                     </h2>
                   </div>
                   
