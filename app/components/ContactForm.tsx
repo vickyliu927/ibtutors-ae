@@ -103,7 +103,10 @@ const ContactForm = () => {
         phone: DOMPurify.sanitize(formData.phone.trim()),
         email: DOMPurify.sanitize(formData.email.trim()),
         details: DOMPurify.sanitize(formData.details.trim()),
-        budget: DOMPurify.sanitize(formData.budget.trim())
+        budget: DOMPurify.sanitize(formData.budget.trim()),
+        // Include page slug/path and full URL for server-side storage and emails
+        sourcePath: typeof window !== 'undefined' ? DOMPurify.sanitize(window.location.pathname) : '',
+        sourceUrl: typeof window !== 'undefined' ? DOMPurify.sanitize(window.location.href) : ''
       };
 
       console.log('Submitting contact form with data:', sanitizedData);

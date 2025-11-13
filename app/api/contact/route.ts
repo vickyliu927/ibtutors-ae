@@ -11,6 +11,9 @@ const ContactFormSchema = z.object({
   email: z.string().email("Invalid email format"),
   details: z.string().min(10, "Please provide more details").max(1000, "Details are too long"),
   budget: z.string().min(1, "Budget is required"),
+  // Optional client-provided context
+  sourcePath: z.string().optional(),
+  sourceUrl: z.string().url().optional(),
 });
 
 // Helper function to determine website name from domain
@@ -96,10 +99,28 @@ export async function POST(req: Request) {
     console.log('Form data received:', formData);
     
     // Extract domain information from request headers
-    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const referer = req.headers.get('referer') || '';
+    const origin = req.headers.get('origin') || referer || '';
     const sourceDomain = origin.replace(/^https?:\/\//, '').split('/')[0];
     const sourceWebsite = getWebsiteName(sourceDomain);
     console.log('Source domain:', sourceDomain, 'Website:', sourceWebsite);
+    // Derive path and full URL from referer as a fallback
+    let sourcePath = '/';
+    let sourceUrl = '';
+    try {
+      if (referer) {
+        const refUrl = new URL(referer);
+        sourcePath = refUrl.pathname || '/';
+        sourceUrl = refUrl.href;
+      } else if (origin) {
+        const o = new URL(origin.startsWith('http') ? origin : `https://${origin}`);
+        sourcePath = '/';
+        sourceUrl = o.href;
+      }
+    } catch {
+      sourcePath = '/';
+      sourceUrl = origin || '';
+    }
     
     // If origin header exists but is not allowlisted, skip sending emails
     const originIsAllowed = !origin || allowedOrigins.some((o) => origin.startsWith(o));
@@ -120,7 +141,19 @@ export async function POST(req: Request) {
     }
     
     // Use validated data
-    const { fullName, country, phone, email, details, budget } = result.data;
+    const { fullName, country, phone, email, details, budget, sourcePath: clientSourcePath, sourceUrl: clientSourceUrl } = result.data;
+    // Prefer client-provided path/url when available
+    if (typeof clientSourcePath === 'string' && clientSourcePath.trim()) {
+      sourcePath = clientSourcePath;
+    }
+    if (typeof clientSourceUrl === 'string' && clientSourceUrl.trim()) {
+      try {
+        const u = new URL(clientSourceUrl);
+        sourceUrl = u.href;
+      } catch {
+        // ignore invalid client-provided URL
+      }
+    }
 
     // Store the submission in Sanity
     const submission = await client.create({
@@ -134,6 +167,8 @@ export async function POST(req: Request) {
       submittedAt: new Date().toISOString(),
       sourceDomain,
       sourceWebsite,
+      sourcePath,
+      sourceUrl,
     });
 
     // Send email notification with encoded HTML entities
@@ -148,7 +183,9 @@ Details: ${encodeHTML(details)}
 Budget: ${encodeHTML(budget)}
 
 Source Website: ${encodeHTML(sourceWebsite)}
-Source Domain: ${encodeHTML(sourceDomain)}`;
+Source Domain: ${encodeHTML(sourceDomain)}
+Source Path: ${encodeHTML(sourcePath)}
+Source URL: ${encodeHTML(sourceUrl)}`;
 
     let emailData: unknown = null;
     if (emailSendingEnabled && originIsAllowed) {
