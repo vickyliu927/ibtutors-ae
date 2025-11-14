@@ -154,6 +154,13 @@ const tutorSchema = defineType({
               'GCSE French',
               'GCSE Spanish',
               'GCSE German',
+              // O-Level Subjects
+              'O-Level',
+              'O-Level Maths',
+              'O-Level English',
+              'O-Level Biology',
+              'O-Level Chemistry',
+              'O-Level Physics',
               // AP Subjects
               'AP',
               'AP Calculus AB/BC',
@@ -368,6 +375,13 @@ const tutorSchema = defineType({
               'GCSE French',
               'GCSE Spanish',
               'GCSE German',
+              // O-Level Subjects
+              'O-Level',
+              'O-Level Maths',
+              'O-Level English',
+              'O-Level Biology',
+              'O-Level Chemistry',
+              'O-Level Physics',
               // AP Subjects
               'AP',
               'AP Calculus AB/BC',
