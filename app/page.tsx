@@ -34,6 +34,8 @@ import {
 import { getHomepageContentForCurrentDomain } from "./lib/cloneContentManager";
 import { cloneQueryUtils, homepageQueries } from "./lib/cloneQueries";
 import CloneIndicatorBanner from "./components/CloneIndicatorBanner";
+import { notFound } from "next/navigation";
+import { shouldRenderHomepage } from "./lib/homepageStrict";
 
 /**
  * Multi-Domain Data Fetching Strategy
@@ -93,6 +95,12 @@ async function getHomepageDataWithCloneContext(
         const content = cloneId
           ? await homepageQueries.fetchAll(cloneId)
           : await getHomepageContentForCurrentDomain();
+
+        // Strict requirement: for clone requests, homepage must be clone-specific (no fallbacks)
+        if (!shouldRenderHomepage(cloneId, content)) {
+          // Return null so caller can trigger 404
+          return null;
+        }
 
         // Extract data from ContentResult objects and apply customizations
         const heroData = content.hero.data
@@ -206,6 +214,11 @@ export default async function Home({
   // Get enhanced clone-aware data
   const { pageData, cloneData, cloneContext, debugInfo } =
     await getHomepageDataWithCloneContext(urlSearchParams);
+
+  // If this is a clone request and no clone-specific homepage content, 404
+  if (cloneContext.cloneId && !pageData) {
+    return notFound();
+  }
 
   // Extract homepage data with fallback
   const {

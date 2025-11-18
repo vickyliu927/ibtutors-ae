@@ -405,7 +405,7 @@ async function getCurriculumPageDataWithCloneContext(
       navbarQueries.fetch(cloneId || 'global')
     ]);
     
-    // Resolve using 3-tier fallback: cloneSpecific → baseline → default
+    // Strict resolution: only use clone-specific content; otherwise treat as not found
     let pageData: CurriculumPageData | null = null;
     let resolvedSource = 'none';
     
@@ -413,14 +413,6 @@ async function getCurriculumPageDataWithCloneContext(
       pageData = fallbackResult.cloneSpecific;
       resolvedSource = 'cloneSpecific';
       console.log(`[CurriculumPage] Using clone-specific content for ${subject}, clone: ${cloneId}`);
-    } else if (fallbackResult.baseline) {
-      pageData = fallbackResult.baseline;
-      resolvedSource = 'baseline';
-      console.log(`[CurriculumPage] Using baseline content for ${subject}`);
-    } else if (fallbackResult.default) {
-      pageData = fallbackResult.default;
-      resolvedSource = 'default';
-      console.log(`[CurriculumPage] Using default content for ${subject}`);
     }
     
     if (!pageData) {
@@ -765,7 +757,7 @@ async function getSubjectPageDataWithCloneContext(
       navbarQueries.fetch(cloneId || 'global')
     ]);
 
-    // Resolve using 3-tier fallback: cloneSpecific → baseline → default
+    // Strict resolution: only use clone-specific content; otherwise treat as not found
     let resolvedData: { subjectPage: any; tutorsRef?: any[]; tutorsInline?: any[] } | null = null;
     let resolvedSource = 'none';
     
@@ -773,14 +765,6 @@ async function getSubjectPageDataWithCloneContext(
       resolvedData = fallbackResult.cloneSpecific;
       resolvedSource = 'cloneSpecific';
       console.log(`[SubjectPage] Using clone-specific content for ${subject}, clone: ${cloneId}`);
-    } else if (fallbackResult.baseline?.subjectPage) {
-      resolvedData = fallbackResult.baseline;
-      resolvedSource = 'baseline';
-      console.log(`[SubjectPage] Using baseline content for ${subject}`);
-    } else if (fallbackResult.default?.subjectPage) {
-      resolvedData = fallbackResult.default;
-      resolvedSource = 'default';
-      console.log(`[SubjectPage] Using default content for ${subject}`);
     }
 
     if (!resolvedData?.subjectPage) {
@@ -806,14 +790,10 @@ async function getSubjectPageDataWithCloneContext(
       faqSection: isSubjectFaqForThisPage ? faqData : null,
     };
 
-    // Resolve hero data using same fallback logic
+    // Resolve hero data strictly from clone-specific content
     let heroData = null;
     if (fallbackResult.cloneSpecific?.heroData) {
       heroData = fallbackResult.cloneSpecific.heroData;
-    } else if (fallbackResult.baseline?.heroData) {
-      heroData = fallbackResult.baseline.heroData;
-    } else if (fallbackResult.default?.heroData) {
-      heroData = fallbackResult.default.heroData;
     }
 
     console.log(`[SubjectPage] Successfully fetched subject page data for: ${subject} (source: ${resolvedSource})`);

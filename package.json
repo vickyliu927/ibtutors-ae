@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "init-sanity": "npx tsx sanity/lib/initSanity.ts",
-    "setup-link-settings": "node --experimental-json-modules ./sanity/createLinkSettings.js"
+    "setup-link-settings": "node --experimental-json-modules ./sanity/createLinkSettings.js",
+    "test:homepage-strict": "npx tsx scripts/test-homepage-strict.ts",
+    "test:subject-strict": "npx tsx scripts/test-subject-curriculum-strict.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.3",
