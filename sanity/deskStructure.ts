@@ -529,8 +529,7 @@ export const structure = (S: StructureBuilder) =>
                       S.documentTypeListItem('subjectPage')
                         .title('Subject Page Settings')
                         .icon(BsBook),
-                      S.documentTypeListItem('postTutorMidSection')
-                        .title('Lesson Structure Sections'),
+                      // Removed redundant Lesson Structure page from Subject Pages folder
                       // Subject Pages FAQ Sections
                       S.listItem()
                         .title('FAQ Sections (Subject Pages)')
@@ -614,8 +613,7 @@ export const structure = (S: StructureBuilder) =>
                       S.documentTypeListItem('curriculumPage')
                         .title('Curriculum Page Settings')
                         .icon(BsGridFill),
-                      S.documentTypeListItem('postTutorMidSection')
-                        .title('Lesson Structure Sections'),
+                      // Removed redundant Lesson Structure page from Curriculum Pages folder
                       // Curriculum Pages FAQ Sections
                       S.listItem()
                         .title('FAQ Sections (Curriculum Pages)')
