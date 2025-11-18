@@ -1195,7 +1195,13 @@ export default async function DynamicPage({
         {curriculumResult.pageData.showCustomMidSectionAfterTutors &&
          postTutorMidSection &&
          postTutorMidSection.enabled !== false ? (
-          <LessonStructure />
+          <LessonStructure
+            overline={postTutorMidSection.overline}
+            title={postTutorMidSection.title}
+            description={postTutorMidSection.description}
+            sessions={postTutorMidSection.sessions}
+            cardBackgroundColor={postTutorMidSection.cardBackgroundColor}
+          />
         ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
@@ -1356,7 +1362,13 @@ export default async function DynamicPage({
         {subjectResult.pageData.showCustomMidSectionAfterTutors &&
          postTutorMidSection &&
          postTutorMidSection.enabled !== false ? (
-          <LessonStructure />
+          <LessonStructure
+            overline={postTutorMidSection.overline}
+            title={postTutorMidSection.title}
+            description={postTutorMidSection.description}
+            sessions={postTutorMidSection.sessions}
+            cardBackgroundColor={postTutorMidSection.cardBackgroundColor}
+          />
         ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
@@ -1500,7 +1512,13 @@ export default async function DynamicPage({
         {locationResult.pageData.showCustomMidSectionAfterTutors &&
          postTutorMidSection &&
          postTutorMidSection.enabled !== false ? (
-          <LessonStructure />
+          <LessonStructure
+            overline={postTutorMidSection.overline}
+            title={postTutorMidSection.title}
+            description={postTutorMidSection.description}
+            sessions={postTutorMidSection.sessions}
+            cardBackgroundColor={postTutorMidSection.cardBackgroundColor}
+          />
         ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}

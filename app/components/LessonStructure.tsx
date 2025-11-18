@@ -11,6 +11,7 @@ export interface LessonStructureProps {
   title?: string;
   description?: string;
   sessions?: SessionCard[];
+  cardBackgroundColor?: string;
 }
 
 const defaultSessions: SessionCard[] = [
@@ -75,6 +76,7 @@ const LessonStructure: React.FC<LessonStructureProps> = ({
   title = "A Structured Path to IB Maths Success",
   description = "Our tutors follow a clear, effective approach tailored to each student - strengthening understanding, mastering complex topics, and building exam confidence. Here's an example of how an IB Maths program might be organised around your syllabus and goals.",
   sessions = defaultSessions,
+  cardBackgroundColor = "#FEF2EC",
 }) => {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
@@ -98,6 +100,7 @@ const LessonStructure: React.FC<LessonStructureProps> = ({
             <div
               key={index}
               className="flex flex-col gap-8 p-8 sm:px-8 sm:py-10 rounded-3xl bg-[#FEF2EC]"
+              style={{ backgroundColor: cardBackgroundColor }}
             >
               {/* Headline */}
               <div className="flex flex-col gap-3">

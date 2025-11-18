@@ -317,7 +317,13 @@ export default async function Home({
 
       {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
       {postTutorMidSection && postTutorMidSection.enabled !== false ? (
-        <LessonStructure />
+        <LessonStructure
+          overline={postTutorMidSection.overline}
+          title={postTutorMidSection.title}
+          description={postTutorMidSection.description}
+          sessions={postTutorMidSection.sessions}
+          cardBackgroundColor={postTutorMidSection.cardBackgroundColor}
+        />
       ) : null}
 
       {/* Trusted Institutions Banner - Now positioned after TutorProfiles */}

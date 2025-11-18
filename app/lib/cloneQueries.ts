@@ -657,14 +657,15 @@ export const postTutorMidSectionQueries = {
     `
     _id,
     enabled,
+    overline,
     title,
-    subtitle,
     description,
-    content,
-    image,
-    ctaText,
-    ctaLink,
-    backgroundColor,
+    cardBackgroundColor,
+    sessions[]{
+      sessionNumber,
+      title,
+      bulletPoints
+    },
     isActive,
     cloneReference,
     cloneSpecificData

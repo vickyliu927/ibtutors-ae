@@ -475,6 +475,8 @@ export const structure = (S: StructureBuilder) =>
                         .title('Tutor Profile Sections'),
                       S.documentTypeListItem('trustedInstitutionsBanner')
                         .title('Trusted Institutions Banners'),
+                      S.documentTypeListItem('postTutorMidSection')
+                        .title('Lesson Structure Sections'),
                       S.documentTypeListItem('subjectGridSection')
                         .title('Subject Grid Sections')
                         .icon(BsGridFill),
@@ -527,6 +529,8 @@ export const structure = (S: StructureBuilder) =>
                       S.documentTypeListItem('subjectPage')
                         .title('Subject Page Settings')
                         .icon(BsBook),
+                      S.documentTypeListItem('postTutorMidSection')
+                        .title('Lesson Structure Sections'),
                       // Subject Pages FAQ Sections
                       S.listItem()
                         .title('FAQ Sections (Subject Pages)')
@@ -610,6 +614,8 @@ export const structure = (S: StructureBuilder) =>
                       S.documentTypeListItem('curriculumPage')
                         .title('Curriculum Page Settings')
                         .icon(BsGridFill),
+                      S.documentTypeListItem('postTutorMidSection')
+                        .title('Lesson Structure Sections'),
                       // Curriculum Pages FAQ Sections
                       S.listItem()
                         .title('FAQ Sections (Curriculum Pages)')
@@ -703,6 +709,7 @@ export const structure = (S: StructureBuilder) =>
             'hero',
             'highlightsSection',
             'tutorProfilesSection',
+            'postTutorMidSection',
             'advertBlockSection',
             'subjectGridSection',
             'platformBanner',
