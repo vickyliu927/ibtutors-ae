@@ -11,6 +11,7 @@ import { Metadata } from 'next';
 import { getSeoData, SeoData } from '../lib/getSeoData';
 import { getCurriculumHeroData } from '../lib/getCurriculumHeroData';
 import { notFound, redirect, permanentRedirect } from 'next/navigation';
+import LessonStructure from '../components/LessonStructure';
 
 // Import enhanced clone-aware utilities
 import { 
@@ -24,7 +25,6 @@ import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, 
 import TrustedInstitutionsBanner from '../components/TrustedInstitutionsBanner';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
-import PostTutorMidSection from '../components/PostTutorMidSection';
 
 // Enable caching of data fetches (route remains dynamic due to headers usage)
 export const revalidate = 300;
@@ -98,7 +98,6 @@ interface SubjectPageData {
   externalRedirectPermanent?: boolean;
   showAdvertBlockAfterTutors?: boolean;
   showTrustedInstitutionsAfterTutors?: boolean;
-  showCustomMidSectionAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
@@ -143,7 +142,6 @@ interface CurriculumPageData {
   };
   showAdvertBlockAfterTutors?: boolean;
   showTrustedInstitutionsAfterTutors?: boolean;
-  showCustomMidSectionAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
@@ -188,7 +186,6 @@ interface LocationPageData {
   externalRedirectPermanent?: boolean;
   showAdvertBlockAfterTutors?: boolean;
   showTrustedInstitutionsAfterTutors?: boolean;
-  showCustomMidSectionAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
@@ -225,6 +222,7 @@ async function getCurriculumPageDataWithCloneContext(
         },
         showTrustedInstitutionsAfterTutors,
         showAdvertBlockAfterTutors,
+        showCustomMidSectionAfterTutors,
         showPlatformBannerAfterTutors,
         tutorsList[] -> {
           _id,
@@ -287,6 +285,7 @@ async function getCurriculumPageDataWithCloneContext(
         },
         showTrustedInstitutionsAfterTutors,
         showAdvertBlockAfterTutors,
+        showCustomMidSectionAfterTutors,
         showPlatformBannerAfterTutors,
         tutorsList[] -> {
           _id,
@@ -349,6 +348,7 @@ async function getCurriculumPageDataWithCloneContext(
         },
         showTrustedInstitutionsAfterTutors,
         showAdvertBlockAfterTutors,
+        showCustomMidSectionAfterTutors,
         showPlatformBannerAfterTutors,
         tutorsList[] -> {
           _id,
@@ -557,6 +557,7 @@ async function getSubjectPageDataWithCloneContext(
           tutorsListSectionHead,
           showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
+          showCustomMidSectionAfterTutors,
           showPlatformBannerAfterTutors,
           externalRedirectEnabled,
           externalRedirectUrl,
@@ -659,6 +660,7 @@ async function getSubjectPageDataWithCloneContext(
           tutorsListSectionHead,
           showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
+          showCustomMidSectionAfterTutors,
           showPlatformBannerAfterTutors,
           externalRedirectEnabled,
           externalRedirectUrl,
@@ -850,6 +852,7 @@ async function getLocationPageDataWithCloneContext(
             },
             showTrustedInstitutionsAfterTutors,
             showAdvertBlockAfterTutors,
+          showCustomMidSectionAfterTutors,
             showPlatformBannerAfterTutors,
             tutorsList[] -> {
               _id,
@@ -911,6 +914,7 @@ async function getLocationPageDataWithCloneContext(
             },
             showTrustedInstitutionsAfterTutors,
             showAdvertBlockAfterTutors,
+          showCustomMidSectionAfterTutors,
             showPlatformBannerAfterTutors,
             tutorsList[] -> {
               _id,
@@ -1087,10 +1091,9 @@ export default async function DynamicPage({
   const globalTrustedByText = tutorProfilesSectionResult?.data?.trustedByText as string | undefined;
 
   // Fetch Advert Block and Platform Banner content for this clone
-  const [advertBlockContent, platformBannerContent, postTutorMidSectionContent] = await Promise.all([
+  const [advertBlockContent, platformBannerContent] = await Promise.all([
     advertBlockSectionQueries.fetch(cloneContext.cloneId || 'global'),
     platformBannerQueries.fetch(cloneContext.cloneId || 'global'),
-    postTutorMidSectionQueries.fetch(cloneContext.cloneId || 'global'),
   ]);
 
   const advertBlockSection = advertBlockContent?.data
@@ -1099,14 +1102,17 @@ export default async function DynamicPage({
   const platformBanner = platformBannerContent?.data
     ? cloneQueryUtils.getContentWithCustomizations(platformBannerContent)
     : null;
-  const postTutorMidSection = postTutorMidSectionContent?.data
-    ? cloneQueryUtils.getContentWithCustomizations(postTutorMidSectionContent)
-    : null;
 
   // Fetch Trusted Institutions banner
   const trustedInstitutionsContent = await trustedInstitutionsQueries.fetch(cloneContext.cloneId || 'global');
   const trustedInstitutionsBanner = trustedInstitutionsContent?.data
     ? cloneQueryUtils.getContentWithCustomizations(trustedInstitutionsContent)
+    : null;
+
+  // Fetch Post-Tutor Mid Section (global or clone-specific)
+  const postTutorMidSectionContent = await postTutorMidSectionQueries.fetch(cloneContext.cloneId || 'global');
+  const postTutorMidSection = postTutorMidSectionContent?.data
+    ? cloneQueryUtils.getContentWithCustomizations(postTutorMidSectionContent)
     : null;
 
   // Generate clone indicator props
@@ -1182,10 +1188,11 @@ export default async function DynamicPage({
           tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
-        {/* Mid Section (after Tutor Profiles) */}
+        {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
         {curriculumResult.pageData.showCustomMidSectionAfterTutors &&
-         postTutorMidSection?.enabled !== false ? (
-          <PostTutorMidSection data={postTutorMidSection} />
+         postTutorMidSection &&
+         postTutorMidSection.enabled !== false ? (
+          <LessonStructure />
         ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
@@ -1342,10 +1349,11 @@ export default async function DynamicPage({
           tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
-        {/* Mid Section (after Tutor Profiles) */}
+        {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
         {subjectResult.pageData.showCustomMidSectionAfterTutors &&
-         postTutorMidSection?.enabled !== false ? (
-          <PostTutorMidSection data={postTutorMidSection} />
+         postTutorMidSection &&
+         postTutorMidSection.enabled !== false ? (
+          <LessonStructure />
         ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
@@ -1485,10 +1493,11 @@ export default async function DynamicPage({
           tutorProfileSectionPriceTag={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
-        {/* Mid Section (after Tutor Profiles) */}
+        {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
         {locationResult.pageData.showCustomMidSectionAfterTutors &&
-         postTutorMidSection?.enabled !== false ? (
-          <PostTutorMidSection data={postTutorMidSection} />
+         postTutorMidSection &&
+         postTutorMidSection.enabled !== false ? (
+          <LessonStructure />
         ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}

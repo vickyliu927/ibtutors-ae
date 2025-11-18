@@ -14,7 +14,6 @@ import {
 
 import TrustedInstitutionsBanner from "./components/TrustedInstitutionsBanner";
 import FAQSection from "./components/FAQSection";
-import PostTutorMidSection from "./components/PostTutorMidSection";
 
 // Import lazy-loaded components
 import {
@@ -125,8 +124,7 @@ async function getHomepageDataWithCloneContext(
               content.advertBlockSection,
             )
           : null;
-
-        const postTutorMidSection = content.postTutorMidSection?.data
+        const postTutorMidSection = content.postTutorMidSection.data
           ? cloneQueryUtils.getContentWithCustomizations(
               content.postTutorMidSection,
             )
@@ -193,7 +191,6 @@ async function getHomepageDataWithCloneContext(
           highlightsSection: null,
           subjectGridSection: null,
           advertBlockSection: null,
-          postTutorMidSection: null,
           trustedInstitutionsBanner: null,
           tutorProfilesSection: null,
           platformBanner: null,
@@ -317,9 +314,9 @@ export default async function Home({
         />
       ) : null}
 
-      {/* Mid Section - Positioned after TutorProfiles and before Trusted Institutions */}
-      {postTutorMidSection?.enabled !== false && postTutorMidSection ? (
-        <PostTutorMidSection data={postTutorMidSection} />
+      {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
+      {postTutorMidSection && postTutorMidSection.enabled !== false ? (
+        <LessonStructure />
       ) : null}
 
       {/* Trusted Institutions Banner - Now positioned after TutorProfiles */}
@@ -343,9 +340,6 @@ export default async function Home({
       {subjectGridSection?.enabled !== false ? (
         <SubjectGrid sectionData={subjectGridSection} />
       ) : null}
-
-      {/* Lesson Structure Section */}
-      <LessonStructure />
 
       {/* Advert Block - Positioned after SubjectGrid section */}
       {advertBlockSection?.enabled !== false ? (

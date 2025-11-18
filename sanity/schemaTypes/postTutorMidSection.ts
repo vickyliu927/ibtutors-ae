@@ -3,7 +3,7 @@ import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
 const postTutorMidSectionSchema = defineType({
   name: 'postTutorMidSection',
-  title: 'Lesson structure',
+  title: 'Mid Section (after Tutor Profiles)',
   type: 'document',
   fields: [
     defineField({

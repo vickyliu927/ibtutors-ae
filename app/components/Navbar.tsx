@@ -645,14 +645,24 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
           )}
         </div>
 
-        {/* CTA Button - shown only if a link is provided */}
+        {/* CTA Buttons - desktop only */}
         {navbarData?.buttonLink && (
-          <Link
-            href={navbarData.buttonLink}
-            className="hidden md:flex h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy"
-          >
-            {navbarData?.buttonText || 'Hire a tutor'}
-          </Link>
+          <div className="hidden md:flex items-center gap-3">
+            {/* New secondary button (to the left) */}
+            <Link
+              href={navbarData.buttonLink}
+              className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#F2F4FA] text-[#001A96] text-[14px] font-medium leading-[140%] hover:bg-[#E9ECF7] transition-colors font-gilroy flex"
+            >
+              {navbarData?.buttonText || 'Hire a tutor'}
+            </Link>
+            {/* Existing primary button */}
+            <Link
+              href={navbarData.buttonLink}
+              className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy flex"
+            >
+              {navbarData?.buttonText || 'Hire a tutor'}
+            </Link>
+          </div>
         )}
 
         {/* Mobile Menu Button */}

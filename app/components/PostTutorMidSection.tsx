@@ -27,16 +27,16 @@ export default function PostTutorMidSection({
   return (
     <section className="py-12 md:py-16" style={{ backgroundColor: bg }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {(data.subtitle || data.title || true) && (
+        {(data.subtitle || data.title) && (
           <div className="mb-6 md:mb-8">
             {data.subtitle ? (
               <p className="text-sm md:text-base text-[#FF6B00] font-medium font-gilroy">
                 {data.subtitle}
               </p>
             ) : null}
-            {(data.title || 'Lesson structure') ? (
+            {data.title ? (
               <h2 className="mt-2 text-2xl md:text-3xl font-medium leading-[130%] text-[#171D23] font-gilroy">
-                {data.title || 'Lesson structure'}
+                {data.title}
               </h2>
             ) : null}
           </div>
