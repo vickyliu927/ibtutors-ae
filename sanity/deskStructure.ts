@@ -61,6 +61,16 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                     : `_type == "tutorProfilesSection" && cloneReference._ref == "${cloneId}"`
                   )
                                 ),
+                              S.documentTypeListItem('postTutorMidSection')
+                                .title('Lesson structure')
+                                .child(
+                                  S.documentList()
+                  .title(`${cloneName} - Lesson structure`)
+                  .filter(isGlobalClone 
+                    ? '_type == "postTutorMidSection" && !defined(cloneReference)'
+                    : `_type == "postTutorMidSection" && cloneReference._ref == "${cloneId}"`
+                  )
+                                ),
                               S.documentTypeListItem('trustedInstitutionsBanner')
                                 .title('Trusted Institutions Banners')
                                 .child(
@@ -463,6 +473,8 @@ export const structure = (S: StructureBuilder) =>
                         .title('Highlights Sections'),
                       S.documentTypeListItem('tutorProfilesSection')
                         .title('Tutor Profile Sections'),
+                              S.documentTypeListItem('postTutorMidSection')
+                                .title('Lesson structure'),
                       S.documentTypeListItem('trustedInstitutionsBanner')
                         .title('Trusted Institutions Banners'),
                       S.documentTypeListItem('subjectGridSection')

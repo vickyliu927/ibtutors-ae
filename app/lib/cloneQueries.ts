@@ -648,6 +648,37 @@ export const advertBlockSectionQueries = {
 };
 
 /**
+ * POST-TUTOR MID SECTION QUERIES
+ */
+export const postTutorMidSectionQueries = {
+  buildQuery: (cloneId: string) => buildFallbackQuery(
+    'postTutorMidSection',
+    cloneId,
+    `
+    _id,
+    enabled,
+    title,
+    subtitle,
+    description,
+    content,
+    image,
+    ctaText,
+    ctaLink,
+    backgroundColor,
+    isActive,
+    cloneReference,
+    cloneSpecificData
+    `
+  ),
+
+  async fetch(cloneId: string): Promise<ContentResult<any>> {
+    const query = postTutorMidSectionQueries.buildQuery(cloneId);
+    const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
+    return resolveContent(result);
+  }
+};
+
+/**
  * TRUSTED INSTITUTIONS BANNER QUERIES
  */
 export const trustedInstitutionsQueries = {
@@ -730,6 +761,7 @@ export const homepageQueries = {
     highlights: ContentResult<any>;
     subjectGridSection: ContentResult<any>;
     advertBlockSection: ContentResult<any>;
+    postTutorMidSection: ContentResult<any>;
     trustedInstitutions: ContentResult<any>;
     tutorProfilesSection: ContentResult<any>;
     tutors: ContentResult<any[]>;
@@ -747,6 +779,7 @@ export const homepageQueries = {
       highlights,
       subjectGridSection,
       advertBlockSection,
+      postTutorMidSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,
@@ -762,6 +795,7 @@ export const homepageQueries = {
       highlightsQueries.fetch(cloneId),
       subjectGridSectionQueries.fetch(cloneId),
       advertBlockSectionQueries.fetch(cloneId),
+      postTutorMidSectionQueries.fetch(cloneId),
       trustedInstitutionsQueries.fetch(cloneId),
       tutorProfilesSectionQueries.fetch(cloneId),
       tutorQueries.fetchHomepageTutors(cloneId),
@@ -779,6 +813,7 @@ export const homepageQueries = {
       highlights,
       subjectGridSection,
       advertBlockSection,
+      postTutorMidSection,
       trustedInstitutions,
       tutorProfilesSection,
       tutors,

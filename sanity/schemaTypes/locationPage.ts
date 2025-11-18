@@ -180,6 +180,13 @@ const locationPageSchema = defineType({
       description: 'If enabled, the Trusted Institutions banner will appear immediately after the Tutor Profiles section (before Advert Block and Platform Banner).'
     }),
     defineField({
+      name: 'showCustomMidSectionAfterTutors',
+      title: 'Show Mid Section after Tutor Profiles',
+      type: 'boolean',
+      initialValue: false,
+      description: 'If enabled, the custom Mid Section (configured under Homepage Content) will appear immediately after the Tutor Profiles section.'
+    }),
+    defineField({
       name: 'showPlatformBannerAfterTutors',
       title: 'Show Platform Banner after Tutor Profiles',
       type: 'boolean',

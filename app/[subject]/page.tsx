@@ -20,10 +20,11 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
-import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, trustedInstitutionsQueries, cloneQueryUtils } from '../lib/cloneQueries';
+import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, trustedInstitutionsQueries, postTutorMidSectionQueries, cloneQueryUtils } from '../lib/cloneQueries';
 import TrustedInstitutionsBanner from '../components/TrustedInstitutionsBanner';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
+import PostTutorMidSection from '../components/PostTutorMidSection';
 
 // Enable caching of data fetches (route remains dynamic due to headers usage)
 export const revalidate = 300;
@@ -1083,9 +1084,10 @@ export default async function DynamicPage({
   const globalTrustedByText = tutorProfilesSectionResult?.data?.trustedByText as string | undefined;
 
   // Fetch Advert Block and Platform Banner content for this clone
-  const [advertBlockContent, platformBannerContent] = await Promise.all([
+  const [advertBlockContent, platformBannerContent, postTutorMidSectionContent] = await Promise.all([
     advertBlockSectionQueries.fetch(cloneContext.cloneId || 'global'),
     platformBannerQueries.fetch(cloneContext.cloneId || 'global'),
+    postTutorMidSectionQueries.fetch(cloneContext.cloneId || 'global'),
   ]);
 
   const advertBlockSection = advertBlockContent?.data
@@ -1093,6 +1095,9 @@ export default async function DynamicPage({
     : null;
   const platformBanner = platformBannerContent?.data
     ? cloneQueryUtils.getContentWithCustomizations(platformBannerContent)
+    : null;
+  const postTutorMidSection = postTutorMidSectionContent?.data
+    ? cloneQueryUtils.getContentWithCustomizations(postTutorMidSectionContent)
     : null;
 
   // Fetch Trusted Institutions banner
@@ -1173,6 +1178,12 @@ export default async function DynamicPage({
           tutorProfileSectionPriceDescription={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
+
+        {/* Mid Section (after Tutor Profiles) */}
+        {curriculumResult.pageData.showCustomMidSectionAfterTutors &&
+         postTutorMidSection?.enabled !== false ? (
+          <PostTutorMidSection data={postTutorMidSection} />
+        ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
         {curriculumResult.pageData.showTrustedInstitutionsAfterTutors &&
@@ -1328,6 +1339,12 @@ export default async function DynamicPage({
           tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
+        {/* Mid Section (after Tutor Profiles) */}
+        {subjectResult.pageData.showCustomMidSectionAfterTutors &&
+         postTutorMidSection?.enabled !== false ? (
+          <PostTutorMidSection data={postTutorMidSection} />
+        ) : null}
+
         {/* Trusted Institutions Banner (before Advert Block) */}
         {subjectResult.pageData.showTrustedInstitutionsAfterTutors &&
          trustedInstitutionsBanner?.enabled !== false &&
@@ -1464,6 +1481,12 @@ export default async function DynamicPage({
           tutorProfileSectionPriceDescription={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
+
+        {/* Mid Section (after Tutor Profiles) */}
+        {locationResult.pageData.showCustomMidSectionAfterTutors &&
+         postTutorMidSection?.enabled !== false ? (
+          <PostTutorMidSection data={postTutorMidSection} />
+        ) : null}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
         {locationResult.pageData.showTrustedInstitutionsAfterTutors &&

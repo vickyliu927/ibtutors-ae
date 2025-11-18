@@ -28,6 +28,7 @@ import blogAuthor from './blogAuthor'
 import blogCategory from './blogCategory'
 import blogPageSettings from './blogPageSettings'
 import locationPage from './locationPage'
+import postTutorMidSection from './postTutorMidSection'
 
 export const schemaTypes = [
   clone,
@@ -40,6 +41,7 @@ export const schemaTypes = [
   subjectGridSection,
   advertBlockSection,
   highlightsSection,
+  postTutorMidSection,
   faq,
   faq_section,
   hero,

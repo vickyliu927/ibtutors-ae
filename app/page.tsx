@@ -14,6 +14,7 @@ import {
 
 import TrustedInstitutionsBanner from "./components/TrustedInstitutionsBanner";
 import FAQSection from "./components/FAQSection";
+import PostTutorMidSection from "./components/PostTutorMidSection";
 
 // Import lazy-loaded components
 import {
@@ -23,6 +24,7 @@ import {
 import HighlightsSection, {
   HighlightItem,
 } from "./components/HighlightsSection";
+import LessonStructure from "./components/LessonStructure";
 
 // Import enhanced clone-aware utilities
 import {
@@ -69,6 +71,7 @@ interface HomepageData {
   highlightsSection: any | null;
   subjectGridSection: any | null;
   advertBlockSection: any | null;
+  postTutorMidSection: any | null;
   trustedInstitutionsBanner: any | null;
   tutorProfilesSection: any | null;
   platformBanner: any | null;
@@ -123,6 +126,12 @@ async function getHomepageDataWithCloneContext(
             )
           : null;
 
+        const postTutorMidSection = content.postTutorMidSection?.data
+          ? cloneQueryUtils.getContentWithCustomizations(
+              content.postTutorMidSection,
+            )
+          : null;
+
         const trustedInstitutionsBanner = content.trustedInstitutions.data
           ? cloneQueryUtils.getContentWithCustomizations(
               content.trustedInstitutions,
@@ -168,6 +177,7 @@ async function getHomepageDataWithCloneContext(
           highlightsSection,
           subjectGridSection,
           advertBlockSection,
+          postTutorMidSection,
           trustedInstitutionsBanner,
           tutorProfilesSection: tutorProfilesSectionWithTutors,
           platformBanner,
@@ -183,6 +193,7 @@ async function getHomepageDataWithCloneContext(
           highlightsSection: null,
           subjectGridSection: null,
           advertBlockSection: null,
+          postTutorMidSection: null,
           trustedInstitutionsBanner: null,
           tutorProfilesSection: null,
           platformBanner: null,
@@ -226,6 +237,7 @@ export default async function Home({
     highlightsSection,
     subjectGridSection,
     advertBlockSection,
+    postTutorMidSection,
     trustedInstitutionsBanner,
     tutorProfilesSection,
     platformBanner,
@@ -305,6 +317,11 @@ export default async function Home({
         />
       ) : null}
 
+      {/* Mid Section - Positioned after TutorProfiles and before Trusted Institutions */}
+      {postTutorMidSection?.enabled !== false && postTutorMidSection ? (
+        <PostTutorMidSection data={postTutorMidSection} />
+      ) : null}
+
       {/* Trusted Institutions Banner - Now positioned after TutorProfiles */}
       {trustedInstitutionsBanner?.enabled !== false &&
       trustedInstitutionsBanner.institutions?.length > 0 ? (
@@ -326,6 +343,9 @@ export default async function Home({
       {subjectGridSection?.enabled !== false ? (
         <SubjectGrid sectionData={subjectGridSection} />
       ) : null}
+
+      {/* Lesson Structure Section */}
+      <LessonStructure />
 
       {/* Advert Block - Positioned after SubjectGrid section */}
       {advertBlockSection?.enabled !== false ? (
