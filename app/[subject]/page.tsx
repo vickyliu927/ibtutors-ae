@@ -98,6 +98,7 @@ interface SubjectPageData {
   externalRedirectPermanent?: boolean;
   showAdvertBlockAfterTutors?: boolean;
   showTrustedInstitutionsAfterTutors?: boolean;
+  showCustomMidSectionAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
@@ -142,6 +143,7 @@ interface CurriculumPageData {
   };
   showAdvertBlockAfterTutors?: boolean;
   showTrustedInstitutionsAfterTutors?: boolean;
+  showCustomMidSectionAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
@@ -186,6 +188,7 @@ interface LocationPageData {
   externalRedirectPermanent?: boolean;
   showAdvertBlockAfterTutors?: boolean;
   showTrustedInstitutionsAfterTutors?: boolean;
+  showCustomMidSectionAfterTutors?: boolean;
   showPlatformBannerAfterTutors?: boolean;
 }
 
