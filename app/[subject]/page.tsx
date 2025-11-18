@@ -21,7 +21,7 @@ import {
   getCloneIndicatorData,
   mergeCloneContent
 } from '../lib/clonePageUtils';
-import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, trustedInstitutionsQueries, postTutorMidSectionQueries, cloneQueryUtils } from '../lib/cloneQueries';
+import { navbarQueries, tutorProfilesSectionQueries, advertBlockSectionQueries, platformBannerQueries, trustedInstitutionsQueries, cloneQueryUtils } from '../lib/cloneQueries';
 import TrustedInstitutionsBanner from '../components/TrustedInstitutionsBanner';
 import CloneIndicatorBanner from '../components/CloneIndicatorBanner';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
@@ -57,6 +57,18 @@ export async function generateStaticParams() {
   }
 }
 
+type LessonStructureData = {
+  overline?: string;
+  title?: string;
+  description?: string;
+  cardBackgroundColor?: string;
+  sessions?: Array<{
+    sessionNumber?: string;
+    title?: string;
+    bulletPoints?: string[];
+  }>;
+};
+
 interface SubjectPageData {
   subject: string;
   title: string;
@@ -65,6 +77,7 @@ interface SubjectPageData {
     highlightedWords?: string[];
     description: string;
   };
+  lessonStructure?: LessonStructureData;
   tutorsListSectionHead?: {
     trustedByText?: string;
     smallTextBeforeTitle?: string;
@@ -110,6 +123,7 @@ interface CurriculumPageData {
     highlightedWords?: string[];
     description: string;
   };
+  lessonStructure?: LessonStructureData;
   externalRedirectEnabled?: boolean;
   externalRedirectUrl?: string;
   externalRedirectPermanent?: boolean;
@@ -155,6 +169,7 @@ interface LocationPageData {
     highlightedWords?: string[];
     description: string;
   };
+  lessonStructure?: LessonStructureData;
   tutorsListSectionHead?: {
     trustedByText?: string;
     smallTextBeforeTitle?: string;
@@ -212,6 +227,7 @@ async function getCurriculumPageDataWithCloneContext(
         externalRedirectUrl,
         externalRedirectPermanent,
         firstSection,
+        lessonStructure,
         tutorsListSectionHead{
           trustedByText,
           smallTextBeforeTitle,
@@ -275,6 +291,7 @@ async function getCurriculumPageDataWithCloneContext(
         externalRedirectUrl,
         externalRedirectPermanent,
         firstSection,
+        lessonStructure,
         tutorsListSectionHead{
           trustedByText,
           smallTextBeforeTitle,
@@ -338,6 +355,7 @@ async function getCurriculumPageDataWithCloneContext(
         externalRedirectUrl,
         externalRedirectPermanent,
         firstSection,
+        lessonStructure,
         tutorsListSectionHead{
           trustedByText,
           smallTextBeforeTitle,
@@ -453,6 +471,7 @@ async function getSubjectPageDataWithCloneContext(
           subject,
           title,
           firstSection,
+          lessonStructure,
           tutorsListSectionHead,
           showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
@@ -557,6 +576,7 @@ async function getSubjectPageDataWithCloneContext(
           subject,
           title,
           firstSection,
+          lessonStructure,
           tutorsListSectionHead,
           showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
@@ -660,6 +680,7 @@ async function getSubjectPageDataWithCloneContext(
           subject,
           title,
           firstSection,
+          lessonStructure,
           tutorsListSectionHead,
           showTrustedInstitutionsAfterTutors,
           showAdvertBlockAfterTutors,
@@ -842,6 +863,7 @@ async function getLocationPageDataWithCloneContext(
             externalRedirectUrl,
             externalRedirectPermanent,
             firstSection,
+            lessonStructure,
             tutorsListSectionHead{
               trustedByText,
               smallTextBeforeTitle,
@@ -904,6 +926,7 @@ async function getLocationPageDataWithCloneContext(
             externalRedirectUrl,
             externalRedirectPermanent,
             firstSection,
+            lessonStructure,
             tutorsListSectionHead{
               trustedByText,
               smallTextBeforeTitle,
@@ -1112,12 +1135,6 @@ export default async function DynamicPage({
     ? cloneQueryUtils.getContentWithCustomizations(trustedInstitutionsContent)
     : null;
 
-  // Fetch Post-Tutor Mid Section (global or clone-specific)
-  const postTutorMidSectionContent = await postTutorMidSectionQueries.fetch(cloneContext.cloneId || 'global');
-  const postTutorMidSection = postTutorMidSectionContent?.data
-    ? cloneQueryUtils.getContentWithCustomizations(postTutorMidSectionContent)
-    : null;
-
   // Generate clone indicator props
   const cloneIndicatorProps = getCloneIndicatorData(
     cloneContext,
@@ -1191,18 +1208,20 @@ export default async function DynamicPage({
           tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
-        {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
-        {curriculumResult.pageData.showCustomMidSectionAfterTutors &&
-         postTutorMidSection &&
-         postTutorMidSection.enabled !== false ? (
-          <LessonStructure
-            overline={postTutorMidSection.overline}
-            title={postTutorMidSection.title}
-            description={postTutorMidSection.description}
-            sessions={postTutorMidSection.sessions}
-            cardBackgroundColor={postTutorMidSection.cardBackgroundColor}
-          />
-        ) : null}
+        {/* Lesson Structure - show when curriculum page provides content */}
+        {(() => {
+          const ls = curriculumResult.pageData.lessonStructure as any;
+          const hasLs = Boolean(ls && ((ls?.title && ls.title.trim()) || (Array.isArray(ls?.sessions) && ls.sessions.length > 0) || (ls?.description && ls.description.trim())));
+          return hasLs ? (
+            <LessonStructure
+              overline={ls?.overline}
+              title={ls?.title}
+              description={ls?.description}
+              sessions={ls?.sessions}
+              cardBackgroundColor={ls?.cardBackgroundColor}
+            />
+          ) : null;
+        })()}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
         {curriculumResult.pageData.showTrustedInstitutionsAfterTutors &&
@@ -1358,18 +1377,20 @@ export default async function DynamicPage({
           tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
-        {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
-        {subjectResult.pageData.showCustomMidSectionAfterTutors &&
-         postTutorMidSection &&
-         postTutorMidSection.enabled !== false ? (
-          <LessonStructure
-            overline={postTutorMidSection.overline}
-            title={postTutorMidSection.title}
-            description={postTutorMidSection.description}
-            sessions={postTutorMidSection.sessions}
-            cardBackgroundColor={postTutorMidSection.cardBackgroundColor}
-          />
-        ) : null}
+        {/* Lesson Structure - show when subject page provides content */}
+        {(() => {
+          const ls = subjectResult.pageData.lessonStructure as any;
+          const hasLs = Boolean(ls && ((ls?.title && ls.title.trim()) || (Array.isArray(ls?.sessions) && ls.sessions.length > 0) || (ls?.description && ls.description.trim())));
+          return hasLs ? (
+            <LessonStructure
+              overline={ls?.overline}
+              title={ls?.title}
+              description={ls?.description}
+              sessions={ls?.sessions}
+              cardBackgroundColor={ls?.cardBackgroundColor}
+            />
+          ) : null;
+        })()}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
         {subjectResult.pageData.showTrustedInstitutionsAfterTutors &&
@@ -1508,18 +1529,20 @@ export default async function DynamicPage({
           tutorProfileSectionPriceTag={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
 
-        {/* Lesson Structure - positioned after TutorProfiles and before Trusted Institutions */}
-        {locationResult.pageData.showCustomMidSectionAfterTutors &&
-         postTutorMidSection &&
-         postTutorMidSection.enabled !== false ? (
-          <LessonStructure
-            overline={postTutorMidSection.overline}
-            title={postTutorMidSection.title}
-            description={postTutorMidSection.description}
-            sessions={postTutorMidSection.sessions}
-            cardBackgroundColor={postTutorMidSection.cardBackgroundColor}
-          />
-        ) : null}
+        {/* Lesson Structure - show when location page provides content */}
+        {(() => {
+          const ls = locationResult.pageData.lessonStructure as any;
+          const hasLs = Boolean(ls && ((ls?.title && ls.title.trim()) || (Array.isArray(ls?.sessions) && ls.sessions.length > 0) || (ls?.description && ls.description.trim())));
+          return hasLs ? (
+            <LessonStructure
+              overline={ls?.overline}
+              title={ls?.title}
+              description={ls?.description}
+              sessions={ls?.sessions}
+              cardBackgroundColor={ls?.cardBackgroundColor}
+            />
+          ) : null;
+        })()}
 
         {/* Trusted Institutions Banner (before Advert Block) */}
         {locationResult.pageData.showTrustedInstitutionsAfterTutors &&

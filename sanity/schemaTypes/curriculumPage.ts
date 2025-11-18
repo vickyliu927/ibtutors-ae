@@ -164,6 +164,13 @@ const curriculumPageSchema = defineType({
     }),
 
     defineField({
+      name: 'lessonStructure',
+      title: 'Lesson Structure',
+      type: 'lessonStructure',
+      description: 'Optional: Page-specific Lesson Structure content. When filled, it will be shown after Tutor Profiles.',
+    }),
+
+    defineField({
       name: 'subjectPages',
       title: 'Subject Pages',
       type: 'array',

@@ -29,6 +29,7 @@ import blogCategory from './blogCategory'
 import blogPageSettings from './blogPageSettings'
 import locationPage from './locationPage'
 import postTutorMidSection from './postTutorMidSection'
+import lessonStructure from './lessonStructure'
 
 export const schemaTypes = [
   clone,
@@ -42,6 +43,7 @@ export const schemaTypes = [
   advertBlockSection,
   highlightsSection,
   postTutorMidSection,
+  lessonStructure,
   faq,
   faq_section,
   hero,
@@ -62,4 +64,4 @@ export const schemaTypes = [
   blogCategory,
   blogPageSettings,
   locationPage,
-] 
+]  

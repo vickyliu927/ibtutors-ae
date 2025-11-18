@@ -152,6 +152,12 @@ const subjectPageSchema = defineType({
       of: [{ type: 'reference', to: [{ type: 'tutor' }] }],
     }),
     defineField({
+      name: 'lessonStructure',
+      title: 'Lesson Structure',
+      type: 'lessonStructure',
+      description: 'Optional: Page-specific Lesson Structure content. When filled, it will be shown after Tutor Profiles.',
+    }),
+    defineField({
       name: 'testimonials',
       title: 'Subject Testimonials',
       type: 'array',
