@@ -191,6 +191,7 @@ async function getHomepageDataWithCloneContext(
           highlightsSection: null,
           subjectGridSection: null,
           advertBlockSection: null,
+          postTutorMidSection: null,
           trustedInstitutionsBanner: null,
           tutorProfilesSection: null,
           platformBanner: null,
