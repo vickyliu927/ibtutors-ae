@@ -56,13 +56,6 @@ const postTutorMidSectionSchema = defineType({
       type: 'string',
       initialValue: '#ffffff',
     }),
-    defineField({
-      name: 'isActive',
-      title: 'Active',
-      type: 'boolean',
-      description: 'If not set or true, this document is considered active.',
-      initialValue: true,
-    }),
   ],
 })
 
