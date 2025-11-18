@@ -96,7 +96,7 @@ const LessonStructure: React.FC<LessonStructureProps> = ({
 
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sessions.map((session, index) => (
+          {(Array.isArray(sessions) ? sessions : defaultSessions).filter(Boolean).map((session, index) => (
             <div
               key={index}
               className="flex flex-col gap-8 p-8 sm:px-8 sm:py-10 rounded-3xl bg-[#FEF2EC]"
@@ -114,7 +114,7 @@ const LessonStructure: React.FC<LessonStructureProps> = ({
 
               {/* Bullet Points */}
               <div className="flex flex-col gap-3">
-                {session.bulletPoints.map((point, bulletIndex) => (
+                {(Array.isArray(session.bulletPoints) ? session.bulletPoints : []).map((point, bulletIndex) => (
                   <div key={bulletIndex} className="flex items-start gap-2">
                     <div className="flex items-center h-[22px]">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
