@@ -1,5 +1,7 @@
+import type { ContentSource } from './cloneQueries';
+
 export type HomepageContentLike = {
-	hero?: { source?: string } | null;
+	hero?: { source?: ContentSource | null } | null;
 };
 
 /**

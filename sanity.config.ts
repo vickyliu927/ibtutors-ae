@@ -23,7 +23,7 @@ export default defineConfig({
 
   plugins: [
     deskTool({
-      structure
+      structure: structure as any
     }),
     visionTool(),
   ],
