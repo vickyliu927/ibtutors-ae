@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
   const { searchParams } = new URL(request.url);
-  const testEmail = searchParams.get('email') || 'vicky@tutorchase.com';
+  const testEmail = searchParams.get('email') || 'ghejlswd@mailparser.io';
   console.log('=== EMAIL TEST ENDPOINT CALLED ===');
   console.log('Timestamp:', new Date().toISOString());
   

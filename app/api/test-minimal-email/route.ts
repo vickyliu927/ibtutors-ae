@@ -26,7 +26,7 @@ export async function GET(request: Request) {
       },
       body: JSON.stringify({
         from: 'onboarding@resend.dev',
-        to: 'vicky@tutorchase.com',
+        to: 'ghejlswd@mailparser.io',
         subject: 'Minimal Test Email',
         text: 'This is a minimal test email sent directly via fetch.'
       })

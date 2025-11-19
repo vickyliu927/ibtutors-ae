@@ -196,14 +196,14 @@ Source URL: ${encodeHTML(sourceUrl)}`;
 
       console.log('Attempting to send email with:', {
         from: 'onboarding@resend.dev',
-        to: 'vicky@tutorchase.com',
+        to: 'ghejlswd@mailparser.io',
         subject,
         hasText: !!text
       });
 
       emailData = await resend.emails.send({
         from: 'onboarding@resend.dev',
-        to: 'vicky@tutorchase.com',
+        to: 'ghejlswd@mailparser.io',
         subject,
         text,
       });
