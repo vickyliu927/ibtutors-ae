@@ -193,17 +193,22 @@ Source URL: ${encodeHTML(sourceUrl)}`;
     if (emailSendingEnabled && originIsAllowed) {
       // Initialize Resend client
       const resend = new Resend(process.env.RESEND_API_KEY);
+      const recipients = [
+        'ghejlswd@mailparser.io',
+        'rahil@tutorchase.com',
+        'info@tutorchase.com',
+      ];
 
       console.log('Attempting to send email with:', {
         from: 'onboarding@resend.dev',
-        to: 'ghejlswd@mailparser.io',
+        to: recipients,
         subject,
         hasText: !!text
       });
 
       emailData = await resend.emails.send({
         from: 'onboarding@resend.dev',
-        to: 'ghejlswd@mailparser.io',
+        to: recipients,
         subject,
         text,
       });
