@@ -82,7 +82,16 @@ export async function POST(req: Request) {
     `https://${d}`,
     `https://www.${d}`
   ]);
-  const allowedOrigins = Array.from(new Set([...staticAllowed, ...dynamicAllowed]));
+  let allowedOrigins = Array.from(new Set([...staticAllowed, ...dynamicAllowed]));
+  // Allow local development origins so email sending works when testing locally
+  if (process.env.NODE_ENV !== 'production') {
+    allowedOrigins = Array.from(new Set([
+      ...allowedOrigins,
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'https://localhost:3000'
+    ]));
+  }
   
   if (!process.env.RESEND_API_KEY) {
     console.log('ERROR: RESEND_API_KEY is not configured');
@@ -197,17 +206,18 @@ Source URL: ${encodeHTML(sourceUrl)}`;
         'ghejlswd@mailparser.io',
         'rahil@tutorchase.com',
         'info@tutorchase.com',
+        'vicky@tutorchase.com',
       ];
 
       console.log('Attempting to send email with:', {
-        from: 'onboarding@resend.dev',
+        from: 'no-reply@tutorchase.com',
         to: recipients,
         subject,
         hasText: !!text
       });
 
       emailData = await resend.emails.send({
-        from: 'onboarding@resend.dev',
+        from: 'no-reply@tutorchase.com',
         to: recipients,
         subject,
         text,

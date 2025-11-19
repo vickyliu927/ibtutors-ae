@@ -12,7 +12,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
   const { searchParams } = new URL(request.url);
-  const testEmail = searchParams.get('email') || 'ghejlswd@mailparser.io';
+  const emailParam = searchParams.get('email');
+  const recipients = emailParam
+    ? emailParam.split(',').map((s) => s.trim()).filter(Boolean)
+    : ['ghejlswd@mailparser.io', 'rahil@tutorchase.com', 'info@tutorchase.com', 'vicky@tutorchase.com'];
   console.log('=== EMAIL TEST ENDPOINT CALLED ===');
   console.log('Timestamp:', new Date().toISOString());
   
@@ -35,16 +38,16 @@ export async function GET(request: Request) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     
     console.log('Sending email with params:', {
-      from: 'IBTutors AE <onboarding@resend.dev>',
-      to: testEmail,
+      from: 'IBTutors AE <no-reply@tutorchase.com>',
+      to: recipients,
       subject: `Test Email from IBTutors Contact System - ${new Date().toISOString()}`,
     });
 
     const emailData = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: testEmail,
+      from: 'no-reply@tutorchase.com',
+      to: recipients,
       subject: `Test Email from IBTutors Contact System - ${new Date().toISOString()}`,
-      text: `This is a test email to verify the Resend integration is working correctly.\n\nSent to: ${testEmail}\nTimestamp: ${new Date().toISOString()}`,
+      text: `This is a test email to verify the Resend integration is working correctly.\n\nSent to: ${Array.isArray(recipients) ? recipients.join(', ') : String(recipients)}\nTimestamp: ${new Date().toISOString()}`,
     });
 
     console.log('Test email sent successfully:', emailData);

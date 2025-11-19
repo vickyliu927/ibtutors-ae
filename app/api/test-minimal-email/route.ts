@@ -17,6 +17,12 @@ export async function GET(request: Request) {
   }
   
   try {
+    const url2 = new URL(request.url);
+    const emailParam = url2.searchParams.get('email');
+    const recipients = emailParam
+      ? emailParam.split(',').map((s) => s.trim()).filter(Boolean)
+      : ['ghejlswd@mailparser.io', 'rahil@tutorchase.com', 'info@tutorchase.com', 'vicky@tutorchase.com'];
+
     // Test with direct fetch instead of SDK
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -25,8 +31,8 @@ export async function GET(request: Request) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev',
-        to: 'ghejlswd@mailparser.io',
+        from: 'no-reply@tutorchase.com',
+        to: recipients,
         subject: 'Minimal Test Email',
         text: 'This is a minimal test email sent directly via fetch.'
       })
