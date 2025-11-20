@@ -54,7 +54,7 @@ const FAQSection = ({ sectionData, faqs }: FAQSectionProps) => {
             {sectionData.title}
           </h2>
           {sectionData.subtitle && (
-            <p className="text-textDark font-gilroy text-lg leading-[160%]" style={{ fontWeight: 200 }}>
+            <p className="text-textDark font-gilroy text-lg leading-[160%]" style={{ fontWeight: 300 }}>
               {sectionData.subtitle}
             </p>
           )}

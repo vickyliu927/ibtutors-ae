@@ -180,7 +180,7 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
               </div>
             </div>
             <div className="text-center">
-              <span className="font-gilroy text-lg leading-[150%] text-[#F57C40] uppercase" style={{ fontWeight: 200 }}>
+              <span className="font-gilroy text-lg leading-[150%] text-[#F57C40] uppercase" style={{ fontWeight: 300 }}>
                 Trusted globally by students and parents
               </span>
             </div>
@@ -234,7 +234,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: TestimonialData }) => {
       <div 
         ref={textRef}
         className={`text-center font-gilroy ${fontSize} leading-[150%] text-textDark flex-1 flex items-center justify-center px-2 overflow-hidden`} 
-        style={{ fontWeight: 200 }}
+        style={{ fontWeight: 300 }}
       >
         <div className="testimonial-content">
           "<PortableText 

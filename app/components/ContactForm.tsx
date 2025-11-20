@@ -274,7 +274,7 @@ const ContactForm = () => {
             <h2 className="font-gilroy text-4xl lg:text-5xl font-medium leading-[120%] text-white mb-4">
           {contentData?.formHeader || 'Hire a tutor'}
         </h2>
-            <p className="font-gilroy text-base leading-[160%] text-white max-w-4xl mx-auto" style={{ fontWeight: 200 }}>
+            <p className="font-gilroy text-base leading-[160%] text-white max-w-4xl mx-auto" style={{ fontWeight: 300 }}>
           {contentData?.formSubtitle || 'Please fill out the form and an academic consultant from TutorChase will find a tutor for you'}
         </p>
       </div>
