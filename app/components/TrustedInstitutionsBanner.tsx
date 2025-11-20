@@ -82,7 +82,7 @@ const TrustedInstitutionsBanner: React.FC<TrustedInstitutionsBannerProps> = ({
               ))}
             </div>
           ) : (
-            <div className="flex flex-wrap items-center justify-between gap-12 md:gap-16 lg:gap-24">
+            <div className="grid grid-cols-2 gap-8 sm:gap-10 md:flex md:flex-wrap md:items-center md:justify-between md:gap-16 lg:gap-24">
               {sortedLogos.map((institution, index) => (
                 <div key={`${institution.name}-${index}`} className="flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
                   <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 mb-4">
