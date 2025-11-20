@@ -680,7 +680,7 @@ export async function getTutorsForClone(
     };
   }
   
-  // For arrays, return the first non-empty array with highest priority
+  // STRICT: Do not fall back to baseline/default for tutors
   if (result.cloneSpecific && result.cloneSpecific.length > 0) {
     return {
       data: result.cloneSpecific,
@@ -689,29 +689,10 @@ export async function getTutorsForClone(
       isBaseline: false,
     };
   }
-  
-  if (result.baseline && result.baseline.length > 0) {
-    return {
-      data: result.baseline,
-      source: 'baseline',
-      cloneId: 'baseline',
-      isBaseline: true,
-    };
-  }
-  
-  if (result.default && result.default.length > 0) {
-    return {
-      data: result.default,
-      source: 'default',
-      cloneId: undefined,
-      isBaseline: false,
-    };
-  }
-  
   return {
     data: [],
     source: null,
-    error: 'No tutors found in fallback hierarchy',
+    error: 'No tutors found for this clone',
   };
 }
 

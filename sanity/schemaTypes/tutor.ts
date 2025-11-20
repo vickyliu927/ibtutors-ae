@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
 import { addCloneSupport } from '../lib/cloneSchemaHelpers'
 
+
 const tutorSchema = defineType({
   name: 'tutor',
   title: 'Tutors',

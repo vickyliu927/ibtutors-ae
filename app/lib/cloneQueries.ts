@@ -311,17 +311,10 @@ export const tutorQueries = {
 
     const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
     
-    // For arrays, return the first non-empty array with highest priority
+    // STRICT: Do not fall back to baseline/default for tutors
     if (result.cloneSpecific && result.cloneSpecific.length > 0) {
       return { data: result.cloneSpecific, source: 'cloneSpecific', cloneId };
     }
-    if (result.baseline && result.baseline.length > 0) {
-      return { data: result.baseline, source: 'baseline', isBaseline: true };
-    }
-    if (result.default && result.default.length > 0) {
-      return { data: result.default, source: 'default' };
-    }
-
     return { data: [], source: null };
   }
 };
@@ -583,7 +576,11 @@ export const tutorProfilesSectionQueries = {
   async fetch(cloneId: string): Promise<ContentResult<any>> {
     const query = tutorProfilesSectionQueries.buildQuery(cloneId);
     const result = await client.fetch(query, {}, { next: { revalidate: 300 } });
-    return resolveContent(result);
+    // STRICT: Do not fall back to baseline/default for tutor profiles section metadata
+    if (result?.cloneSpecific) {
+      return { data: result.cloneSpecific, source: 'cloneSpecific', cloneId };
+    }
+    return { data: null, source: null };
   }
 };
 
