@@ -126,7 +126,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
           {/* Heading Section */}
           <div className="flex w-[560px] flex-col items-start gap-4">
             {/* Title */}
-            <h1 className="self-stretch text-[60px] font-medium leading-[120%] font-gilroy">
+            <h1 className="self-stretch text-[60px] font-semibold leading-[120%] font-gilroy">
               <span className="text-[#171D23]">{heroData.titleFirstRow}</span>
               <br />
               <span className="text-[#001A96]">{heroData.titleSecondRow}</span>
@@ -214,7 +214,7 @@ const HeroSection = ({ heroData }: { heroData?: HeroData }) => {
         {/* Mobile Content Container */}
         <div className="flex-1 px-[29px] py-[39px] flex flex-col justify-start items-start max-w-[508px] mx-auto">
           {/* Mobile Title - Using Sanity data */}
-          <h1 className="text-[48px] font-medium leading-[120%] font-gilroy mb-[29px] w-full">
+          <h1 className="text-[48px] font-semibold leading-[120%] font-gilroy mb-[29px] w-full">
             <span className="text-[#171D23]">{heroData.titleFirstRow}</span>
             <br />
             <span className="text-[#001A96]">{heroData.titleSecondRow}</span>
