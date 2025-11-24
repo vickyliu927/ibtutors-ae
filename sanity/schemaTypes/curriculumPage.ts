@@ -190,6 +190,19 @@ const curriculumPageSchema = defineType({
       type: 'reference',
       to: [{ type: 'faq_section' }],
       description: 'Optional: Add a FAQ section to this curriculum page',
+      options: {
+        filter: ({ document }: any) => {
+          const cloneRef = document?.cloneReference?._ref
+          if (cloneRef) {
+            return {
+              filter:
+                '(pageType == "curriculum") && (cloneReference._ref == $cloneId || !defined(cloneReference))',
+              params: { cloneId: cloneRef },
+            }
+          }
+          return { filter: 'pageType == "curriculum"' }
+        },
+      },
     }),
     defineField({
       name: 'showAdvertBlockAfterTutors',

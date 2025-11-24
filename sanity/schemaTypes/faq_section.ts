@@ -14,6 +14,17 @@ const faqSectionSchema = defineType({
       description: 'The main title for the FAQ section (e.g., "Frequently Asked Questions")',
     }),
     defineField({
+      name: 'searchAliases',
+      title: 'Search aliases (website names, keywords)',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description:
+        'Optional: add website names or extra keywords so this section can be found when searching by website name. Useful for GLOBAL sections.',
+      options: {
+        layout: 'tags',
+      },
+    }),
+    defineField({
       name: 'subtitle',
       title: 'Section Subtitle',
       type: 'text',
@@ -88,6 +99,7 @@ const faqSectionSchema = defineType({
   __experimental_search: [
     { path: 'title', weight: 10 },
     { path: 'subtitle', weight: 6 },
+    { path: 'searchAliases', weight: 9 },
     // Allow searching by the website/clone name and id
     { path: 'cloneReference->cloneName', weight: 9 },
     { path: 'cloneReference->cloneId.current', weight: 5 },

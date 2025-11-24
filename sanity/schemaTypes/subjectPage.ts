@@ -170,6 +170,21 @@ const subjectPageSchema = defineType({
       type: 'reference',
       to: [{ type: 'faq_section' }],
       description: 'Optional: Add a FAQ section to this subject page',
+      options: {
+        // Show sections for this website (clone) or GLOBAL; and subject-specific
+        filter: ({ document }: any) => {
+          const cloneRef = document?.cloneReference?._ref
+          if (cloneRef) {
+            return {
+              filter:
+                '(pageType == "subject") && (cloneReference._ref == $cloneId || !defined(cloneReference))',
+              params: { cloneId: cloneRef },
+            }
+          }
+          // No clone on this page: show subject-type sections of any clone and global
+          return { filter: 'pageType == "subject"' }
+        },
+      },
     }),
     defineField({
       name: 'showAdvertBlockAfterTutors',

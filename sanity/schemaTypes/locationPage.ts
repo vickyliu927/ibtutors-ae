@@ -170,6 +170,19 @@ const locationPageSchema = defineType({
       type: 'reference',
       to: [{ type: 'faq_section' }],
       description: 'Optional: Add a FAQ section to this location page',
+      options: {
+        filter: ({ document }: any) => {
+          const cloneRef = document?.cloneReference?._ref
+          if (cloneRef) {
+            return {
+              filter:
+                '(pageType == "location") && (cloneReference._ref == $cloneId || !defined(cloneReference))',
+              params: { cloneId: cloneRef },
+            }
+          }
+          return { filter: 'pageType == "location"' }
+        },
+      },
     }),
     defineField({
       name: 'showAdvertBlockAfterTutors',
