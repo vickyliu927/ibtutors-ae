@@ -29,7 +29,6 @@ const faqSectionSchema = defineType({
           { title: 'Subject Pages', value: 'subject' },
           { title: 'Curriculum Pages', value: 'curriculum' },
           { title: 'Location Pages', value: 'location' },
-          { title: 'General/Shared', value: 'general' },
         ],
         layout: 'radio',
       },
@@ -109,7 +108,6 @@ const faqSectionSchema = defineType({
         subject: '📚 Subject Pages',
         curriculum: '🎓 Curriculum Pages',
         location: '📍 Location Pages',
-        general: '🌐 General/Shared',
       };
 
       const pageTypeLabel = pageTypeLabels[pageType as string] || '❓ Unknown';
