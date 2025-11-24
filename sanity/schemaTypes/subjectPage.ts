@@ -214,6 +214,14 @@ const subjectPageSchema = defineType({
       ],
     }),
   ],
+  __experimental_search: [
+    { path: 'subject', weight: 10 },
+    { path: 'title', weight: 8 },
+    { path: 'seo.pageTitle', weight: 7 },
+    // Also searchable by website/clone name and id
+    { path: 'cloneReference->cloneName', weight: 9 },
+    { path: 'cloneReference->cloneId.current', weight: 5 },
+  ],
   preview: {
     select: {
       title: 'subject',

@@ -85,6 +85,18 @@ const faqSectionSchema = defineType({
       description: 'Select the FAQs to display in this section',
     }),
   ],
+  __experimental_search: [
+    { path: 'title', weight: 10 },
+    { path: 'subtitle', weight: 6 },
+    // Allow searching by the website/clone name and id
+    { path: 'cloneReference->cloneName', weight: 9 },
+    { path: 'cloneReference->cloneId.current', weight: 5 },
+    // Helpful contextual fields when searching inside relations
+    { path: 'pageType', weight: 2 },
+    { path: 'subjectPage->title', weight: 5 },
+    { path: 'subjectPage->subject', weight: 5 },
+    { path: 'locationPage->location', weight: 5 },
+  ],
   preview: {
     select: {
       title: 'title',

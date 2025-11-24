@@ -234,6 +234,13 @@ const curriculumPageSchema = defineType({
       ],
     }),
   ],
+  __experimental_search: [
+    { path: 'curriculum', weight: 10 },
+    { path: 'title', weight: 8 },
+    { path: 'seo.pageTitle', weight: 7 },
+    { path: 'cloneReference->cloneName', weight: 9 },
+    { path: 'cloneReference->cloneId.current', weight: 5 },
+  ],
   preview: {
     select: {
       title: 'curriculum',
