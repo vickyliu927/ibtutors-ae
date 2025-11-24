@@ -60,6 +60,19 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Google tag (gtag.js) - GA4 G-H9E5WDK5MX */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-H9E5WDK5MX"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-H9E5WDK5MX');
+          `}
+        </Script>
         <meta name="google-site-verification" content="v4S2fecY05CWeIbQ6FvCG-5LZv2FvTJa56JfscMhS_Y" />
         {/* Removed render-blocking Google Fonts for Gilroy; Inter is provided via next/font */}
             {/* Google Tag Manager */}
@@ -94,19 +107,6 @@ export default async function RootLayout({
             }),
           }}
         />
-        {/* Google tag (gtag.js) for GA4 */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-84X27600SD"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-84X27600SD');
-          `}
-        </Script>
       </head>
       <body className={inter.className}>
         {/* Google Tag Manager (noscript) */}
