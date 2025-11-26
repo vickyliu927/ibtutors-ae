@@ -203,8 +203,9 @@ Source URL: ${encodeHTML(sourceUrl)}`;
       // Initialize Resend client
       const resend = new Resend(process.env.RESEND_API_KEY);
       const recipients = [
-        'ghejlswd@mailparser.io',
+        'f1fd92fd7a2fe8aa13a1@cloudmailin.net',
         'rahil@tutorchase.com',
+        'syed@tutorchase.com',
         'info@tutorchase.com',
         'vicky@tutorchase.com',
       ];

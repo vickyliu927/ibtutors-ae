@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   const emailParam = searchParams.get('email');
   const recipients = emailParam
     ? emailParam.split(',').map((s) => s.trim()).filter(Boolean)
-    : ['ghejlswd@mailparser.io', 'rahil@tutorchase.com', 'info@tutorchase.com', 'vicky@tutorchase.com'];
+    : ['f1fd92fd7a2fe8aa13a1@cloudmailin.net', 'rahil@tutorchase.com', 'syed@tutorchase.com', 'info@tutorchase.com', 'vicky@tutorchase.com'];
   console.log('=== EMAIL TEST ENDPOINT CALLED ===');
   console.log('Timestamp:', new Date().toISOString());
   
