@@ -114,15 +114,18 @@ const faqSectionSchema = defineType({
       title: 'title',
       subtitle: 'subtitle',
       pageType: 'pageType',
-      subjectPageTitle: 'subjectPage.title',
-      subjectPageSubject: 'subjectPage.subject',
-      locationPageLocation: 'locationPage.location',
+      // dereference related docs so we can compose a rich label
+      cloneName: 'cloneReference->cloneName',
+      subjectPageTitle: 'subjectPage->title',
+      subjectPageSubject: 'subjectPage->subject',
+      locationPageLocation: 'locationPage->location',
     },
     prepare(selection: any) {
       const {
         title = '',
         subtitle = '',
         pageType = '',
+        cloneName = '',
         subjectPageTitle = '',
         subjectPageSubject = '',
         locationPageLocation = '',
@@ -135,12 +138,18 @@ const faqSectionSchema = defineType({
       };
 
       const pageTypeLabel = pageTypeLabels[pageType as string] || '❓ Unknown';
-      const subjectLabel = subjectPageTitle ? ` → ${subjectPageTitle}` : (subjectPageSubject ? ` → ${subjectPageSubject}` : '');
-      const locationLabel = locationPageLocation ? ` → ${locationPageLocation}` : '';
+      const subjectOrLocation =
+        subjectPageTitle || subjectPageSubject || locationPageLocation || '';
+      
+      // Compose a searchable, scannable title like: "FAQ — Dubai Tutors — Math"
+      const composedTitleParts = [title];
+      if (cloneName) composedTitleParts.push(cloneName);
+      if (subjectOrLocation) composedTitleParts.push(subjectOrLocation);
+      const composedTitle = composedTitleParts.filter(Boolean).join(' — ');
       
       return {
-        title: `${title}`,
-        subtitle: `${pageTypeLabel}${subjectLabel || locationLabel}${subtitle ? ` • ${subtitle}` : ''}`,
+        title: composedTitle,
+        subtitle: `${pageTypeLabel}${subtitle ? ` • ${subtitle}` : ''}`,
       }
     },
   },
