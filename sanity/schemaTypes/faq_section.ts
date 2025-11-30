@@ -114,18 +114,16 @@ const faqSectionSchema = defineType({
       title: 'title',
       subtitle: 'subtitle',
       pageType: 'pageType',
-      // dereference related docs so we can compose a rich label
-      cloneName: 'cloneReference->cloneName',
-      subjectPageTitle: 'subjectPage->title',
-      subjectPageSubject: 'subjectPage->subject',
-      locationPageLocation: 'locationPage->location',
+      // Keep simple paths (no '->') to avoid Studio key validation issues
+      subjectPageTitle: 'subjectPage.title',
+      subjectPageSubject: 'subjectPage.subject',
+      locationPageLocation: 'locationPage.location',
     },
     prepare(selection: any) {
       const {
         title = '',
         subtitle = '',
         pageType = '',
-        cloneName = '',
         subjectPageTitle = '',
         subjectPageSubject = '',
         locationPageLocation = '',
@@ -138,14 +136,8 @@ const faqSectionSchema = defineType({
       };
 
       const pageTypeLabel = pageTypeLabels[pageType as string] || '❓ Unknown';
-      const subjectOrLocation =
-        subjectPageTitle || subjectPageSubject || locationPageLocation || '';
-      
-      // Compose a searchable, scannable title like: "FAQ — Dubai Tutors — Math"
-      const composedTitleParts = [title];
-      if (cloneName) composedTitleParts.push(cloneName);
-      if (subjectOrLocation) composedTitleParts.push(subjectOrLocation);
-      const composedTitle = composedTitleParts.filter(Boolean).join(' — ');
+      const subjectOrLocation = subjectPageTitle || subjectPageSubject || locationPageLocation || '';
+      const composedTitle = [title, subjectOrLocation].filter(Boolean).join(' — ');
       
       return {
         title: composedTitle,

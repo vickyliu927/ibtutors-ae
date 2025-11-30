@@ -157,9 +157,10 @@ export function createCloneAwarePreview(originalPreview: any) {
     select: {
       ...originalPreview.select,
       isActive: 'isActive',
-      cloneReference: 'cloneReference->cloneName',
-      cloneId: 'cloneReference->cloneId.current',
-      isBaseline: 'cloneReference->baselineClone',
+      // Avoid '->' in select to prevent Studio structure path crash
+      cloneReference: 'cloneReference.cloneName',
+      cloneId: 'cloneReference.cloneId.current',
+      isBaseline: 'cloneReference.baselineClone',
     },
     prepare(selection: any) {
       const originalResult = originalPreview.prepare ? originalPreview.prepare(selection) : selection;
