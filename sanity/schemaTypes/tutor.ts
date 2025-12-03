@@ -188,6 +188,12 @@ const tutorSchema = defineType({
               'UCAT',
               'ESAT',
               'LNAT',
+              // UK School Entry Tests
+              'ISEB Pre-Test',
+              '11+',
+              'Common Entrance',
+              'UKiset',
+              'CAT4',
               // Admissions
               'Oxbridge',
               'US Admissions',
@@ -409,6 +415,12 @@ const tutorSchema = defineType({
               'UCAT',
               'ESAT',
               'LNAT',
+              // UK School Entry Tests
+              'ISEB Pre-Test',
+              '11+',
+              'Common Entrance',
+              'UKiset',
+              'CAT4',
               // Admissions
               'Oxbridge',
               'US Admissions',
