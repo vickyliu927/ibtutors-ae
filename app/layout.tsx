@@ -8,6 +8,7 @@ import { GTMHead, GTMNoScript } from './components/GTM';
 import { getNavigationData } from './lib/getNavigationData';
 import { getSeoData } from './lib/getSeoData';
 import { getCurrentDomainFromHeaders, getCanonicalDomain } from './lib/sitemapUtils';
+import { Analytics } from '@vercel/analytics/next';
 
 // Load Inter font with display: swap for better performance
 const inter = Inter({ subsets: ['latin'] });
@@ -100,6 +101,7 @@ export default async function RootLayout({
         />
         {children}
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
