@@ -206,7 +206,6 @@ Source URL: ${encodeHTML(sourceUrl)}`;
         'f1fd92fd7a2fe8aa13a1@cloudmailin.net',
         'rahil@tutorchase.com',
         'syed@tutorchase.com',
-        'info@tutorchase.com',
         'vicky@tutorchase.com',
       ];
 

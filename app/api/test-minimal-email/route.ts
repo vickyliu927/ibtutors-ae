@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     const emailParam = url2.searchParams.get('email');
     const recipients = emailParam
       ? emailParam.split(',').map((s) => s.trim()).filter(Boolean)
-    : ['f1fd92fd7a2fe8aa13a1@cloudmailin.net', 'rahil@tutorchase.com', 'syed@tutorchase.com', 'info@tutorchase.com', 'vicky@tutorchase.com'];
+    : ['f1fd92fd7a2fe8aa13a1@cloudmailin.net', 'rahil@tutorchase.com', 'syed@tutorchase.com', 'vicky@tutorchase.com'];
 
     // Test with direct fetch instead of SDK
     const response = await fetch('https://api.resend.com/emails', {
