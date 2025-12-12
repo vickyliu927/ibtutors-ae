@@ -105,8 +105,9 @@ export default function ExportSubmissionsTool() {
         selectedWebsite !== '__all__' ? ` && sourceWebsite == "${selectedWebsite.replace(/"/g, '\\"')}"` : ''
       const fromIso = fromDate ? toStartOfDayISO(fromDate) : ''
       const toIso = toDate ? toEndOfDayISO(toDate) : ''
-      const dateFilterFrom = fromIso ? ` && defined(submittedAt) && submittedAt >= dateTime("${fromIso}")` : ''
-      const dateFilterTo = toIso ? ` && defined(submittedAt) && submittedAt <= dateTime("${toIso}")` : ''
+      // Cast submittedAt to dateTime() to ensure proper comparison semantics in GROQ
+      const dateFilterFrom = fromIso ? ` && dateTime(submittedAt) >= dateTime("${fromIso}")` : ''
+      const dateFilterTo = toIso ? ` && dateTime(submittedAt) <= dateTime("${toIso}")` : ''
       const filter = `${base}${websiteFilter}${dateFilterFrom}${dateFilterTo}`
       const projection = `{
         _id,
