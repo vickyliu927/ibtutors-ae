@@ -5,6 +5,7 @@ import { RiPagesLine } from 'react-icons/ri'
 import { MdSettings, MdLink } from 'react-icons/md'
 import { FiGlobe, FiUsers } from 'react-icons/fi'
 import { AiOutlineMessage } from 'react-icons/ai'
+import ExportSubmissionsTool from './tools/ExportSubmissionsTool'
 
 // Helper function to create the five standard content categories for a clone
 const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
@@ -345,6 +346,13 @@ const createCloneContentCategories = (S: StructureBuilder, clone: any) => {
                   .filter(`_type == "contactFormSubmission" && sourceWebsite == "${cloneName}"`)
                                     .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
                                 ),
+                              S.listItem()
+                                .title('Export Submissions (CSV)')
+                                .child(
+                                  S.component()
+                                    .title(`${cloneName} - Export Submissions`)
+                                    .component(ExportSubmissionsTool)
+                                ),
                             ])
                         ),
 
@@ -644,6 +652,13 @@ export const structure = (S: StructureBuilder) =>
                             .title('All Contact Form Submissions')
                             .filter('_type == "contactFormSubmission"')
                             .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Export Submissions (CSV)')
+                        .child(
+                          S.component()
+                            .title('Export Contact Form Submissions')
+                            .component(ExportSubmissionsTool)
                         ),
                     ])
                 ),
