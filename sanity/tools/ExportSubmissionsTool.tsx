@@ -41,6 +41,8 @@ export default function ExportSubmissionsTool() {
   const [error, setError] = useState<string | null>(null)
   const [websites, setWebsites] = useState<string[]>([])
   const [selectedWebsite, setSelectedWebsite] = useState<string>('__all__')
+  const [fromDate, setFromDate] = useState<string>('') // YYYY-MM-DD
+  const [toDate, setToDate] = useState<string>('') // YYYY-MM-DD
 
   const headers = useMemo(
     () => [
@@ -83,12 +85,29 @@ export default function ExportSubmissionsTool() {
     }
   }, [client])
 
+  // Helpers to convert date-only input to inclusive ISO datetime range
+  const toStartOfDayISO = useCallback((dateStr: string) => {
+    if (!dateStr) return ''
+    // Interpret as local midnight, export as Zulu for GROQ dateTime()
+    const d = new Date(`${dateStr}T00:00:00`)
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().replace('.000Z', 'Z')
+  }, [])
+  const toEndOfDayISO = useCallback((dateStr: string) => {
+    if (!dateStr) return ''
+    const d = new Date(`${dateStr}T23:59:59.999`)
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()
+  }, [])
+
   const buildQuery = useCallback(
     (start: number, end: number) => {
       const base = `_type == "contactFormSubmission"`
       const websiteFilter =
         selectedWebsite !== '__all__' ? ` && sourceWebsite == "${selectedWebsite.replace(/"/g, '\\"')}"` : ''
-      const filter = `${base}${websiteFilter}`
+      const fromIso = fromDate ? toStartOfDayISO(fromDate) : ''
+      const toIso = toDate ? toEndOfDayISO(toDate) : ''
+      const dateFilterFrom = fromIso ? ` && defined(submittedAt) && submittedAt >= dateTime("${fromIso}")` : ''
+      const dateFilterTo = toIso ? ` && defined(submittedAt) && submittedAt <= dateTime("${toIso}")` : ''
+      const filter = `${base}${websiteFilter}${dateFilterFrom}${dateFilterTo}`
       const projection = `{
         _id,
         submittedAt,
@@ -107,7 +126,7 @@ export default function ExportSubmissionsTool() {
         filter
       }] | order(submittedAt desc, _createdAt desc) [${start}...${end}] ${projection}`
     },
-    [selectedWebsite]
+    [selectedWebsite, fromDate, toDate, toStartOfDayISO, toEndOfDayISO]
   )
 
   const handleExport = useCallback(async () => {
@@ -149,9 +168,13 @@ export default function ExportSubmissionsTool() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       const date = new Date().toISOString().slice(0, 10)
-      const suffix = selectedWebsite !== '__all__' ? `-${selectedWebsite.replace(/\s+/g, '-').toLowerCase()}` : ''
+      const websiteSuffix = selectedWebsite !== '__all__' ? `-${selectedWebsite.replace(/\s+/g, '-').toLowerCase()}` : ''
+      const rangeSuffix =
+        fromDate || toDate
+          ? `-range-${fromDate || 'start'}-to-${toDate || 'now'}`
+          : ''
       a.href = url
-      a.download = `contact-submissions${suffix}-${date}.csv`
+      a.download = `contact-submissions${websiteSuffix}${rangeSuffix}-${date}.csv`
       a.style.display = 'none'
       document.body.appendChild(a)
       a.click()
@@ -194,6 +217,20 @@ export default function ExportSubmissionsTool() {
             </option>
           ))}
         </select>
+        <label style={{ fontWeight: 500 }}>From:</label>
+        <input
+          type="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+          style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e1e1e1' }}
+        />
+        <label style={{ fontWeight: 500 }}>To:</label>
+        <input
+          type="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+          style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e1e1e1' }}
+        />
         <button
           type="button"
           onClick={handleExport}
