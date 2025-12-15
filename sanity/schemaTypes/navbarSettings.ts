@@ -24,50 +24,53 @@ const navbarSettingsSchema = defineType({
     defineField({
       name: 'navigation',
       title: 'Navigation',
-          type: 'object',
-          fields: [
+      description: 'Configure desktop navigation order. Leave empty to show only the homepage.',
+      type: 'object',
+      initialValue: {
+        navOrder: [],
+      },
+      fields: [
+        defineField({
+          name: 'navOrder',
+          title: 'Navigation Order',
+          description: 'Drag to add/reorder: All Subjects, All Locations, selected Curriculum pages, and Blog. Leave empty to disable all and show only the homepage.',
+          type: 'array',
+          of: [
             defineField({
-              name: 'navOrder',
-              title: 'Navigation Order',
-              description: 'Drag to reorder: All Subjects, All Locations, selected Curriculum pages, and Blog.',
-              type: 'array',
-              of: [
+              type: 'object',
+              name: 'navItem',
+              title: 'Nav Item',
+              fields: [
                 defineField({
-                  type: 'object',
-                  name: 'navItem',
-                  title: 'Nav Item',
-                  fields: [
-                    defineField({
-                      name: 'itemType',
-                      title: 'Item Type',
-                      type: 'string',
-                      options: { list: [
-                        { title: 'All Subjects', value: 'allSubjects' },
-                        { title: 'All Locations', value: 'locations' },
-                        { title: 'Curriculum', value: 'curriculum' },
-                        { title: 'Blog', value: 'blog' },
-                      ] },
-                      validation: Rule => Rule.required(),
-                    }),
-                    defineField({
-                      name: 'curriculumTarget',
-                      title: 'Curriculum Page',
-                      type: 'reference',
-                      to: [{ type: 'curriculumPage' }],
-                      options: { disableNew: true },
-                      hidden: ({ parent }) => parent?.itemType !== 'curriculum',
-                      validation: Rule => Rule.custom((val, ctx) => (ctx.parent as any)?.itemType === 'curriculum' ? (val ? true : 'Select a curriculum page') : true)
-                    })
-                  ],
-                  preview: {
-                    select: { itemType: 'itemType', title: 'curriculumTarget.title' },
-                    prepare: (sel: any) => sel.itemType === 'curriculum' ? { title: sel.title || 'Curriculum' } : { title: sel.itemType }
-                  }
+                  name: 'itemType',
+                  title: 'Item Type',
+                  type: 'string',
+                  options: { list: [
+                    { title: 'All Subjects', value: 'allSubjects' },
+                    { title: 'All Locations', value: 'locations' },
+                    { title: 'Curriculum', value: 'curriculum' },
+                    { title: 'Blog', value: 'blog' },
+                  ] },
+                  validation: Rule => Rule.required(),
+                }),
+                defineField({
+                  name: 'curriculumTarget',
+                  title: 'Curriculum Page',
+                  type: 'reference',
+                  to: [{ type: 'curriculumPage' }],
+                  options: { disableNew: true },
+                  hidden: ({ parent }) => parent?.itemType !== 'curriculum',
+                  validation: Rule => Rule.custom((val, ctx) => (ctx.parent as any)?.itemType === 'curriculum' ? (val ? true : 'Select a curriculum page') : true)
                 })
               ],
-            }),
+              preview: {
+                select: { itemType: 'itemType', title: 'curriculumTarget.title' },
+                prepare: (sel: any) => sel.itemType === 'curriculum' ? { title: sel.title || 'Curriculum' } : { title: sel.itemType }
+              }
+            })
+          ],
+        }),
       ],
-      validation: Rule => Rule.required(),
     }),
     defineField({
       name: 'mobileMenu',
