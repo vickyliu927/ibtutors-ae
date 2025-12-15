@@ -25,7 +25,7 @@ export function joinUrl(base: string, path: string): string {
   return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
 }
 
-async function getAllowedTypesForClone(cloneId: string | null): Promise<{
+export async function getAllowedTypesForClone(cloneId: string | null): Promise<{
   allowSubjects: boolean;
   allowCurriculums: boolean;
   allowLocations: boolean;

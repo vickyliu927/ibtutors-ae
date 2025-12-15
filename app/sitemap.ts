@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { client } from '@/sanity/lib/client';
 import { headers } from 'next/headers';
-import { getCurrentDomainFromHeaders, getCanonicalDomain, joinUrl, getCloneIdForCurrentDomain } from './lib/sitemapUtils';
+import { getCurrentDomainFromHeaders, getCanonicalDomain, joinUrl, getCloneIdForCurrentDomain, getAllowedTypesForClone } from './lib/sitemapUtils';
 
 // Set revalidation time to 1 hour
 export const revalidate = 3600;
@@ -29,40 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const isClone = !!cloneId;
     
     // Read Navigation dropdown to determine which page types are enabled
-    async function getAllowedTypes(): Promise<{ allowSubjects: boolean; allowCurriculums: boolean; allowLocations: boolean }> {
-      try {
-        if (!isClone) {
-          const result = await client.fetch(
-            `*[_type == "navbarSettings" && !defined(cloneReference)][0]{ navigation{ navOrder[]{ itemType } } }`,
-            {},
-          );
-          const items: any[] = result?.navigation?.navOrder || [];
-          if (!Array.isArray(items) || items.length === 0) return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
-          const allowSubjects = items.some((i: any) => i?.itemType === 'allSubjects');
-          const allowCurriculums = items.some((i: any) => i?.itemType === 'curriculum');
-          const allowLocations = items.some((i: any) => i?.itemType === 'locations');
-          return { allowSubjects, allowCurriculums, allowLocations };
-        }
-        const result = await client.fetch(
-          `{
-            "cloneSpecific": *[_type == "navbarSettings" && cloneReference->cloneId.current == $cloneId][0]{ navigation{ navOrder[]{ itemType } } },
-            "baseline": *[_type == "navbarSettings" && cloneReference->baselineClone == true][0]{ navigation{ navOrder[]{ itemType } } },
-            "default": *[_type == "navbarSettings" && !defined(cloneReference)][0]{ navigation{ navOrder[]{ itemType } } }
-          }`,
-          { cloneId }
-        );
-        const nav = result?.cloneSpecific || result?.baseline || result?.default || null;
-        const items: any[] = nav?.navigation?.navOrder || [];
-        if (!Array.isArray(items) || items.length === 0) return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
-        const allowSubjects = items.some((i: any) => i?.itemType === 'allSubjects');
-        const allowCurriculums = items.some((i: any) => i?.itemType === 'curriculum');
-        const allowLocations = items.some((i: any) => i?.itemType === 'locations');
-        return { allowSubjects, allowCurriculums, allowLocations };
-      } catch {
-        return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
-      }
-    }
-    const { allowSubjects, allowCurriculums, allowLocations } = await getAllowedTypes();
+    const { allowSubjects, allowCurriculums, allowLocations } = await getAllowedTypesForClone(cloneId);
     
     // Read page availability flags from the clone
     const flags = isClone ? await client.fetch(
