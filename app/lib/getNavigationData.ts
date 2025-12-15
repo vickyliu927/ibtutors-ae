@@ -51,6 +51,36 @@ export interface NavigationData {
   hasBlog: boolean;
 }
 
+function getAllowedTypesFromNavbar(navbarData: any): {
+  allowSubjects: boolean;
+  allowCurriculums: boolean;
+  allowLocations: boolean;
+  allowBlog: boolean;
+} {
+  try {
+    const items: any[] = navbarData?.navigation?.navOrder || [];
+    if (!Array.isArray(items) || items.length === 0) {
+      // Empty dropdown → homepage only
+      return { allowSubjects: false, allowCurriculums: false, allowLocations: false, allowBlog: false };
+    }
+    let allowSubjects = false;
+    let allowCurriculums = false;
+    let allowLocations = false;
+    let allowBlog = false;
+    for (const item of items) {
+      const t = item?.itemType;
+      if (t === 'allSubjects') allowSubjects = true;
+      if (t === 'locations') allowLocations = true;
+      if (t === 'blog') allowBlog = true;
+      if (t === 'curriculum') allowCurriculums = true;
+    }
+    return { allowSubjects, allowCurriculums, allowLocations, allowBlog };
+  } catch {
+    // On any error, be conservative: homepage only
+    return { allowSubjects: false, allowCurriculums: false, allowLocations: false, allowBlog: false };
+  }
+}
+
 /**
  * Server-side function to fetch all navigation data with clone awareness
  */
@@ -76,7 +106,7 @@ export async function getNavigationData(): Promise<NavigationData> {
     const navbarPromise = fetchNavbarWithFallback(cloneId);
     
     // Execute all queries in parallel
-    const [subjects, curriculums, locations, navbarData, hasBlog] = await Promise.all([
+    const [subjectsRaw, curriculumsRaw, locationsRaw, navbarData, hasBlogRaw] = await Promise.all([
       subjectsPromise,
       curriculumsPromise, 
       locationsPromise,
@@ -87,6 +117,14 @@ export async function getNavigationData(): Promise<NavigationData> {
     // Get current domain for link generation
     const currentDomain = getCurrentDomain();
     
+    // Apply gating based on Navigation dropdown
+    const { allowSubjects, allowCurriculums, allowLocations, allowBlog } = getAllowedTypesFromNavbar(navbarData);
+    const subjects = allowSubjects ? subjectsRaw : [];
+    const curriculums = allowCurriculums ? curriculumsRaw : [];
+    const locations = allowLocations ? locationsRaw : [];
+    const hasBlog = allowBlog ? hasBlogRaw : false;
+
+    console.log(`[NavigationData] Allowed types — subjects:${allowSubjects} curriculums:${allowCurriculums} locations:${allowLocations} blog:${allowBlog}`);
     console.log(`[NavigationData] Fetched ${subjects.length} subjects, ${curriculums.length} curriculums, ${locations.length} locations for clone: ${cloneId || 'global'}`);
     
     return {

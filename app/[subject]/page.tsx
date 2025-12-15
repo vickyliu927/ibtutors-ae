@@ -1112,6 +1112,18 @@ export default async function DynamicPage({
     `Subject: ${params.subject}`
   );
 
+  // Determine enabled page types from Navigation dropdown
+  const navbarForGating = await navbarQueries.fetch(cloneContext.cloneId || 'global');
+  const navItems: any[] = (navbarForGating?.data as any)?.navigation?.navOrder || [];
+  const allowSubjects = Array.isArray(navItems) && navItems.some((i: any) => i?.itemType === 'allSubjects');
+  const allowCurriculums = Array.isArray(navItems) && navItems.some((i: any) => i?.itemType === 'curriculum');
+  const allowLocations = Array.isArray(navItems) && navItems.some((i: any) => i?.itemType === 'locations');
+  // If dropdown is empty → homepage only
+  const isDropdownEmpty = !Array.isArray(navItems) || navItems.length === 0;
+  if (isDropdownEmpty) {
+    return notFound();
+  }
+
   // Fetch global/clone-specific Tutor Profiles section to use its Trusted By text as fallback
   const tutorProfilesSectionResult = await tutorProfilesSectionQueries.fetch(cloneContext.cloneId || 'global');
   const globalTrustedByText = tutorProfilesSectionResult?.data?.trustedByText as string | undefined;
@@ -1148,8 +1160,8 @@ export default async function DynamicPage({
     return notFound();
   }
 
-  // If curriculum pages are disabled for this clone, skip curriculum resolution
-  const disableCurriculum = cloneContext.clone?.enableSubjectPagesOnly === true;
+  // If curriculum pages are disabled for this clone or by nav, skip curriculum resolution
+  const disableCurriculum = (cloneContext.clone?.enableSubjectPagesOnly === true) || !allowCurriculums;
   // First check if it's a curriculum page
   const curriculumResult = disableCurriculum ? { pageData: null } as any : await getCurriculumPageDataWithCloneContext(
     params.subject, 
@@ -1311,7 +1323,7 @@ export default async function DynamicPage({
   }
   
   // If not a curriculum page, and subject pages are allowed, check if it's a subject page
-  const disableSubject = cloneContext.clone?.enableCurriculumPagesOnly === true;
+  const disableSubject = (cloneContext.clone?.enableCurriculumPagesOnly === true) || !allowSubjects;
   const subjectResult = disableSubject ? { pageData: null } as any : await getSubjectPageDataWithCloneContext(
     params.subject,
     cloneContext.cloneId
@@ -1473,11 +1485,13 @@ export default async function DynamicPage({
     );
   }
 
-  // If not a subject page, try a location page at the same level
-  const locationResult = await getLocationPageDataWithCloneContext(
-    params.subject,
-    cloneContext.cloneId
-  );
+  // If not a subject page, try a location page at the same level (if allowed by nav)
+  const locationResult = allowLocations
+    ? await getLocationPageDataWithCloneContext(
+      params.subject,
+      cloneContext.cloneId
+    )
+    : { pageData: null } as any;
   if (locationResult.pageData) {
     // Check for external redirect override
     if (locationResult.pageData.externalRedirectEnabled && locationResult.pageData.externalRedirectUrl) {

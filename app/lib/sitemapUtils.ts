@@ -25,6 +25,48 @@ export function joinUrl(base: string, path: string): string {
   return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
 }
 
+async function getAllowedTypesForClone(cloneId: string | null): Promise<{
+  allowSubjects: boolean;
+  allowCurriculums: boolean;
+  allowLocations: boolean;
+}> {
+  try {
+    if (!cloneId) {
+      const result = await cachedFetch<any>(
+        `*[_type == "navbarSettings" && !defined(cloneReference)][0]{ navigation{ navOrder[]{ itemType } } }`,
+        {},
+        { next: { revalidate: 3600, tags: ['navbar-settings', 'sitemap-data'] } }
+      );
+      const items: any[] = result?.navigation?.navOrder || [];
+      if (!Array.isArray(items) || items.length === 0) return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
+      return {
+        allowSubjects: items.some(i => i?.itemType === 'allSubjects'),
+        allowCurriculums: items.some(i => i?.itemType === 'curriculum'),
+        allowLocations: items.some(i => i?.itemType === 'locations'),
+      };
+    }
+    const res = await cachedFetch<any>(
+      `{
+        "cloneSpecific": *[_type == "navbarSettings" && cloneReference->cloneId.current == $cloneId][0]{ navigation{ navOrder[]{ itemType } } },
+        "baseline": *[_type == "navbarSettings" && cloneReference->baselineClone == true][0]{ navigation{ navOrder[]{ itemType } } },
+        "default": *[_type == "navbarSettings" && !defined(cloneReference)][0]{ navigation{ navOrder[]{ itemType } } }
+      }`,
+      { cloneId },
+      { next: { revalidate: 3600, tags: ['navbar-settings', 'sitemap-data'] } }
+    );
+    const nav = res?.cloneSpecific || res?.baseline || res?.default || null;
+    const items: any[] = nav?.navigation?.navOrder || [];
+    if (!Array.isArray(items) || items.length === 0) return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
+    return {
+      allowSubjects: items.some(i => i?.itemType === 'allSubjects'),
+      allowCurriculums: items.some(i => i?.itemType === 'curriculum'),
+      allowLocations: items.some(i => i?.itemType === 'locations'),
+    };
+  } catch {
+    return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
+  }
+}
+
 /**
  * Get all domain-to-clone mappings from Sanity
  */
@@ -200,7 +242,11 @@ export async function generateSitemapForDomain(domain: string): Promise<Metadata
   const cloneId = mapping?.cloneId || null;
   
   // Get pages for this clone
-  const { subjectPages, curriculumPages } = await getPagesForClone(cloneId);
+  let { subjectPages, curriculumPages } = await getPagesForClone(cloneId);
+  // Gate by navigation dropdown (empty → homepage only)
+  const { allowSubjects, allowCurriculums } = await getAllowedTypesForClone(cloneId);
+  if (!allowSubjects) subjectPages = [];
+  if (!allowCurriculums) curriculumPages = [];
   
   // Get current timestamp for homepage
   const currentTimestamp = new Date().toISOString();

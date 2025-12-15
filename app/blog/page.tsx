@@ -8,6 +8,8 @@ import { getBlogPosts, getBlogCategories } from '../lib/getBlogData';
 import { client } from '@/sanity/lib/client';
 import { getCloneIdForCurrentDomain } from '../lib/sitemapUtils';
 import { urlFor } from '@/sanity/lib/image';
+import { navbarQueries } from '../lib/cloneQueries';
+import { notFound } from 'next/navigation';
 
 export const revalidate = 60;
 
@@ -44,6 +46,18 @@ async function getPostsFromSanity(): Promise<BlogPostItem[]> {
 }
 
 export default async function BlogPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
+  // Gate by Navigation dropdown
+  const cloneId = await getCloneIdForCurrentDomain();
+  const navbar = await navbarQueries.fetch(cloneId || 'global');
+  const items: any[] = (navbar?.data as any)?.navigation?.navOrder || [];
+  if (!Array.isArray(items) || items.length === 0) {
+    return notFound();
+  }
+  const allowBlog = items.some((i: any) => i?.itemType === 'blog');
+  if (!allowBlog) {
+    return notFound();
+  }
+
   const posts = await getPostsFromSanity();
   const categories = await getBlogCategories();
   const initialCategory = typeof searchParams?.category === 'string' ? searchParams?.category : '';

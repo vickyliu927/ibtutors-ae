@@ -28,6 +28,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const cloneId = await getCloneIdForCurrentDomain();
     const isClone = !!cloneId;
     
+    // Read Navigation dropdown to determine which page types are enabled
+    async function getAllowedTypes(): Promise<{ allowSubjects: boolean; allowCurriculums: boolean; allowLocations: boolean }> {
+      try {
+        if (!isClone) {
+          const result = await client.fetch(
+            `*[_type == "navbarSettings" && !defined(cloneReference)][0]{ navigation{ navOrder[]{ itemType } } }`,
+            {},
+          );
+          const items: any[] = result?.navigation?.navOrder || [];
+          if (!Array.isArray(items) || items.length === 0) return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
+          const allowSubjects = items.some((i: any) => i?.itemType === 'allSubjects');
+          const allowCurriculums = items.some((i: any) => i?.itemType === 'curriculum');
+          const allowLocations = items.some((i: any) => i?.itemType === 'locations');
+          return { allowSubjects, allowCurriculums, allowLocations };
+        }
+        const result = await client.fetch(
+          `{
+            "cloneSpecific": *[_type == "navbarSettings" && cloneReference->cloneId.current == $cloneId][0]{ navigation{ navOrder[]{ itemType } } },
+            "baseline": *[_type == "navbarSettings" && cloneReference->baselineClone == true][0]{ navigation{ navOrder[]{ itemType } } },
+            "default": *[_type == "navbarSettings" && !defined(cloneReference)][0]{ navigation{ navOrder[]{ itemType } } }
+          }`,
+          { cloneId }
+        );
+        const nav = result?.cloneSpecific || result?.baseline || result?.default || null;
+        const items: any[] = nav?.navigation?.navOrder || [];
+        if (!Array.isArray(items) || items.length === 0) return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
+        const allowSubjects = items.some((i: any) => i?.itemType === 'allSubjects');
+        const allowCurriculums = items.some((i: any) => i?.itemType === 'curriculum');
+        const allowLocations = items.some((i: any) => i?.itemType === 'locations');
+        return { allowSubjects, allowCurriculums, allowLocations };
+      } catch {
+        return { allowSubjects: false, allowCurriculums: false, allowLocations: false };
+      }
+    }
+    const { allowSubjects, allowCurriculums, allowLocations } = await getAllowedTypes();
+    
     // Read page availability flags from the clone
     const flags = isClone ? await client.fetch(
       `*[_type == "clone" && cloneId.current == $cloneId][0]{
@@ -40,7 +76,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Fetch subject, curriculum, and location page slugs from Sanity
     // For clones that are not homepageOnly, include clone-specific OR baseline/global pages
-    const subjectQuery = isClone ? `*[_type == "subjectPage" && ${flags.homepageOnly || flags.curriculumOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
+    const subjectQuery = isClone ? `*[_type == "subjectPage" && ${flags.homepageOnly || flags.curriculumOnly || !allowSubjects ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
       cloneReference->cloneId.current == $cloneId || 
       cloneReference->baselineClone == true || 
       !defined(cloneReference)
@@ -54,7 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       _id
     }`;
     
-    const curriculumQuery = isClone ? `*[_type == "curriculumPage" && ${flags.homepageOnly || flags.subjectOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
+    const curriculumQuery = isClone ? `*[_type == "curriculumPage" && ${flags.homepageOnly || flags.subjectOnly || !allowCurriculums ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && (
       cloneReference->cloneId.current == $cloneId || 
       cloneReference->baselineClone == true || 
       !defined(cloneReference)
@@ -67,7 +103,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       _updatedAt,
       _id
     }`;
-    const locationQuery = isClone ? `*[_type == "locationPage" && ${flags.homepageOnly ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
+    const locationQuery = isClone ? `*[_type == "locationPage" && ${flags.homepageOnly || !allowLocations ? 'false' : 'true'} && isActive == true && defined(slug.current) && slug.current != "gcse1" && cloneReference->cloneId.current == $cloneId] | order(slug.current asc) {
       "slug": slug.current,
       _updatedAt,
       _id

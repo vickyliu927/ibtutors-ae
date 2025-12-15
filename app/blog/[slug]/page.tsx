@@ -6,6 +6,9 @@ import { PortableText } from 'next-sanity';
 import { urlFor } from '@/sanity/lib/image';
 import { getBlogPostBySlug } from '../../lib/getBlogData';
 import { LazyContactForm } from '@/app/components/LazyComponents';
+import { navbarQueries } from '@/app/lib/cloneQueries';
+import { getCloneIdForCurrentDomain } from '@/app/lib/sitemapUtils';
+import { notFound } from 'next/navigation';
 
 export const revalidate = 60;
 
@@ -21,6 +24,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function BlogDetailPage({ params }: Params) {
+  // Gate by Navigation dropdown
+  const cloneId = await getCloneIdForCurrentDomain();
+  const navbar = await navbarQueries.fetch(cloneId || 'global');
+  const items: any[] = (navbar?.data as any)?.navigation?.navOrder || [];
+  if (!Array.isArray(items) || items.length === 0 || !items.some((i: any) => i?.itemType === 'blog')) {
+    return notFound();
+  }
+
   const data = await getBlogPostBySlug(params.slug);
   if (!data) {
     return (
