@@ -9,6 +9,7 @@ import { getNavigationData } from './lib/getNavigationData';
 import { getSeoData } from './lib/getSeoData';
 import { getCurrentDomainFromHeaders, getCanonicalDomain } from './lib/sitemapUtils';
 import { Analytics } from '@vercel/analytics/next';
+import Script from 'next/script';
 
 // Load Inter font with display: swap for better performance
 const inter = Inter({ subsets: ['latin'] });
@@ -64,6 +65,47 @@ export default async function RootLayout({
         <meta name="google-site-verification" content="v4S2fecY05CWeIbQ6FvCG-5LZv2FvTJa56JfscMhS_Y" />
         {/* Google Tag Manager - global for all tenants */}
         <GTMHead />
+        {/* Meta Pixel */}
+        <Script id="meta-pixel" strategy="afterInteractive">{`
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '489973117202455');
+          fbq('track', 'PageView');
+        `}</Script>
+        {/* Meta Pixel - SPA navigation tracking */}
+        <Script id="meta-pixel-route-events" strategy="afterInteractive">{`
+          (function() {
+            var fire = function() { try { if (window.fbq) window.fbq('track', 'PageView'); } catch (_) {} };
+            var origPushState = history.pushState;
+            history.pushState = function() {
+              var ret = origPushState.apply(this, arguments);
+              fire();
+              return ret;
+            };
+            var origReplaceState = history.replaceState;
+            history.replaceState = function() {
+              var ret = origReplaceState.apply(this, arguments);
+              fire();
+              return ret;
+            };
+            window.addEventListener('popstate', fire);
+          })();
+        `}</Script>
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: 'none' }}
+            src="https://www.facebook.com/tr?id=489973117202455&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
