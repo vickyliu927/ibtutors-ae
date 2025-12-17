@@ -217,71 +217,18 @@ async function fetchSubjectsWithFallback(cloneId: string | null): Promise<Naviga
     return [];
   }
 
-  // Allow 3-tier fallback: cloneSpecific → baseline → default
-  const query = `{
-    "cloneSpecific": *[_type == "subjectPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
-      title,
-      subject,
-      slug,
-      displayOrder,
-      externalRedirectEnabled,
-      externalRedirectUrl,
-      "source": "cloneSpecific"
-    },
-    "baseline": *[_type == "subjectPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
-      title,
-      subject,
-      slug,
-      displayOrder,
-      externalRedirectEnabled,
-      externalRedirectUrl,
-      "source": "baseline"
-    },
-    "default": *[_type == "subjectPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
-      title,
-      subject,
-      slug,
-      displayOrder,
-      externalRedirectEnabled,
-      externalRedirectUrl,
-      "source": "default"
-    }
+  // STRICT: clones must use clone-specific only (no fallback)
+  const query = `*[_type == "subjectPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
+    title,
+    subject,
+    slug,
+    displayOrder,
+    externalRedirectEnabled,
+    externalRedirectUrl
   }`;
-  
-  try {
-    const result = await client.fetch(query, { cloneId }, { next: { revalidate: 300 } });
-    
-    let subjects: NavigationSubjectData[] = [];
-    let source = 'none';
-    
-    if (result.cloneSpecific && result.cloneSpecific.length > 0) {
-      subjects = result.cloneSpecific;
-      source = 'cloneSpecific';
-    } else if (result.baseline && result.baseline.length > 0) {
-      subjects = result.baseline;
-      source = 'baseline';
-    } else if (result.default && result.default.length > 0) {
-      subjects = result.default;
-      source = 'default';
-    }
-
-    console.log(`[NavigationData] Fetched ${subjects.length} subject pages from ${source} for clone: ${cloneId}`);
-    return subjects;
-  } catch (error) {
-    console.error(`[NavigationData] Error fetching subjects for clone ${cloneId}:`, error);
-    
-    // Fallback to default content on error
-    const fallbackQuery = `*[_type == "subjectPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
-      title,
-      subject,
-      slug,
-      displayOrder
-    }`;
-    
-    const fallbackResult = await client.fetch<NavigationSubjectData[]>(fallbackQuery, {}, { next: { revalidate: 300 } });
-    console.log(`[NavigationData] Using fallback: ${fallbackResult.length} default subject pages`);
-    return fallbackResult;
-  }
+  const result = await client.fetch<NavigationSubjectData[]>(query, { cloneId }, { next: { revalidate: 300 } });
+  console.log(`[NavigationData] Fetched ${result.length} clone-specific subject pages for clone: ${cloneId}`);
+  return result || [];
 }
 
 /**
@@ -341,84 +288,26 @@ async function fetchCurriculumsWithFallback(cloneId: string | null): Promise<Nav
     return [];
   }
 
-  // Allow 3-tier fallback: cloneSpecific → baseline → default
-  const query = `{
-    "cloneSpecific": *[_type == "curriculumPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
-      title,
-      curriculum,
+  // STRICT: clones must use clone-specific only (no fallback)
+  const query = `*[_type == "curriculumPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
+    title,
+    curriculum,
+    slug,
+    displayOrder,
+    externalRedirectEnabled,
+    externalRedirectUrl,
+    externalRedirectPermanent,
+    subjectPages[]->{
+      subject,
       slug,
       displayOrder,
       externalRedirectEnabled,
-      externalRedirectUrl,
-      externalRedirectPermanent,
-      subjectPages[]->{
-        subject,
-        slug,
-        displayOrder,
-        externalRedirectEnabled,
-        externalRedirectUrl
-      },
-      "source": "cloneSpecific"
-    },
-    "baseline": *[_type == "curriculumPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
-      title,
-      curriculum,
-      slug,
-      displayOrder,
-      externalRedirectEnabled,
-      externalRedirectUrl,
-      externalRedirectPermanent,
-      subjectPages[]->{
-        subject,
-        slug,
-        displayOrder,
-        externalRedirectEnabled,
-        externalRedirectUrl
-      },
-      "source": "baseline"
-    },
-    "default": *[_type == "curriculumPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
-      title,
-      curriculum,
-      slug,
-      displayOrder,
-      externalRedirectEnabled,
-      externalRedirectUrl,
-      externalRedirectPermanent,
-      subjectPages[]->{
-        subject,
-        slug,
-        displayOrder,
-        externalRedirectEnabled,
-        externalRedirectUrl
-      },
-      "source": "default"
+      externalRedirectUrl
     }
   }`;
-  
-  try {
-    const result = await client.fetch(query, { cloneId }, { next: { revalidate: 300 } });
-    
-    let curriculums: NavigationCurriculumData[] = [];
-    let source = 'none';
-    
-    if (result.cloneSpecific && result.cloneSpecific.length > 0) {
-      curriculums = result.cloneSpecific;
-      source = 'cloneSpecific';
-    } else if (result.baseline && result.baseline.length > 0) {
-      curriculums = result.baseline;
-      source = 'baseline';
-    } else if (result.default && result.default.length > 0) {
-      curriculums = result.default;
-      source = 'default';
-    }
-    
-    console.log(`[NavigationData] Fetched ${curriculums.length} curriculum pages from ${source} for clone: ${cloneId}`);
-    return curriculums;
-  } catch (error) {
-    console.error(`[NavigationData] Error fetching curriculums for clone ${cloneId}:`, error);
-    return FALLBACK_CURRICULUM_PAGES;
-  }
+  const result = await client.fetch<NavigationCurriculumData[]>(query, { cloneId }, { next: { revalidate: 300 } });
+  console.log(`[NavigationData] Fetched ${result.length} clone-specific curriculum pages for clone: ${cloneId}`);
+  return result || [];
 }
 
 /**
@@ -453,46 +342,13 @@ async function fetchLocationsWithFallback(cloneId: string | null): Promise<Navig
     return [];
   }
 
-  const query = `{
-    "cloneSpecific": *[_type == "locationPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
-      title, location, slug, displayOrder, externalRedirectEnabled, externalRedirectUrl
-    },
-    "baseline": *[_type == "locationPage" && cloneReference->baselineClone == true && isActive == true] | order(displayOrder asc) {
-      title, location, slug, displayOrder, externalRedirectEnabled, externalRedirectUrl
-    },
-    "default": *[_type == "locationPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
-      title, location, slug, displayOrder, externalRedirectEnabled, externalRedirectUrl
-    }
+  // STRICT: clones must use clone-specific only (no fallback)
+  const query = `*[_type == "locationPage" && cloneReference->cloneId.current == $cloneId && isActive == true] | order(displayOrder asc) {
+    title, location, slug, displayOrder, externalRedirectEnabled, externalRedirectUrl
   }`;
-
-  try {
-    const result = await client.fetch(query, { cloneId }, { next: { revalidate: 300 } });
-    let locations: NavigationLocationData[] = [];
-    let source = 'none';
-
-    if (Array.isArray(result.cloneSpecific) && result.cloneSpecific.length > 0) {
-      locations = result.cloneSpecific;
-      source = 'cloneSpecific';
-    } else if (Array.isArray(result.baseline) && result.baseline.length > 0) {
-      locations = result.baseline;
-      source = 'baseline';
-    } else if (Array.isArray(result.default) && result.default.length > 0) {
-      locations = result.default;
-      source = 'default';
-    }
-
-    console.log(`[NavigationData] Fetched ${locations.length} location pages from ${source} for clone: ${cloneId}`);
-    return locations;
-  } catch (error) {
-    console.error(`[NavigationData] Error fetching locations for clone ${cloneId}:`, error);
-    // fallback to default (safe)
-    const fallbackQuery = `*[_type == "locationPage" && !defined(cloneReference) && isActive == true] | order(displayOrder asc) {
-      title, location, slug, displayOrder
-    }`;
-    const fallback = await client.fetch<NavigationLocationData[]>(fallbackQuery, {}, { next: { revalidate: 300 } });
-    console.log(`[NavigationData] Using fallback: ${fallback.length} default location pages`);
-    return fallback;
-  }
+  const result = await client.fetch<NavigationLocationData[]>(query, { cloneId }, { next: { revalidate: 300 } });
+  console.log(`[NavigationData] Fetched ${result.length} clone-specific location pages for clone: ${cloneId}`);
+  return result || [];
 }
 
 /**

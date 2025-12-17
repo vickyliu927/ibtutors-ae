@@ -1115,14 +1115,11 @@ export default async function DynamicPage({
   // Determine enabled page types from Navigation dropdown
   const navbarForGating = await navbarQueries.fetch(cloneContext.cloneId || 'global');
   const navItems: any[] = (navbarForGating?.data as any)?.navigation?.navOrder || [];
-  const allowSubjects = Array.isArray(navItems) && navItems.some((i: any) => i?.itemType === 'allSubjects');
-  const allowCurriculums = Array.isArray(navItems) && navItems.some((i: any) => i?.itemType === 'curriculum');
-  const allowLocations = Array.isArray(navItems) && navItems.some((i: any) => i?.itemType === 'locations');
-  // If dropdown is empty → homepage only
-  const isDropdownEmpty = !Array.isArray(navItems) || navItems.length === 0;
-  if (isDropdownEmpty) {
-    return notFound();
-  }
+  const hasNavConfig = Array.isArray(navItems) && navItems.length > 0;
+  // If nav is configured, respect it; otherwise auto-enable all and rely on strict content existence
+  const allowSubjects = hasNavConfig ? navItems.some((i: any) => i?.itemType === 'allSubjects') : true;
+  const allowCurriculums = hasNavConfig ? navItems.some((i: any) => i?.itemType === 'curriculum') : true;
+  const allowLocations = hasNavConfig ? navItems.some((i: any) => i?.itemType === 'locations') : true;
 
   // Fetch global/clone-specific Tutor Profiles section to use its Trusted By text as fallback
   const tutorProfilesSectionResult = await tutorProfilesSectionQueries.fetch(cloneContext.cloneId || 'global');
