@@ -646,24 +646,22 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
         </div>
 
         {/* CTA Buttons - desktop only */}
-        {navbarData?.buttonLink && (
-          <div className="hidden md:flex items-center gap-3">
-            {/* New secondary button (to the left) */}
-            <ExternalLink
-              href="https://www.tutorchase.com"
-              className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#F2F4FA] text-[#001A96] text-[14px] font-medium leading-[140%] hover:bg-[#E9ECF7] transition-colors font-gilroy flex"
-            >
-              TutorChase Global
-            </ExternalLink>
-            {/* Existing primary button */}
-            <Link
-              href={navbarData.buttonLink}
-              className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy flex"
-            >
-              {navbarData?.buttonText || 'Hire a tutor'}
-            </Link>
-          </div>
-        )}
+        <div className="hidden md:flex items-center gap-3">
+          {/* Always-visible TutorChase global button */}
+          <ExternalLink
+            href="https://www.tutorchase.com"
+            className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#F2F4FA] text-[#001A96] text-[14px] font-medium leading-[140%] hover:bg-[#E9ECF7] transition-colors font-gilroy flex"
+          >
+            TutorChase Global
+          </ExternalLink>
+          {/* Always-visible Contact Us button */}
+          <Link
+            href="/#contact-form"
+            className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy flex"
+          >
+            Contact Us
+          </Link>
+        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -1094,24 +1092,22 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
               )}
 
               {/* Hire a tutor Button */}
-              {navbarData?.buttonLink && (
-                <div className="flex w-full flex-col justify-center items-start gap-3">
-                  <ExternalLink
-                    href="https://www.tutorchase.com"
-                    onClick={() => setIsOpen(false)}
-                    className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-[#F2F4FA] text-[#001A96] text-center text-base font-normal leading-[140%] font-gilroy"
-                  >
-                    TutorChase Global
-                  </ExternalLink>
-                  <Link
-                    href={navbarData.buttonLink}
-                    onClick={() => setIsOpen(false)}
-                    className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
-                  >
-                    {navbarData?.buttonText || 'Hire a tutor'}
-                  </Link>
-                </div>
-              )}
+              <div className="flex w-full flex-col justify-center items-start gap-3">
+                <ExternalLink
+                  href="https://www.tutorchase.com"
+                  onClick={() => setIsOpen(false)}
+                  className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-[#F2F4FA] text-[#001A96] text-center text-base font-normal leading-[140%] font-gilroy"
+                >
+                  TutorChase Global
+                </ExternalLink>
+                <Link
+                  href="/#contact-form"
+                  onClick={() => setIsOpen(false)}
+                  className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
+                >
+                  Contact Us
+                </Link>
+              </div>
             </div>
           </div>
         )}
