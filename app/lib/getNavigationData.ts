@@ -117,12 +117,31 @@ export async function getNavigationData(): Promise<NavigationData> {
     // Get current domain for link generation
     const currentDomain = getCurrentDomain();
     
-    // Apply gating based on Navigation dropdown
-    const { allowSubjects, allowCurriculums, allowLocations, allowBlog } = getAllowedTypesFromNavbar(navbarData);
+    // Determine gating:
+    // If navOrder is configured in Sanity, respect it.
+    // Otherwise, AUTO-ENABLE menus based on content existence to reduce manual management.
+    const navOrderItems = Array.isArray(navbarData?.navigation?.navOrder) ? navbarData.navigation.navOrder : [];
+    let allowSubjects = false;
+    let allowCurriculums = false;
+    let allowLocations = false;
+    let allowBlog = false;
+    if (navOrderItems.length > 0) {
+      const fromSettings = getAllowedTypesFromNavbar(navbarData);
+      allowSubjects = fromSettings.allowSubjects;
+      allowCurriculums = fromSettings.allowCurriculums;
+      allowLocations = fromSettings.allowLocations;
+      allowBlog = fromSettings.allowBlog && hasBlogRaw;
+    } else {
+      // Auto mode: enable if content exists (and not blocked by clone flags inside fetchers)
+      allowSubjects = Array.isArray(subjectsRaw) && subjectsRaw.length > 0;
+      allowCurriculums = Array.isArray(curriculumsRaw) && curriculumsRaw.length > 0;
+      allowLocations = Array.isArray(locationsRaw) && locationsRaw.length > 0;
+      allowBlog = !!hasBlogRaw;
+    }
     const subjects = allowSubjects ? subjectsRaw : [];
     const curriculums = allowCurriculums ? curriculumsRaw : [];
     const locations = allowLocations ? locationsRaw : [];
-    const hasBlog = allowBlog ? hasBlogRaw : false;
+    const hasBlog = allowBlog;
 
     console.log(`[NavigationData] Allowed types — subjects:${allowSubjects} curriculums:${allowCurriculums} locations:${allowLocations} blog:${allowBlog}`);
     console.log(`[NavigationData] Fetched ${subjects.length} subjects, ${curriculums.length} curriculums, ${locations.length} locations for clone: ${cloneId || 'global'}`);
