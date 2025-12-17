@@ -1116,11 +1116,10 @@ export default async function DynamicPage({
   // Determine enabled page types from Navigation dropdown
   const navbarForGating = await navbarQueries.fetch(cloneContext.cloneId || 'global');
   const navItems: any[] = (navbarForGating?.data as any)?.navigation?.navOrder || [];
-  const hasNavConfig = Array.isArray(navItems) && navItems.length > 0;
-  // If nav is configured, respect it; otherwise auto-enable all and rely on strict content existence
-  const allowSubjects = hasNavConfig ? navItems.some((i: any) => i?.itemType === 'allSubjects') : true;
-  const allowCurriculums = hasNavConfig ? navItems.some((i: any) => i?.itemType === 'curriculum') : true;
-  const allowLocations = hasNavConfig ? navItems.some((i: any) => i?.itemType === 'locations') : true;
+  // Ignore nav toggles: always allow routes and rely on strict content existence instead
+  const allowSubjects = true;
+  const allowCurriculums = true;
+  const allowLocations = true;
 
   // Fetch global/clone-specific Tutor Profiles section to use its Trusted By text as fallback
   const tutorProfilesSectionResult = await tutorProfilesSectionQueries.fetch(cloneContext.cloneId || 'global');
