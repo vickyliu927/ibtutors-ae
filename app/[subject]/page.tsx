@@ -12,6 +12,7 @@ import { getSeoData, SeoData } from '../lib/getSeoData';
 import { getCurriculumHeroData } from '../lib/getCurriculumHeroData';
 import { notFound, redirect, permanentRedirect } from 'next/navigation';
 import LessonStructure from '../components/LessonStructure';
+import { getLocationHeroData } from '../lib/getLocationHeroData';
 
 // Import enhanced clone-aware utilities
 import { 
@@ -1499,6 +1500,8 @@ export default async function DynamicPage({
         redirect(targetUrl);
       }
     }
+    // Fetch strict clone-aware location hero data
+    const locationHeroData = await getLocationHeroData(params.subject, cloneContext.cloneId);
     return (
       <main>
         {/* BreadcrumbList JSON-LD */}
@@ -1519,10 +1522,10 @@ export default async function DynamicPage({
         {/* Enhanced Clone Debug Panel - Development Only */}
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
-        {/* Reuse Subject Hero Section with optional hero data (may be null) */}
+        {/* Location Hero Section - strict clone-aware */}
         <SubjectHeroSection 
           subjectSlug={params.subject} 
-          heroData={null}
+          heroData={locationHeroData}
           key={`hero-${cloneContext.cloneId}-${params.subject}-location`}
         />
 
