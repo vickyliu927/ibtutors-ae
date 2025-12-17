@@ -117,27 +117,12 @@ export async function getNavigationData(): Promise<NavigationData> {
     // Get current domain for link generation
     const currentDomain = getCurrentDomain();
     
-    // Determine gating:
-    // If navOrder is configured in Sanity, respect it.
-    // Otherwise, AUTO-ENABLE menus based on content existence to reduce manual management.
-    const navOrderItems = Array.isArray(navbarData?.navigation?.navOrder) ? navbarData.navigation.navOrder : [];
-    let allowSubjects = false;
-    let allowCurriculums = false;
-    let allowLocations = false;
-    let allowBlog = false;
-    if (navOrderItems.length > 0) {
-      const fromSettings = getAllowedTypesFromNavbar(navbarData);
-      allowSubjects = fromSettings.allowSubjects;
-      allowCurriculums = fromSettings.allowCurriculums;
-      allowLocations = fromSettings.allowLocations;
-      allowBlog = fromSettings.allowBlog && hasBlogRaw;
-    } else {
-      // Auto mode: enable if content exists (and not blocked by clone flags inside fetchers)
-      allowSubjects = Array.isArray(subjectsRaw) && subjectsRaw.length > 0;
-      allowCurriculums = Array.isArray(curriculumsRaw) && curriculumsRaw.length > 0;
-      allowLocations = Array.isArray(locationsRaw) && locationsRaw.length > 0;
-      allowBlog = !!hasBlogRaw;
-    }
+    // AUTO-GATE MENUS BY CONTENT EXISTENCE ONLY (ignores navOrder toggles)
+    // If content exists for this clone, show the corresponding menu.
+    const allowSubjects = Array.isArray(subjectsRaw) && subjectsRaw.length > 0;
+    const allowCurriculums = Array.isArray(curriculumsRaw) && curriculumsRaw.length > 0;
+    const allowLocations = Array.isArray(locationsRaw) && locationsRaw.length > 0;
+    const allowBlog = !!hasBlogRaw;
     const subjects = allowSubjects ? subjectsRaw : [];
     const curriculums = allowCurriculums ? curriculumsRaw : [];
     const locations = allowLocations ? locationsRaw : [];
