@@ -1,5 +1,6 @@
 import { client } from '@/sanity/lib/client';
 import { getCurrentClone } from './cloneUtils';
+import { getCloneIdForCurrentDomain } from './sitemapUtils';
 
 export interface NavigationSubjectData {
   title: string;
@@ -88,9 +89,11 @@ export async function getNavigationData(): Promise<NavigationData> {
   try {
     console.log('[NavigationData] Fetching navigation data with clone context...');
     
-    // Get current clone context
+    // Get current clone context (prefer header; if missing, use direct domain lookup)
     const currentClone = await getCurrentClone();
-    const cloneId = currentClone?.cloneId?.current || null;
+    const headerCloneId = currentClone?.cloneId?.current || null;
+    const domainCloneId = await getCloneIdForCurrentDomain();
+    const cloneId = headerCloneId || domainCloneId || null;
     
     console.log(`[NavigationData] Clone context: ${cloneId || 'global'}`);
     
