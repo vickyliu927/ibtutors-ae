@@ -1113,8 +1113,11 @@ export default async function DynamicPage({
     `Subject: ${params.subject}`
   );
 
-  // Determine enabled page types from Navigation dropdown
-  const navbarForGating = await navbarQueries.fetch(cloneContext.cloneId || 'global');
+  // Ensure we have a cloneId: prefer header; fallback to domain mapping
+  const effectiveCloneId = cloneContext.cloneId || await getCloneIdForCurrentDomain();
+
+  // Determine enabled page types (ignore toggles, rely on strict content existence)
+  const navbarForGating = await navbarQueries.fetch(effectiveCloneId || 'global');
   const navItems: any[] = (navbarForGating?.data as any)?.navigation?.navOrder || [];
   // Ignore nav toggles: always allow routes and rely on strict content existence instead
   const allowSubjects = true;
@@ -1162,7 +1165,7 @@ export default async function DynamicPage({
   // First check if it's a curriculum page
   const curriculumResult = disableCurriculum ? { pageData: null } as any : await getCurriculumPageDataWithCloneContext(
     params.subject, 
-    cloneContext.cloneId
+    effectiveCloneId
   );
   
   if (curriculumResult.pageData) {
@@ -1323,7 +1326,7 @@ export default async function DynamicPage({
   const disableSubject = (cloneContext.clone?.enableCurriculumPagesOnly === true) || !allowSubjects;
   const subjectResult = disableSubject ? { pageData: null } as any : await getSubjectPageDataWithCloneContext(
     params.subject,
-    cloneContext.cloneId
+    effectiveCloneId
   );
 
   if (subjectResult.pageData) {
@@ -1486,7 +1489,7 @@ export default async function DynamicPage({
   const locationResult = allowLocations
     ? await getLocationPageDataWithCloneContext(
       params.subject,
-      cloneContext.cloneId
+      effectiveCloneId
     )
     : { pageData: null } as any;
   if (locationResult.pageData) {
@@ -1500,7 +1503,7 @@ export default async function DynamicPage({
       }
     }
     // Fetch strict clone-aware location hero data
-    const locationHeroData = await getLocationHeroData(params.subject, cloneContext.cloneId);
+    const locationHeroData = await getLocationHeroData(params.subject, effectiveCloneId);
     return (
       <main>
         {/* BreadcrumbList JSON-LD */}
