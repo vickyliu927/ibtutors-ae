@@ -218,201 +218,32 @@ async function getCurriculumPageDataWithCloneContext(
   try {
     console.log(`[CurriculumPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
     
-    // Clone-aware curriculum page query with 3-tier fallback
-    const query = `{
-      "cloneSpecific": *[_type == "curriculumPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0] {
-        title,
-        curriculum,
-        slug,
-        externalRedirectEnabled,
-        externalRedirectUrl,
-        externalRedirectPermanent,
-        firstSection,
-        lessonStructure,
-        tutorsListSectionHead{
-          trustedByText,
-          smallTextBeforeTitle,
-          sectionTitle,
-          description,
-          ctaRichText,
-          ctaLinkText,
-          ctaLink,
-          tutorProfileSectionPriceDescription,
-          tutorProfileSectionPriceTag
-        },
-        showTrustedInstitutionsAfterTutors,
-        showAdvertBlockAfterTutors,
-        showCustomMidSectionAfterTutors,
-        showPlatformBannerAfterTutors,
-        tutorsList[] -> {
-          _id,
-          name,
-          slug,
-          profilePhoto,
-          professionalTitle,
-          experience,
-          specialization,
-          hireButtonLink,
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken,
-          profilePDF
-        },
-        testimonials[] -> {
-          _id,
-          reviewerName,
-          reviewerType,
-          testimonialText,
-          rating,
-          order
-        },
-        faqSection -> {
-          title,
-          subtitle,
-          faqReferences[] -> {
-            _id,
-            question,
-            answer
+    // STRICT queries: clone-only or default-only (no 3-tier fallback)
+    const query = cloneId
+      ? `{
+          "page": *[_type == "curriculumPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]{
+            title, curriculum, slug, externalRedirectEnabled, externalRedirectUrl, externalRedirectPermanent,
+            firstSection, lessonStructure,
+            tutorsListSectionHead{ trustedByText, smallTextBeforeTitle, sectionTitle, description, ctaRichText, ctaLinkText, ctaLink, tutorProfileSectionPriceDescription, tutorProfileSectionPriceTag },
+            showTrustedInstitutionsAfterTutors, showAdvertBlockAfterTutors, showCustomMidSectionAfterTutors, showPlatformBannerAfterTutors,
+            tutorsList[] -> { _id, name, slug, profilePhoto, professionalTitle, experience, specialization, hireButtonLink, price, rating, reviewCount, activeStudents, totalLessons, languagesSpoken, profilePDF },
+            testimonials[] -> { _id, reviewerName, reviewerType, testimonialText, rating, order },
+            faqSection -> { title, subtitle, faqReferences[] -> { _id, question, answer } },
+            seo
           }
-        },
-        seo,
-        "sourceInfo": {
-          "source": "cloneSpecific",
-          "cloneId": $cloneId
-        }
-      },
-      "baseline": *[_type == "curriculumPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0] {
-        title,
-        curriculum,
-        slug,
-        externalRedirectEnabled,
-        externalRedirectUrl,
-        externalRedirectPermanent,
-        firstSection,
-        lessonStructure,
-        tutorsListSectionHead{
-          trustedByText,
-          smallTextBeforeTitle,
-          sectionTitle,
-          description,
-          ctaRichText,
-          ctaLinkText,
-          ctaLink,
-          tutorProfileSectionPriceDescription,
-          tutorProfileSectionPriceTag
-        },
-        showTrustedInstitutionsAfterTutors,
-        showAdvertBlockAfterTutors,
-        showCustomMidSectionAfterTutors,
-        showPlatformBannerAfterTutors,
-        tutorsList[] -> {
-          _id,
-          name,
-          slug,
-          profilePhoto,
-          professionalTitle,
-          experience,
-          specialization,
-          hireButtonLink,
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken,
-          profilePDF
-        },
-        testimonials[] -> {
-          _id,
-          reviewerName,
-          reviewerType,
-          testimonialText,
-          rating,
-          order
-        },
-        faqSection -> {
-          title,
-          subtitle,
-          faqReferences[] -> {
-            _id,
-            question,
-            answer
+        }`
+      : `{
+          "page": *[_type == "curriculumPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]{
+            title, curriculum, slug, externalRedirectEnabled, externalRedirectUrl, externalRedirectPermanent,
+            firstSection, lessonStructure,
+            tutorsListSectionHead{ trustedByText, smallTextBeforeTitle, sectionTitle, description, ctaRichText, ctaLinkText, ctaLink, tutorProfileSectionPriceDescription, tutorProfileSectionPriceTag },
+            showTrustedInstitutionsAfterTutors, showAdvertBlockAfterTutors, showCustomMidSectionAfterTutors, showPlatformBannerAfterTutors,
+            tutorsList[] -> { _id, name, slug, profilePhoto, professionalTitle, experience, specialization, hireButtonLink, price, rating, reviewCount, activeStudents, totalLessons, languagesSpoken, profilePDF },
+            testimonials[] -> { _id, reviewerName, reviewerType, testimonialText, rating, order },
+            faqSection -> { title, subtitle, faqReferences[] -> { _id, question, answer } },
+            seo
           }
-        },
-        seo,
-        "sourceInfo": {
-          "source": "baseline",
-          "cloneId": cloneReference->cloneId.current
-        }
-      },
-      "default": *[_type == "curriculumPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0] {
-        title,
-        curriculum,
-        slug,
-        externalRedirectEnabled,
-        externalRedirectUrl,
-        externalRedirectPermanent,
-        firstSection,
-        lessonStructure,
-        tutorsListSectionHead{
-          trustedByText,
-          smallTextBeforeTitle,
-          sectionTitle,
-          description,
-          ctaRichText,
-          ctaLinkText,
-          ctaLink,
-          tutorProfileSectionPriceDescription,
-          tutorProfileSectionPriceTag
-        },
-        showTrustedInstitutionsAfterTutors,
-        showAdvertBlockAfterTutors,
-        showCustomMidSectionAfterTutors,
-        showPlatformBannerAfterTutors,
-        tutorsList[] -> {
-          _id,
-          name,
-          slug,
-          profilePhoto,
-          professionalTitle,
-          experience,
-          specialization,
-          hireButtonLink,
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken,
-          profilePDF
-        },
-        testimonials[] -> {
-          _id,
-          reviewerName,
-          reviewerType,
-          testimonialText,
-          rating,
-          order
-        },
-        faqSection -> {
-          title,
-          subtitle,
-          faqReferences[] -> {
-            _id,
-            question,
-            answer
-          }
-        },
-        seo,
-        "sourceInfo": {
-          "source": "default",
-          "cloneId": null
-        }
-      }
-    }`;
+        }`;
 
     // Enhanced testimonial section query with clone support
     const testimonialsQuery = `
@@ -425,28 +256,19 @@ async function getCurriculumPageDataWithCloneContext(
       }
     `;
 
-    const [fallbackResult, testimonialSection, navbarResult] = await Promise.all([
+    const [result, testimonialSection, navbarResult] = await Promise.all([
       client.fetch(query, { subject, cloneId: cloneId || 'none' }, { next: { revalidate: 300 } }),
       client.fetch(testimonialsQuery, {}, { next: { revalidate: 300 } }),
       navbarQueries.fetch(cloneId || 'global')
     ]);
     
-    // Strict resolution: only use clone-specific content; otherwise treat as not found
-    let pageData: CurriculumPageData | null = null;
-    let resolvedSource = 'none';
-    
-    if (fallbackResult.cloneSpecific) {
-      pageData = fallbackResult.cloneSpecific;
-      resolvedSource = 'cloneSpecific';
-      console.log(`[CurriculumPage] Using clone-specific content for ${subject}, clone: ${cloneId}`);
-    }
-    
+    const pageData: CurriculumPageData | null = (result as any)?.page || null;
     if (!pageData) {
       console.log(`[CurriculumPage] No curriculum page found for subject: ${subject}, clone: ${cloneId || 'none'}`);
       return { pageData: null, testimonialSection: null, navbarData: null, type: null };
     }
     
-    console.log(`[CurriculumPage] Successfully fetched curriculum page data for: ${subject} (source: ${resolvedSource})`);
+    console.log(`[CurriculumPage] Successfully fetched curriculum page data for: ${subject}`);
     return { pageData, testimonialSection, navbarData: navbarResult?.data || null, type: 'curriculum' };
   } catch (error) {
     console.error(`[CurriculumPage] Error fetching curriculum page for ${subject}:`, error);
@@ -464,323 +286,52 @@ async function getSubjectPageDataWithCloneContext(
   try {
     console.log(`[SubjectPage] Fetching data for subject: ${subject}, clone: ${cloneId || 'none'}`);
     
-    // Enhanced clone-aware query with 3-tier fallback
-    const query = `{
-      "cloneSpecific": {
-        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]{
-          _id,
-          subject,
-          title,
-          firstSection,
-          lessonStructure,
-          tutorsListSectionHead,
-          showTrustedInstitutionsAfterTutors,
-          showAdvertBlockAfterTutors,
-          showPlatformBannerAfterTutors,
-          externalRedirectEnabled,
-          externalRedirectUrl,
-          externalRedirectPermanent,
-          testimonials[]->{
-            _id,
-            reviewerName,
-            reviewerType,
-            testimonialText,
-            rating,
-            order
+    // STRICT queries: clone-only or default-only (no 3-tier fallback)
+    const query = cloneId
+      ? `{
+          "subjectPage": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]{
+            _id, subject, title, firstSection, lessonStructure, tutorsListSectionHead,
+            showTrustedInstitutionsAfterTutors, showAdvertBlockAfterTutors, showPlatformBannerAfterTutors,
+            externalRedirectEnabled, externalRedirectUrl, externalRedirectPermanent,
+            testimonials[]->{ _id, reviewerName, reviewerType, testimonialText, rating, order },
+            faqSection-> { _id, title, subtitle, pageType, subjectPage->{ slug }, faqReferences[]->{ _id, question, answer, displayOrder } },
+            seo
           },
-          faqSection-> {
-            _id,
-            title,
-            subtitle,
-            pageType,
-            subjectPage-> { slug },
-            faqReferences[]-> {
-              _id,
-              question,
-              answer,
-              displayOrder
-            }
+          "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && cloneReference->cloneId.current == $cloneId][0]{
+            rating { score, basedOnText, reviewCount }, title { firstPart, secondPart }, subtitle
           },
-          seo,
-          "sourceInfo": {
-            "source": "cloneSpecific",
-            "cloneId": $cloneId
-          }
-        },
-        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && cloneReference->cloneId.current == $cloneId][0]{
-          rating {
-            score,
-            basedOnText,
-            reviewCount
+          "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]._id)] | order(displayOrder asc) {
+            _id, name, professionalTitle, priceTag, experience, profilePhoto, specialization, hireButtonLink, displayOnSubjectPages, displayOrder,
+            profilePDF{ asset->{ url } }, price, rating, reviewCount, activeStudents, totalLessons, languagesSpoken
           },
-          title {
-            firstPart,
-            secondPart
+          "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+            _id, name, professionalTitle, priceTag{ enabled, badgeText }, experience, profilePhoto, specialization, hireButtonLink, displayOnSubjectPages, displayOrder,
+            profilePDF{ asset->{ url } }, price, rating, reviewCount, activeStudents, totalLessons, languagesSpoken
           },
-          subtitle,
-          "sourceInfo": {
-            "source": "cloneSpecific",
-            "cloneId": $cloneId
-          }
-        },
-        // Tutors referencing this subject page
-        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0]._id)] | order(displayOrder asc) {
-          _id,
-          name,
-          professionalTitle,
-          priceTag {
-            enabled,
-            badgeText
+          "testimonialSection": *[_type == "testimonialSection"][0]
+        }`
+      : `{
+          "subjectPage": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]{
+            _id, subject, title, firstSection, lessonStructure, tutorsListSectionHead,
+            showTrustedInstitutionsAfterTutors, showAdvertBlockAfterTutors, showPlatformBannerAfterTutors,
+            externalRedirectEnabled, externalRedirectUrl, externalRedirectPermanent,
+            testimonials[]->{ _id, reviewerName, reviewerType, testimonialText, rating, order },
+            faqSection-> { _id, title, subtitle, pageType, subjectPage->{ slug }, faqReferences[]->{ _id, question, answer, displayOrder } },
+            seo
           },
-          experience,
-          profilePhoto,
-          specialization,
-          hireButtonLink,
-          displayOnSubjectPages,
-          displayOrder,
-          profilePDF {
-            asset-> {
-              url
-            }
+          "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && !defined(cloneReference)][0]{
+            rating { score, basedOnText, reviewCount }, title { firstPart, secondPart }, subtitle
           },
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken
-        },
-        // Tutors directly listed on the subject page (tutorsList)
-        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && cloneReference->cloneId.current == $cloneId && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
-          _id,
-          name,
-          professionalTitle,
-          priceTag { enabled, badgeText },
-          experience,
-          profilePhoto,
-          specialization,
-          hireButtonLink,
-          displayOnSubjectPages,
-          displayOrder,
-          profilePDF { asset->{ url } },
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken
-        }
-      },
-      "baseline": {
-        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]{
-          _id,
-          subject,
-          title,
-          firstSection,
-          lessonStructure,
-          tutorsListSectionHead,
-          showTrustedInstitutionsAfterTutors,
-          showAdvertBlockAfterTutors,
-          showCustomMidSectionAfterTutors,
-          showPlatformBannerAfterTutors,
-          externalRedirectEnabled,
-          externalRedirectUrl,
-          externalRedirectPermanent,
-          testimonials[]->{
-            _id,
-            reviewerName,
-            reviewerType,
-            testimonialText,
-            rating,
-            order
+          "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]._id)] | order(displayOrder asc) {
+            _id, name, professionalTitle, priceTag, experience, profilePhoto, specialization, hireButtonLink, displayOnSubjectPages, displayOrder,
+            profilePDF{ asset->{ url } }, price, rating, reviewCount, activeStudents, totalLessons, languagesSpoken
           },
-          faqSection-> {
-            _id,
-            title,
-            subtitle,
-            pageType,
-            subjectPage-> { slug },
-            faqReferences[]-> {
-              _id,
-              question,
-              answer,
-              displayOrder
-            }
+          "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
+            _id, name, professionalTitle, priceTag{ enabled, badgeText }, experience, profilePhoto, specialization, hireButtonLink, displayOnSubjectPages, displayOrder,
+            profilePDF{ asset->{ url } }, price, rating, reviewCount, activeStudents, totalLessons, languagesSpoken
           },
-          seo,
-          "sourceInfo": {
-            "source": "baseline",
-            "cloneId": cloneReference->cloneId.current
-          }
-        },
-        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && cloneReference->baselineClone == true][0]{
-          rating {
-            score,
-            basedOnText,
-            reviewCount
-          },
-          title {
-            firstPart,
-            secondPart
-          },
-          subtitle,
-          "sourceInfo": {
-            "source": "baseline",
-            "cloneId": cloneReference->cloneId.current
-          }
-        },
-        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0]._id)] | order(displayOrder asc) {
-          _id,
-          name,
-          professionalTitle,
-          priceTag {
-            enabled,
-            badgeText
-          },
-          experience,
-          profilePhoto,
-          specialization,
-          hireButtonLink,
-          displayOnSubjectPages,
-          displayOrder,
-          profilePDF {
-            asset-> {
-              url
-            }
-          },
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken
-        },
-        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && cloneReference->baselineClone == true && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
-          _id,
-          name,
-          professionalTitle,
-          priceTag { enabled, badgeText },
-          experience,
-          profilePhoto,
-          specialization,
-          hireButtonLink,
-          displayOnSubjectPages,
-          displayOrder,
-          profilePDF { asset->{ url } },
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken
-        }
-      },
-      "default": {
-        "subjectPage": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]{
-          _id,
-          subject,
-          title,
-          firstSection,
-          lessonStructure,
-          tutorsListSectionHead,
-          showTrustedInstitutionsAfterTutors,
-          showAdvertBlockAfterTutors,
-          showCustomMidSectionAfterTutors,
-          showPlatformBannerAfterTutors,
-          externalRedirectEnabled,
-          externalRedirectUrl,
-          externalRedirectPermanent,
-          testimonials[]->{
-            _id,
-            reviewerName,
-            reviewerType,
-            testimonialText,
-            rating,
-            order
-          },
-          faqSection-> {
-            _id,
-            title,
-            subtitle,
-            pageType,
-            subjectPage-> { slug },
-            faqReferences[]-> {
-              _id,
-              question,
-              answer,
-              displayOrder
-            }
-          },
-          seo,
-          "sourceInfo": {
-            "source": "default",
-            "cloneId": null
-          }
-        },
-        "heroData": *[_type == "subjectHeroSection" && subjectPage->slug.current == $subject && !defined(cloneReference)][0]{
-          rating {
-            score,
-            basedOnText,
-            reviewCount
-          },
-          title {
-            firstPart,
-            secondPart
-          },
-          subtitle,
-          "sourceInfo": {
-            "source": "default",
-            "cloneId": null
-          }
-        },
-        "tutorsRef": *[_type == "tutor" && references(*[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0]._id)] | order(displayOrder asc) {
-          _id,
-          name,
-          professionalTitle,
-          priceTag {
-            enabled,
-            badgeText
-          },
-          experience,
-          profilePhoto,
-          specialization,
-          hireButtonLink,
-          displayOnSubjectPages,
-          displayOrder,
-          profilePDF {
-            asset-> {
-              url
-            }
-          },
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken
-        },
-        "tutorsInline": *[_type == "subjectPage" && slug.current == $subject && !defined(cloneReference) && isActive == true][0].tutorsList[]->| order(displayOrder asc) {
-          _id,
-          name,
-          professionalTitle,
-          priceTag { enabled, badgeText },
-          experience,
-          profilePhoto,
-          specialization,
-          hireButtonLink,
-          displayOnSubjectPages,
-          displayOrder,
-          profilePDF { asset->{ url } },
-          price,
-          rating,
-          reviewCount,
-          activeStudents,
-          totalLessons,
-          languagesSpoken
-        }
-      },
-      "testimonialSection": *[_type == "testimonialSection"][0]
-    }`;
+          "testimonialSection": *[_type == "testimonialSection"][0]
+        }`;
 
     // Use server-side caching with Next.js and fetch clone-aware FAQ and navbar
     const [fallbackResult, navbarResult] = await Promise.all([
@@ -788,15 +339,8 @@ async function getSubjectPageDataWithCloneContext(
       navbarQueries.fetch(cloneId || 'global')
     ]);
 
-    // Strict resolution: only use clone-specific content; otherwise treat as not found
-    let resolvedData: { subjectPage: any; tutorsRef?: any[]; tutorsInline?: any[] } | null = null;
-    let resolvedSource = 'none';
-    
-    if (fallbackResult.cloneSpecific?.subjectPage) {
-      resolvedData = fallbackResult.cloneSpecific;
-      resolvedSource = 'cloneSpecific';
-      console.log(`[SubjectPage] Using clone-specific content for ${subject}, clone: ${cloneId}`);
-    }
+    // Strict resolution: use only requested branch
+    const resolvedData: { subjectPage: any; tutorsRef?: any[]; tutorsInline?: any[]; heroData?: any; testimonialSection?: any } | null = fallbackResult || null;
 
     if (!resolvedData?.subjectPage) {
       console.log(`[SubjectPage] No subject page found for subject: ${subject}, clone: ${cloneId || 'none'}`);
@@ -823,17 +367,15 @@ async function getSubjectPageDataWithCloneContext(
 
     // Resolve hero data strictly from clone-specific content
     let heroData = null;
-    if (fallbackResult.cloneSpecific?.heroData) {
-      heroData = fallbackResult.cloneSpecific.heroData;
-    }
+    heroData = resolvedData.heroData || null;
 
-    console.log(`[SubjectPage] Successfully fetched subject page data for: ${subject} (source: ${resolvedSource})`);
+    console.log(`[SubjectPage] Successfully fetched subject page data for: ${subject}`);
     console.log(`[SubjectPage] Hero data ${heroData ? 'found' : 'not found'} for: ${subject}`);
     
     return { 
       pageData, 
       heroData,
-      testimonialSection: fallbackResult.testimonialSection, 
+      testimonialSection: resolvedData.testimonialSection, 
       navbarData: navbarResult?.data || null, 
       type: 'subject' 
     };
