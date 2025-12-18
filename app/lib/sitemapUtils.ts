@@ -143,13 +143,16 @@ export async function getCloneIdForCurrentDomain(): Promise<string | null> {
       return null;
     }
 
-    const mappings = await getAllDomainMappings();
-    const mapping = mappings.find(m => 
-      m.domain === currentDomain || 
-      m.domain === `www.${currentDomain}`
+    // Lightweight direct lookup instead of enumerating all clones (prevents timeouts)
+    const result = await cachedFetch<{ cloneId?: { current: string } }>(
+      `*[_type == "clone" && isActive == true && ($d in metadata.domains || $wd in metadata.domains)][0]{ cloneId }`,
+      { 
+        d: currentDomain,
+        wd: currentDomain.startsWith('www.') ? currentDomain : `www.${currentDomain}`,
+      },
+      { next: { revalidate: 300, tags: ['clone-mappings', 'domain-lookup'] } }
     );
-
-    return mapping?.cloneId || null;
+    return result?.cloneId?.current || null;
   } catch (error) {
     console.error('Error getting clone ID for current domain:', error);
     return null;
