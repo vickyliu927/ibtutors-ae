@@ -145,7 +145,7 @@ export async function getCloneIdForCurrentDomain(): Promise<string | null> {
 
     // Lightweight direct lookup instead of enumerating all clones (prevents timeouts)
     const result = await cachedFetch<{ cloneId?: { current: string } }>(
-      `*[_type == "clone" && isActive == true && ($d in metadata.domains || $wd in metadata.domains)][0]{ cloneId }`,
+      `*[_type == "clone" && isActive == true && ($d in metadata.domains || $wd in metadata.domains)] | order(_updatedAt desc)[0]{ cloneId }`,
       { 
         d: currentDomain,
         wd: currentDomain.startsWith('www.') ? currentDomain : `www.${currentDomain}`,

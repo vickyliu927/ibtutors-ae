@@ -225,7 +225,7 @@ async function findCloneByDomain(hostname: string): Promise<{ cloneId: string; c
     console.log(`[Middleware] Querying Sanity for domain: ${normalizedHostname}`);
     
     // Match both bare and www-prefixed variants to avoid configuration mismatches
-    const query = `*[_type == "clone" && isActive == true && ($hostname in metadata.domains || $wwwHostname in metadata.domains)][0] {
+    const query = `*[_type == "clone" && isActive == true && ($hostname in metadata.domains || $wwwHostname in metadata.domains)] | order(_updatedAt desc)[0] {
       cloneId,
       cloneName,
       "domains": metadata.domains
