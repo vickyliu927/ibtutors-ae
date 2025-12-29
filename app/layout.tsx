@@ -65,17 +65,6 @@ export default async function RootLayout({
         <meta name="google-site-verification" content="v4S2fecY05CWeIbQ6FvCG-5LZv2FvTJa56JfscMhS_Y" />
         {/* Google Tag Manager - global for all tenants */}
         <GTMHead />
-        {/* Google Analytics 4 (gtag.js) */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-H9E5WDK5MX"
-          strategy="afterInteractive"
-        />
-        <Script id="ga4-init" strategy="afterInteractive">{`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-H9E5WDK5MX');
-        `}</Script>
         {/* Meta Pixel */}
         <Script id="meta-pixel" strategy="afterInteractive">{`
           !function(f,b,e,v,n,t,s)
