@@ -565,6 +565,8 @@ export const tutorProfilesSectionQueries = {
     ctaRichText,
     ctaText,
     ctaLink,
+    brochureButtonText,
+    brochureButtonUrl,
     tutorProfileSectionPriceDescription,
     tutorProfileSectionPriceTag,
     isActive,

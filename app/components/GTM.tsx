@@ -1,6 +1,6 @@
 import Script from 'next/script';
 
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-5R36QZGM';
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-N5624CFQ';
 
 export function GTMHead() {
   return (

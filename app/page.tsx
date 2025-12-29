@@ -309,6 +309,8 @@ export default async function Home({
           ctaRichText={tutorProfilesSection.ctaRichText}
           ctaText={tutorProfilesSection.ctaText}
           ctaLink={tutorProfilesSection.ctaLink}
+          brochureButtonText={tutorProfilesSection.brochureButtonText}
+          brochureButtonUrl={tutorProfilesSection.brochureButtonUrl}
           tutorProfileSectionPriceDescription={tutorProfilesSection.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={tutorProfilesSection.tutorProfileSectionPriceTag}
           useNewCardDesign={true}

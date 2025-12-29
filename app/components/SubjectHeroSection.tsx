@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getSubjectHeroData } from '../lib/getSubjectHeroData';
 import { HeroData } from '../lib/heroTypes';
+import SubjectBrochureButton from './SubjectBrochureButton';
 
 interface SubjectHeroSectionProps {
   className?: string;
@@ -74,6 +75,11 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
               {heroData?.rating?.reviewCount || '578 reviews'}
             </span>
           </div>
+
+          {/* Brochure Button - Mobile */}
+          <div className="w-full flex justify-start mt-2">
+            <SubjectBrochureButton />
+          </div>
         </div>
 
         {/* Desktop Layout - Original centered layout */}
@@ -109,6 +115,11 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
           {/* Subtitle - Desktop */}
           <div className="w-full max-w-[600px] text-center text-[14px] sm:text-[16px] lg:text-[18px] leading-[140%] font-gilroy text-textDark" style={{ fontWeight: 200, whiteSpace: 'pre-line' }}>
             {heroData?.subtitle || 'Study with IB examiners and qualified teachers. Recommended by 98% of IB students in United Kingdom and globally!'}
+          </div>
+
+          {/* Brochure Button - Desktop */}
+          <div className="mt-2">
+            <SubjectBrochureButton />
           </div>
         </div>
       </div>

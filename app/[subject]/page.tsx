@@ -87,6 +87,8 @@ interface SubjectPageData {
     ctaRichText?: any[];
     ctaLinkText?: string;
     ctaLink?: string;
+    brochureButtonText?: string;
+    brochureButtonUrl?: string;
     tutorProfileSectionPriceDescription?: string;
     tutorProfileSectionPriceTag?: string;
   };
@@ -136,6 +138,8 @@ interface CurriculumPageData {
     ctaRichText?: any[];
     ctaLinkText?: string;
     ctaLink?: string;
+    brochureButtonText?: string;
+    brochureButtonUrl?: string;
     tutorProfileSectionPriceDescription?: string;
     tutorProfileSectionPriceTag?: string;
   };
@@ -179,6 +183,8 @@ interface LocationPageData {
     ctaRichText?: any[];
     ctaLinkText?: string;
     ctaLink?: string;
+    brochureButtonText?: string;
+    brochureButtonUrl?: string;
     tutorProfileSectionPriceDescription?: string;
     tutorProfileSectionPriceTag?: string;
   };
@@ -669,6 +675,8 @@ export default async function DynamicPage({
   // Fetch global/clone-specific Tutor Profiles section to use its Trusted By text as fallback
   const tutorProfilesSectionResult = await tutorProfilesSectionQueries.fetch(cloneContext.cloneId || 'global');
   const globalTrustedByText = tutorProfilesSectionResult?.data?.trustedByText as string | undefined;
+  const globalBrochureButtonText = tutorProfilesSectionResult?.data?.brochureButtonText as string | undefined;
+  const globalBrochureButtonUrl = tutorProfilesSectionResult?.data?.brochureButtonUrl as string | undefined;
 
   // Fetch Advert Block and Platform Banner content for this clone
   const [advertBlockContent, platformBannerContent] = await Promise.all([
@@ -758,6 +766,8 @@ export default async function DynamicPage({
           ctaRichText={curriculumResult.pageData.tutorsListSectionHead?.ctaRichText}
           ctaText={curriculumResult.pageData.tutorsListSectionHead?.ctaLinkText}
           ctaLink={curriculumResult.pageData.tutorsListSectionHead?.ctaLink}
+          brochureButtonText={curriculumResult.pageData.tutorsListSectionHead?.brochureButtonText ?? globalBrochureButtonText}
+          brochureButtonUrl={curriculumResult.pageData.tutorsListSectionHead?.brochureButtonUrl ?? globalBrochureButtonUrl}
           tutorProfileSectionPriceDescription={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={curriculumResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
@@ -927,6 +937,8 @@ export default async function DynamicPage({
           ctaRichText={subjectResult.pageData.tutorsListSectionHead?.ctaRichText}
           ctaText={subjectResult.pageData.tutorsListSectionHead?.ctaLinkText}
           ctaLink={subjectResult.pageData.tutorsListSectionHead?.ctaLink}
+          brochureButtonText={subjectResult.pageData.tutorsListSectionHead?.brochureButtonText ?? globalBrochureButtonText}
+          brochureButtonUrl={subjectResult.pageData.tutorsListSectionHead?.brochureButtonUrl ?? globalBrochureButtonUrl}
           tutorProfileSectionPriceDescription={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={subjectResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />
@@ -1083,6 +1095,8 @@ export default async function DynamicPage({
           ctaRichText={locationResult.pageData.tutorsListSectionHead?.ctaRichText}
           ctaText={locationResult.pageData.tutorsListSectionHead?.ctaLinkText}
           ctaLink={locationResult.pageData.tutorsListSectionHead?.ctaLink}
+          brochureButtonText={locationResult.pageData.tutorsListSectionHead?.brochureButtonText ?? globalBrochureButtonText}
+          brochureButtonUrl={locationResult.pageData.tutorsListSectionHead?.brochureButtonUrl ?? globalBrochureButtonUrl}
           tutorProfileSectionPriceDescription={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceDescription}
           tutorProfileSectionPriceTag={locationResult.pageData.tutorsListSectionHead?.tutorProfileSectionPriceTag}
         />

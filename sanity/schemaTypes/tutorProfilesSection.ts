@@ -61,6 +61,18 @@ const tutorProfilesSectionSchema = defineType({
       hidden: ({ parent }) => Array.isArray(parent?.ctaRichText) && parent.ctaRichText.length > 0,
     }),
     defineField({
+      name: 'brochureButtonText',
+      title: 'Brochure button text',
+      type: 'string',
+      description: 'Optional: Text for the brochure download button',
+    }),
+    defineField({
+      name: 'brochureButtonUrl',
+      title: 'Brochure button URL',
+      type: 'url',
+      description: 'Optional: URL to the brochure download page/file',
+    }),
+    defineField({
       name: 'tutorProfileSectionPriceDescription',
       title: 'Tutor Profile Section Price Description',
       type: 'string',

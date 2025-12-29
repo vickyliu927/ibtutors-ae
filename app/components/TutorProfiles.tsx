@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ExternalLink from "./ui/ExternalLink";
 import TutorCard, { TutorCardData } from "./TutorCard";
+import SubjectBrochureButton from "./SubjectBrochureButton";
 
 export interface TutorData {
   _id: string;
@@ -55,6 +56,8 @@ interface TutorProfilesProps {
   useNewCardDesign?: boolean;
   tutorProfileSectionPriceDescription?: string;
   tutorProfileSectionPriceTag?: string;
+  brochureButtonText?: string;
+  brochureButtonUrl?: string;
 }
 
 // Maximum number of additional subjects to display before showing a "+X more" button
@@ -73,6 +76,8 @@ const TutorProfiles = ({
   useNewCardDesign = false,
   tutorProfileSectionPriceDescription,
   tutorProfileSectionPriceTag,
+  brochureButtonText,
+  brochureButtonUrl,
 }: TutorProfilesProps) => {
   // State to track which tutors have expanded subject lists
   const [expandedSubjects, setExpandedSubjects] = useState<{
@@ -326,6 +331,14 @@ const TutorProfiles = ({
               : "space-y-4 px-4 sm:px-6 lg:px-0"
           }
         >
+          {/* Download Subject Brochure button - placed right before the first tutor bio */}
+          <div className="w-full mb-2">
+            <SubjectBrochureButton
+              href={brochureButtonUrl || "/#contact-form"}
+              text={brochureButtonText || "Download Subject Brochure"}
+            />
+          </div>
+
           {tutors.map((tutor) => {
             // If using new card design, render the new TutorCard component
             if (useNewCardDesign) {

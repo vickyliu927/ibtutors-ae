@@ -132,6 +132,18 @@ const locationPageSchema = defineType({
           description: 'URL where the link text will direct to',
         },
         {
+          name: 'brochureButtonText',
+          title: 'Brochure button text',
+          type: 'string',
+          description: 'Optional: Text for the brochure download button',
+        },
+        {
+          name: 'brochureButtonUrl',
+          title: 'Brochure button URL',
+          type: 'url',
+          description: 'Optional: URL to the brochure download page/file',
+        },
+        {
           name: 'tutorProfileSectionPriceDescription',
           title: 'Tutor Profile Section Price Description',
           type: 'string',
