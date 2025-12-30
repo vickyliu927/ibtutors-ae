@@ -175,6 +175,7 @@ const tutorSchema = defineType({
               'AP English Literature',
               'AP Macroeconomics & Microeconomics',
               'AP US History & World History',
+              'AP US Government & Politics',
               'AP Human Geography',
               'AP Spanish',
               // Standardized Tests
@@ -402,6 +403,7 @@ const tutorSchema = defineType({
               'AP English Literature',
               'AP Macroeconomics & Microeconomics',
               'AP US History & World History',
+              'AP US Government & Politics',
               'AP Human Geography',
               'AP Spanish',
               // Standardized Tests
