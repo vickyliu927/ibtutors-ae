@@ -8,9 +8,11 @@ interface SubjectHeroSectionProps {
   className?: string;
   subjectSlug?: string;
   heroData?: HeroData | null;
+  brochureButtonText?: string;
+  brochureButtonUrl?: string;
 }
 
-const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroData }: SubjectHeroSectionProps) => {
+const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroData, brochureButtonText, brochureButtonUrl }: SubjectHeroSectionProps) => {
   const [heroData, setHeroData] = useState<HeroData | null>(serverHeroData || null);
 
   // DISABLED CLIENT-SIDE FALLBACK - Always use server-side data for clone-aware content
@@ -77,9 +79,11 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
           </div>
 
           {/* Brochure Button - Mobile */}
-          <div className="w-full flex justify-start mt-2">
-            <SubjectBrochureButton />
-          </div>
+          {brochureButtonText && brochureButtonUrl ? (
+            <div className="w-full flex justify-start mt-2">
+              <SubjectBrochureButton href={brochureButtonUrl} text={brochureButtonText} />
+            </div>
+          ) : null}
         </div>
 
         {/* Desktop Layout - Original centered layout */}
@@ -118,9 +122,11 @@ const SubjectHeroSection = ({ className = '', subjectSlug, heroData: serverHeroD
           </div>
 
           {/* Brochure Button - Desktop */}
-          <div className="mt-2">
-            <SubjectBrochureButton />
-          </div>
+          {brochureButtonText && brochureButtonUrl ? (
+            <div className="mt-2">
+              <SubjectBrochureButton href={brochureButtonUrl} text={brochureButtonText} />
+            </div>
+          ) : null}
         </div>
       </div>
 

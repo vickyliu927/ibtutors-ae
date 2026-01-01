@@ -14,10 +14,13 @@ interface SubjectBrochureButtonProps {
  * Features a light background with orange border and text.
  */
 const SubjectBrochureButton: React.FC<SubjectBrochureButtonProps> = ({
-  href = "/#contact-form",
+  href,
   className = "",
-  text = "Download Subject Brochure",
+  text,
 }) => {
+  // Defensive guard: if required props are missing, render nothing
+  if (!href || !text) return null;
+
   return (
     <Link
       href={href}

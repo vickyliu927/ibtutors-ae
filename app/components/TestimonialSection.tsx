@@ -187,8 +187,16 @@ const TestimonialSection = ({ sectionData, testimonials }: { sectionData?: Testi
           </div>
         </div>
 
-        {/* Testimonial cards - Grid layout (center single item) */}
-        <div className={`grid gap-8 sm:gap-6 lg:gap-8 px-4 sm:px-0 place-items-center ${displayTestimonials.length === 1 ? 'grid-cols-1 justify-items-center' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
+        {/* Testimonial cards - Grid layout (center single or double items) */}
+        <div
+          className={`grid gap-8 sm:gap-6 lg:gap-8 px-4 sm:px-0 place-items-center ${
+            displayTestimonials.length === 1
+              ? 'grid-cols-1 justify-items-center justify-center'
+              : displayTestimonials.length === 2
+              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-center lg:max-w-[920px] mx-auto'
+              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+          }`}
+        >
           {displayTestimonials.slice(0, 3).map((testimonial) => (
             <TestimonialCard key={testimonial._id} testimonial={testimonial} />
           ))}

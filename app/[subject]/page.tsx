@@ -754,7 +754,12 @@ export default async function DynamicPage({
         <CloneIndicatorBanner {...cloneIndicatorProps} />
         
         {/* New Hero Section - using curriculum hero data */}
-        <SubjectHeroSection subjectSlug={params.subject} heroData={curriculumHeroData} />
+        <SubjectHeroSection 
+          subjectSlug={params.subject} 
+          heroData={curriculumHeroData}
+          brochureButtonText={curriculumResult.pageData.tutorsListSectionHead?.brochureButtonText ?? globalBrochureButtonText}
+          brochureButtonUrl={curriculumResult.pageData.tutorsListSectionHead?.brochureButtonUrl ?? globalBrochureButtonUrl}
+        />
 
         {/* Tutors Section */}
         <TutorProfiles 
@@ -924,6 +929,8 @@ export default async function DynamicPage({
         <SubjectHeroSection 
           subjectSlug={params.subject} 
           heroData={subjectResult.heroData}
+          brochureButtonText={subjectResult.pageData.tutorsListSectionHead?.brochureButtonText ?? globalBrochureButtonText}
+          brochureButtonUrl={subjectResult.pageData.tutorsListSectionHead?.brochureButtonUrl ?? globalBrochureButtonUrl}
           key={`hero-${cloneContext.cloneId}-${params.subject}`} // Force re-render when clone changes
         />
 
@@ -1082,6 +1089,8 @@ export default async function DynamicPage({
         <SubjectHeroSection 
           subjectSlug={params.subject} 
           heroData={locationHeroData}
+          brochureButtonText={locationResult.pageData.tutorsListSectionHead?.brochureButtonText ?? globalBrochureButtonText}
+          brochureButtonUrl={locationResult.pageData.tutorsListSectionHead?.brochureButtonUrl ?? globalBrochureButtonUrl}
           key={`hero-${cloneContext.cloneId}-${params.subject}-location`}
         />
 

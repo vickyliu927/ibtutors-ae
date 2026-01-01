@@ -332,12 +332,14 @@ const TutorProfiles = ({
           }
         >
           {/* Download Subject Brochure button - placed right before the first tutor bio */}
-          <div className="w-full mb-2">
-            <SubjectBrochureButton
-              href={brochureButtonUrl || "/#contact-form"}
-              text={brochureButtonText || "Download Subject Brochure"}
-            />
-          </div>
+          {brochureButtonText && brochureButtonUrl ? (
+            <div className="w-full mb-2">
+              <SubjectBrochureButton
+                href={brochureButtonUrl}
+                text={brochureButtonText}
+              />
+            </div>
+          ) : null}
 
           {tutors.map((tutor) => {
             // If using new card design, render the new TutorCard component

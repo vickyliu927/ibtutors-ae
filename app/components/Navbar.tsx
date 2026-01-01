@@ -472,7 +472,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
 
                   // Fallback to legacy flat list when no groups
                   return (
-                    <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
+                    <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1 w-max">
                       {orderedSubjects.map((subject) => (
                         subject.externalRedirectEnabled && subject.externalRedirectUrl ? (
                           <ExternalLink key={`${subject.subject}-external`} href={subject.externalRedirectUrl} className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">
@@ -524,7 +524,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
               </button>
               
               {showLocationsDropdown && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1">
+                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 grid grid-cols-1 gap-1 w-max">
                   {[...locations]
                     .slice()
                     .sort((a, b) => (a.displayOrder || 100) - (b.displayOrder || 100))
@@ -582,7 +582,7 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
                 </button>
 
                 {showCurriculumDropdowns[curriculumSlug] && (
-                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30">
+                  <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-30 w-max">
                     {/* Main curriculum page link */}
                     {curriculum.externalRedirectEnabled && curriculum.externalRedirectUrl ? (
                       <ExternalLink
