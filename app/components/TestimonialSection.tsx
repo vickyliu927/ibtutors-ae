@@ -16,7 +16,7 @@ export interface TestimonialData {
   _id: string;
   reviewerName: string;
   reviewerType: string;
-  testimonialText: any[];
+  testimonialText: any[] | string;
   rating: number;
   order: number;
 }
@@ -211,6 +211,22 @@ const TestimonialCard = ({ testimonial }: { testimonial: TestimonialData }) => {
   const textRef = useRef<HTMLDivElement>(null);
   const [fontSize, setFontSize] = useState('text-lg');
 
+  // Ensure PortableText always receives an array of blocks.
+  const getPortableValue = (value: any[] | string | undefined | null) => {
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return [
+        {
+          _type: 'block',
+          style: 'normal',
+          markDefs: [],
+          children: [{ _type: 'span', text: value }],
+        },
+      ];
+    }
+    return [];
+  };
+
   useEffect(() => {
     const checkOverflow = () => {
       if (textRef.current) {
@@ -246,7 +262,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: TestimonialData }) => {
       >
         <div className="testimonial-content">
           "<PortableText 
-            value={testimonial.testimonialText}
+            value={getPortableValue(testimonial.testimonialText)}
             components={{
                 marks: {
                   strong: ({children}: any) => <strong className="font-medium">{children}</strong>,
