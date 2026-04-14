@@ -652,13 +652,15 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
           >
             TutorChase Global
           </ExternalLink>
-          {/* Always-visible Contact Us button */}
-          <Link
-            href="/#contact-form"
-            className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy flex"
-          >
-            Contact Us
-          </Link>
+          {/* CTA button driven by Sanity navbarSettings */}
+          {navbarData?.buttonText && (
+            <Link
+              href={navbarData?.buttonLink || "/#contact-form"}
+              className="h-[42px] px-[24px] justify-center items-center rounded-[28px] bg-[#001A96] text-white text-[14px] font-medium leading-[140%] hover:bg-[#001A96]/90 transition-colors font-gilroy flex"
+            >
+              {navbarData.buttonText}
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -1098,13 +1100,15 @@ const Navbar = ({ navbarData, subjects = [], curriculums = [], locations = [], c
                 >
                   TutorChase Global
                 </ExternalLink>
-                <Link
-                  href="/#contact-form"
-                  onClick={() => setIsOpen(false)}
-                  className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
-                >
-                  Contact Us
-                </Link>
+                {navbarData?.buttonText && (
+                  <Link
+                    href={navbarData?.buttonLink || "/#contact-form"}
+                    onClick={() => setIsOpen(false)}
+                    className="flex h-12 px-4 justify-center items-center w-full rounded-[28px] bg-primary text-white text-center text-base font-normal leading-[140%] font-gilroy"
+                  >
+                    {navbarData.buttonText}
+                  </Link>
+                )}
               </div>
             </div>
           </div>
