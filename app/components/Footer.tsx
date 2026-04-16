@@ -5,6 +5,7 @@ import { getServerRelAttributes } from '../lib/serverLinkUtils';
 
 const Footer = async () => {
   const footer = await getFooterData();
+  const currentYear = new Date().getFullYear();
 
   if (!footer) {
     return (
@@ -82,7 +83,7 @@ const Footer = async () => {
               {footer.address || 'One Central, Dubai World Trade Centre'}
             </div>
             <div className="text-lg text-[#8B8E91] font-gilroy leading-[160%] text-center" style={{ fontWeight: 200 }}>
-              Copyright 2025 IB Tutors by TutorChase
+              Copyright {currentYear} TutorChase
             </div>
           </div>
         </div>
